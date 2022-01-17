@@ -158,7 +158,7 @@ curseforge {
     project {
         id = project_id
         changelogType = 'markdown'
-        changelog = "The whole changelog can be found [here](https://github.com/${github_user}/${github_repo}/blob/1.16/CHANGELOG.md)."
+        changelog = "The whole changelog can be found [here](https://github.com/${github_user}/${github_repo}/blob/${github_branch}/CHANGELOG.md)."
         releaseType = 'release'
         addGameVersion minecraft_version
 

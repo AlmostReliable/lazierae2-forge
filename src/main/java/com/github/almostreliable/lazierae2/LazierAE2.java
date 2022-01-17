@@ -1,6 +1,6 @@
-package com.github.almostreliable.templatemod;
+package com.github.almostreliable.lazierae2;
 
-import com.github.almostreliable.templatemod.core.Setup;
+import com.github.almostreliable.lazierae2.core.Setup;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -8,19 +8,19 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import static com.github.almostreliable.templatemod.core.Constants.MOD_ID;
+import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 @Mod(MOD_ID)
 @EventBusSubscriber
-public class TemplateMod {
+public class LazierAE2 {
 
     @SuppressWarnings("java:S1118")
-    public TemplateMod() {
+    public LazierAE2() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         // register common setup listener
-        modEventBus.addListener(TemplateMod::onCommonSetup);
+        modEventBus.addListener(LazierAE2::onCommonSetup);
         // register client listener
-        modEventBus.addListener(TemplateMod::onClientSetup);
+        modEventBus.addListener(LazierAE2::onClientSetup);
         // register mod contents
         Setup.init(modEventBus);
     }

@@ -1,5 +1,5 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-package com.github.almostreliable.templatemod.core;
+package com.github.almostreliable.lazierae2;
 
 import mcp.MethodsReturnNonnullByDefault;
 

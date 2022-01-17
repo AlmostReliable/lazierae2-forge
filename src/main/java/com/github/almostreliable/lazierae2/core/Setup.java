@@ -1,4 +1,4 @@
-package com.github.almostreliable.templatemod.core;
+package com.github.almostreliable.lazierae2.core;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -22,12 +22,13 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.almostreliable.templatemod.core.Constants.MOD_ID;
+import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
 
-public enum Setup {
-    ;
+public final class Setup {
 
     private static final Tab TAB = new Tab(MOD_ID);
+
+    private Setup() {}
 
     public static void init(IEventBus modEventBus) {
         Blocks.REGISTRY.register(modEventBus);
@@ -36,8 +37,7 @@ public enum Setup {
         Containers.REGISTRY.register(modEventBus);
     }
 
-    public enum Tiles {
-        ;
+    private static final class Tiles {
 
         private static final DeferredRegister<TileEntityType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
@@ -53,8 +53,7 @@ public enum Setup {
         }
     }
 
-    public enum Containers {
-        ;
+    private static final class Containers {
 
         private static final DeferredRegister<ContainerType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
