@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "side": "lazierae2:block/machine",
+    "front": "lazierae2:block/energizer_active",
+    "top": "lazierae2:block/machine"
+  }
+}

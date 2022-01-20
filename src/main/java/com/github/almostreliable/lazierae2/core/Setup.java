@@ -102,14 +102,16 @@ public final class Setup {
         }
     }
 
-    private static final class Blocks {
+    public static final class Blocks {
 
         private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
-        static final RegistryObject<AggregatorBlock> AGGREGATOR = register(AGGREGATOR_ID, AggregatorBlock::new);
-        static final RegistryObject<CentrifugeBlock> CENTRIFUGE = register(CENTRIFUGE_ID, CentrifugeBlock::new);
-        static final RegistryObject<EnergizerBlock> ENERGIZER = register(ENERGIZER_ID, EnergizerBlock::new);
-        static final RegistryObject<EtcherBlock> ETCHER = register(ETCHER_ID, EtcherBlock::new);
+        public static final RegistryObject<AggregatorBlock> AGGREGATOR = register(AGGREGATOR_ID, AggregatorBlock::new);
+        public static final RegistryObject<CentrifugeBlock> CENTRIFUGE = register(CENTRIFUGE_ID, CentrifugeBlock::new);
+        public static final RegistryObject<EnergizerBlock> ENERGIZER = register(ENERGIZER_ID, EnergizerBlock::new);
+        public static final RegistryObject<EtcherBlock> ETCHER = register(ETCHER_ID, EtcherBlock::new);
+
+        private Blocks() {}
 
         private static <B extends Block> RegistryObject<B> register(String id, Supplier<? extends B> supplier) {
             RegistryObject<B> result = REGISTRY.register(id, supplier);

@@ -1,6 +1,7 @@
 package com.github.almostreliable.lazierae2;
 
 import com.github.almostreliable.lazierae2.core.Setup;
+import com.github.almostreliable.lazierae2.data.DataGeneration;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -21,6 +22,8 @@ public class LazierAE2 {
         modEventBus.addListener(LazierAE2::onCommonSetup);
         // register client listener
         modEventBus.addListener(LazierAE2::onClientSetup);
+        // register data gen listener
+        modEventBus.addListener(DataGeneration::init);
         // register mod contents
         Setup.init(modEventBus);
     }
