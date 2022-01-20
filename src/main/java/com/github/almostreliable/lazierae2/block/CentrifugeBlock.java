@@ -1,5 +1,6 @@
 package com.github.almostreliable.lazierae2.block;
 
+import com.github.almostreliable.lazierae2.tile.CentrifugeTile;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockReader;
@@ -13,7 +14,6 @@ public class CentrifugeBlock extends MachineBlock {
     public TileEntity createTileEntity(
         BlockState state, IBlockReader world
     ) {
-        // TODO
-        return super.createTileEntity(state, world);
+        return new CentrifugeTile();
     }
 }

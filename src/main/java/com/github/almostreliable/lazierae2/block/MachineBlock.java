@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 public abstract class MachineBlock extends Block {
 
-    public static final DirectionProperty HORIZONTAL_FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BlockStateProperties.LIT;
 
     protected MachineBlock() {
@@ -36,14 +36,14 @@ public abstract class MachineBlock extends Block {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         return defaultBlockState()
-            .setValue(HORIZONTAL_FACING, context.getHorizontalDirection().getOpposite())
+            .setValue(FACING, context.getHorizontalDirection().getOpposite())
             .setValue(ACTIVE, false);
     }
 
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(HORIZONTAL_FACING);
+        builder.add(FACING);
         builder.add(ACTIVE);
     }
 

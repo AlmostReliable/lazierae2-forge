@@ -4,8 +4,11 @@ import com.github.almostreliable.lazierae2.block.AggregatorBlock;
 import com.github.almostreliable.lazierae2.block.CentrifugeBlock;
 import com.github.almostreliable.lazierae2.block.EnergizerBlock;
 import com.github.almostreliable.lazierae2.block.EtcherBlock;
+import com.github.almostreliable.lazierae2.tile.AggregatorTile;
+import com.github.almostreliable.lazierae2.tile.CentrifugeTile;
+import com.github.almostreliable.lazierae2.tile.EnergizerTile;
+import com.github.almostreliable.lazierae2.tile.EtcherTile;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -23,7 +26,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
@@ -41,20 +43,36 @@ public final class Setup {
         Containers.REGISTRY.register(modEventBus);
     }
 
-    private static final class Tiles {
+    public static final class Tiles {
 
         private static final DeferredRegister<TileEntityType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
 
+        private Tiles() {}
+
         private static <T extends TileEntity, B extends Block> RegistryObject<TileEntityType<T>> register(
-            String id, RegistryObject<B> block, Function<? super BlockState, T> constructor
+            String id, RegistryObject<B> block, Supplier<T> constructor
         ) {
             //noinspection ConstantConditions
-            return REGISTRY.register(
-                id,
-                () -> Builder.of(() -> constructor.apply(block.get().defaultBlockState()), block.get()).build(null)
-            );
+            return REGISTRY.register(id, () -> Builder.of(constructor, block.get()).build(null));
         }
+
+        public static final RegistryObject<TileEntityType<AggregatorTile>> AGGREGATOR = register(AGGREGATOR_ID,
+            Blocks.AGGREGATOR,
+            AggregatorTile::new
+        );
+        public static final RegistryObject<TileEntityType<CentrifugeTile>> CENTRIFUGE = register(CENTRIFUGE_ID,
+            Blocks.CENTRIFUGE,
+            CentrifugeTile::new
+        );
+        public static final RegistryObject<TileEntityType<EnergizerTile>> ENERGIZER = register(ENERGIZER_ID,
+            Blocks.ENERGIZER,
+            EnergizerTile::new
+        );
+        public static final RegistryObject<TileEntityType<EtcherTile>> ETCHER = register(ETCHER_ID,
+            Blocks.ETCHER,
+            EtcherTile::new
+        );
     }
 
     private static final class Containers {
@@ -88,10 +106,10 @@ public final class Setup {
 
         private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
-        public static final RegistryObject<AggregatorBlock> AGGREGATOR = register(AGGREGATOR_ID, AggregatorBlock::new);
-        public static final RegistryObject<CentrifugeBlock> CENTRIFUGE = register(CENTRIFUGE_ID, CentrifugeBlock::new);
-        public static final RegistryObject<EnergizerBlock> ENERGIZER = register(ENERGIZER_ID, EnergizerBlock::new);
-        public static final RegistryObject<EtcherBlock> ETCHER = register(ETCHER_ID, EtcherBlock::new);
+        static final RegistryObject<AggregatorBlock> AGGREGATOR = register(AGGREGATOR_ID, AggregatorBlock::new);
+        static final RegistryObject<CentrifugeBlock> CENTRIFUGE = register(CENTRIFUGE_ID, CentrifugeBlock::new);
+        static final RegistryObject<EnergizerBlock> ENERGIZER = register(ENERGIZER_ID, EnergizerBlock::new);
+        static final RegistryObject<EtcherBlock> ETCHER = register(ETCHER_ID, EtcherBlock::new);
 
         private static <B extends Block> RegistryObject<B> register(String id, Supplier<? extends B> supplier) {
             RegistryObject<B> result = REGISTRY.register(id, supplier);
