@@ -1,5 +1,9 @@
 package com.github.almostreliable.lazierae2.core;
 
+import com.github.almostreliable.lazierae2.block.AggregatorBlock;
+import com.github.almostreliable.lazierae2.block.CentrifugeBlock;
+import com.github.almostreliable.lazierae2.block.EnergizerBlock;
+import com.github.almostreliable.lazierae2.block.EtcherBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.container.Container;
@@ -22,7 +26,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.github.almostreliable.lazierae2.core.Constants.*;
 
 public final class Setup {
 
@@ -80,12 +84,17 @@ public final class Setup {
         }
     }
 
-    private static class Blocks {
+    private static final class Blocks {
 
         private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
-        private static RegistryObject<Block> register(String id, Supplier<? extends Block> supplier) {
-            RegistryObject<Block> result = REGISTRY.register(id, supplier);
+        public static final RegistryObject<AggregatorBlock> AGGREGATOR = register(AGGREGATOR_ID, AggregatorBlock::new);
+        public static final RegistryObject<CentrifugeBlock> CENTRIFUGE = register(CENTRIFUGE_ID, CentrifugeBlock::new);
+        public static final RegistryObject<EnergizerBlock> ENERGIZER = register(ENERGIZER_ID, EnergizerBlock::new);
+        public static final RegistryObject<EtcherBlock> ETCHER = register(ETCHER_ID, EtcherBlock::new);
+
+        private static <B extends Block> RegistryObject<B> register(String id, Supplier<? extends B> supplier) {
+            RegistryObject<B> result = REGISTRY.register(id, supplier);
             Items.REGISTRY.register(id, () -> new BlockItem(result.get(), new Properties().tab(TAB)));
             return result;
         }
