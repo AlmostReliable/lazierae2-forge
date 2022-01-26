@@ -5,10 +5,11 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class InventoryHandler extends ItemStackHandler {
 
+    public static final int NON_INPUT_SLOTS = 2;
     private final TileEntity tile;
 
-    public InventoryHandler(TileEntity tile, int size) {
-        super(size);
+    public InventoryHandler(TileEntity tile, int inputSlots) {
+        super(inputSlots + NON_INPUT_SLOTS);
         this.tile = tile;
     }
 

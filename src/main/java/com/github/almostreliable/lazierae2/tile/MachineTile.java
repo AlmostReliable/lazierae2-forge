@@ -35,7 +35,7 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
     protected MachineTile(TileEntityType<?> type, int inputSlots) {
         super(type);
         this.inputSlots = inputSlots;
-        inventory = new InventoryHandler(this, inputSlots + 2);
+        inventory = new InventoryHandler(this, inputSlots);
         inventoryCap = LazyOptional.of(() -> inventory);
         energy = new EnergyHandler(this, 100_000);
         energyCap = LazyOptional.of(() -> energy);
@@ -65,6 +65,7 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
         nbt.put(ENERGY_ID, energy.serializeNBT());
         nbt.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
         return nbt;
+        // TODO: can also be handled by save() if not speficic values need syncing
     }
 
     @Override
@@ -72,11 +73,16 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
         inventory.deserializeNBT(nbt.getCompound(INVENTORY_ID));
         energy.deserializeNBT(nbt.getCompound(ENERGY_ID));
         sideConfig.deserializeNBT(nbt.getCompound(SIDE_CONFIG_ID));
+        // TODO: can also be handled by load() if not speficic values need syncing
     }
 
     @Override
     public void tick() {
         // TODO
+    }
+
+    public int getInputSlots() {
+        return inputSlots;
     }
 
     @Override
