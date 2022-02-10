@@ -34,7 +34,6 @@ public class BlockStateData extends BlockStateProvider {
         registerMachine(ETCHER_ID, Blocks.ETCHER);
     }
 
-
     /**
      * Handles the registration of the machine blocks.
      * <p>
@@ -52,8 +51,7 @@ public class BlockStateData extends BlockStateProvider {
         BlockModelBuilder modelInactive = models().orientable(id, sideTexture, inactiveTexture, sideTexture);
         BlockModelBuilder modelActive = models().orientable(id + "_active", sideTexture, activeTexture, sideTexture);
 
-        orientedBlock(
-            block,
+        orientedBlock(block,
             state -> state.getValue(MachineBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive
         );
     }
@@ -66,19 +64,17 @@ public class BlockStateData extends BlockStateProvider {
      * @param <B>           the type of the machine block
      */
     private <B extends MachineBlock> void orientedBlock(
-        RegistryObject<B> block,
-        Function<? super BlockState, ? extends ModelFile> modelFunction
+        RegistryObject<B> block, Function<? super BlockState, ? extends ModelFile> modelFunction
     ) {
-        getVariantBuilder(block.get())
-            .forAllStates(state -> {
-                Direction facing = state.getValue(MachineBlock.FACING);
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            Direction facing = state.getValue(MachineBlock.FACING);
 
-                return ConfiguredModel
-                    .builder()
-                    .modelFile(modelFunction.apply(state))
-                    .rotationX(facing.getAxis() == Axis.Y ? facing.getAxisDirection().getStep() * -90 : 0)
-                    .rotationY(facing.getAxis() == Axis.Y ? 0 : ((facing.get2DDataValue() + 2) % 4) * 90)
-                    .build();
-            });
+            return ConfiguredModel
+                .builder()
+                .modelFile(modelFunction.apply(state))
+                .rotationX(facing.getAxis() == Axis.Y ? facing.getAxisDirection().getStep() * -90 : 0)
+                .rotationY(facing.getAxis() == Axis.Y ? 0 : ((facing.get2DDataValue() + 2) % 4) * 90)
+                .build();
+        });
     }
 }

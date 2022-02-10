@@ -55,12 +55,7 @@ public abstract class MachineBlock extends Block {
     @SuppressWarnings("deprecation")
     @Override
     public ActionResultType use(
-        BlockState state,
-        World level,
-        BlockPos pos,
-        PlayerEntity player,
-        Hand hand,
-        BlockRayTraceResult hit
+        BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit
     ) {
         // don't do anything on clientside or if player is shifting
         if (level.isClientSide() || player.isShiftKeyDown()) return ActionResultType.SUCCESS;

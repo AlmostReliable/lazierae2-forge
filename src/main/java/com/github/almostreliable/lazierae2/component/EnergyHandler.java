@@ -17,11 +17,6 @@ public class EnergyHandler extends EnergyStorage implements INBTSerializable<Com
         this.tile = tile;
     }
 
-    public void setEnergy(int energy) {
-        this.energy = Math.min(energy, capacity);
-        tile.setChanged();
-    }
-
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
@@ -34,5 +29,10 @@ public class EnergyHandler extends EnergyStorage implements INBTSerializable<Com
     public void deserializeNBT(CompoundNBT nbt) {
         capacity = nbt.getInt(CAPACITY_ID);
         energy = nbt.getInt(ENERGY_ID);
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = Math.min(energy, capacity);
+        tile.setChanged();
     }
 }
