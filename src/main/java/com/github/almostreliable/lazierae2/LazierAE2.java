@@ -1,6 +1,8 @@
 package com.github.almostreliable.lazierae2;
 
+import appeng.api.config.Upgrades;
 import com.github.almostreliable.lazierae2.core.Setup;
+import com.github.almostreliable.lazierae2.core.Setup.Blocks;
 import com.github.almostreliable.lazierae2.data.DataGeneration;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -31,6 +33,12 @@ public class LazierAE2 {
     private static void onCommonSetup(FMLCommonSetupEvent event) {
         // initialize packet handler
         // PacketHandler.init();
+        // add compatibility to acceleration card for own blocks
+        // TODO: read max supported amount of upgrades from config
+        Upgrades.SPEED.registerItem(Blocks.AGGREGATOR.get().asItem(), 4);
+        Upgrades.SPEED.registerItem(Blocks.CENTRIFUGE.get().asItem(), 4);
+        Upgrades.SPEED.registerItem(Blocks.ENERGIZER.get().asItem(), 4);
+        Upgrades.SPEED.registerItem(Blocks.ETCHER.get().asItem(), 4);
     }
 
     private static void onClientSetup(FMLClientSetupEvent event) {
