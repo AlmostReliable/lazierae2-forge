@@ -13,7 +13,9 @@ public enum Constants {
     public static final String ETCHER_ID = "etcher";
     // nbt keys
     public static final String INVENTORY_ID = "inventory";
-    public static final String SIDE_CONFIG_ID = "sideconfig";
+    public static final String SIDE_CONFIG_ID = "side_config";
     public static final String CAPACITY_ID = "capacity";
     public static final String ENERGY_ID = "energy";
+    public static final String PROGRESS_ID = "progress";
+    public static final String PROCESS_TIME_ID = "process_time";
 }

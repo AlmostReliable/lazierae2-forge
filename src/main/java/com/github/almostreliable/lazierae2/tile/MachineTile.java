@@ -33,7 +33,7 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
     private final LazyOptional<EnergyHandler> energyCap;
     private final SideConfiguration sideConfig;
     private int progress;
-    private int processTime;
+    private int processTime = 200;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     protected MachineTile(TileEntityType<?> type, int inputSlots) {
@@ -52,6 +52,8 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
         if (nbt.contains(INVENTORY_ID)) inventory.deserializeNBT(nbt.getCompound(INVENTORY_ID));
         if (nbt.contains(ENERGY_ID)) energy.deserializeNBT(nbt.getCompound(ENERGY_ID));
         if (nbt.contains(SIDE_CONFIG_ID)) sideConfig.deserializeNBT(nbt.getCompound(SIDE_CONFIG_ID));
+        if (nbt.contains(PROGRESS_ID)) progress = nbt.getInt(PROGRESS_ID);
+        if (nbt.contains(PROCESS_TIME_ID)) processTime = nbt.getInt(PROCESS_TIME_ID);
     }
 
     @Override
@@ -59,31 +61,28 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
         nbt.put(INVENTORY_ID, inventory.serializeNBT());
         nbt.put(ENERGY_ID, energy.serializeNBT());
         nbt.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
+        nbt.putInt(PROGRESS_ID, progress);
+        nbt.putInt(PROCESS_TIME_ID, processTime);
         return super.save(nbt);
     }
 
     @Override
     public CompoundNBT getUpdateTag() {
-        CompoundNBT nbt = super.getUpdateTag();
-        nbt.put(INVENTORY_ID, inventory.serializeNBT());
-        nbt.put(ENERGY_ID, energy.serializeNBT());
-        nbt.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
-        return nbt;
-        // TODO: can also be handled by save() if not speficic values need syncing
+        return save(super.getUpdateTag());
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT nbt) {
-        inventory.deserializeNBT(nbt.getCompound(INVENTORY_ID));
-        energy.deserializeNBT(nbt.getCompound(ENERGY_ID));
-        sideConfig.deserializeNBT(nbt.getCompound(SIDE_CONFIG_ID));
-        // TODO: can also be handled by load() if not speficic values need syncing
+        load(state, nbt);
     }
 
     @Override
     public void tick() {
         // TODO
         // testing to sync progress
+        if (progress == processTime) {
+            progress = 0;
+        }
         progress++;
     }
 
