@@ -29,6 +29,7 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
     private final SideConfiguration sideConfig;
     private int progress;
     private int processTime;
+
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     protected MachineTile(TileEntityType<?> type, int inputSlots) {
         super(type);

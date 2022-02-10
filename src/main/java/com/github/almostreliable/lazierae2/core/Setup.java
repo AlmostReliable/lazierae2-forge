@@ -4,10 +4,11 @@ import com.github.almostreliable.lazierae2.block.AggregatorBlock;
 import com.github.almostreliable.lazierae2.block.CentrifugeBlock;
 import com.github.almostreliable.lazierae2.block.EnergizerBlock;
 import com.github.almostreliable.lazierae2.block.EtcherBlock;
-import com.github.almostreliable.lazierae2.tile.AggregatorTile;
-import com.github.almostreliable.lazierae2.tile.CentrifugeTile;
-import com.github.almostreliable.lazierae2.tile.EnergizerTile;
-import com.github.almostreliable.lazierae2.tile.EtcherTile;
+import com.github.almostreliable.lazierae2.container.AggregatorContainer;
+import com.github.almostreliable.lazierae2.container.CentrifugeContainer;
+import com.github.almostreliable.lazierae2.container.EnergizerContainer;
+import com.github.almostreliable.lazierae2.container.EtcherContainer;
+import com.github.almostreliable.lazierae2.tile.*;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -75,19 +76,38 @@ public final class Setup {
         );
     }
 
-    private static final class Containers {
+    public static final class Containers {
 
         private static final DeferredRegister<ContainerType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
 
+        private Containers() {}
+
         private static <C extends Container> RegistryObject<ContainerType<C>> register(
-            String id, BiFunction<? super TileEntity, ? super Integer, ? extends C> constructor
+            String id, BiFunction<? super Integer, ? super MachineTile, ? extends C> constructor
         ) {
             return REGISTRY.register(id, () -> IForgeContainerType.create((containerID, inventory, data) -> {
                 TileEntity tile = inventory.player.level.getBlockEntity(data.readBlockPos());
-                return constructor.apply(tile, containerID);
+                return constructor.apply(containerID, (MachineTile) tile);
             }));
         }
+
+        public static final RegistryObject<ContainerType<AggregatorContainer>> AGGREGATOR = register(
+            AGGREGATOR_ID,
+            AggregatorContainer::new
+        );
+        public static final RegistryObject<ContainerType<CentrifugeContainer>> CENTRIFUGE = register(
+            CENTRIFUGE_ID,
+            CentrifugeContainer::new
+        );
+        public static final RegistryObject<ContainerType<EnergizerContainer>> ENERGIZER = register(
+            ENERGIZER_ID,
+            EnergizerContainer::new
+        );
+        public static final RegistryObject<ContainerType<EtcherContainer>> ETCHER = register(
+            ETCHER_ID,
+            EtcherContainer::new
+        );
     }
 
     private static final class Tab extends ItemGroup {

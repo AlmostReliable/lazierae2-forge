@@ -8,7 +8,6 @@ public class IntReferenceGetter extends IntReferenceHolder {
 
     private final IntSupplier supplier;
 
-    // accept a function as a parameter which can then be called by get()
     public IntReferenceGetter(IntSupplier supplier) {
         this.supplier = supplier;
     }
