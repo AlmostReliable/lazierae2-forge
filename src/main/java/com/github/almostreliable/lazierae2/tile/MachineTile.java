@@ -5,11 +5,16 @@ import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import com.github.almostreliable.lazierae2.component.SideConfiguration;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -20,7 +25,7 @@ import javax.annotation.Nullable;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
 
-public abstract class MachineTile extends TileEntity implements ITickableTileEntity {
+public abstract class MachineTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
     private final int inputSlots;
     private final InventoryHandler inventory;
     private final LazyOptional<InventoryHandler> inventoryCap;

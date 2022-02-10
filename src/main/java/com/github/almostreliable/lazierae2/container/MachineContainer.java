@@ -27,7 +27,7 @@ public abstract class MachineContainer extends Container {
     private final MachineTile tile;
     private IItemHandler inventory;
 
-    protected MachineContainer(ContainerType<?> type, int id, MachineTile tile) {
+    MachineContainer(ContainerType<?> type, int id, MachineTile tile) {
         super(type, id);
         this.tile = tile;
         // set up container inventory if the tile exposes an item handler capability

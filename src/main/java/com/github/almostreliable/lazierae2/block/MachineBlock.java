@@ -28,7 +28,7 @@ public abstract class MachineBlock extends Block {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BlockStateProperties.LIT;
 
-    protected MachineBlock() {
+    MachineBlock() {
         super(Properties.of(Material.METAL).strength(5f).harvestTool(ToolType.PICKAXE).sound(SoundType.METAL));
     }
 
