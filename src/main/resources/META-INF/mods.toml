@@ -24,3 +24,10 @@ mandatory=true
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="appliedenergistics2"
+mandatory=true
+versionRange="${appeng_version_range}"
+ordering="AFTER"
+side="BOTH"
