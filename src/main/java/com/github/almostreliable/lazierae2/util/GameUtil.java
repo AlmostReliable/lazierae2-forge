@@ -1,13 +1,13 @@
 package com.github.almostreliable.lazierae2.util;
 
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 
-public class GameUtil {
+public final class GameUtil {
+
     private GameUtil() {}
 
     public static boolean isUpgrade(ItemStack stack) {
-        // TODO: add AE2 api and implement this
-        return false;
-        // return stack.getItem() == Api.instance().definitions().materials().cardSpeed().item();
+        return stack.getItem().equals(Api.instance().definitions().materials().cardSpeed().item());
     }
 }
