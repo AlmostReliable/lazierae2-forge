@@ -18,19 +18,17 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.github.almostreliable.lazierae2.core.Constants.ENERGY_ID;
-import static com.github.almostreliable.lazierae2.core.Constants.INVENTORY_ID;
-import static com.github.almostreliable.lazierae2.core.Constants.SIDE_CONFIG_ID;
+import static com.github.almostreliable.lazierae2.core.Constants.*;
 
 public abstract class MachineTile extends TileEntity implements ITickableTileEntity {
-
     private final int inputSlots;
     private final InventoryHandler inventory;
     private final LazyOptional<InventoryHandler> inventoryCap;
     private final EnergyHandler energy;
     private final LazyOptional<EnergyHandler> energyCap;
     private final SideConfiguration sideConfig;
-
+    private int progress;
+    private int processTime;
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     protected MachineTile(TileEntityType<?> type, int inputSlots) {
         super(type);
@@ -79,10 +77,8 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
     @Override
     public void tick() {
         // TODO
-    }
-
-    public int getInputSlots() {
-        return inputSlots;
+        // testing to sync progress
+        progress++;
     }
 
     @Override
@@ -105,5 +101,17 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
             }
         }
         return super.getCapability(cap, direction);
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public int getProcessTime() {
+        return processTime;
+    }
+
+    public int getInputSlots() {
+        return inputSlots;
     }
 }
