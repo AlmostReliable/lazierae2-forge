@@ -21,7 +21,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
-public class MachineContainer extends Container {
+public abstract class MachineContainer extends Container {
 
     private static final int PLAYER_INV_SIZE = 36;
     private final MachineTile tile;
@@ -118,8 +118,16 @@ public class MachineContainer extends Container {
         addSlot(new UpgradeSlot(inventory, 0, 146, 62));
         // output slot
         addSlot(new OutputSlot(inventory, 1, inputSlots == 1 ? 116 : 120, 35));
-        // input slot
-        if (inputSlots == 1) addSlot(new SlotItemHandler(inventory, 2, 56, 35));
+        // input slots
+        if (inputSlots == 1) {
+            addSlot(new SlotItemHandler(inventory, 2, 56, 35));
+        } else if (inputSlots == 3) {
+            addSlot(new SlotItemHandler(inventory, 2, 56, 25));
+            addSlot(new SlotItemHandler(inventory, 3, 56, 35));
+            addSlot(new SlotItemHandler(inventory, 4, 56, 45));
+        } else {
+            throw new IllegalArgumentException("Invalid input slot count: " + inputSlots);
+        }
     }
 
     /**
