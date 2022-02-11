@@ -61,7 +61,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         blit(matrix, leftPos + 78, topPos + 24, 0, 0, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT,
             PROGRESS_WIDTH, PROGRESS_HEIGHT
         );
-        blit(matrix, leftPos + 78, topPos + 24, 0, 0, barWidth, PROGRESS_HEIGHT,
+        blit(matrix, leftPos + 78, topPos + 24, PROGRESS_WIDTH / 2, 0, barWidth, PROGRESS_HEIGHT,
             PROGRESS_WIDTH, PROGRESS_HEIGHT
         );
     }
