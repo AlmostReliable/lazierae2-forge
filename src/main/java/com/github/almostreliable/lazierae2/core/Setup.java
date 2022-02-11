@@ -1,16 +1,9 @@
 package com.github.almostreliable.lazierae2.core;
 
-import com.github.almostreliable.lazierae2.block.AggregatorBlock;
-import com.github.almostreliable.lazierae2.block.CentrifugeBlock;
-import com.github.almostreliable.lazierae2.block.EnergizerBlock;
-import com.github.almostreliable.lazierae2.block.EtcherBlock;
-import com.github.almostreliable.lazierae2.container.AggregatorContainer;
-import com.github.almostreliable.lazierae2.container.CentrifugeContainer;
-import com.github.almostreliable.lazierae2.container.EnergizerContainer;
-import com.github.almostreliable.lazierae2.container.EtcherContainer;
+import com.github.almostreliable.lazierae2.block.*;
+import com.github.almostreliable.lazierae2.container.*;
 import com.github.almostreliable.lazierae2.tile.*;
 import net.minecraft.block.Block;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -51,7 +44,7 @@ public final class Setup {
 
         private Tiles() {}
 
-        private static <T extends TileEntity, B extends Block> RegistryObject<TileEntityType<T>> register(
+        private static <T extends MachineTile, B extends MachineBlock> RegistryObject<TileEntityType<T>> register(
             String id, RegistryObject<B> block, Supplier<T> constructor
         ) {
             //noinspection ConstantConditions
@@ -83,7 +76,7 @@ public final class Setup {
 
         private Containers() {}
 
-        private static <C extends Container> RegistryObject<ContainerType<C>> register(
+        private static <C extends MachineContainer> RegistryObject<ContainerType<C>> register(
             String id, BiFunction<? super Integer, ? super MachineTile, ? extends C> constructor
         ) {
             return REGISTRY.register(id, () -> IForgeContainerType.create((containerID, inventory, data) -> {
@@ -92,20 +85,16 @@ public final class Setup {
             }));
         }
 
-        public static final RegistryObject<ContainerType<AggregatorContainer>> AGGREGATOR = register(
-            AGGREGATOR_ID,
+        public static final RegistryObject<ContainerType<AggregatorContainer>> AGGREGATOR = register(AGGREGATOR_ID,
             AggregatorContainer::new
         );
-        public static final RegistryObject<ContainerType<CentrifugeContainer>> CENTRIFUGE = register(
-            CENTRIFUGE_ID,
+        public static final RegistryObject<ContainerType<CentrifugeContainer>> CENTRIFUGE = register(CENTRIFUGE_ID,
             CentrifugeContainer::new
         );
-        public static final RegistryObject<ContainerType<EnergizerContainer>> ENERGIZER = register(
-            ENERGIZER_ID,
+        public static final RegistryObject<ContainerType<EnergizerContainer>> ENERGIZER = register(ENERGIZER_ID,
             EnergizerContainer::new
         );
-        public static final RegistryObject<ContainerType<EtcherContainer>> ETCHER = register(
-            ETCHER_ID,
+        public static final RegistryObject<ContainerType<EtcherContainer>> ETCHER = register(ETCHER_ID,
             EtcherContainer::new
         );
     }
@@ -133,7 +122,7 @@ public final class Setup {
 
         private Blocks() {}
 
-        private static <B extends Block> RegistryObject<B> register(String id, Supplier<? extends B> supplier) {
+        private static <B extends MachineBlock> RegistryObject<B> register(String id, Supplier<? extends B> supplier) {
             RegistryObject<B> result = REGISTRY.register(id, supplier);
             Items.REGISTRY.register(id, () -> new BlockItem(result.get(), new Properties().tab(TAB)));
             return result;

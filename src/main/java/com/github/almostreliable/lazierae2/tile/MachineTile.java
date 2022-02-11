@@ -4,10 +4,9 @@ import com.github.almostreliable.lazierae2.component.EnergyHandler;
 import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import com.github.almostreliable.lazierae2.component.SideConfiguration;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
+import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
+import com.github.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -26,6 +25,7 @@ import javax.annotation.Nullable;
 import static com.github.almostreliable.lazierae2.core.Constants.*;
 
 public abstract class MachineTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+    protected final String id;
     private final int inputSlots;
     private final InventoryHandler inventory;
     private final LazyOptional<InventoryHandler> inventoryCap;
@@ -36,8 +36,9 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
     private int processTime = 200;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    protected MachineTile(TileEntityType<?> type, int inputSlots) {
+    protected MachineTile(TileEntityType<?> type, String id, int inputSlots) {
         super(type);
+        this.id = id;
         this.inputSlots = inputSlots;
         inventory = new InventoryHandler(this, inputSlots);
         inventoryCap = LazyOptional.of(() -> inventory);
@@ -108,12 +109,29 @@ public abstract class MachineTile extends TileEntity implements ITickableTileEnt
         return super.getCapability(cap, direction);
     }
 
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public ITextComponent getDisplayName() {
+        return TextUtil.translate(TRANSLATE_TYPE.CONTAINER, id);
+    }
+
     public int getProgress() {
         return progress;
     }
 
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
     public int getProcessTime() {
         return processTime;
+    }
+
+    public void setProcessTime(int processTime) {
+        this.processTime = processTime;
     }
 
     public int getInputSlots() {

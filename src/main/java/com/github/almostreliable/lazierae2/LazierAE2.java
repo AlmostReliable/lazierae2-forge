@@ -3,7 +3,10 @@ package com.github.almostreliable.lazierae2;
 import appeng.api.config.Upgrades;
 import com.github.almostreliable.lazierae2.core.Setup;
 import com.github.almostreliable.lazierae2.core.Setup.Blocks;
+import com.github.almostreliable.lazierae2.core.Setup.Containers;
 import com.github.almostreliable.lazierae2.data.DataGeneration;
+import com.github.almostreliable.lazierae2.screen.MachineScreen;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -44,9 +47,10 @@ public class LazierAE2 {
     private static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             // register screens
-            // ScreenManager.register(Containers.SOME_CONTAINER.get(), SomeScreen::new);
-            // register renderers
-            // ClientRegistry.bindTileEntityRenderer(Tiles.SOME_TILE.get(), SomeRenderer::new);
+            ScreenManager.register(Containers.AGGREGATOR.get(), MachineScreen::new);
+            ScreenManager.register(Containers.CENTRIFUGE.get(), MachineScreen::new);
+            ScreenManager.register(Containers.ENERGIZER.get(), MachineScreen::new);
+            ScreenManager.register(Containers.ETCHER.get(), MachineScreen::new);
         });
     }
 }

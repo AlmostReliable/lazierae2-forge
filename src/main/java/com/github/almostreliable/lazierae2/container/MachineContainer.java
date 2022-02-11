@@ -1,9 +1,10 @@
 package com.github.almostreliable.lazierae2.container;
 
+import com.github.almostreliable.lazierae2.component.EnergyHandler;
 import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import com.github.almostreliable.lazierae2.inventory.OutputSlot;
 import com.github.almostreliable.lazierae2.inventory.UpgradeSlot;
-import com.github.almostreliable.lazierae2.network.IntReferenceGetter;
+import com.github.almostreliable.lazierae2.network.DataSlot;
 import com.github.almostreliable.lazierae2.tile.MachineTile;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.entity.player.PlayerEntity;
@@ -98,12 +99,12 @@ public abstract class MachineContainer extends Container {
     }
 
     private void syncData() {
-        addDataSlot(new IntReferenceGetter(tile::getProgress));
-        addDataSlot(new IntReferenceGetter(tile::getProcessTime));
+        addDataSlot(new DataSlot(tile, tile::getProgress, tile::setProgress));
+        addDataSlot(new DataSlot(tile, tile::getProcessTime, tile::setProcessTime));
         // energy lower bits
-        addDataSlot(new IntReferenceGetter(() -> getEnergyStored() & 0xFFFF));
+        addDataSlot(new DataSlot(tile, () -> (short) getEnergyStored(), this::setEnergyStoredLower));
         // energy upper bits
-        addDataSlot(new IntReferenceGetter(() -> (getEnergyStored() >>> 16) & 0xFFFF));
+        addDataSlot(new DataSlot(tile, () -> (short) (getEnergyStored() >> 16), this::setEnergyStoredUpper));
     }
 
     /**
@@ -188,7 +189,29 @@ public abstract class MachineContainer extends Container {
         }
     }
 
-    private int getEnergyStored() {
+    public MachineTile getTile() {
+        return tile;
+    }
+
+    public int getEnergyStored() {
         return tile.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+    }
+
+    public int getEnergyCapacity() {
+        return tile.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(1);
+    }
+
+    private void setEnergyStoredLower(int energy) {
+        tile.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyCap -> {
+            int energyStored = energyCap.getMaxEnergyStored() & 0xFFFF_0000;
+            ((EnergyHandler) energyCap).setEnergy(energyStored + (energy & 0xFFFF));
+        });
+    }
+
+    private void setEnergyStoredUpper(int energy) {
+        tile.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyCap -> {
+            int energyStored = energyCap.getMaxEnergyStored() & 0x0000_FFFF;
+            ((EnergyHandler) energyCap).setEnergy(energyStored | (energy << 16));
+        });
     }
 }
