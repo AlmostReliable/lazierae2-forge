@@ -118,16 +118,16 @@ public abstract class MachineContainer extends Container {
         int inputSlots = tile.getInputSlots();
 
         // upgrade slot
-        addSlot(new UpgradeSlot(inventory, 0, 146, 62));
+        addSlot(new UpgradeSlot(inventory, 0, 8, 50));
         // output slot
-        addSlot(new OutputSlot(inventory, 1, inputSlots == 1 ? 116 : 120, 35));
+        addSlot(new OutputSlot(inventory, 1, 116, 30));
         // input slots
         if (inputSlots == 1) {
-            addSlot(new SlotItemHandler(inventory, 2, 56, 35));
+            addSlot(new SlotItemHandler(inventory, 2, 44, 28));
         } else if (inputSlots == 3) {
-            addSlot(new SlotItemHandler(inventory, 2, 56, 25));
-            addSlot(new SlotItemHandler(inventory, 3, 56, 35));
-            addSlot(new SlotItemHandler(inventory, 4, 56, 45));
+            addSlot(new SlotItemHandler(inventory, 2, 44, 8));
+            addSlot(new SlotItemHandler(inventory, 3, 44, 29));
+            addSlot(new SlotItemHandler(inventory, 4, 44, 50));
         } else {
             throw new IllegalArgumentException("Invalid input slot count: " + inputSlots);
         }
@@ -142,12 +142,12 @@ public abstract class MachineContainer extends Container {
         // main inventory
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlot(new SlotItemHandler(inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+                addSlot(new SlotItemHandler(inventory, j + i * 9 + 9, 8 + j * 18, 72 + i * 18));
             }
         }
         // hot bar
         for (int i = 0; i < 9; i++) {
-            addSlot(new SlotItemHandler(inventory, i, 8 + i * 18, 142));
+            addSlot(new SlotItemHandler(inventory, i, 8 + i * 18, 130));
         }
     }
 
