@@ -51,7 +51,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         int energy = menu.getEnergyStored();
         int capacity = menu.getEnergyCapacity();
         int barHeight = energy > 0 ? energy * ENERGY_HEIGHT / capacity : 0;
-        blit(matrix, leftPos + 166, topPos + 8, 176, 18, ENERGY_WIDTH, ENERGY_HEIGHT - barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(matrix, leftPos + 166, topPos + 8 - barHeight, 176, 18, ENERGY_WIDTH, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
         // progress bar
         minecraft.getTextureManager().bind(progressTexture);
