@@ -23,6 +23,6 @@ public class AggregatorTile extends MachineTile {
     public Container createMenu(
         int id, PlayerInventory inventory, PlayerEntity player
     ) {
-        return new AggregatorContainer(id, this);
+        return new AggregatorContainer(id, this, inventory);
     }
 }

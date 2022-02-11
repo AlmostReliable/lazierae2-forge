@@ -23,6 +23,6 @@ public class EtcherTile extends MachineTile {
     public Container createMenu(
         int id, PlayerInventory inventory, PlayerEntity player
     ) {
-        return new EtcherContainer(id, this);
+        return new EtcherContainer(id, this, inventory);
     }
 }

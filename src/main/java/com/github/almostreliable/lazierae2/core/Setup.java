@@ -4,6 +4,8 @@ import com.github.almostreliable.lazierae2.block.*;
 import com.github.almostreliable.lazierae2.container.*;
 import com.github.almostreliable.lazierae2.tile.*;
 import net.minecraft.block.Block;
+import net.minecraft.data.BlockStateVariantBuilder.ITriFunction;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -19,7 +21,6 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
@@ -77,11 +78,13 @@ public final class Setup {
         private Containers() {}
 
         private static <C extends MachineContainer> RegistryObject<ContainerType<C>> register(
-            String id, BiFunction<? super Integer, ? super MachineTile, ? extends C> constructor
+            String id,
+            ITriFunction<? super Integer, ? super MachineTile, ? super PlayerInventory, ? extends C> constructor
         ) {
             return REGISTRY.register(id, () -> IForgeContainerType.create((containerID, inventory, data) -> {
                 TileEntity tile = inventory.player.level.getBlockEntity(data.readBlockPos());
-                return constructor.apply(containerID, (MachineTile) tile);
+                if (!(tile instanceof MachineTile)) throw new IllegalStateException("Tile is not a LazierAE2 machine!");
+                return constructor.apply(containerID, (MachineTile) tile, inventory);
             }));
         }
 

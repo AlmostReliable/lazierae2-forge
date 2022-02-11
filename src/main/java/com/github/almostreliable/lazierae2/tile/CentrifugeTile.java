@@ -23,6 +23,6 @@ public class CentrifugeTile extends MachineTile {
     public Container createMenu(
         int id, PlayerInventory inventory, PlayerEntity player
     ) {
-        return new CentrifugeContainer(id, this);
+        return new CentrifugeContainer(id, this, inventory);
     }
 }

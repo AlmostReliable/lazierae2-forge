@@ -23,6 +23,6 @@ public class EnergizerTile extends MachineTile {
     public Container createMenu(
         int id, PlayerInventory inventory, PlayerEntity player
     ) {
-        return new EnergizerContainer(id, this);
+        return new EnergizerContainer(id, this, inventory);
     }
 }

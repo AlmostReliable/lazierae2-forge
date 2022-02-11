@@ -8,6 +8,7 @@ import com.github.almostreliable.lazierae2.network.DataSlot;
 import com.github.almostreliable.lazierae2.tile.MachineTile;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
@@ -18,6 +19,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
@@ -28,15 +30,15 @@ public abstract class MachineContainer extends Container {
     private final MachineTile tile;
     private IItemHandler inventory;
 
-    MachineContainer(ContainerType<?> type, int id, MachineTile tile) {
+    MachineContainer(ContainerType<?> type, int id, MachineTile tile, PlayerInventory playerInventory) {
         super(type, id);
         this.tile = tile;
         // set up container inventory if the tile exposes an item handler capability
         tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
             setupContainerInv(inv);
-            setupPlayerInventory(inv);
             inventory = inv;
         });
+        setupPlayerInventory(new InvWrapper(playerInventory));
 
         syncData();
     }
