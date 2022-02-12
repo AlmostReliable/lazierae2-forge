@@ -201,21 +201,23 @@ public class MachineContainer extends Container {
         return tile.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
+    public void setEnergyStored(int energy) {
+        tile
+            .getCapability(CapabilityEnergy.ENERGY)
+            .ifPresent(energyCap -> ((EnergyHandler) energyCap).setEnergy(energy));
+    }
+
     public int getEnergyCapacity() {
         return tile.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(1);
     }
 
     private void setEnergyStoredLower(int energy) {
-        tile.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyCap -> {
-            int energyStored = energyCap.getMaxEnergyStored() & 0xFFFF_0000;
-            ((EnergyHandler) energyCap).setEnergy(energyStored + (energy & 0xFFFF));
-        });
+        int energyStored = getEnergyStored() & 0xFFFF_0000;
+        setEnergyStored(energyStored + (energy & 0xFFFF));
     }
 
     private void setEnergyStoredUpper(int energy) {
-        tile.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyCap -> {
-            int energyStored = energyCap.getMaxEnergyStored() & 0x0000_FFFF;
-            ((EnergyHandler) energyCap).setEnergy(energyStored | (energy << 16));
-        });
+        int energyStored = getEnergyStored() & 0x0000_FFFF;
+        setEnergyStored(energyStored | (energy << 16));
     }
 }

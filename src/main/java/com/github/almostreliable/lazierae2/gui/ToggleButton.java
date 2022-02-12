@@ -24,7 +24,6 @@ public abstract class ToggleButton extends GenericButton {
         blit(matrix, x, y, 0, pressed.getAsBoolean() ? height : 0, width, height, width, height * 2);
     }
 
-    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     protected int getTextureWidth() {
         return width;

@@ -39,6 +39,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         super.init();
 
         addRenderable(new AutoExtractButton(this, () -> menu.getTile().isAutoExtract()));
+        addRenderable(new EnergyDumpButton(this));
     }
 
     @Override
@@ -81,7 +82,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         blit(
             matrix,
             leftPos + 166,
-            topPos + 8 - barHeight,
+            topPos + 66 - barHeight,
             176,
             0,
             ENERGY_WIDTH,
