@@ -1,6 +1,6 @@
 package com.github.almostreliable.lazierae2.core;
 
-import com.github.almostreliable.lazierae2.block.*;
+import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import com.github.almostreliable.lazierae2.container.*;
 import com.github.almostreliable.lazierae2.tile.*;
 import net.minecraft.block.Block;
@@ -118,17 +118,19 @@ public final class Setup {
 
         private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
-        public static final RegistryObject<AggregatorBlock> AGGREGATOR = register(AGGREGATOR_ID, AggregatorBlock::new);
-        public static final RegistryObject<CentrifugeBlock> CENTRIFUGE = register(CENTRIFUGE_ID, CentrifugeBlock::new);
-        public static final RegistryObject<EnergizerBlock> ENERGIZER = register(ENERGIZER_ID, EnergizerBlock::new);
-        public static final RegistryObject<EtcherBlock> ETCHER = register(ETCHER_ID, EtcherBlock::new);
+        public static final RegistryObject<MachineBlock> AGGREGATOR = register(AGGREGATOR_ID, MachineBlock::new, 3);
+        public static final RegistryObject<MachineBlock> CENTRIFUGE = register(CENTRIFUGE_ID, MachineBlock::new, 1);
+        public static final RegistryObject<MachineBlock> ENERGIZER = register(ENERGIZER_ID, MachineBlock::new, 1);
+        public static final RegistryObject<MachineBlock> ETCHER = register(ETCHER_ID, MachineBlock::new, 3);
 
         private Blocks() {}
 
-        private static <B extends MachineBlock> RegistryObject<B> register(String id, Supplier<? extends B> supplier) {
-            RegistryObject<B> result = REGISTRY.register(id, supplier);
-            Items.REGISTRY.register(id, () -> new BlockItem(result.get(), new Properties().tab(TAB)));
-            return result;
+        private static <B extends MachineBlock> RegistryObject<B> register(
+            String id, Function<? super Integer, ? extends B> constructor, int inputSlots
+        ) {
+            RegistryObject<B> block = REGISTRY.register(id, () -> constructor.apply(inputSlots));
+            Items.REGISTRY.register(id, () -> new BlockItem(block.get(), new Properties().tab(TAB)));
+            return block;
         }
     }
 

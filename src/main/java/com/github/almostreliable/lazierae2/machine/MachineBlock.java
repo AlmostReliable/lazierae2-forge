@@ -1,4 +1,4 @@
-package com.github.almostreliable.lazierae2.block;
+package com.github.almostreliable.lazierae2.machine;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -15,21 +15,25 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
-public abstract class MachineBlock extends Block {
+public class MachineBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BlockStateProperties.LIT;
+    private final int inputSlots;
 
-    MachineBlock() {
+    public MachineBlock(int inputSlots) {
         super(Properties.of(Material.METAL).strength(5f).harvestTool(ToolType.PICKAXE).sound(SoundType.METAL));
+        this.inputSlots = inputSlots;
     }
 
     @Nullable
@@ -52,6 +56,12 @@ public abstract class MachineBlock extends Block {
         return true;
     }
 
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new MachineTile();
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public ActionResultType use(
@@ -66,5 +76,15 @@ public abstract class MachineBlock extends Block {
             NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile, pos);
         }
         return ActionResultType.CONSUME;
+    }
+
+    public String getId() {
+        ResourceLocation registryName = getRegistryName();
+        assert registryName != null;
+        return registryName.getPath();
+    }
+
+    int getInputSlots() {
+        return inputSlots;
     }
 }
