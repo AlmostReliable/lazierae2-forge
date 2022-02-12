@@ -1,7 +1,5 @@
-package com.github.almostreliable.lazierae2.screen;
+package com.github.almostreliable.lazierae2.machine;
 
-import com.github.almostreliable.lazierae2.container.MachineContainer;
-import com.github.almostreliable.lazierae2.tile.MachineTile;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -51,18 +49,44 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         int energy = menu.getEnergyStored();
         int capacity = menu.getEnergyCapacity();
         int barHeight = energy > 0 ? energy * ENERGY_HEIGHT / capacity : 0;
-        blit(matrix, leftPos + 166, topPos + 8 - barHeight, 176, 18, ENERGY_WIDTH, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(
+            matrix,
+            leftPos + 166,
+            topPos + 8 - barHeight,
+            176,
+            18,
+            ENERGY_WIDTH,
+            barHeight,
+            TEXTURE_WIDTH,
+            TEXTURE_HEIGHT
+        );
 
         // progress bar
         minecraft.getTextureManager().bind(progressTexture);
         int progress = menu.getTile().getProgress();
         int processTime = menu.getTile().getProcessTime();
         int barWidth = progress > 0 ? progress * (PROGRESS_WIDTH / 2) / processTime : 0;
-        blit(matrix, leftPos + 78, topPos + 24, 0, 0, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT,
-            PROGRESS_WIDTH, PROGRESS_HEIGHT
+        blit(
+            matrix,
+            leftPos + 78,
+            topPos + 24,
+            0,
+            0,
+            PROGRESS_WIDTH / 2,
+            PROGRESS_HEIGHT,
+            PROGRESS_WIDTH,
+            PROGRESS_HEIGHT
         );
-        blit(matrix, leftPos + 78, topPos + 24, PROGRESS_WIDTH / 2f, 0, barWidth, PROGRESS_HEIGHT,
-            PROGRESS_WIDTH, PROGRESS_HEIGHT
+        blit(
+            matrix,
+            leftPos + 78,
+            topPos + 24,
+            PROGRESS_WIDTH / 2f,
+            0,
+            barWidth,
+            PROGRESS_HEIGHT,
+            PROGRESS_WIDTH,
+            PROGRESS_HEIGHT
         );
     }
 }
