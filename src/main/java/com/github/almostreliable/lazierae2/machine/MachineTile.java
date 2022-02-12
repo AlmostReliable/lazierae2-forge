@@ -131,6 +131,10 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (autoExtract && level.getGameTime() % 20 == 0) autoExtract();
     }
 
+    private void setAutoExtract(boolean autoExtract) {
+        this.autoExtract = autoExtract;
+    }
+
     private void autoExtract() {
         assert level != null;
 

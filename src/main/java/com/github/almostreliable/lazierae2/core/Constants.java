@@ -20,4 +20,6 @@ public enum Constants {
     public static final String AUTO_EXTRACT_ID = "auto_extract";
     public static final String PROGRESS_ID = "progress";
     public static final String PROCESS_TIME_ID = "process_time";
+    // network
+    public static final String NETWORK_ID = "network";
 }
