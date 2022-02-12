@@ -29,27 +29,34 @@ import static com.github.almostreliable.lazierae2.core.Constants.*;
 
 public class MachineTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
-    private final String id;
-    private final int inputSlots;
     private final InventoryHandler inventory;
     private final LazyOptional<InventoryHandler> inventoryCap;
     private final EnergyHandler energy;
     private final LazyOptional<EnergyHandler> energyCap;
     private final SideConfiguration sideConfig;
+    private boolean inputSlotsSet;
     private int progress;
     private int processTime = 200;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    public MachineTile() {
+    public MachineTile(int inputSlots) {
         super(Tiles.MACHINE.get());
-        MachineBlock block = (MachineBlock) getBlockState().getBlock();
-        id = block.getId();
-        inputSlots = block.getInputSlots();
+        inputSlotsSet = true;
         inventory = new InventoryHandler(this, inputSlots);
         inventoryCap = LazyOptional.of(() -> inventory);
         energy = new EnergyHandler(this, 100_000);
         energyCap = LazyOptional.of(() -> energy);
         sideConfig = new SideConfiguration();
+    }
+
+    /*
+     * Constructor called from the registry.
+     * It will call the super constructor and the input slot amount will then be
+     * handled by the load-method since we have no way of accessing block
+     * information from here.
+     */
+    public MachineTile() {
+        this(0);
     }
 
     @Override
@@ -92,6 +99,12 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     @Override
     public void tick() {
+        if (!inputSlotsSet) {
+            // set right amount of input slots from the block on initial placement
+            inventory.setSizeByInputs(((MachineBlock) getBlockState().getBlock()).getInputSlots());
+            inputSlotsSet = true;
+        }
+
         // TODO
         // testing to sync progress
         if (progress == processTime) {
@@ -123,12 +136,12 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     String getId() {
-        return id;
+        return ((MachineBlock) getBlockState().getBlock()).getId();
     }
 
     @Override
     public ITextComponent getDisplayName() {
-        return TextUtil.translate(TRANSLATE_TYPE.CONTAINER, id);
+        return TextUtil.translate(TRANSLATE_TYPE.CONTAINER, getId());
     }
 
     int getProgress() {
@@ -145,9 +158,5 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     void setProcessTime(int processTime) {
         this.processTime = processTime;
-    }
-
-    int getInputSlots() {
-        return inputSlots;
     }
 }

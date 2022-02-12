@@ -41,8 +41,6 @@ public final class Setup {
         private static final DeferredRegister<TileEntityType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
 
-        private Tiles() {}
-
         @SuppressWarnings("ConstantConditions")
         public static final RegistryObject<TileEntityType<MachineTile>> MACHINE = REGISTRY.register(MACHINE_ID,
             () -> Builder.of(MachineTile::new,
@@ -52,6 +50,8 @@ public final class Setup {
                 Blocks.ETCHER.get()
             ).build(null)
         );
+
+        private Tiles() {}
     }
 
     public static final class Containers {

@@ -13,6 +13,14 @@ public class InventoryHandler extends ItemStackHandler {
         this.tile = tile;
     }
 
+    public void setSizeByInputs(int inputs) {
+        setSize(inputs + NON_INPUT_SLOTS);
+    }
+
+    public int getInputSlots() {
+        return getSlots() - NON_INPUT_SLOTS;
+    }
+
     @Override
     protected void onContentsChanged(int slot) {
         tile.setChanged();

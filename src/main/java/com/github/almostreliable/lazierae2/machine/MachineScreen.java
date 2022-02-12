@@ -20,14 +20,12 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     private static final int SLOT_SIZE = 18;
     private static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/machine.png");
     private final ResourceLocation progressTexture;
-    private final MachineTile tile;
 
     public MachineScreen(
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
     ) {
         super(container, inventory, StringTextComponent.EMPTY);
-        tile = container.getTile();
-        progressTexture = TextUtil.getRL("textures/gui/progress/" + tile.getId() + ".png");
+        progressTexture = TextUtil.getRL("textures/gui/progress/" + container.getTile().getId() + ".png");
     }
 
     @SuppressWarnings("deprecation")
@@ -40,7 +38,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         blit(matrix, leftPos, topPos, 0, 0, 176, 154, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
         // input slots for triple inputs
-        if (tile.getInputSlots() == 3) {
+        if (menu.getInventory().getInputSlots() == 3) {
             blit(matrix, leftPos + 43, topPos + 7, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             blit(matrix, leftPos + 43, topPos + 49, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
