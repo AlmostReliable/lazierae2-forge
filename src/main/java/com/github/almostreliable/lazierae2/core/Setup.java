@@ -1,11 +1,9 @@
 package com.github.almostreliable.lazierae2.core;
 
 import com.github.almostreliable.lazierae2.machine.MachineBlock;
-import com.github.almostreliable.lazierae2.container.*;
+import com.github.almostreliable.lazierae2.machine.MachineContainer;
 import com.github.almostreliable.lazierae2.machine.MachineTile;
 import net.minecraft.block.Block;
-import net.minecraft.data.BlockStateVariantBuilder.ITriFunction;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -21,7 +19,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
 
@@ -60,32 +58,15 @@ public final class Setup {
 
         private static final DeferredRegister<ContainerType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
-
-        private Containers() {}
-
-        private static <C extends MachineContainer> RegistryObject<ContainerType<C>> register(
-            String id,
-            ITriFunction<? super Integer, ? super MachineTile, ? super PlayerInventory, ? extends C> constructor
-        ) {
-            return REGISTRY.register(id, () -> IForgeContainerType.create((containerID, inventory, data) -> {
+        public static final RegistryObject<ContainerType<MachineContainer>> MACHINE = REGISTRY.register(MACHINE_ID,
+            () -> IForgeContainerType.create((containerID, inventory, data) -> {
                 TileEntity tile = inventory.player.level.getBlockEntity(data.readBlockPos());
                 if (!(tile instanceof MachineTile)) throw new IllegalStateException("Tile is not a LazierAE2 machine!");
-                return constructor.apply(containerID, (MachineTile) tile, inventory);
-            }));
-        }
+                return new MachineContainer(containerID, (MachineTile) tile, inventory);
+            })
+        );
 
-        public static final RegistryObject<ContainerType<AggregatorContainer>> AGGREGATOR = register(AGGREGATOR_ID,
-            AggregatorContainer::new
-        );
-        public static final RegistryObject<ContainerType<CentrifugeContainer>> CENTRIFUGE = register(CENTRIFUGE_ID,
-            CentrifugeContainer::new
-        );
-        public static final RegistryObject<ContainerType<EnergizerContainer>> ENERGIZER = register(ENERGIZER_ID,
-            EnergizerContainer::new
-        );
-        public static final RegistryObject<ContainerType<EtcherContainer>> ETCHER = register(ETCHER_ID,
-            EtcherContainer::new
-        );
+        private Containers() {}
     }
 
     private static final class Tab extends ItemGroup {
