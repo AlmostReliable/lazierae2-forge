@@ -9,6 +9,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.EnumMap;
+import java.util.function.Consumer;
 
 public class SideConfiguration implements INBTSerializable<CompoundNBT> {
 
@@ -77,6 +78,18 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
      */
     public void set(BlockState state, BLOCK_SIDE side, IO_SETTING setting) {
         config.put(getDirectionFromSide(state, side), setting);
+    }
+
+    /**
+     * Applies the given consumer to all output sides.
+     * @param consumer the consumer to apply
+     */
+    public void forEachOutput(Consumer<? super Direction> consumer) {
+        for (Direction direction : Direction.values()) {
+            if (config.get(direction) == IO_SETTING.OUTPUT || config.get(direction) == IO_SETTING.IO) {
+                consumer.accept(direction);
+            }
+        }
     }
 
     @Override

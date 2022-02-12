@@ -119,9 +119,9 @@ public class MachineContainer extends Container {
         int inputSlots = inventory.getInputSlots();
 
         // upgrade slot
-        addSlot(new UpgradeSlot(inventory, 0, 8, 50));
+        addSlot(new UpgradeSlot(inventory, InventoryHandler.UPGRADE_SLOT, 8, 50));
         // output slot
-        addSlot(new OutputSlot(inventory, 1, 116, 30));
+        addSlot(new OutputSlot(inventory, InventoryHandler.OUTPUT_SLOT, 116, 30));
         // input slots
         if (inputSlots == 1) {
             addSlot(new SlotItemHandler(inventory, 2, 44, 28));

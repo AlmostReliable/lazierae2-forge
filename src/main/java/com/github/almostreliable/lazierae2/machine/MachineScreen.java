@@ -37,13 +37,13 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         minecraft.getTextureManager().bind(TEXTURE);
         blit(matrix, leftPos, topPos, 0, 0, 176, 154, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
-        // input slots for triple inputs
+        // upper and lower input slots for triple input machines
         if (menu.getInventory().getInputSlots() == 3) {
             blit(matrix, leftPos + 43, topPos + 7, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             blit(matrix, leftPos + 43, topPos + 49, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
 
-        // bars
+        // energy bar
         int energy = menu.getEnergyStored();
         int capacity = menu.getEnergyCapacity();
         int barHeight = energy > 0 ? energy * ENERGY_HEIGHT / capacity : 0;
