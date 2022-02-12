@@ -100,13 +100,12 @@ public class MachineContainer extends Container {
     }
 
     private void syncData() {
-        addDataSlot(new DataSlot(tile, () -> tile.isAutoExtract() ? 1 : 0, value -> tile.setAutoExtract(value == 1)));
-        addDataSlot(new DataSlot(tile, tile::getProgress, tile::setProgress));
-        addDataSlot(new DataSlot(tile, tile::getProcessTime, tile::setProcessTime));
-        // energy lower bits
-        addDataSlot(new DataSlot(tile, () -> (short) getEnergyStored(), this::setEnergyStoredLower));
-        // energy upper bits
-        addDataSlot(new DataSlot(tile, () -> (short) (getEnergyStored() >> 16), this::setEnergyStoredUpper));
+        addDataSlot(DataSlot.forBoolean(tile, tile::isAutoExtract, tile::setAutoExtract));
+        addDataSlot(DataSlot.forInteger(tile, tile::getProgress, tile::setProgress));
+        addDataSlot(DataSlot.forInteger(tile, tile::getProcessTime, tile::setProcessTime));
+        // energy buffer
+        addDataSlot(DataSlot.forIntegerLower(tile, this::getEnergyStored, this::setEnergyStored));
+        addDataSlot(DataSlot.forIntegerUpper(tile, this::getEnergyStored, this::setEnergyStored));
     }
 
     /**
@@ -209,15 +208,5 @@ public class MachineContainer extends Container {
 
     public int getEnergyCapacity() {
         return tile.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(1);
-    }
-
-    private void setEnergyStoredLower(int energy) {
-        int energyStored = getEnergyStored() & 0xFFFF_0000;
-        setEnergyStored(energyStored + (energy & 0xFFFF));
-    }
-
-    private void setEnergyStoredUpper(int energy) {
-        int energyStored = getEnergyStored() & 0x0000_FFFF;
-        setEnergyStored(energyStored | (energy << 16));
     }
 }
