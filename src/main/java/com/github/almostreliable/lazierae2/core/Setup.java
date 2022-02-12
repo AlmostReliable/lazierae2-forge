@@ -2,7 +2,7 @@ package com.github.almostreliable.lazierae2.core;
 
 import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import com.github.almostreliable.lazierae2.container.*;
-import com.github.almostreliable.lazierae2.tile.*;
+import com.github.almostreliable.lazierae2.machine.MachineTile;
 import net.minecraft.block.Block;
 import net.minecraft.data.BlockStateVariantBuilder.ITriFunction;
 import net.minecraft.entity.player.PlayerInventory;
@@ -45,28 +45,14 @@ public final class Setup {
 
         private Tiles() {}
 
-        private static <T extends MachineTile, B extends MachineBlock> RegistryObject<TileEntityType<T>> register(
-            String id, RegistryObject<B> block, Supplier<T> constructor
-        ) {
-            //noinspection ConstantConditions
-            return REGISTRY.register(id, () -> Builder.of(constructor, block.get()).build(null));
-        }
-
-        public static final RegistryObject<TileEntityType<AggregatorTile>> AGGREGATOR = register(AGGREGATOR_ID,
-            Blocks.AGGREGATOR,
-            AggregatorTile::new
-        );
-        public static final RegistryObject<TileEntityType<CentrifugeTile>> CENTRIFUGE = register(CENTRIFUGE_ID,
-            Blocks.CENTRIFUGE,
-            CentrifugeTile::new
-        );
-        public static final RegistryObject<TileEntityType<EnergizerTile>> ENERGIZER = register(ENERGIZER_ID,
-            Blocks.ENERGIZER,
-            EnergizerTile::new
-        );
-        public static final RegistryObject<TileEntityType<EtcherTile>> ETCHER = register(ETCHER_ID,
-            Blocks.ETCHER,
-            EtcherTile::new
+        @SuppressWarnings("ConstantConditions")
+        public static final RegistryObject<TileEntityType<MachineTile>> MACHINE = REGISTRY.register(MACHINE_ID,
+            () -> Builder.of(MachineTile::new,
+                Blocks.AGGREGATOR.get(),
+                Blocks.CENTRIFUGE.get(),
+                Blocks.ENERGIZER.get(),
+                Blocks.ETCHER.get()
+            ).build(null)
         );
     }
 
