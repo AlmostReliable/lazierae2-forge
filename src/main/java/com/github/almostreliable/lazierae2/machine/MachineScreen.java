@@ -52,7 +52,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
             leftPos + 166,
             topPos + 8 - barHeight,
             176,
-            18,
+            36,
             ENERGY_WIDTH,
             barHeight,
             TEXTURE_WIDTH,
