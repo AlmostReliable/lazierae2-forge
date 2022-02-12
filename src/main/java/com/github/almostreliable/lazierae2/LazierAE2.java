@@ -5,7 +5,7 @@ import com.github.almostreliable.lazierae2.core.Setup;
 import com.github.almostreliable.lazierae2.core.Setup.Blocks;
 import com.github.almostreliable.lazierae2.core.Setup.Containers;
 import com.github.almostreliable.lazierae2.data.DataGeneration;
-import com.github.almostreliable.lazierae2.screen.MachineScreen;
+import com.github.almostreliable.lazierae2.machine.MachineScreen;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -38,19 +38,14 @@ public class LazierAE2 {
         // PacketHandler.init();
         // add compatibility to acceleration card for own blocks
         // TODO: read max supported amount of upgrades from config
-        Upgrades.SPEED.registerItem(Blocks.AGGREGATOR.get().asItem(), 4);
-        Upgrades.SPEED.registerItem(Blocks.CENTRIFUGE.get().asItem(), 4);
-        Upgrades.SPEED.registerItem(Blocks.ENERGIZER.get().asItem(), 4);
-        Upgrades.SPEED.registerItem(Blocks.ETCHER.get().asItem(), 4);
+        Upgrades.SPEED.registerItem(Blocks.AGGREGATOR.get().asItem(), 8);
+        Upgrades.SPEED.registerItem(Blocks.CENTRIFUGE.get().asItem(), 8);
+        Upgrades.SPEED.registerItem(Blocks.ENERGIZER.get().asItem(), 8);
+        Upgrades.SPEED.registerItem(Blocks.ETCHER.get().asItem(), 8);
     }
 
     private static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            // register screens
-            ScreenManager.register(Containers.AGGREGATOR.get(), MachineScreen::new);
-            ScreenManager.register(Containers.CENTRIFUGE.get(), MachineScreen::new);
-            ScreenManager.register(Containers.ENERGIZER.get(), MachineScreen::new);
-            ScreenManager.register(Containers.ETCHER.get(), MachineScreen::new);
-        });
+        // register screens
+        ScreenManager.register(Containers.MACHINE.get(), MachineScreen::new);
     }
 }

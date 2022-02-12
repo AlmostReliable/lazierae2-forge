@@ -1,16 +1,15 @@
-package com.github.almostreliable.lazierae2.container;
+package com.github.almostreliable.lazierae2.machine;
 
 import com.github.almostreliable.lazierae2.component.EnergyHandler;
 import com.github.almostreliable.lazierae2.component.InventoryHandler;
+import com.github.almostreliable.lazierae2.core.Setup.Containers;
 import com.github.almostreliable.lazierae2.inventory.OutputSlot;
 import com.github.almostreliable.lazierae2.inventory.UpgradeSlot;
 import com.github.almostreliable.lazierae2.network.DataSlot;
-import com.github.almostreliable.lazierae2.tile.MachineTile;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
@@ -24,23 +23,27 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
-public abstract class MachineContainer extends Container {
+public class MachineContainer extends Container {
 
     private static final int PLAYER_INV_SIZE = 36;
     private final MachineTile tile;
-    private IItemHandler inventory;
+    private InventoryHandler inventory;
 
-    MachineContainer(ContainerType<?> type, int id, MachineTile tile, PlayerInventory playerInventory) {
-        super(type, id);
+    public MachineContainer(int id, MachineTile tile, PlayerInventory playerInventory) {
+        super(Containers.MACHINE.get(), id);
         this.tile = tile;
         // set up container inventory if the tile exposes an item handler capability
         tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
-            setupContainerInv(inv);
-            inventory = inv;
+            inventory = (InventoryHandler) inv;
+            setupContainerInv();
         });
         setupPlayerInventory(new InvWrapper(playerInventory));
 
         syncData();
+    }
+
+    public InventoryHandler getInventory() {
+        return inventory;
     }
 
     @Override
@@ -111,11 +114,9 @@ public abstract class MachineContainer extends Container {
 
     /**
      * Adds the container slots to the inventory.
-     *
-     * @param inventory the inventory to add the slots to
      */
-    private void setupContainerInv(IItemHandler inventory) {
-        int inputSlots = tile.getInputSlots();
+    private void setupContainerInv() {
+        int inputSlots = inventory.getInputSlots();
 
         // upgrade slot
         addSlot(new UpgradeSlot(inventory, 0, 8, 50));
@@ -160,7 +161,7 @@ public abstract class MachineContainer extends Container {
     @Nullable
     private Slot inputsContainItem(ItemStack stack) {
         return IntStream
-            .range(InventoryHandler.NON_INPUT_SLOTS, tile.getInputSlots() + InventoryHandler.NON_INPUT_SLOTS)
+            .range(InventoryHandler.NON_INPUT_SLOTS, inventory.getInputSlots() + InventoryHandler.NON_INPUT_SLOTS)
             .mapToObj(slots::get)
             .filter(slot -> Container.consideredTheSameItem(slot.getItem(), stack))
             .findFirst()

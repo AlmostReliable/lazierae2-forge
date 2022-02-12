@@ -1,7 +1,5 @@
-package com.github.almostreliable.lazierae2.screen;
+package com.github.almostreliable.lazierae2.machine;
 
-import com.github.almostreliable.lazierae2.container.MachineContainer;
-import com.github.almostreliable.lazierae2.tile.MachineTile;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -22,14 +20,12 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     private static final int SLOT_SIZE = 18;
     private static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/machine.png");
     private final ResourceLocation progressTexture;
-    private final MachineTile tile;
 
     public MachineScreen(
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
     ) {
         super(container, inventory, StringTextComponent.EMPTY);
-        tile = container.getTile();
-        progressTexture = TextUtil.getRL("textures/gui/progress/" + tile.getId() + ".png");
+        progressTexture = TextUtil.getRL("textures/gui/progress/" + container.getTile().getId() + ".png");
     }
 
     @SuppressWarnings("deprecation")
@@ -42,7 +38,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         blit(matrix, leftPos, topPos, 0, 0, 176, 154, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
         // input slots for triple inputs
-        if (tile.getInputSlots() == 3) {
+        if (menu.getInventory().getInputSlots() == 3) {
             blit(matrix, leftPos + 43, topPos + 7, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             blit(matrix, leftPos + 43, topPos + 49, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
@@ -51,18 +47,44 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         int energy = menu.getEnergyStored();
         int capacity = menu.getEnergyCapacity();
         int barHeight = energy > 0 ? energy * ENERGY_HEIGHT / capacity : 0;
-        blit(matrix, leftPos + 166, topPos + 8 - barHeight, 176, 18, ENERGY_WIDTH, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(
+            matrix,
+            leftPos + 166,
+            topPos + 8 - barHeight,
+            176,
+            18,
+            ENERGY_WIDTH,
+            barHeight,
+            TEXTURE_WIDTH,
+            TEXTURE_HEIGHT
+        );
 
         // progress bar
         minecraft.getTextureManager().bind(progressTexture);
         int progress = menu.getTile().getProgress();
         int processTime = menu.getTile().getProcessTime();
         int barWidth = progress > 0 ? progress * (PROGRESS_WIDTH / 2) / processTime : 0;
-        blit(matrix, leftPos + 78, topPos + 24, 0, 0, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT,
-            PROGRESS_WIDTH, PROGRESS_HEIGHT
+        blit(
+            matrix,
+            leftPos + 78,
+            topPos + 24,
+            0,
+            0,
+            PROGRESS_WIDTH / 2,
+            PROGRESS_HEIGHT,
+            PROGRESS_WIDTH,
+            PROGRESS_HEIGHT
         );
-        blit(matrix, leftPos + 78, topPos + 24, PROGRESS_WIDTH / 2f, 0, barWidth, PROGRESS_HEIGHT,
-            PROGRESS_WIDTH, PROGRESS_HEIGHT
+        blit(
+            matrix,
+            leftPos + 78,
+            topPos + 24,
+            PROGRESS_WIDTH / 2f,
+            0,
+            barWidth,
+            PROGRESS_HEIGHT,
+            PROGRESS_WIDTH,
+            PROGRESS_HEIGHT
         );
     }
 }

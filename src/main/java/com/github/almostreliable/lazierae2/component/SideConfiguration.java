@@ -1,8 +1,8 @@
 package com.github.almostreliable.lazierae2.component;
 
-import com.github.almostreliable.lazierae2.block.MachineBlock;
 import com.github.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
+import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
