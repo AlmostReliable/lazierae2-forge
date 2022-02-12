@@ -42,10 +42,6 @@ public class MachineContainer extends Container {
         syncData();
     }
 
-    public InventoryHandler getInventory() {
-        return inventory;
-    }
-
     @Override
     public ItemStack quickMoveStack(PlayerEntity player, int index) {
         // TODO: refactor this
@@ -104,6 +100,7 @@ public class MachineContainer extends Container {
     }
 
     private void syncData() {
+        addDataSlot(new DataSlot(tile, () -> tile.isAutoExtract() ? 1 : 0, value -> tile.setAutoExtract(value == 1)));
         addDataSlot(new DataSlot(tile, tile::getProgress, tile::setProgress));
         addDataSlot(new DataSlot(tile, tile::getProcessTime, tile::setProcessTime));
         // energy lower bits
@@ -190,6 +187,10 @@ public class MachineContainer extends Container {
             slotStack.setCount(maxSize);
             slot.setChanged();
         }
+    }
+
+    public InventoryHandler getInventory() {
+        return inventory;
     }
 
     public MachineTile getTile() {

@@ -28,7 +28,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -131,50 +130,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (autoExtract && level.getGameTime() % 20 == 0) autoExtract();
     }
 
-    private void setAutoExtract(boolean autoExtract) {
-        this.autoExtract = autoExtract;
-    }
-
-    private void autoExtract() {
-        assert level != null;
-
-        if (inventory.getStackInOutput().isEmpty()) return;
-
-        EnumMap<Direction, TileEntity> possibleOutputs = new EnumMap<>(Direction.class);
-        sideConfig.forEachOutput(direction -> possibleOutputs.put(direction, level.getBlockEntity(worldPosition.relative(direction, 1))));
-
-        for (Entry<Direction, TileEntity> entry : possibleOutputs.entrySet()) {
-            LazyOptional<IItemHandler> target = getOrUpdateOutputCache(entry);
-            if (target == null) continue;
-
-            AtomicBoolean outputEmpty = new AtomicBoolean(false);
-            target.ifPresent(targetInv -> {
-                // TODO make auto extract amount per operation configurable
-                ItemStack stack = inventory.getStackInOutput();
-                ItemStack remainder = ItemHandlerHelper.insertItem(targetInv, stack, false);
-
-                if (remainder.getCount() != stack.getCount() || !remainder.sameItem(stack)) inventory.setStackInOutput(remainder);
-                if (remainder.isEmpty()) outputEmpty.set(true);
-            });
-
-            if (outputEmpty.get()) return;
-        }
-    }
-
-    @Nullable
-    private LazyOptional<IItemHandler> getOrUpdateOutputCache(Entry<Direction, ? extends TileEntity> entry) {
-        LazyOptional<IItemHandler> target = outputsCache.get(entry.getKey());
-
-        if (target == null) {
-            ICapabilityProvider provider = entry.getValue();
-            if (provider == null) return null;
-            target = provider.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, entry.getKey().getOpposite());
-            outputsCache.put(entry.getKey(), target);
-            target.addListener(self -> outputsCache.put(entry.getKey(), null));
-        }
-        return target;
-    }
-
     @Override
     protected void invalidateCaps() {
         super.invalidateCaps();
@@ -197,7 +152,53 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         return super.getCapability(cap, direction);
     }
 
-    String getId() {
+    private void autoExtract() {
+        assert level != null;
+
+        if (inventory.getStackInOutput().isEmpty()) return;
+
+        EnumMap<Direction, TileEntity> possibleOutputs = new EnumMap<>(Direction.class);
+        sideConfig.forEachOutput(direction -> possibleOutputs.put(direction,
+            level.getBlockEntity(worldPosition.relative(direction, 1))
+        ));
+
+        for (Entry<Direction, TileEntity> entry : possibleOutputs.entrySet()) {
+            LazyOptional<IItemHandler> target = getOrUpdateOutputCache(entry);
+            if (target == null) continue;
+
+            AtomicBoolean outputEmpty = new AtomicBoolean(false);
+            target.ifPresent(targetInv -> {
+                // TODO make auto extract amount per operation configurable
+                ItemStack stack = inventory.getStackInOutput();
+                ItemStack remainder = ItemHandlerHelper.insertItem(targetInv, stack, false);
+
+                if (remainder.getCount() != stack.getCount() || !remainder.sameItem(stack)) {
+                    inventory.setStackInOutput(remainder);
+                }
+                if (remainder.isEmpty()) outputEmpty.set(true);
+            });
+
+            if (outputEmpty.get()) return;
+        }
+    }
+
+    @Nullable
+    private LazyOptional<IItemHandler> getOrUpdateOutputCache(Entry<Direction, ? extends TileEntity> entry) {
+        LazyOptional<IItemHandler> target = outputsCache.get(entry.getKey());
+
+        if (target == null) {
+            ICapabilityProvider provider = entry.getValue();
+            if (provider == null) return null;
+            target = provider.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                entry.getKey().getOpposite()
+            );
+            outputsCache.put(entry.getKey(), target);
+            target.addListener(self -> outputsCache.put(entry.getKey(), null));
+        }
+        return target;
+    }
+
+    public String getId() {
         return ((MachineBlock) getBlockState().getBlock()).getId();
     }
 
@@ -206,7 +207,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         return TextUtil.translate(TRANSLATE_TYPE.CONTAINER, getId());
     }
 
-    int getProgress() {
+    public int getProgress() {
         return progress;
     }
 
@@ -214,11 +215,19 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         this.progress = progress;
     }
 
-    int getProcessTime() {
+    public int getProcessTime() {
         return processTime;
     }
 
     void setProcessTime(int processTime) {
         this.processTime = processTime;
+    }
+
+    public boolean isAutoExtract() {
+        return autoExtract;
+    }
+
+    public void setAutoExtract(boolean autoExtract) {
+        this.autoExtract = autoExtract;
     }
 }

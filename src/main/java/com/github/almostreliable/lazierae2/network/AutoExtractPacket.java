@@ -1,6 +1,5 @@
 package com.github.almostreliable.lazierae2.network;
 
-import com.github.almostreliable.lazierae2.core.TypeEnums.PACKET_SETTING;
 import com.github.almostreliable.lazierae2.machine.MachineContainer;
 import com.github.almostreliable.lazierae2.machine.MachineTile;
 import net.minecraft.entity.player.ServerPlayerEntity;

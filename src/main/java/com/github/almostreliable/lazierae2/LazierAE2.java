@@ -5,7 +5,7 @@ import com.github.almostreliable.lazierae2.core.Setup;
 import com.github.almostreliable.lazierae2.core.Setup.Blocks;
 import com.github.almostreliable.lazierae2.core.Setup.Containers;
 import com.github.almostreliable.lazierae2.data.DataGeneration;
-import com.github.almostreliable.lazierae2.machine.MachineScreen;
+import com.github.almostreliable.lazierae2.gui.MachineScreen;
 import com.github.almostreliable.lazierae2.network.PacketHandler;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.eventbus.api.IEventBus;

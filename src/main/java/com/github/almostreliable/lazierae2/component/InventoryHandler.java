@@ -18,8 +18,9 @@ public class InventoryHandler extends ItemStackHandler {
         this.tile = tile;
     }
 
-    public void setSizeByInputs(int inputs) {
-        setSize(inputs + NON_INPUT_SLOTS);
+    @Override
+    protected void onContentsChanged(int slot) {
+        tile.setChanged();
     }
 
     public int getInputSlots() {
@@ -35,8 +36,7 @@ public class InventoryHandler extends ItemStackHandler {
         setStackInSlot(OUTPUT_SLOT, stack);
     }
 
-    @Override
-    protected void onContentsChanged(int slot) {
-        tile.setChanged();
+    public void setSizeByInputs(int inputs) {
+        setSize(inputs + NON_INPUT_SLOTS);
     }
 }

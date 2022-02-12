@@ -82,6 +82,7 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
 
     /**
      * Applies the given consumer to all output sides.
+     *
      * @param consumer the consumer to apply
      */
     public void forEachOutput(Consumer<? super Direction> consumer) {
