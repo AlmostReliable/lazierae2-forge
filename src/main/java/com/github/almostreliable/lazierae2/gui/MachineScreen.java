@@ -16,7 +16,7 @@ import java.util.Collection;
 
 public class MachineScreen extends ContainerScreen<MachineContainer> {
 
-    private static final int TEXTURE_WIDTH = 194;
+    private static final int TEXTURE_WIDTH = 178;
     private static final int TEXTURE_HEIGHT = 154;
     private static final int PROGRESS_WIDTH = 40;
     private static final int PROGRESS_HEIGHT = 27;
@@ -83,7 +83,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
             leftPos + 166,
             topPos + 8 - barHeight,
             176,
-            36,
+            0,
             ENERGY_WIDTH,
             barHeight,
             TEXTURE_WIDTH,
