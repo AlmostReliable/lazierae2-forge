@@ -200,7 +200,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     @Override
     public ITextComponent getDisplayName() {
-        return TextUtil.translate(TRANSLATE_TYPE.CONTAINER, getId());
+        return TextUtil.translate(TRANSLATE_TYPE.BLOCK, getId());
     }
 
     public int getProgress() {

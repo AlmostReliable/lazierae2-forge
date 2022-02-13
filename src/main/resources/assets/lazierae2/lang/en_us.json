@@ -26,11 +26,6 @@
   "block.lazierae2.energizer": "Crystal Energizer",
   "block.lazierae2.etcher": "Circuit Etcher",
 
-  "container.lazierae2.aggregator": "Fluix Aggregator",
-  "container.lazierae2.centrifuge": "Pulse Centrifuge",
-  "container.lazierae2.energizer": "Crystal Energizer",
-  "container.lazierae2.etcher": "Circuit Etcher",
-
   "tooltip.lazierae2.shift_details_1": "Hold",
   "tooltip.lazierae2.shift_details_2": "for more details",
   "tooltip.lazierae2.energy_buffer": "Energy Buffer",
@@ -64,10 +59,5 @@
   "io_setting.lazierae2.io": "I/O",
 
   "extract_setting.lazierae2.activated": "Activated",
-  "extract_setting.lazierae2.deactivated": "Deactivated",
-
-  "jei.lazierae2.fluix_aggregator": "Fluix Aggregator",
-  "jei.lazierae2.pulse_centrifuge": "Pulse Centrifuge",
-  "jei.lazierae2.crystal_energizer": "Crystal Energizer",
-  "jei.lazierae2.circuit_etcher": "Circuit Etcher"
+  "extract_setting.lazierae2.deactivated": "Deactivated"
 }

@@ -9,7 +9,6 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +29,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     public MachineScreen(
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
     ) {
-        super(container, inventory, StringTextComponent.EMPTY);
+        super(container, inventory, container.getTile().getDisplayName());
         progressTexture = TextUtil.getRL("textures/gui/progress/" + container.getTile().getId() + ".png");
     }
 
@@ -50,24 +49,37 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     }
 
     @Override
-    protected void renderTooltip(MatrixStack matrix, int pX, int pY) {
-        // widget tooltips
+    protected void renderTooltip(MatrixStack matrix, int mX, int mY) {
+        super.renderTooltip(matrix, mX, mY);
         for (Widget widget : renderables) {
             if (widget.isHovered() && widget.visible) {
-                widget.renderToolTip(matrix, pX, pY);
+                widget.renderToolTip(matrix, mX, mY);
             }
         }
-        super.renderTooltip(matrix, pX, pY);
+    }
+
+    @Override
+    protected void renderLabels(MatrixStack matrix, int mX, int mY) {
+        drawCenteredString(matrix, font, title, (TEXTURE_WIDTH - ENERGY_WIDTH) / 2, -12, 16_777_215);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    protected void renderBg(MatrixStack matrix, float partial, int pX, int pY) {
+    protected void renderBg(MatrixStack matrix, float partial, int mX, int mY) {
         // background texture
         if (minecraft == null) return;
         RenderSystem.color4f(1f, 1f, 1f, 1f);
         minecraft.getTextureManager().bind(TEXTURE);
-        blit(matrix, leftPos, topPos, 0, 0, 176, 154, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(matrix,
+            leftPos,
+            topPos,
+            0,
+            0,
+            TEXTURE_WIDTH - ENERGY_WIDTH,
+            TEXTURE_HEIGHT,
+            TEXTURE_WIDTH,
+            TEXTURE_HEIGHT
+        );
 
         // upper and lower input slots for triple input machines
         if (menu.getInventory().getInputSlots() == 3) {
@@ -79,8 +91,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         int energy = menu.getEnergyStored();
         int capacity = menu.getEnergyCapacity();
         int barHeight = energy > 0 ? energy * ENERGY_HEIGHT / capacity : 0;
-        blit(
-            matrix,
+        blit(matrix,
             leftPos + 166,
             topPos + 66 - barHeight,
             176,
@@ -96,8 +107,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         int progress = menu.getTile().getProgress();
         int processTime = menu.getTile().getProcessTime();
         int barWidth = progress > 0 ? progress * (PROGRESS_WIDTH / 2) / processTime : 0;
-        blit(
-            matrix,
+        blit(matrix,
             leftPos + 78,
             topPos + 24,
             0,
@@ -107,8 +117,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
             PROGRESS_WIDTH,
             PROGRESS_HEIGHT
         );
-        blit(
-            matrix,
+        blit(matrix,
             leftPos + 78,
             topPos + 24,
             PROGRESS_WIDTH / 2f,
