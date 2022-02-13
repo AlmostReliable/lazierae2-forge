@@ -32,13 +32,11 @@ public class MachineContainer extends Container {
     public MachineContainer(int id, MachineTile tile, PlayerInventory playerInventory) {
         super(Containers.MACHINE.get(), id);
         this.tile = tile;
-        // set up container inventory if the tile exposes an item handler capability
         tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
             inventory = (InventoryHandler) inv;
             setupContainerInv();
         });
         setupPlayerInventory(new InvWrapper(playerInventory));
-
         syncData();
     }
 
@@ -103,22 +101,14 @@ public class MachineContainer extends Container {
         addDataSlot(DataSlot.forBoolean(tile, tile::isAutoExtract, tile::setAutoExtract));
         addDataSlot(DataSlot.forInteger(tile, tile::getProgress, tile::setProgress));
         addDataSlot(DataSlot.forInteger(tile, tile::getProcessTime, tile::setProcessTime));
-        // energy buffer
-        addDataSlot(DataSlot.forIntegerLower(tile, this::getEnergyStored, this::setEnergyStored));
-        addDataSlot(DataSlot.forIntegerUpper(tile, this::getEnergyStored, this::setEnergyStored));
+        addDataSlots(DataSlot.forIntegerSplit(tile, this::getEnergyStored, this::setEnergyStored));
+        addDataSlots(tile.getSideConfig().toIIntArray(tile));
     }
 
-    /**
-     * Adds the container slots to the inventory.
-     */
     private void setupContainerInv() {
         int inputSlots = inventory.getInputSlots();
-
-        // upgrade slot
         addSlot(new UpgradeSlot(inventory, InventoryHandler.UPGRADE_SLOT, 8, 50));
-        // output slot
         addSlot(new OutputSlot(inventory, InventoryHandler.OUTPUT_SLOT, 116, 29));
-        // input slots
         if (inputSlots == 1) {
             addSlot(new SlotItemHandler(inventory, 2, 44, 28));
         } else if (inputSlots == 3) {
@@ -130,11 +120,6 @@ public class MachineContainer extends Container {
         }
     }
 
-    /**
-     * Adds the player inventory slots to the inventory.
-     *
-     * @param inventory the inventory to add the slots to
-     */
     private void setupPlayerInventory(IItemHandler inventory) {
         // main inventory
         for (int i = 0; i < 3; i++) {

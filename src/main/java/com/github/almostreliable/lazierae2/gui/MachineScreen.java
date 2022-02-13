@@ -37,9 +37,9 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     @Override
     protected void init() {
         super.init();
-
         addRenderable(new AutoExtractButton(this, () -> menu.getTile().isAutoExtract()));
         addRenderable(new EnergyDumpButton(this));
+        addRenderables(IOControl.setup(this, 7, 7));
     }
 
     @Override
@@ -123,5 +123,11 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     private void addRenderable(Widget widget) {
         addButton(widget);
         renderables.add(widget);
+    }
+
+    private void addRenderables(Widget... widgets) {
+        for (Widget widget : widgets) {
+            addRenderable(widget);
+        }
     }
 }

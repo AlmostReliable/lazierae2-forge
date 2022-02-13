@@ -198,6 +198,10 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         return target;
     }
 
+    public SideConfiguration getSideConfig() {
+        return sideConfig;
+    }
+
     public String getId() {
         return ((MachineBlock) getBlockState().getBlock()).getId();
     }

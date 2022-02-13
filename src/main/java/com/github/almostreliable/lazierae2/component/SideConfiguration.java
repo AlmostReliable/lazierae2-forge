@@ -5,7 +5,9 @@ import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.IIntArray;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.EnumMap;
@@ -21,13 +23,6 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
         }
     }
 
-    /**
-     * Gets the direction from the given block side depending on the facing of the block.
-     *
-     * @param state the block state
-     * @param side  the block side to get the direction from
-     * @return the direction
-     */
     private static Direction getDirectionFromSide(BlockState state, BLOCK_SIDE side) {
         Direction facing = state.getValue(MachineBlock.FACING);
         switch (side) {
@@ -46,51 +41,50 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
         }
     }
 
-    /**
-     * Gets an IO setting by a specified direction.
-     * This automatically takes the facing direction into account.
-     *
-     * @param direction the direction to get the IO setting from
-     * @return the IO setting
-     */
     public IO_SETTING get(Direction direction) {
         return config.get(direction);
     }
 
-    /**
-     * Gets an IO setting by a specified block side.
-     * This automatically takes the facing direction into account.
-     *
-     * @param state the block state
-     * @param side  the block side to get the IO setting from
-     * @return the IO setting
-     */
     public IO_SETTING get(BlockState state, BLOCK_SIDE side) {
         return config.get(getDirectionFromSide(state, side));
     }
 
-    /**
-     * Sets the specified block side to the specified IO setting.
-     *
-     * @param state   the block state
-     * @param side    the side on which the setting should be changed
-     * @param setting the setting which should be set
-     */
     public void set(BlockState state, BLOCK_SIDE side, IO_SETTING setting) {
         config.put(getDirectionFromSide(state, side), setting);
     }
 
-    /**
-     * Applies the given consumer to all output sides.
-     *
-     * @param consumer the consumer to apply
-     */
+    public void reset() {
+        for (Direction direction : Direction.values()) {
+            config.put(direction, IO_SETTING.OFF);
+        }
+    }
+
     public void forEachOutput(Consumer<? super Direction> consumer) {
         for (Direction direction : Direction.values()) {
             if (config.get(direction) == IO_SETTING.OUTPUT || config.get(direction) == IO_SETTING.IO) {
                 consumer.accept(direction);
             }
         }
+    }
+
+    public IIntArray toIIntArray(TileEntity tile) {
+        return new IIntArray() {
+            @Override
+            public int get(int index) {
+                return config.get(Direction.values()[index]).ordinal();
+            }
+
+            @Override
+            public void set(int index, int value) {
+                config.put(Direction.values()[index], IO_SETTING.values()[value]);
+                tile.setChanged();
+            }
+
+            @Override
+            public int getCount() {
+                return config.size();
+            }
+        };
     }
 
     @Override

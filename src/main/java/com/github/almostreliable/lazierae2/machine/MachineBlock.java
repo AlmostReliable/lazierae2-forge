@@ -67,10 +67,7 @@ public class MachineBlock extends Block {
     public ActionResultType use(
         BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit
     ) {
-        // don't do anything on clientside or if player is shifting
         if (level.isClientSide() || player.isShiftKeyDown()) return ActionResultType.SUCCESS;
-
-        // open the gui for the player who right-clicked the block
         TileEntity tile = level.getBlockEntity(pos);
         if (tile instanceof INamedContainerProvider && player instanceof ServerPlayerEntity) {
             NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile, pos);

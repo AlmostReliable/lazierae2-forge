@@ -30,12 +30,17 @@ public final class PacketHandler {
             .encoder(AutoExtractPacket::encode)
             .consumer(AutoExtractPacket::handle)
             .add();
-
         CHANNEL
             .messageBuilder(EnergyDumpPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
             .decoder(EnergyDumpPacket::decode)
             .encoder(EnergyDumpPacket::encode)
             .consumer(EnergyDumpPacket::handle)
+            .add();
+        CHANNEL
+            .messageBuilder(SideConfigPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
+            .decoder(SideConfigPacket::decode)
+            .encoder(SideConfigPacket::encode)
+            .consumer(SideConfigPacket::handle)
             .add();
     }
 }
