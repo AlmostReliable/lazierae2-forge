@@ -77,7 +77,7 @@ public final class Setup {
 
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(net.minecraft.block.Blocks.GRASS_BLOCK);
+            return new ItemStack(Blocks.AGGREGATOR.get());
         }
     }
 
