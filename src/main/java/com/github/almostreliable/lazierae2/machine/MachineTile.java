@@ -43,7 +43,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private final LazyOptional<EnergyHandler> energyCap;
     private final SideConfiguration sideConfig;
     private final Map<Direction, LazyOptional<IItemHandler>> outputsCache = new EnumMap<>(Direction.class);
-    private boolean inputSlotsSet;
     private boolean autoExtract;
     private int progress;
     private int processTime = 200;
@@ -51,7 +50,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     MachineTile(int inputSlots) {
         super(Tiles.MACHINE.get());
-        inputSlotsSet = true;
         inventory = new InventoryHandler(this, inputSlots);
         inventoryCap = LazyOptional.of(() -> inventory);
         energy = new EnergyHandler(this, 100_000);
@@ -112,12 +110,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     @Override
     public void tick() {
         if (level == null || level.isClientSide) return;
-
-        if (!inputSlotsSet) {
-            // set right amount of input slots from the block on initial placement
-            inventory.setSizeByInputs(((MachineBlock) getBlockState().getBlock()).getInputSlots());
-            inputSlotsSet = true;
-        }
 
         // TODO
         // testing to sync progress
