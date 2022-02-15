@@ -45,6 +45,8 @@ public enum Constants {
     public static final String RECIPE_OUTPUT = "output";
     public static final String RECIPE_PROCESS_TIME = "process_time";
     public static final String RECIPE_ENERGY_COST = "energy_cost";
+    public static final String RECIPE_ITEM = "item";
+    public static final String RECIPE_AMOUNT = "amount";
     // network
     public static final String NETWORK_ID = "network";
 }
