@@ -166,10 +166,10 @@ public final class Setup {
         public static final class Blocks {
 
             private static final String MACHINE_ENTRY = "machines/";
-            public static final INamedTag<Block> MACHINES_FLUIX_AGGREGATOR = mod(MACHINE_ENTRY + AGGREGATOR_ID);
-            public static final INamedTag<Block> MACHINES_PULSE_CENTRIFUGE = mod(MACHINE_ENTRY + CENTRIFUGE_ID);
-            public static final INamedTag<Block> MACHINES_CRYSTAL_ENERGIZER = mod(MACHINE_ENTRY + ENERGIZER_ID);
-            public static final INamedTag<Block> MACHINES_CIRCUIT_ETCHER = mod(MACHINE_ENTRY + ETCHER_ID);
+            public static final INamedTag<Block> AGGREGATOR = mod(MACHINE_ENTRY + AGGREGATOR_ID);
+            public static final INamedTag<Block> CENTRIFUGE = mod(MACHINE_ENTRY + CENTRIFUGE_ID);
+            public static final INamedTag<Block> ENERGIZER = mod(MACHINE_ENTRY + ENERGIZER_ID);
+            public static final INamedTag<Block> ETCHER = mod(MACHINE_ENTRY + ETCHER_ID);
 
             private Blocks() {}
 

@@ -53,10 +53,10 @@ public final class TagData {
 
         @Override
         protected void addTags() {
-            tag(Setup.Tags.Blocks.MACHINES_FLUIX_AGGREGATOR).add(Blocks.AGGREGATOR.get());
-            tag(Setup.Tags.Blocks.MACHINES_PULSE_CENTRIFUGE).add(Blocks.CENTRIFUGE.get());
-            tag(Setup.Tags.Blocks.MACHINES_CRYSTAL_ENERGIZER).add(Blocks.ENERGIZER.get());
-            tag(Setup.Tags.Blocks.MACHINES_CIRCUIT_ETCHER).add(Blocks.ETCHER.get());
+            tag(Setup.Tags.Blocks.AGGREGATOR).add(Blocks.AGGREGATOR.get());
+            tag(Setup.Tags.Blocks.CENTRIFUGE).add(Blocks.CENTRIFUGE.get());
+            tag(Setup.Tags.Blocks.ENERGIZER).add(Blocks.ENERGIZER.get());
+            tag(Setup.Tags.Blocks.ETCHER).add(Blocks.ETCHER.get());
         }
     }
 }
