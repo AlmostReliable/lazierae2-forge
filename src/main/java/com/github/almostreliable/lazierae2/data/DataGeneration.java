@@ -22,6 +22,8 @@ public final class DataGeneration {
             BlockTags blockTags = new BlockTags(gen, fileHelper);
             gen.addProvider(blockTags);
             gen.addProvider(new ItemTags(gen, blockTags, fileHelper));
+            // generate recipes
+            gen.addProvider(new RecipeData(gen));
         }
         if (event.includeClient()) {
             // generate block states and block models
