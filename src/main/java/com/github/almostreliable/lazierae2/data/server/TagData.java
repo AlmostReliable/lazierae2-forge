@@ -13,7 +13,9 @@ import javax.annotation.Nullable;
 
 import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
 
-public class TagData {
+public final class TagData {
+
+    private TagData() {}
 
     public static class ItemTags extends ItemTagsProvider {
 
