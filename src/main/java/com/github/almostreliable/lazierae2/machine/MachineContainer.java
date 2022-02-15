@@ -5,7 +5,7 @@ import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import com.github.almostreliable.lazierae2.core.Setup.Containers;
 import com.github.almostreliable.lazierae2.inventory.OutputSlot;
 import com.github.almostreliable.lazierae2.inventory.UpgradeSlot;
-import com.github.almostreliable.lazierae2.network.DataSlot;
+import com.github.almostreliable.lazierae2.util.DataSlotUtil;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -98,10 +98,10 @@ public class MachineContainer extends Container {
     }
 
     private void syncData() {
-        addDataSlot(DataSlot.forBoolean(tile, tile::isAutoExtract, tile::setAutoExtract));
-        addDataSlot(DataSlot.forInteger(tile, tile::getProgress, tile::setProgress));
-        addDataSlot(DataSlot.forInteger(tile, tile::getProcessTime, tile::setProcessTime));
-        addDataSlots(DataSlot.forIntegerSplit(tile, this::getEnergyStored, this::setEnergyStored));
+        addDataSlot(DataSlotUtil.forBoolean(tile, tile::isAutoExtract, tile::setAutoExtract));
+        addDataSlot(DataSlotUtil.forInteger(tile, tile::getProgress, tile::setProgress));
+        addDataSlot(DataSlotUtil.forInteger(tile, tile::getProcessTime, tile::setProcessTime));
+        addDataSlots(DataSlotUtil.forIntegerSplit(tile, this::getEnergyStored, this::setEnergyStored));
         addDataSlots(tile.getSideConfig().toIIntArray(tile));
     }
 

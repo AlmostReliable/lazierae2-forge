@@ -1,4 +1,4 @@
-package com.github.almostreliable.lazierae2.network;
+package com.github.almostreliable.lazierae2.util;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.tileentity.TileEntity;
@@ -9,12 +9,12 @@ import java.util.function.BooleanSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
-public final class DataSlot {
+public final class DataSlotUtil {
 
     private static final int UPPER = 0xFFFF_0000;
     private static final int LOWER = 0x0000_FFFF;
 
-    private DataSlot() {}
+    private DataSlotUtil() {}
 
     /**
      * Utility method to create a new {@link IntReferenceHolder} for integer values without
