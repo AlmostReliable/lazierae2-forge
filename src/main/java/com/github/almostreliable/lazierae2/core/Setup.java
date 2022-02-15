@@ -101,9 +101,30 @@ public final class Setup {
         }
     }
 
-    private static class Items {
+    public static final class Items {
 
         private static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
+        public static final RegistryObject<Item> COAL_DUST = register(COAL_DUST_ID);
+        public static final RegistryObject<Item> CARB_FLUIX_DUST = register(CARB_FLUIX_DUST_ID);
+        public static final RegistryObject<Item> RESONATING_GEM = register(RESONATING_GEM_ID);
+        public static final RegistryObject<Item> FLUIX_IRON = register(FLUIX_IRON_ID);
+        public static final RegistryObject<Item> FLUIX_STEEL = register(FLUIX_STEEL_ID);
+        public static final RegistryObject<Item> LOGIC_UNIT = register(LOGIC_UNIT_ID);
+        public static final RegistryObject<Item> GROWTH_CHAMBER = register(GROWTH_CHAMBER_ID);
+        public static final RegistryObject<Item> UNIVERSAL_PRESS = register(UNIVERSAL_PRESS_ID);
+        public static final RegistryObject<Item> PARALLEL_PRINTED = register(PARALLEL_PRINTED_ID);
+        public static final RegistryObject<Item> PARALLEL_PROCESSOR = register(PARALLEL_PROCESSOR_ID);
+        public static final RegistryObject<Item> SPEC_PRINTED = register(SPEC_PRINTED_ID);
+        public static final RegistryObject<Item> SPEC_PROCESSOR = register(SPEC_PROCESSOR_ID);
+        public static final RegistryObject<Item> SPEC_CORE_1 = register(SPEC_CORE_1_ID);
+        public static final RegistryObject<Item> SPEC_CORE_2 = register(SPEC_CORE_2_ID);
+        public static final RegistryObject<Item> SPEC_CORE_4 = register(SPEC_CORE_4_ID);
+        public static final RegistryObject<Item> SPEC_CORE_8 = register(SPEC_CORE_8_ID);
+        public static final RegistryObject<Item> SPEC_CORE_16 = register(SPEC_CORE_16_ID);
+        public static final RegistryObject<Item> SPEC_CORE_32 = register(SPEC_CORE_32_ID);
+        public static final RegistryObject<Item> SPEC_CORE_64 = register(SPEC_CORE_64_ID);
+
+        private Items() {}
 
         private static RegistryObject<Item> register(String id) {
             return REGISTRY.register(id, () -> new Item(new Properties().tab(TAB)));

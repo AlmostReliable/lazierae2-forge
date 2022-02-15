@@ -6,12 +6,32 @@ public enum Constants {
 
     // mod info
     public static final String MOD_ID = "lazierae2";
-    // ids
+    // block ids
     public static final String MACHINE_ID = "machine";
     public static final String AGGREGATOR_ID = "aggregator";
     public static final String CENTRIFUGE_ID = "centrifuge";
     public static final String ENERGIZER_ID = "energizer";
     public static final String ETCHER_ID = "etcher";
+    // item ids
+    public static final String COAL_DUST_ID = "coal_dust";
+    public static final String CARB_FLUIX_DUST_ID = "carbonic_fluix_dust";
+    public static final String RESONATING_GEM_ID = "resonating_gem";
+    public static final String FLUIX_IRON_ID = "fluix_iron_ingot";
+    public static final String FLUIX_STEEL_ID = "fluix_steel_ingot";
+    public static final String LOGIC_UNIT_ID = "logic_unit";
+    public static final String GROWTH_CHAMBER_ID = "growth_chamber";
+    public static final String UNIVERSAL_PRESS_ID = "universal_press";
+    public static final String PARALLEL_PRINTED_ID = "parallel_printed";
+    public static final String PARALLEL_PROCESSOR_ID = "parallel_processor";
+    public static final String SPEC_PRINTED_ID = "speculative_printed";
+    public static final String SPEC_PROCESSOR_ID = "speculative_processor";
+    public static final String SPEC_CORE_1_ID = "speculative_core_1";
+    public static final String SPEC_CORE_2_ID = "speculative_core_2";
+    public static final String SPEC_CORE_4_ID = "speculative_core_4";
+    public static final String SPEC_CORE_8_ID = "speculative_core_8";
+    public static final String SPEC_CORE_16_ID = "speculative_core_16";
+    public static final String SPEC_CORE_32_ID = "speculative_core_32";
+    public static final String SPEC_CORE_64_ID = "speculative_core_64";
     // nbt keys
     public static final String INVENTORY_ID = "inventory";
     public static final String SIDE_CONFIG_ID = "side_config";
