@@ -10,9 +10,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.tileentity.TileEntityType.Builder;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -128,6 +132,50 @@ public final class Setup {
 
         private static RegistryObject<Item> register(String id) {
             return REGISTRY.register(id, () -> new Item(new Properties().tab(TAB)));
+        }
+    }
+
+    public static final class Tags {
+
+        private Tags() {}
+
+        public static final class Items {
+            public static final INamedTag<Item> DUSTS_COAL = forge("dusts/coal");
+            public static final INamedTag<Item> DUSTS_CARBONIC_FLUIX = forge("dusts/carbonic_fluix");
+            public static final INamedTag<Item> GEMS_RESONATING = forge("gems/resonating");
+            public static final INamedTag<Item> INGOTS_FLUIX_IRON = forge("ingots/fluix_iron");
+            public static final INamedTag<Item> INGOTS_FLUIX_STEEL = forge("ingots/fluix_steel");
+
+            public static final INamedTag<Item> PROCESSOR_PARALLEL = mod("processors/parallel");
+            public static final INamedTag<Item> PROCESSOR_SPEC = mod("processors/speculative");
+
+            // Applied Energistics 2
+            public static final INamedTag<Item> SILICON = ItemTags.bind("forge:silicon");
+
+            private Items() {}
+
+            private static INamedTag<Item> forge(String path) {
+                return ItemTags.bind(new ResourceLocation("forge", path).toString());
+            }
+
+            private static INamedTag<Item> mod(String path) {
+                return ItemTags.bind(new ResourceLocation(MOD_ID, path).toString());
+            }
+        }
+
+        public static final class Blocks {
+
+            private static final String MACHINE_ENTRY = "machines/";
+            public static final INamedTag<Block> MACHINES_FLUIX_AGGREGATOR = mod(MACHINE_ENTRY + AGGREGATOR_ID);
+            public static final INamedTag<Block> MACHINES_PULSE_CENTRIFUGE = mod(MACHINE_ENTRY + CENTRIFUGE_ID);
+            public static final INamedTag<Block> MACHINES_CRYSTAL_ENERGIZER = mod(MACHINE_ENTRY + ENERGIZER_ID);
+            public static final INamedTag<Block> MACHINES_CIRCUIT_ETCHER = mod(MACHINE_ENTRY + ETCHER_ID);
+
+            private Blocks() {}
+
+            private static INamedTag<Block> mod(String path) {
+                return BlockTags.bind(new ResourceLocation(MOD_ID, path).toString());
+            }
         }
     }
 }
