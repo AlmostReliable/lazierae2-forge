@@ -1,8 +1,17 @@
 package com.github.almostreliable.lazierae2.core;
 
+import com.github.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import com.github.almostreliable.lazierae2.machine.MachineContainer;
 import com.github.almostreliable.lazierae2.machine.MachineTile;
+import com.github.almostreliable.lazierae2.recipe.serializer.AggregatorSerializer;
+import com.github.almostreliable.lazierae2.recipe.serializer.CentrifugeSerializer;
+import com.github.almostreliable.lazierae2.recipe.serializer.EnergizerSerializer;
+import com.github.almostreliable.lazierae2.recipe.serializer.EtcherSerializer;
+import com.github.almostreliable.lazierae2.recipe.type.AggregatorRecipe;
+import com.github.almostreliable.lazierae2.recipe.type.CentrifugeRecipe;
+import com.github.almostreliable.lazierae2.recipe.type.EnergizerRecipe;
+import com.github.almostreliable.lazierae2.recipe.type.EtcherRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -10,6 +19,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
@@ -38,6 +49,7 @@ public final class Setup {
         Items.REGISTRY.register(modEventBus);
         Tiles.REGISTRY.register(modEventBus);
         Containers.REGISTRY.register(modEventBus);
+        Serializers.REGISTRY.register(modEventBus);
     }
 
     public static final class Tiles {
@@ -176,6 +188,45 @@ public final class Setup {
             private static INamedTag<Block> mod(String path) {
                 return BlockTags.bind(new ResourceLocation(MOD_ID, path).toString());
             }
+        }
+    }
+
+    public static final class Recipes {
+
+        private Recipes() {}
+
+        public static final class Types {
+
+            public static final IRecipeType<AggregatorRecipe> AGGREGATOR = IRecipeType.register(
+                MOD_ID + ":" + AGGREGATOR_ID);
+            public static final IRecipeType<CentrifugeRecipe> CENTRIFUGE = IRecipeType.register(
+                MOD_ID + ":" + CENTRIFUGE_ID);
+            public static final IRecipeType<EnergizerRecipe> ENERGIZER = IRecipeType.register(
+                MOD_ID + ":" + ENERGIZER_ID);
+            public static final IRecipeType<EtcherRecipe> ETCHER = IRecipeType.register(MOD_ID + ":" + ETCHER_ID);
+
+            private Types() {}
+        }
+
+        public static final class Serializers {
+
+            public static final DeferredRegister<IRecipeSerializer<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS,
+                MOD_ID
+            );
+            public static final RegistryObject<IRecipeSerializer<AggregatorRecipe>> AGGREGATOR = REGISTRY.register(AGGREGATOR_ID,
+                AggregatorSerializer::new
+            );
+            public static final RegistryObject<IRecipeSerializer<CentrifugeRecipe>> CENTRIFUGE = REGISTRY.register(CENTRIFUGE_ID,
+                CentrifugeSerializer::new
+            );
+            public static final RegistryObject<IRecipeSerializer<EnergizerRecipe>> ENERGIZER = REGISTRY.register(ENERGIZER_ID,
+                EnergizerSerializer::new
+            );
+            public static final RegistryObject<IRecipeSerializer<EtcherRecipe>> ETCHER = REGISTRY.register(ETCHER_ID,
+                EtcherSerializer::new
+            );
+
+            private Serializers() {}
         }
     }
 }
