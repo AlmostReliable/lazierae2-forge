@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ama",
+    "aba",
+    "afa"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:quartz_growth_accelerator"
+    },
+    "m": {
+      "item": "appliedenergistics2:molecular_assembler"
+    },
+    "b": {
+      "item": "minecraft:water_bucket"
+    },
+    "f": {
+      "item": "appliedenergistics2:fluix_glass_cable"
+    }
+  },
+  "result": {
+    "item": "lazierae2:growth_chamber"
+  }
+}

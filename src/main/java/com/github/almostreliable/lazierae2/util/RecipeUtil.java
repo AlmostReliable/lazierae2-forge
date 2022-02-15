@@ -62,7 +62,7 @@ public final class RecipeUtil {
     public static void toNetwork(PacketBuffer buffer, MachineRecipe recipe) {
         buffer.writeInt(recipe.getProcessTime());
         buffer.writeInt(recipe.getEnergyCost());
-        buffer.writeItem(recipe.getOutput());
+        buffer.writeItem(recipe.getResultItem());
         buffer.writeByte(recipe.getInputs().size());
         recipe.getInputs().forEach(input -> input.toNetwork(buffer));
     }

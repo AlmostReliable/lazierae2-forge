@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sgs",
+    "dpd",
+    "sgs"
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:ingots/fluix_steel"
+    },
+    "g": {
+      "item": "appliedenergistics2:quartz_glass"
+    },
+    "d": {
+      "tag": "forge:dusts/carbonic_fluix"
+    },
+    "p": {
+      "item": "appliedenergistics2:engineering_processor"
+    }
+  },
+  "result": {
+    "item": "lazierae2:logic_unit"
+  }
+}

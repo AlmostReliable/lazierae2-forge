@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 public abstract class MachineRecipe implements IRecipe<IInventory> {
 
     private final ResourceLocation id;
-    NonNullList<Ingredient> inputs;
+    NonNullList<Ingredient> inputs = NonNullList.create();
     private int processTime;
     private int energyCost;
     private ItemStack output;

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "fif",
+    "ili",
+    "pup"
+  ],
+  "key": {
+    "f": {
+      "tag": "forge:ingots/fluix_steel"
+    },
+    "i": {
+      "item": "appliedenergistics2:inscriber"
+    },
+    "l": {
+      "item": "lazierae2:logic_unit"
+    },
+    "p": {
+      "tag": "lazierae2:processors/speculative"
+    },
+    "u": {
+      "item": "lazierae2:universal_press"
+    }
+  },
+  "result": {
+    "item": "lazierae2:etcher"
+  }
+}

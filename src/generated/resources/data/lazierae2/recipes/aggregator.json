@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "fmf",
+    "ouo",
+    "lcl"
+  ],
+  "key": {
+    "f": {
+      "item": "appliedenergistics2:fluix_pearl"
+    },
+    "m": {
+      "item": "appliedenergistics2:molecular_assembler"
+    },
+    "o": {
+      "item": "minecraft:observer"
+    },
+    "u": {
+      "item": "lazierae2:logic_unit"
+    },
+    "l": {
+      "item": "appliedenergistics2:logic_processor"
+    },
+    "c": {
+      "item": "appliedenergistics2:condenser"
+    }
+  },
+  "result": {
+    "item": "lazierae2:aggregator"
+  }
+}

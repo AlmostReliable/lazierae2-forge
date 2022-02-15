@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "item": "lazierae2:speculative_core_1"
+    },
+    {
+      "item": "lazierae2:speculative_core_1"
+    }
+  ],
+  "result": {
+    "item": "lazierae2:speculative_core_2"
+  }
+}

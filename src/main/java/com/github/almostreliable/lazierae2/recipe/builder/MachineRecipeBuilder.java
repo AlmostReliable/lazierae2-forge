@@ -7,6 +7,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
@@ -15,7 +16,7 @@ import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
 public abstract class MachineRecipeBuilder {
 
     protected final ItemStack output;
-    NonNullList<Ingredient> inputs;
+    NonNullList<Ingredient> inputs = NonNullList.create();
     int processingTime;
     int energyCost;
 
@@ -23,45 +24,46 @@ public abstract class MachineRecipeBuilder {
         this.output = new ItemStack(output, outputCount);
     }
 
-    public void build(Consumer<? super IFinishedRecipe> consumer) {
-        ResourceLocation outputId = output.getItem().getRegistryName();
-        assert outputId != null;
-        ResourceLocation recipeId = new ResourceLocation(MOD_ID, getMachineId() + "/" + outputId.getPath());
-        validateProcessingTime();
-        validateEnergyCost();
-        build(consumer, recipeId);
-    }
-
-    public AggregatorRecipeBuilder aggregator(IItemProvider output, int outputCount) {
+    public static AggregatorRecipeBuilder aggregator(IItemProvider output, int outputCount) {
         return new AggregatorRecipeBuilder(output, outputCount);
     }
 
-    public AggregatorRecipeBuilder aggregator(IItemProvider output) {
+    public static AggregatorRecipeBuilder aggregator(IItemProvider output) {
         return new AggregatorRecipeBuilder(output, 1);
     }
 
-    public CentrifugeRecipeBuilder centrifuge(IItemProvider output, int outputCount) {
+    public static CentrifugeRecipeBuilder centrifuge(IItemProvider output, int outputCount) {
         return new CentrifugeRecipeBuilder(output, outputCount);
     }
 
-    public CentrifugeRecipeBuilder centrifuge(IItemProvider output) {
+    public static CentrifugeRecipeBuilder centrifuge(IItemProvider output) {
         return new CentrifugeRecipeBuilder(output, 1);
     }
 
-    public EnergizerRecipeBuilder energizer(IItemProvider output, int outputCount) {
+    public static EnergizerRecipeBuilder energizer(IItemProvider output, int outputCount) {
         return new EnergizerRecipeBuilder(output, outputCount);
     }
 
-    public EnergizerRecipeBuilder energizer(IItemProvider output) {
+    public static EnergizerRecipeBuilder energizer(IItemProvider output) {
         return new EnergizerRecipeBuilder(output, 1);
     }
 
-    public EtcherRecipeBuilder etcher(IItemProvider output, int outputCount) {
+    public static EtcherRecipeBuilder etcher(IItemProvider output, int outputCount) {
         return new EtcherRecipeBuilder(output, outputCount);
     }
 
-    public EtcherRecipeBuilder etcher(IItemProvider output) {
+    public static EtcherRecipeBuilder etcher(IItemProvider output) {
         return new EtcherRecipeBuilder(output, 1);
+    }
+
+    public void build(Consumer<? super IFinishedRecipe> consumer) {
+        ResourceLocation outputId = output.getItem().getRegistryName();
+        String modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
+            outputId.getNamespace();
+        ResourceLocation recipeId = new ResourceLocation(modID, getMachineId() + "/" + outputId.getPath());
+        validateProcessingTime();
+        validateEnergyCost();
+        build(consumer, recipeId);
     }
 
     protected abstract void validateProcessingTime();

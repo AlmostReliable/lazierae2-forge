@@ -6,6 +6,7 @@ import appeng.api.definitions.IParts;
 import appeng.api.util.AEColor;
 import appeng.core.Api;
 import com.github.almostreliable.lazierae2.core.Setup;
+import com.github.almostreliable.lazierae2.recipe.builder.MachineRecipeBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.*;
 import net.minecraft.item.Items;
@@ -31,6 +32,7 @@ public class RecipeData extends RecipeProvider {
         shapedItems(c);
         shapelessItems(c);
         cookingItems(c);
+        aggregatorRecipes(c);
     }
 
     private void shapedBlocks(Consumer<IFinishedRecipe> c) {
@@ -175,5 +177,49 @@ public class RecipeData extends RecipeProvider {
             .smelting(Ingredient.of(Setup.Tags.Items.INGOTS_FLUIX_IRON), Setup.Items.FLUIX_STEEL.get(), 0.15F, 120)
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.INGOTS_FLUIX_IRON))
             .save(c);
+    }
+
+    private void aggregatorRecipes(Consumer<? super IFinishedRecipe> c) {
+        MachineRecipeBuilder
+            .aggregator(Setup.Items.FLUIX_STEEL.get())
+            .input(Setup.Tags.Items.DUSTS_COAL)
+            .input(AE_MATERIALS.fluixDust())
+            .input(Tags.Items.INGOTS_IRON)
+            .processingTime(80)
+            .energyCost(1_500)
+            .build(c);
+        MachineRecipeBuilder
+            .aggregator(Setup.Items.CARB_FLUIX_DUST.get())
+            .input(Setup.Tags.Items.DUSTS_COAL)
+            .input(AE_MATERIALS.fluixDust())
+            .input(Setup.Tags.Items.SILICON)
+            .processingTime(30)
+            .energyCost(300)
+            .build(c);
+        MachineRecipeBuilder
+            .aggregator(AE_MATERIALS.fluixCrystal(), 2)
+            .input(Tags.Items.GEMS_QUARTZ)
+            .input(Tags.Items.DUSTS_REDSTONE)
+            .input(AE_MATERIALS.certusQuartzCrystalCharged())
+            .processingTime(25)
+            .energyCost(250)
+            .build(c);
+        MachineRecipeBuilder
+            .aggregator(Setup.Items.RESONATING_GEM.get())
+            .input(AE_MATERIALS.skyDust())
+            .input(Tags.Items.GEMS_DIAMOND)
+            .input(AE_MATERIALS.enderDust())
+            .processingTime(120)
+            .energyCost(2_000)
+            .build(c);
+        MachineRecipeBuilder
+            .aggregator(Setup.Items.SPEC_CORE_1.get())
+            .input(AE_MATERIALS.skyDust())
+            .input(AE_MATERIALS.matterBall())
+            .input(Setup.Items.CARB_FLUIX_DUST.get())
+            .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
+            .processingTime(60)
+            .energyCost(600)
+            .build(c);
     }
 }

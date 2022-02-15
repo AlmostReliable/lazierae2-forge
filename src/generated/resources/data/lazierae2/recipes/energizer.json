@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "fcf",
+    "quq",
+    "fdf"
+  ],
+  "key": {
+    "f": {
+      "tag": "forge:ingots/fluix_steel"
+    },
+    "c": {
+      "item": "appliedenergistics2:charger"
+    },
+    "q": {
+      "item": "appliedenergistics2:quartz_fiber"
+    },
+    "u": {
+      "item": "lazierae2:logic_unit"
+    },
+    "d": {
+      "item": "appliedenergistics2:energy_cell"
+    }
+  },
+  "result": {
+    "item": "lazierae2:energizer"
+  }
+}
