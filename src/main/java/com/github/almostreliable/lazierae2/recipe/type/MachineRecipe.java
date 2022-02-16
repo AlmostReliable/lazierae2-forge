@@ -28,12 +28,17 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
 
     @Override
     public boolean canCraftInDimensions(int width, int height) {
-        return true;
+        return false;
     }
 
     @Override
     public ItemStack getResultItem() {
         return output;
+    }
+
+    @Override
+    public boolean isSpecial() {
+        return true;
     }
 
     @Override
