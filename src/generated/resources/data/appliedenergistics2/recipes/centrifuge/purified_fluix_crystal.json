@@ -1,0 +1,14 @@
+{
+  "type": "lazierae2:centrifuge",
+  "process_time": 180,
+  "energy_cost": 2000,
+  "output": {
+    "item": "appliedenergistics2:purified_fluix_crystal",
+    "amount": 2
+  },
+  "input": [
+    {
+      "item": "appliedenergistics2:fluix_crystal"
+    }
+  ]
+}

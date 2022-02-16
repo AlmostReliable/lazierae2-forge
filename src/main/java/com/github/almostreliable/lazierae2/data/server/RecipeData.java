@@ -33,6 +33,9 @@ public class RecipeData extends RecipeProvider {
         shapelessItems(c);
         cookingItems(c);
         aggregatorRecipes(c);
+        centrifugeRecipes(c);
+        energizerRecipes(c);
+        etcherRecipes(c);
     }
 
     private void shapedBlocks(Consumer<IFinishedRecipe> c) {
@@ -220,6 +223,105 @@ public class RecipeData extends RecipeProvider {
             .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
             .processingTime(60)
             .energyCost(600)
+            .build(c);
+    }
+
+    private void centrifugeRecipes(Consumer<? super IFinishedRecipe> c) {
+        MachineRecipeBuilder
+            .centrifuge(AE_MATERIALS.purifiedCertusQuartzCrystal(), 2)
+            .input(AE_MATERIALS.certusQuartzCrystal())
+            .processingTime(180)
+            .energyCost(2_000)
+            .build(c);
+        MachineRecipeBuilder
+            .centrifuge(AE_MATERIALS.purifiedNetherQuartzCrystal(), 2)
+            .input(Tags.Items.GEMS_QUARTZ)
+            .processingTime(180)
+            .energyCost(2_000)
+            .build(c);
+        MachineRecipeBuilder
+            .centrifuge(AE_MATERIALS.purifiedFluixCrystal(), 2)
+            .input(AE_MATERIALS.fluixCrystal())
+            .processingTime(180)
+            .energyCost(2_000)
+            .build(c);
+        MachineRecipeBuilder
+            .centrifuge(AE_MATERIALS.skyDust())
+            .input(AE_BLOCKS.skyStoneBlock())
+            .processingTime(80)
+            .energyCost(800)
+            .build(c);
+        MachineRecipeBuilder
+            .centrifuge(AE_MATERIALS.enderDust())
+            .input(Tags.Items.ENDER_PEARLS)
+            .processingTime(80)
+            .energyCost(800)
+            .build(c);
+        MachineRecipeBuilder
+            .centrifuge(AE_MATERIALS.flour())
+            .input(Tags.Items.CROPS_WHEAT)
+            .processingTime(30)
+            .energyCost(250)
+            .build(c);
+    }
+
+    private void energizerRecipes(Consumer<? super IFinishedRecipe> c) {
+        MachineRecipeBuilder
+            .energizer(AE_MATERIALS.certusQuartzCrystalCharged())
+            .input(AE_MATERIALS.certusQuartzCrystal())
+            .processingTime(80)
+            .energyCost(1_500)
+            .build(c);
+    }
+
+    private void etcherRecipes(Consumer<? super IFinishedRecipe> c) {
+        MachineRecipeBuilder
+            .etcher(AE_MATERIALS.logicProcessor().item())
+            .input(Tags.Items.INGOTS_GOLD)
+            .input(Tags.Items.DUSTS_REDSTONE)
+            .input(Setup.Tags.Items.SILICON)
+            .processingTime(100)
+            .energyCost(1_000)
+            .build(c);
+        MachineRecipeBuilder
+            .etcher(AE_MATERIALS.calcProcessor().item())
+            .input(AE_MATERIALS.purifiedCertusQuartzCrystal().item())
+            .input(Tags.Items.DUSTS_REDSTONE)
+            .input(Setup.Tags.Items.SILICON)
+            .processingTime(100)
+            .energyCost(1_000)
+            .build(c);
+        MachineRecipeBuilder
+            .etcher(AE_MATERIALS.engProcessor().item())
+            .input(Tags.Items.GEMS_DIAMOND)
+            .input(Tags.Items.DUSTS_REDSTONE)
+            .input(Setup.Tags.Items.SILICON)
+            .processingTime(100)
+            .energyCost(1_000)
+            .build(c);
+        MachineRecipeBuilder
+            .etcher(Setup.Items.PARALLEL_PROCESSOR.get())
+            .input(Setup.Tags.Items.GEMS_RESONATING)
+            .input(Tags.Items.DUSTS_REDSTONE)
+            .input(Setup.Tags.Items.SILICON)
+            .processingTime(150)
+            .energyCost(1_500)
+            .build(c);
+        MachineRecipeBuilder
+            .etcher(Setup.Items.SPEC_PROCESSOR.get())
+            .input(Setup.Items.SPEC_CORE_64.get())
+            .input(Tags.Items.DUSTS_REDSTONE)
+            .input(Setup.Tags.Items.SILICON)
+            .processingTime(150)
+            .energyCost(1_500)
+            .build(c);
+        MachineRecipeBuilder
+            .etcher(Setup.Items.FLUIX_IRON.get())
+            .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
+            .input(Tags.Items.INGOTS_IRON)
+            .input(AE_MATERIALS.skyDust().item())
+            .processingTime(40)
+            .energyCost(200)
             .build(c);
     }
 }

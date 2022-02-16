@@ -1,0 +1,13 @@
+{
+  "type": "lazierae2:centrifuge",
+  "process_time": 30,
+  "energy_cost": 250,
+  "output": {
+    "item": "appliedenergistics2:flour"
+  },
+  "input": [
+    {
+      "tag": "forge:crops/wheat"
+    }
+  ]
+}

@@ -2,10 +2,7 @@ package com.github.almostreliable.lazierae2.recipe.builder;
 
 import com.github.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 

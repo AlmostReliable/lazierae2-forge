@@ -1,0 +1,19 @@
+{
+  "type": "lazierae2:etcher",
+  "process_time": 150,
+  "energy_cost": 1500,
+  "output": {
+    "item": "lazierae2:parallel_processor"
+  },
+  "input": [
+    {
+      "tag": "forge:gems/resonating"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "tag": "forge:silicon"
+    }
+  ]
+}

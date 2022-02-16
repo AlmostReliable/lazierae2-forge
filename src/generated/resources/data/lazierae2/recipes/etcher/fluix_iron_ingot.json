@@ -1,0 +1,19 @@
+{
+  "type": "lazierae2:etcher",
+  "process_time": 40,
+  "energy_cost": 200,
+  "output": {
+    "item": "lazierae2:fluix_iron_ingot"
+  },
+  "input": [
+    {
+      "tag": "forge:dusts/carbonic_fluix"
+    },
+    {
+      "tag": "forge:ingots/iron"
+    },
+    {
+      "item": "appliedenergistics2:sky_dust"
+    }
+  ]
+}
