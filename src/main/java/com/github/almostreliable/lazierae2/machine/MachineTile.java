@@ -284,22 +284,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
             .getRecipeFor(getMachineType(), new RecipeWrapper(inventory), level)
             .orElse(null);
     }
-
-    // private IRecipeType<? extends MachineRecipe> getRecipeType() {
-    //     switch (getMachineType()) {
-    //         case AGGREGATOR_ID:
-    //             return Types.AGGREGATOR;
-    //         case CENTRIFUGE_ID:
-    //             return Types.CENTRIFUGE;
-    //         case ENERGIZER_ID:
-    //             return Types.ENERGIZER;
-    //         case ETCHER_ID:
-    //             return Types.ETCHER;
-    //         default:
-    //             throw new IllegalStateException("Unknown machine id: " + getMachineType());
-    //     }
-    // }
-
+    
     public SideConfiguration getSideConfig() {
         return sideConfig;
     }
