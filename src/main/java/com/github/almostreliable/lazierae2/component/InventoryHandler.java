@@ -4,8 +4,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
-
 public class InventoryHandler extends ItemStackHandler {
 
     public static final int NON_INPUT_SLOTS = 2;
@@ -18,6 +16,16 @@ public class InventoryHandler extends ItemStackHandler {
         this.tile = tile;
     }
 
+    public void shrinkInputSlots() {
+        for (int i = NON_INPUT_SLOTS; i < getSlots(); i++) {
+            if (getStackInSlot(i).isEmpty()) {
+                setStackInSlot(i, ItemStack.EMPTY);
+            } else {
+                getStackInSlot(i).shrink(1);
+            }
+        }
+    }
+
     @Override
     protected void onContentsChanged(int slot) {
         tile.setChanged();
@@ -27,7 +35,6 @@ public class InventoryHandler extends ItemStackHandler {
         return getSlots() - NON_INPUT_SLOTS;
     }
 
-    @Nonnull
     public ItemStack getStackInOutput() {
         return getStackInSlot(OUTPUT_SLOT);
     }
@@ -36,7 +43,7 @@ public class InventoryHandler extends ItemStackHandler {
         setStackInSlot(OUTPUT_SLOT, stack);
     }
 
-    public void setSizeByInputs(int inputs) {
-        setSize(inputs + NON_INPUT_SLOTS);
+    public int getUpgradeCount() {
+        return getStackInSlot(UPGRADE_SLOT).getCount();
     }
 }

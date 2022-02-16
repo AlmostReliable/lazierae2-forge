@@ -3,16 +3,22 @@ package com.github.almostreliable.lazierae2.machine;
 import com.github.almostreliable.lazierae2.component.EnergyHandler;
 import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import com.github.almostreliable.lazierae2.component.SideConfiguration;
+import com.github.almostreliable.lazierae2.core.Setup.Recipes.Types;
 import com.github.almostreliable.lazierae2.core.Setup.Tiles;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
+import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.github.almostreliable.lazierae2.util.GameUtil;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -20,11 +26,13 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,7 +53,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private final Map<Direction, LazyOptional<IItemHandler>> outputsCache = new EnumMap<>(Direction.class);
     private boolean autoExtract;
     private int progress;
-    private int processTime = 200;
+    private int processTime;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     MachineTile(int inputSlots) {
@@ -111,15 +119,22 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     public void tick() {
         if (level == null || level.isClientSide) return;
 
-        // TODO
-        // testing to sync progress
-        if (progress == processTime) {
-            progress = 0;
-        }
-        progress++;
-
-        // TODO make auto extract interval configurable
+        // TODO: make auto extract interval configurable
         if (autoExtract && level.getGameTime() % 20 == 0) autoExtract();
+
+        // TODO: cache last recipe and check it first
+        MachineRecipe recipe = getRecipe();
+        if (recipe == null) {
+            stopWork();
+            return;
+        }
+
+        int energyCost = calculateEnergyCost(recipe);
+        if (canWork(recipe, energyCost)) {
+            doWork(recipe, energyCost);
+        } else {
+            setActivityState(false);
+        }
     }
 
     @Override
@@ -142,6 +157,66 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
             }
         }
         return super.getCapability(cap, direction);
+    }
+
+    private void doWork(MachineRecipe recipe, int energyCost) {
+        processTime = calculateProcessTime(recipe);
+        energy.setEnergy(energy.getEnergyStored() - energyCost);
+
+        if (progress < processTime) {
+            setActivityState(true);
+            progress++;
+        } else {
+            finishWork(recipe);
+        }
+    }
+
+    private void finishWork(IRecipe<? super IInventory> recipe) {
+        if (inventory.getStackInOutput().isEmpty()) {
+            inventory.setStackInOutput(recipe.assemble(new RecipeWrapper(inventory)));
+        } else {
+            inventory.getStackInOutput().grow(recipe.getResultItem().getCount());
+        }
+
+        inventory.shrinkInputSlots();
+        stopWork();
+    }
+
+    private void updateState(BlockState state) {
+        if (level == null) return;
+        BlockState oldState = level.getBlockState(worldPosition);
+        if (!oldState.equals(state)) {
+            level.setBlock(worldPosition, state, BlockFlags.NOTIFY_NEIGHBORS | BlockFlags.BLOCK_UPDATE);
+        }
+    }
+
+    private void stopWork() {
+        setActivityState(false);
+        progress = 0;
+    }
+
+    private int calculateEnergyCost(MachineRecipe recipe) {
+        int baseCost = recipe.getEnergyCost();
+        double upgradeMultiplier = getUpgradeEnergyMultiplier();
+        return (int) (baseCost * upgradeMultiplier);
+    }
+
+    private int calculateProcessTime(MachineRecipe recipe) {
+        int baseTime = recipe.getProcessTime();
+        double upgradeMultiplier = getUpgradeProcessTimeMultiplier();
+        return (int) (baseTime * upgradeMultiplier);
+    }
+
+    private boolean canWork(IRecipe<IInventory> recipe, int energyCost) {
+        if (energyCost > energy.getEnergyStored()) return false;
+
+        ItemStack current = inventory.getStackInOutput();
+        if (current.isEmpty()) return true;
+
+        ItemStack finished = recipe.getResultItem();
+        int mergeCount = current.getCount() + finished.getCount();
+        return current.sameItem(finished) && mergeCount <= finished.getMaxStackSize() &&
+            mergeCount <= inventory.getSlotLimit(InventoryHandler.OUTPUT_SLOT);
     }
 
     private void autoExtract() {
@@ -190,6 +265,78 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         return target;
     }
 
+    private double getUpgradeEnergyMultiplier() {
+        int upgradeCount = inventory.getUpgradeCount();
+        if (upgradeCount == 0) return 1.0;
+        double multiplier;
+        // TODO: grab from config
+        switch (getId()) {
+            case AGGREGATOR_ID:
+                multiplier = 1.0;
+                break;
+            case CENTRIFUGE_ID:
+                multiplier = 1.0;
+                break;
+            case ENERGIZER_ID:
+                multiplier = 1.0;
+                break;
+            case ETCHER_ID:
+                multiplier = 1.0;
+                break;
+            default:
+                throw new IllegalStateException("Unknown machine id: " + getId());
+        }
+        return multiplier * upgradeCount;
+    }
+
+    private double getUpgradeProcessTimeMultiplier() {
+        int upgradeCount = inventory.getUpgradeCount();
+        if (upgradeCount == 0) return 1.0;
+        double multiplier;
+        // TODO: grab from config
+        switch (getId()) {
+            case AGGREGATOR_ID:
+                multiplier = 1.0;
+                break;
+            case CENTRIFUGE_ID:
+                multiplier = 1.0;
+                break;
+            case ENERGIZER_ID:
+                multiplier = 1.0;
+                break;
+            case ETCHER_ID:
+                multiplier = 1.0;
+                break;
+            default:
+                throw new IllegalStateException("Unknown machine id: " + getId());
+        }
+        return multiplier * upgradeCount;
+    }
+
+    @Nullable
+    private MachineRecipe getRecipe() {
+        assert level != null;
+        return GameUtil
+            .getRecipeManager(level)
+            .getRecipeFor(getRecipeType(), new RecipeWrapper(inventory), level)
+            .orElse(null);
+    }
+
+    private IRecipeType<? extends MachineRecipe> getRecipeType() {
+        switch (getId()) {
+            case AGGREGATOR_ID:
+                return Types.AGGREGATOR;
+            case CENTRIFUGE_ID:
+                return Types.CENTRIFUGE;
+            case ENERGIZER_ID:
+                return Types.ENERGIZER;
+            case ETCHER_ID:
+                return Types.ETCHER;
+            default:
+                throw new IllegalStateException("Unknown machine id: " + getId());
+        }
+    }
+
     public SideConfiguration getSideConfig() {
         return sideConfig;
     }
@@ -225,5 +372,15 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     public void setAutoExtract(boolean autoExtract) {
         this.autoExtract = autoExtract;
+    }
+
+    private void setActivityState(boolean active) {
+        if (level == null) return;
+        BlockState state = level.getBlockState(worldPosition);
+        if (active && state.getValue(MachineBlock.ACTIVE).equals(false)) {
+            updateState(state.setValue(MachineBlock.ACTIVE, true));
+        } else if (!active && state.getValue(MachineBlock.ACTIVE).equals(true)) {
+            updateState(state.setValue(MachineBlock.ACTIVE, false));
+        }
     }
 }
