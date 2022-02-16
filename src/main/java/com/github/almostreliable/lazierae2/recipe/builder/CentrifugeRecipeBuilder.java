@@ -13,33 +13,10 @@ import java.util.function.Consumer;
 
 import static com.github.almostreliable.lazierae2.core.Constants.CENTRIFUGE_ID;
 
-public class CentrifugeRecipeBuilder extends MachineRecipeBuilder {
+public class CentrifugeRecipeBuilder extends MachineRecipeBuilder<CentrifugeRecipeBuilder> {
 
     CentrifugeRecipeBuilder(IItemProvider output, int outputCount) {
         super(output, outputCount);
-    }
-
-    public CentrifugeRecipeBuilder input(Ingredient input) {
-        if (inputs.size() < 1) inputs.add(input);
-        return this;
-    }
-
-    public CentrifugeRecipeBuilder input(IItemProvider input) {
-        return input(Ingredient.of(input));
-    }
-
-    public CentrifugeRecipeBuilder input(ITag<Item> input) {
-        return input(Ingredient.of(input));
-    }
-
-    public CentrifugeRecipeBuilder processingTime(int ticks) {
-        processingTime = ticks;
-        return this;
-    }
-
-    public CentrifugeRecipeBuilder energyCost(int energy) {
-        energyCost = energy;
-        return this;
     }
 
     @Override

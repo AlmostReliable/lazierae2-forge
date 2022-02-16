@@ -10,7 +10,7 @@ import java.util.Objects;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
 
-public abstract class FinishedMachineRecipe<B extends MachineRecipeBuilder> implements IFinishedRecipe {
+public abstract class FinishedMachineRecipe<B extends MachineRecipeBuilder<?>> implements IFinishedRecipe {
 
     private final B builder;
     private final ResourceLocation recipeId;

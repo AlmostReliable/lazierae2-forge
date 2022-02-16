@@ -13,33 +13,10 @@ import java.util.function.Consumer;
 
 import static com.github.almostreliable.lazierae2.core.Constants.ENERGIZER_ID;
 
-public class EnergizerRecipeBuilder extends MachineRecipeBuilder {
+public class EnergizerRecipeBuilder extends MachineRecipeBuilder<EnergizerRecipeBuilder> {
 
     EnergizerRecipeBuilder(IItemProvider output, int outputCount) {
         super(output, outputCount);
-    }
-
-    public EnergizerRecipeBuilder input(Ingredient input) {
-        if (inputs.size() < 1) inputs.add(input);
-        return this;
-    }
-
-    public EnergizerRecipeBuilder input(IItemProvider input) {
-        return input(Ingredient.of(input));
-    }
-
-    public EnergizerRecipeBuilder input(ITag<Item> input) {
-        return input(Ingredient.of(input));
-    }
-
-    public EnergizerRecipeBuilder processingTime(int ticks) {
-        processingTime = ticks;
-        return this;
-    }
-
-    public EnergizerRecipeBuilder energyCost(int energy) {
-        energyCost = energy;
-        return this;
     }
 
     @Override
