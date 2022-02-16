@@ -1,5 +1,6 @@
 package com.github.almostreliable.lazierae2.machine;
 
+import com.github.almostreliable.lazierae2.recipe.MachineType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
@@ -29,11 +30,11 @@ public class MachineBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ACTIVE = BlockStateProperties.LIT;
-    private final int inputSlots;
+    private final MachineType machineType;
 
-    public MachineBlock(int inputSlots) {
+    public MachineBlock(MachineType machineType) {
         super(Properties.of(Material.METAL).strength(5f).harvestTool(ToolType.PICKAXE).sound(SoundType.METAL));
-        this.inputSlots = inputSlots;
+        this.machineType = machineType;
     }
 
     @Nullable
@@ -59,7 +60,7 @@ public class MachineBlock extends Block {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return new MachineTile(inputSlots);
+        return new MachineTile(machineType.getInputSlots());
     }
 
     @SuppressWarnings("deprecation")
@@ -81,7 +82,7 @@ public class MachineBlock extends Block {
         return registryName.getPath();
     }
 
-    int getInputSlots() {
-        return inputSlots;
+    public MachineType getMachineType() {
+        return machineType;
     }
 }

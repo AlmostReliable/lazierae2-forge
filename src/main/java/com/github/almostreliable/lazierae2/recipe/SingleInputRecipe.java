@@ -1,13 +1,13 @@
-package com.github.almostreliable.lazierae2.recipe.type;
+package com.github.almostreliable.lazierae2.recipe;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public abstract class SingleInputRecipe extends MachineRecipe {
+public class SingleInputRecipe extends MachineRecipe {
 
-    SingleInputRecipe(ResourceLocation id) {
-        super(id);
+    public SingleInputRecipe(ResourceLocation id, MachineType machineType) {
+        super(id, machineType);
     }
 
     @Override

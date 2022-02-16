@@ -30,7 +30,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
     ) {
         super(container, inventory, container.getTile().getDisplayName());
-        progressTexture = TextUtil.getRL("textures/gui/progress/" + container.getTile().getId() + ".png");
+        progressTexture = TextUtil.getRL("textures/gui/progress/" + container.getTile().getMachineType() + ".png");
     }
 
     @Override

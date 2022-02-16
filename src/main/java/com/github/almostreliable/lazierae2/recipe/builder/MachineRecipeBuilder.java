@@ -1,5 +1,6 @@
 package com.github.almostreliable.lazierae2.recipe.builder;
 
+import com.github.almostreliable.lazierae2.recipe.MachineType;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,68 +16,70 @@ import java.util.function.Consumer;
 import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 @SuppressWarnings("ClassReferencesSubclass")
-public abstract class MachineRecipeBuilder<T> {
+public class MachineRecipeBuilder {
 
     protected final ItemStack output;
+    private final MachineType machineType;
     NonNullList<Ingredient> inputs = NonNullList.create();
     int processingTime;
     int energyCost;
 
-    MachineRecipeBuilder(IItemProvider output, int outputCount) {
+    MachineRecipeBuilder(MachineType machineType, IItemProvider output, int outputCount) {
+        this.machineType = machineType;
         this.output = new ItemStack(output, outputCount);
     }
 
-    public static AggregatorRecipeBuilder aggregator(IItemProvider output, int outputCount) {
-        return new AggregatorRecipeBuilder(output, outputCount);
+    public static MachineRecipeBuilder aggregator(IItemProvider output, int outputCount) {
+        return new MachineRecipeBuilder(MachineType.AGGREGATOR, output, outputCount);
     }
 
-    public static AggregatorRecipeBuilder aggregator(IItemProvider output) {
-        return new AggregatorRecipeBuilder(output, 1);
+    public static MachineRecipeBuilder aggregator(IItemProvider output) {
+        return aggregator(output, 1);
     }
 
-    public static CentrifugeRecipeBuilder centrifuge(IItemProvider output, int outputCount) {
-        return new CentrifugeRecipeBuilder(output, outputCount);
+    public static MachineRecipeBuilder centrifuge(IItemProvider output, int outputCount) {
+        return new MachineRecipeBuilder(MachineType.CENTRIFUGE, output, outputCount);
     }
 
-    public static CentrifugeRecipeBuilder centrifuge(IItemProvider output) {
-        return new CentrifugeRecipeBuilder(output, 1);
+    public static MachineRecipeBuilder centrifuge(IItemProvider output) {
+        return centrifuge(output, 1);
     }
 
-    public static EnergizerRecipeBuilder energizer(IItemProvider output, int outputCount) {
-        return new EnergizerRecipeBuilder(output, outputCount);
+    public static MachineRecipeBuilder energizer(IItemProvider output, int outputCount) {
+        return new MachineRecipeBuilder(MachineType.ENERGIZER, output, outputCount);
     }
 
-    public static EnergizerRecipeBuilder energizer(IItemProvider output) {
-        return new EnergizerRecipeBuilder(output, 1);
+    public static MachineRecipeBuilder energizer(IItemProvider output) {
+        return energizer(output, 1);
     }
 
-    public static EtcherRecipeBuilder etcher(IItemProvider output, int outputCount) {
-        return new EtcherRecipeBuilder(output, outputCount);
+    public static MachineRecipeBuilder etcher(IItemProvider output, int outputCount) {
+        return new MachineRecipeBuilder(MachineType.ETCHER, output, outputCount);
     }
 
-    public static EtcherRecipeBuilder etcher(IItemProvider output) {
-        return new EtcherRecipeBuilder(output, 1);
+    public static MachineRecipeBuilder etcher(IItemProvider output) {
+        return etcher(output, 1);
     }
 
-    public MachineRecipeBuilder<T> input(Ingredient input) {
+    public MachineRecipeBuilder input(Ingredient input) {
         if (inputs.size() < 3) inputs.add(input);
         return this;
     }
 
-    public MachineRecipeBuilder<T> input(IItemProvider input) {
+    public MachineRecipeBuilder input(IItemProvider input) {
         return input(Ingredient.of(input));
     }
 
-    public MachineRecipeBuilder<T> input(ITag<Item> input) {
+    public MachineRecipeBuilder input(ITag<Item> input) {
         return input(Ingredient.of(input));
     }
 
-    public MachineRecipeBuilder<T> processingTime(int ticks) {
+    public MachineRecipeBuilder processingTime(int ticks) {
         processingTime = ticks;
         return this;
     }
 
-    public MachineRecipeBuilder<T> energyCost(int energy) {
+    public MachineRecipeBuilder energyCost(int energy) {
         energyCost = energy;
         return this;
     }
@@ -88,14 +91,24 @@ public abstract class MachineRecipeBuilder<T> {
         ResourceLocation recipeId = new ResourceLocation(modID, getMachineId() + "/" + outputId.getPath());
         validateProcessingTime();
         validateEnergyCost();
-        build(consumer, recipeId);
+        consumer.accept(new FinishedMachineRecipe(this, recipeId));
     }
 
-    protected abstract void validateProcessingTime();
+    protected void validateProcessingTime() {
+        // TODO: read from config
+        if (processingTime == 0) processingTime = machineType.getProcessingTime();
+    }
 
-    protected abstract void validateEnergyCost();
+    protected void validateEnergyCost() {
+        // TODO: read from config
+        if (energyCost == 0) energyCost = machineType.getEnergyCost();
+    }
 
-    protected abstract void build(Consumer<? super IFinishedRecipe> consumer, ResourceLocation recipeId);
+    protected String getMachineId() {
+        return machineType.getId();
+    }
 
-    protected abstract String getMachineId();
+    public MachineType getRecipeType() {
+        return machineType;
+    }
 }

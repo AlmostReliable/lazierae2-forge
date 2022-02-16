@@ -1,5 +1,5 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-package com.github.almostreliable.lazierae2.recipe.type;
+package com.github.almostreliable.lazierae2.recipe;
 
 import mcp.MethodsReturnNonnullByDefault;
 

@@ -1,6 +1,6 @@
 package com.github.almostreliable.lazierae2.util;
 
-import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.github.almostreliable.lazierae2.recipe.MachineRecipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.Ingredient;

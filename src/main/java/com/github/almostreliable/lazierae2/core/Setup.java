@@ -4,14 +4,9 @@ import com.github.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import com.github.almostreliable.lazierae2.machine.MachineContainer;
 import com.github.almostreliable.lazierae2.machine.MachineTile;
-import com.github.almostreliable.lazierae2.recipe.serializer.AggregatorSerializer;
-import com.github.almostreliable.lazierae2.recipe.serializer.CentrifugeSerializer;
-import com.github.almostreliable.lazierae2.recipe.serializer.EnergizerSerializer;
-import com.github.almostreliable.lazierae2.recipe.serializer.EtcherSerializer;
-import com.github.almostreliable.lazierae2.recipe.type.AggregatorRecipe;
-import com.github.almostreliable.lazierae2.recipe.type.CentrifugeRecipe;
-import com.github.almostreliable.lazierae2.recipe.type.EnergizerRecipe;
-import com.github.almostreliable.lazierae2.recipe.type.EtcherRecipe;
+import com.github.almostreliable.lazierae2.recipe.MachineRecipe;
+import com.github.almostreliable.lazierae2.recipe.MachineRecipeSerializer;
+import com.github.almostreliable.lazierae2.recipe.MachineType;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -20,7 +15,6 @@ import net.minecraft.item.Item.Properties;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
@@ -45,6 +39,7 @@ public final class Setup {
     private Setup() {}
 
     public static void init(IEventBus modEventBus) {
+        MachineType etcher = MachineType.AGGREGATOR;
         Blocks.REGISTRY.register(modEventBus);
         Items.REGISTRY.register(modEventBus);
         Tiles.REGISTRY.register(modEventBus);
@@ -101,18 +96,22 @@ public final class Setup {
 
         private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
-        public static final RegistryObject<MachineBlock> AGGREGATOR = register(AGGREGATOR_ID, MachineBlock::new, 3);
-        public static final RegistryObject<MachineBlock> CENTRIFUGE = register(CENTRIFUGE_ID, MachineBlock::new, 1);
-        public static final RegistryObject<MachineBlock> ENERGIZER = register(ENERGIZER_ID, MachineBlock::new, 1);
-        public static final RegistryObject<MachineBlock> ETCHER = register(ETCHER_ID, MachineBlock::new, 3);
+        public static final RegistryObject<MachineBlock> AGGREGATOR = register(MachineBlock::new,
+            MachineType.AGGREGATOR
+        );
+        public static final RegistryObject<MachineBlock> CENTRIFUGE = register(MachineBlock::new,
+            MachineType.CENTRIFUGE
+        );
+        public static final RegistryObject<MachineBlock> ENERGIZER = register(MachineBlock::new, MachineType.ENERGIZER);
+        public static final RegistryObject<MachineBlock> ETCHER = register(MachineBlock::new, MachineType.ETCHER);
 
         private Blocks() {}
 
         private static <B extends MachineBlock> RegistryObject<B> register(
-            String id, Function<? super Integer, ? extends B> constructor, int inputSlots
+            Function<? super MachineType, ? extends B> constructor, MachineType machineType
         ) {
-            RegistryObject<B> block = REGISTRY.register(id, () -> constructor.apply(inputSlots));
-            Items.REGISTRY.register(id, () -> new BlockItem(block.get(), new Properties().tab(TAB)));
+            RegistryObject<B> block = REGISTRY.register(machineType.getId(), () -> constructor.apply(machineType));
+            Items.REGISTRY.register(machineType.getId(), () -> new BlockItem(block.get(), new Properties().tab(TAB)));
             return block;
         }
     }
@@ -178,10 +177,10 @@ public final class Setup {
         public static final class Blocks {
 
             private static final String MACHINE_ENTRY = "machines/";
-            public static final INamedTag<Block> AGGREGATOR = mod(MACHINE_ENTRY + AGGREGATOR_ID);
-            public static final INamedTag<Block> CENTRIFUGE = mod(MACHINE_ENTRY + CENTRIFUGE_ID);
-            public static final INamedTag<Block> ENERGIZER = mod(MACHINE_ENTRY + ENERGIZER_ID);
-            public static final INamedTag<Block> ETCHER = mod(MACHINE_ENTRY + ETCHER_ID);
+            public static final INamedTag<Block> AGGREGATOR = mod(MACHINE_ENTRY + MachineType.AGGREGATOR.getId());
+            public static final INamedTag<Block> CENTRIFUGE = mod(MACHINE_ENTRY + MachineType.CENTRIFUGE.getId());
+            public static final INamedTag<Block> ENERGIZER = mod(MACHINE_ENTRY + MachineType.ENERGIZER.getId());
+            public static final INamedTag<Block> ETCHER = mod(MACHINE_ENTRY + MachineType.ETCHER.getId());
 
             private Blocks() {}
 
@@ -195,36 +194,24 @@ public final class Setup {
 
         private Recipes() {}
 
-        public static final class Types {
-
-            public static final IRecipeType<AggregatorRecipe> AGGREGATOR = IRecipeType.register(
-                MOD_ID + ":" + AGGREGATOR_ID);
-            public static final IRecipeType<CentrifugeRecipe> CENTRIFUGE = IRecipeType.register(
-                MOD_ID + ":" + CENTRIFUGE_ID);
-            public static final IRecipeType<EnergizerRecipe> ENERGIZER = IRecipeType.register(
-                MOD_ID + ":" + ENERGIZER_ID);
-            public static final IRecipeType<EtcherRecipe> ETCHER = IRecipeType.register(MOD_ID + ":" + ETCHER_ID);
-
-            private Types() {}
-        }
-
         public static final class Serializers {
 
             private static final DeferredRegister<IRecipeSerializer<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS,
                 MOD_ID
             );
-            public static final RegistryObject<IRecipeSerializer<AggregatorRecipe>> AGGREGATOR = REGISTRY.register(AGGREGATOR_ID,
-                AggregatorSerializer::new
-            );
-            public static final RegistryObject<IRecipeSerializer<CentrifugeRecipe>> CENTRIFUGE = REGISTRY.register(CENTRIFUGE_ID,
-                CentrifugeSerializer::new
-            );
-            public static final RegistryObject<IRecipeSerializer<EnergizerRecipe>> ENERGIZER = REGISTRY.register(ENERGIZER_ID,
-                EnergizerSerializer::new
-            );
-            public static final RegistryObject<IRecipeSerializer<EtcherRecipe>> ETCHER = REGISTRY.register(ETCHER_ID,
-                EtcherSerializer::new
-            );
+            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> AGGREGATOR
+                = register(MachineType.AGGREGATOR);
+            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> CENTRIFUGE
+                = register(MachineType.CENTRIFUGE);
+            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> ENERGIZER
+                = register(MachineType.ENERGIZER);
+            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> ETCHER = register(MachineType.ETCHER);
+
+            private static RegistryObject<IRecipeSerializer<MachineRecipe>> register(
+                MachineType machineType
+            ) {
+                return REGISTRY.register(machineType.getId(), () -> new MachineRecipeSerializer(machineType));
+            }
 
             private Serializers() {}
         }

@@ -3,11 +3,11 @@ package com.github.almostreliable.lazierae2.machine;
 import com.github.almostreliable.lazierae2.component.EnergyHandler;
 import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import com.github.almostreliable.lazierae2.component.SideConfiguration;
-import com.github.almostreliable.lazierae2.core.Setup.Recipes.Types;
 import com.github.almostreliable.lazierae2.core.Setup.Tiles;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
-import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.github.almostreliable.lazierae2.recipe.MachineType;
+import com.github.almostreliable.lazierae2.recipe.MachineRecipe;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.block.BlockState;
@@ -18,7 +18,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -268,49 +267,13 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private double getUpgradeEnergyMultiplier() {
         int upgradeCount = inventory.getUpgradeCount();
         if (upgradeCount == 0) return 1.0;
-        double multiplier;
-        // TODO: grab from config
-        switch (getId()) {
-            case AGGREGATOR_ID:
-                multiplier = 1.0;
-                break;
-            case CENTRIFUGE_ID:
-                multiplier = 1.0;
-                break;
-            case ENERGIZER_ID:
-                multiplier = 1.0;
-                break;
-            case ETCHER_ID:
-                multiplier = 1.0;
-                break;
-            default:
-                throw new IllegalStateException("Unknown machine id: " + getId());
-        }
-        return multiplier * upgradeCount;
+        return getMachineType().getUpgradeEnergyMultiplier() * upgradeCount;
     }
 
     private double getUpgradeProcessTimeMultiplier() {
         int upgradeCount = inventory.getUpgradeCount();
         if (upgradeCount == 0) return 1.0;
-        double multiplier;
-        // TODO: grab from config
-        switch (getId()) {
-            case AGGREGATOR_ID:
-                multiplier = 1.0;
-                break;
-            case CENTRIFUGE_ID:
-                multiplier = 1.0;
-                break;
-            case ENERGIZER_ID:
-                multiplier = 1.0;
-                break;
-            case ETCHER_ID:
-                multiplier = 1.0;
-                break;
-            default:
-                throw new IllegalStateException("Unknown machine id: " + getId());
-        }
-        return multiplier * upgradeCount;
+        return getMachineType().getUpgradeProcessTimeMultiplier() * upgradeCount;
     }
 
     @Nullable
@@ -318,36 +281,36 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         assert level != null;
         return GameUtil
             .getRecipeManager(level)
-            .getRecipeFor(getRecipeType(), new RecipeWrapper(inventory), level)
+            .getRecipeFor(getMachineType(), new RecipeWrapper(inventory), level)
             .orElse(null);
     }
 
-    private IRecipeType<? extends MachineRecipe> getRecipeType() {
-        switch (getId()) {
-            case AGGREGATOR_ID:
-                return Types.AGGREGATOR;
-            case CENTRIFUGE_ID:
-                return Types.CENTRIFUGE;
-            case ENERGIZER_ID:
-                return Types.ENERGIZER;
-            case ETCHER_ID:
-                return Types.ETCHER;
-            default:
-                throw new IllegalStateException("Unknown machine id: " + getId());
-        }
-    }
+    // private IRecipeType<? extends MachineRecipe> getRecipeType() {
+    //     switch (getMachineType()) {
+    //         case AGGREGATOR_ID:
+    //             return Types.AGGREGATOR;
+    //         case CENTRIFUGE_ID:
+    //             return Types.CENTRIFUGE;
+    //         case ENERGIZER_ID:
+    //             return Types.ENERGIZER;
+    //         case ETCHER_ID:
+    //             return Types.ETCHER;
+    //         default:
+    //             throw new IllegalStateException("Unknown machine id: " + getMachineType());
+    //     }
+    // }
 
     public SideConfiguration getSideConfig() {
         return sideConfig;
     }
 
-    public String getId() {
-        return ((MachineBlock) getBlockState().getBlock()).getId();
+    public MachineType getMachineType() {
+        return ((MachineBlock) getBlockState().getBlock()).getMachineType();
     }
 
     @Override
     public ITextComponent getDisplayName() {
-        return TextUtil.translate(TRANSLATE_TYPE.BLOCK, getId());
+        return TextUtil.translate(TRANSLATE_TYPE.BLOCK, getMachineType().getId());
     }
 
     public int getProgress() {

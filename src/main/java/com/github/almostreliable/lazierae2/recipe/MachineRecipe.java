@@ -1,8 +1,10 @@
-package com.github.almostreliable.lazierae2.recipe.type;
+package com.github.almostreliable.lazierae2.recipe;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -14,11 +16,13 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
     private int processTime;
     private int energyCost;
     private ItemStack output;
+    protected final MachineType machineType;
 
     MachineRecipe(
-        ResourceLocation id
+        ResourceLocation id, MachineType machineType
     ) {
         this.id = id;
+        this.machineType = machineType;
     }
 
     @Override
@@ -68,5 +72,15 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
 
     public void setOutput(ItemStack output) {
         this.output = output;
+    }
+
+    @Override
+    public IRecipeSerializer<?> getSerializer() {
+        return machineType.getSerializer().get();
+    }
+
+    @Override
+    public IRecipeType<?> getType() {
+        return machineType;
     }
 }

@@ -1,4 +1,4 @@
-package com.github.almostreliable.lazierae2.recipe.type;
+package com.github.almostreliable.lazierae2.recipe;
 
 import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import net.minecraft.inventory.IInventory;
@@ -10,10 +10,10 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class TripleInputRecipe extends MachineRecipe {
+public class TripleInputRecipe extends MachineRecipe {
 
-    TripleInputRecipe(ResourceLocation id) {
-        super(id);
+    public TripleInputRecipe(ResourceLocation id, MachineType machineType) {
+        super(id, machineType);
     }
 
     @SuppressWarnings("Convert2streamapi")

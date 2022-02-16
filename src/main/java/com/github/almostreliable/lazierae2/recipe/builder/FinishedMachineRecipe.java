@@ -3,6 +3,7 @@ package com.github.almostreliable.lazierae2.recipe.builder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -10,16 +11,14 @@ import java.util.Objects;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
 
-public abstract class FinishedMachineRecipe<B extends MachineRecipeBuilder<?>> implements IFinishedRecipe {
+public class FinishedMachineRecipe implements IFinishedRecipe {
 
-    private final B builder;
+    private final MachineRecipeBuilder builder;
     private final ResourceLocation recipeId;
-    private final String type;
 
-    FinishedMachineRecipe(B builder, ResourceLocation recipeId, String type) {
+    FinishedMachineRecipe(MachineRecipeBuilder builder, ResourceLocation recipeId) {
         this.builder = builder;
         this.recipeId = recipeId;
-        this.type = type;
     }
 
     @Override
@@ -29,7 +28,7 @@ public abstract class FinishedMachineRecipe<B extends MachineRecipeBuilder<?>> i
         JsonObject output = new JsonObject();
         output.addProperty(RECIPE_ITEM, Objects
             .requireNonNull(builder.output.getItem().getRegistryName(),
-                () -> "Output in " + type + "-recipe was not defined!"
+                () -> "Output in " + builder.getMachineId() + "-recipe was not defined!"
             )
             .toString());
         if (builder.output.getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.output.getCount());
@@ -42,6 +41,11 @@ public abstract class FinishedMachineRecipe<B extends MachineRecipeBuilder<?>> i
     @Override
     public ResourceLocation getId() {
         return recipeId;
+    }
+
+    @Override
+    public IRecipeSerializer<?> getType() {
+        return builder.getRecipeType().getSerializer().get();
     }
 
     @Nullable
