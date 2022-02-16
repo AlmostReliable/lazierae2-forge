@@ -110,7 +110,7 @@ public class MachineContainer extends Container {
         addSlot(new UpgradeSlot(inventory, InventoryHandler.UPGRADE_SLOT, 8, 50));
         addSlot(new OutputSlot(inventory, InventoryHandler.OUTPUT_SLOT, 116, 29));
         if (inputSlots == 1) {
-            addSlot(new SlotItemHandler(inventory, 2, 44, 28));
+            addSlot(new SlotItemHandler(inventory, 2, 44, 29));
         } else if (inputSlots == 3) {
             addSlot(new SlotItemHandler(inventory, 2, 44, 8));
             addSlot(new SlotItemHandler(inventory, 3, 44, 29));
