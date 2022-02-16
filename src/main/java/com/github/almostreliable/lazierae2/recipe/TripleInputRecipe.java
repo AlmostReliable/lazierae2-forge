@@ -7,8 +7,8 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TripleInputRecipe extends MachineRecipe {
 
@@ -16,32 +16,25 @@ public class TripleInputRecipe extends MachineRecipe {
         super(id, machineType);
     }
 
-    @SuppressWarnings("Convert2streamapi")
     @Override
     public boolean matches(IInventory inv, World level) {
         if (inputs.isEmpty()) return false;
 
-        Collection<ItemStack> containerInputs = new ArrayList<>();
-        for (int i = InventoryHandler.NON_INPUT_SLOTS; i < inv.getContainerSize(); i++) {
-            ItemStack item = inv.getItem(i);
-            if (item.isEmpty()) continue;
-            containerInputs.add(item);
-        }
+        Ingredient[] matchedContainerItems = new Ingredient[inv.getContainerSize()];
+        Set<Ingredient> matchedIngredients = new HashSet<>();
 
-        if (containerInputs.size() != inputs.size()) return false;
-
-        for (Ingredient input : inputs) {
-            for (ItemStack containerItem : containerInputs) {
-                // noinspection ConfusingElseBranch
-                if (input.test(containerItem)) {
-                    containerInputs.remove(containerItem);
-                    break;
-                } else {
-                    return false;
+        for (int invIndex = InventoryHandler.NON_INPUT_SLOTS; invIndex < inv.getContainerSize(); invIndex++) {
+            ItemStack item = inv.getItem(invIndex);
+            if (!item.isEmpty() && matchedContainerItems[invIndex] == null) {
+                for (Ingredient input : inputs) {
+                    if (!matchedIngredients.contains(input) && input.test(item)) {
+                        matchedContainerItems[invIndex] = input;
+                        matchedIngredients.add(input);
+                    }
                 }
             }
         }
 
-        return true;
+        return matchedIngredients.size() == inputs.size();
     }
 }
