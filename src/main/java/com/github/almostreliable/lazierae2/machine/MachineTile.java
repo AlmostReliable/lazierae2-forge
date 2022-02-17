@@ -7,7 +7,7 @@ import com.github.almostreliable.lazierae2.core.Setup.Tiles;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
-import com.github.almostreliable.lazierae2.recipe.MachineRecipe;
+import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.block.BlockState;

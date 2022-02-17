@@ -27,10 +27,10 @@ public class FinishedMachineRecipe implements IFinishedRecipe {
         json.addProperty(RECIPE_ENERGY_COST, builder.energyCost);
         JsonObject output = new JsonObject();
         output.addProperty(RECIPE_ITEM, Objects.requireNonNull(
-            builder.output.getItem().getRegistryName(),
+            builder.getOutput().getItem().getRegistryName(),
             () -> "Output in " + builder.getMachineId() + "-recipe was not defined!"
         ).toString());
-        if (builder.output.getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.output.getCount());
+        if (builder.getOutput().getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.getOutput().getCount());
         json.add(RECIPE_OUTPUT, output);
         JsonArray inputs = new JsonArray();
         builder.inputs.forEach(input -> inputs.add(input.toJson()));
@@ -44,7 +44,7 @@ public class FinishedMachineRecipe implements IFinishedRecipe {
 
     @Override
     public IRecipeSerializer<?> getType() {
-        return builder.getRecipeType().getSerializer().get();
+        return builder.getRecipeType().getRecipeSerializer().get();
     }
 
     @Nullable

@@ -15,16 +15,15 @@ import java.util.function.Consumer;
 
 import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
 
-@SuppressWarnings("ClassReferencesSubclass")
-public class MachineRecipeBuilder {
+public final class MachineRecipeBuilder {
 
-    protected final ItemStack output;
+    private final ItemStack output;
     private final MachineType machineType;
     NonNullList<Ingredient> inputs = NonNullList.create();
     int processingTime;
     int energyCost;
 
-    MachineRecipeBuilder(MachineType machineType, IItemProvider output, int outputCount) {
+    private MachineRecipeBuilder(MachineType machineType, IItemProvider output, int outputCount) {
         this.machineType = machineType;
         this.output = new ItemStack(output, outputCount);
     }
@@ -94,21 +93,23 @@ public class MachineRecipeBuilder {
         consumer.accept(new FinishedMachineRecipe(this, recipeId));
     }
 
-    protected void validateProcessingTime() {
-        // TODO: read from config
+    private void validateProcessingTime() {
         if (processingTime == 0) processingTime = machineType.getProcessingTime();
     }
 
-    protected void validateEnergyCost() {
-        // TODO: read from config
+    private void validateEnergyCost() {
         if (energyCost == 0) energyCost = machineType.getEnergyCost();
     }
 
-    protected String getMachineId() {
+    String getMachineId() {
         return machineType.getId();
     }
 
-    public MachineType getRecipeType() {
+    public ItemStack getOutput() {
+        return output;
+    }
+
+    MachineType getRecipeType() {
         return machineType;
     }
 }

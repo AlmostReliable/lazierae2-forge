@@ -1,9 +1,9 @@
 package com.github.almostreliable.lazierae2.core;
 
 import com.github.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
-import com.github.almostreliable.lazierae2.recipe.MachineRecipe;
-import com.github.almostreliable.lazierae2.recipe.SingleInputRecipe;
-import com.github.almostreliable.lazierae2.recipe.TripleInputRecipe;
+import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.github.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
+import com.github.almostreliable.lazierae2.recipe.type.TripleInputRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
@@ -50,20 +50,20 @@ public final class TypeEnums {
         private final int inputSlots;
         private final int processingTime;
         private final int energyCost;
-        private final BiFunction<ResourceLocation, MachineType, MachineRecipe> factory;
-        private final Supplier<IRecipeSerializer<MachineRecipe>> serializer;
+        private final BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory;
+        private final Supplier<IRecipeSerializer<MachineRecipe>> recipeSerializer;
 
         MachineType(
             String id, int inputSlots, int processingTime, int energyCost,
-            BiFunction<ResourceLocation, MachineType, MachineRecipe> factory,
-            Supplier<IRecipeSerializer<MachineRecipe>> serializer
+            BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory,
+            Supplier<IRecipeSerializer<MachineRecipe>> recipeSerializer
         ) {
             this.id = id;
             this.inputSlots = inputSlots;
             this.processingTime = processingTime;
             this.energyCost = energyCost;
-            this.factory = factory;
-            this.serializer = serializer;
+            this.recipeFactory = recipeFactory;
+            this.recipeSerializer = recipeSerializer;
         }
 
         @Override
@@ -76,19 +76,21 @@ public final class TypeEnums {
         }
 
         public int getProcessingTime() {
+            // TODO: grab from config
             return processingTime;
         }
 
         public int getEnergyCost() {
+            // TODO: grab from config
             return energyCost;
         }
 
-        public BiFunction<ResourceLocation, MachineType, MachineRecipe> getFactory() {
-            return factory;
+        public BiFunction<ResourceLocation, MachineType, MachineRecipe> getRecipeFactory() {
+            return recipeFactory;
         }
 
-        public Supplier<IRecipeSerializer<MachineRecipe>> getSerializer() {
-            return serializer;
+        public Supplier<IRecipeSerializer<MachineRecipe>> getRecipeSerializer() {
+            return recipeSerializer;
         }
 
         public int getInputSlots() {

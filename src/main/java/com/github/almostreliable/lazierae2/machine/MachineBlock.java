@@ -82,7 +82,7 @@ public class MachineBlock extends Block {
         return registryName.getPath();
     }
 
-    public MachineType getMachineType() {
+    MachineType getMachineType() {
         return machineType;
     }
 }

@@ -1,4 +1,4 @@
-package com.github.almostreliable.lazierae2.recipe;
+package com.github.almostreliable.lazierae2.recipe.type;
 
 import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
