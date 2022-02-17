@@ -41,22 +41,22 @@ public final class TypeEnums {
 
     public enum MachineType implements IRecipeType<MachineRecipe> {
 
-        AGGREGATOR(AGGREGATOR_ID, 3, 200, 1_000, TripleInputRecipe::new, Serializers.AGGREGATOR),
-        CENTRIFUGE(CENTRIFUGE_ID, 1, 200, 1_000, SingleInputRecipe::new, Serializers.CENTRIFUGE),
-        ENERGIZER(ENERGIZER_ID, 1, 200, 1_000, SingleInputRecipe::new, Serializers.ENERGIZER),
-        ETCHER(ETCHER_ID, 3, 200, 1_000, TripleInputRecipe::new, Serializers.ETCHER);
+        AGGREGATOR(AGGREGATOR_ID, 3, 200, 1_000, TripleInputRecipe::new, () -> Serializers.AGGREGATOR),
+        CENTRIFUGE(CENTRIFUGE_ID, 1, 200, 1_000, SingleInputRecipe::new, () -> Serializers.CENTRIFUGE),
+        ENERGIZER(ENERGIZER_ID, 1, 200, 1_000, SingleInputRecipe::new, () -> Serializers.ENERGIZER),
+        ETCHER(ETCHER_ID, 3, 200, 1_000, TripleInputRecipe::new, () -> Serializers.ETCHER);
 
         private final String id;
         private final int inputSlots;
         private final int processingTime;
         private final int energyCost;
         private final BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory;
-        private final Supplier<IRecipeSerializer<MachineRecipe>> recipeSerializer;
+        private final Supplier<? extends Supplier<IRecipeSerializer<MachineRecipe>>> recipeSerializer;
 
         MachineType(
             String id, int inputSlots, int processingTime, int energyCost,
             BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory,
-            Supplier<IRecipeSerializer<MachineRecipe>> recipeSerializer
+            Supplier<? extends Supplier<IRecipeSerializer<MachineRecipe>>> recipeSerializer
         ) {
             this.id = id;
             this.inputSlots = inputSlots;
@@ -90,7 +90,7 @@ public final class TypeEnums {
         }
 
         public Supplier<IRecipeSerializer<MachineRecipe>> getRecipeSerializer() {
-            return recipeSerializer;
+            return recipeSerializer.get();
         }
 
         public int getInputSlots() {
