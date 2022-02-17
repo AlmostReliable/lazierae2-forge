@@ -1,19 +1,21 @@
 package com.github.almostreliable.lazierae2.recipe;
 
-import com.github.almostreliable.lazierae2.core.Setup;
+import com.github.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import static com.github.almostreliable.lazierae2.core.Constants.*;
+
 public enum MachineType implements IRecipeType<MachineRecipe> {
-    AGGREGATOR("aggregator", 3, 200, 1000, TripleInputRecipe::new, () -> Setup.Recipes.Serializers.AGGREGATOR),
-    CENTRIFUGE("centrifuge", 1, 200, 1000, SingleInputRecipe::new, () -> Setup.Recipes.Serializers.CENTRIFUGE),
-    ENERGIZER("energizer", 1, 200, 1000, SingleInputRecipe::new, () -> Setup.Recipes.Serializers.ENERGIZER),
-    ETCHER("etcher",3, 200, 1000, TripleInputRecipe::new, () -> Setup.Recipes.Serializers.ETCHER);
+
+    AGGREGATOR(AGGREGATOR_ID, 3, 200, 1_000, TripleInputRecipe::new, () -> Serializers.AGGREGATOR),
+    CENTRIFUGE(CENTRIFUGE_ID, 1, 200, 1_000, SingleInputRecipe::new, () -> Serializers.CENTRIFUGE),
+    ENERGIZER(ENERGIZER_ID, 1, 200, 1_000, SingleInputRecipe::new, () -> Serializers.ENERGIZER),
+    ETCHER(ETCHER_ID, 3, 200, 1_000, TripleInputRecipe::new, () -> Serializers.ETCHER);
 
     private final String id;
     private final int inputSlots;

@@ -8,6 +8,10 @@ public enum Constants {
     public static final String MOD_ID = "lazierae2";
     // block ids
     public static final String MACHINE_ID = "machine";
+    public static final String AGGREGATOR_ID = "aggregator";
+    public static final String CENTRIFUGE_ID = "centrifuge";
+    public static final String ENERGIZER_ID = "energizer";
+    public static final String ETCHER_ID = "etcher";
     // item ids
     public static final String CARB_FLUIX_DUST_ID = "carbonic_fluix_dust";
     public static final String COAL_DUST_ID = "coal_dust";
