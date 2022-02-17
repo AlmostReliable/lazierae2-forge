@@ -21,15 +21,15 @@ public class TripleInputRecipe extends MachineRecipe {
     public boolean matches(IInventory inv, World level) {
         if (inputs.isEmpty()) return false;
 
-        Ingredient[] matchedContainerItems = new Ingredient[inv.getContainerSize()];
+        Ingredient[] matchedContainerItems = new Ingredient[inv.getContainerSize() - InventoryHandler.NON_INPUT_SLOTS];
         Set<Ingredient> matchedIngredients = new HashSet<>();
 
-        for (int invIndex = InventoryHandler.NON_INPUT_SLOTS; invIndex < inv.getContainerSize(); invIndex++) {
-            ItemStack item = inv.getItem(invIndex);
-            if (!item.isEmpty() && matchedContainerItems[invIndex] == null) {
+        for (int slot = InventoryHandler.NON_INPUT_SLOTS; slot < inv.getContainerSize(); slot++) {
+            ItemStack stack = inv.getItem(slot);
+            if (!stack.isEmpty() && matchedContainerItems[slot - InventoryHandler.NON_INPUT_SLOTS] == null) {
                 for (Ingredient input : inputs) {
-                    if (!matchedIngredients.contains(input) && input.test(item)) {
-                        matchedContainerItems[invIndex] = input;
+                    if (!matchedIngredients.contains(input) && input.test(stack)) {
+                        matchedContainerItems[slot - InventoryHandler.NON_INPUT_SLOTS] = input;
                         matchedIngredients.add(input);
                     }
                 }
