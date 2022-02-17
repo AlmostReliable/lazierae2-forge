@@ -3,6 +3,7 @@ package com.github.almostreliable.lazierae2.recipe.builder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -10,16 +11,14 @@ import java.util.Objects;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
 
-public abstract class FinishedMachineRecipe<B extends MachineRecipeBuilder<?>> implements IFinishedRecipe {
+public class FinishedMachineRecipe implements IFinishedRecipe {
 
-    private final B builder;
-    private final ResourceLocation recipeId;
-    private final String type;
+    private final MachineRecipeBuilder builder;
+    private final ResourceLocation id;
 
-    FinishedMachineRecipe(B builder, ResourceLocation recipeId, String type) {
+    FinishedMachineRecipe(MachineRecipeBuilder builder, ResourceLocation id) {
         this.builder = builder;
-        this.recipeId = recipeId;
-        this.type = type;
+        this.id = id;
     }
 
     @Override
@@ -27,12 +26,11 @@ public abstract class FinishedMachineRecipe<B extends MachineRecipeBuilder<?>> i
         json.addProperty(RECIPE_PROCESS_TIME, builder.processingTime);
         json.addProperty(RECIPE_ENERGY_COST, builder.energyCost);
         JsonObject output = new JsonObject();
-        output.addProperty(RECIPE_ITEM, Objects
-            .requireNonNull(builder.output.getItem().getRegistryName(),
-                () -> "Output in " + type + "-recipe was not defined!"
-            )
-            .toString());
-        if (builder.output.getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.output.getCount());
+        output.addProperty(RECIPE_ITEM, Objects.requireNonNull(
+            builder.getOutput().getItem().getRegistryName(),
+            () -> "Output in " + builder.getMachineId() + "-recipe was not defined!"
+        ).toString());
+        if (builder.getOutput().getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.getOutput().getCount());
         json.add(RECIPE_OUTPUT, output);
         JsonArray inputs = new JsonArray();
         builder.inputs.forEach(input -> inputs.add(input.toJson()));
@@ -41,7 +39,12 @@ public abstract class FinishedMachineRecipe<B extends MachineRecipeBuilder<?>> i
 
     @Override
     public ResourceLocation getId() {
-        return recipeId;
+        return id;
+    }
+
+    @Override
+    public IRecipeSerializer<?> getType() {
+        return builder.getRecipeType().getRecipeSerializer().get();
     }
 
     @Nullable

@@ -1,47 +1,41 @@
 package com.github.almostreliable.lazierae2.recipe.type;
 
 import com.github.almostreliable.lazierae2.component.InventoryHandler;
+import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-public abstract class TripleInputRecipe extends MachineRecipe {
+public class TripleInputRecipe extends MachineRecipe {
 
-    TripleInputRecipe(ResourceLocation id) {
-        super(id);
+    public TripleInputRecipe(ResourceLocation id, MachineType machineType) {
+        super(id, machineType);
     }
 
-    @SuppressWarnings("Convert2streamapi")
     @Override
     public boolean matches(IInventory inv, World level) {
         if (inputs.isEmpty()) return false;
 
-        Collection<ItemStack> containerInputs = new ArrayList<>();
-        for (int i = InventoryHandler.NON_INPUT_SLOTS; i < inv.getContainerSize(); i++) {
-            ItemStack item = inv.getItem(i);
-            if (item.isEmpty()) continue;
-            containerInputs.add(item);
-        }
+        Ingredient[] matchedContainerItems = new Ingredient[inv.getContainerSize() - InventoryHandler.NON_INPUT_SLOTS];
+        Set<Ingredient> matchedIngredients = new HashSet<>();
 
-        if (containerInputs.size() != inputs.size()) return false;
-
-        for (Ingredient input : inputs) {
-            for (ItemStack containerItem : containerInputs) {
-                // noinspection ConfusingElseBranch
-                if (input.test(containerItem)) {
-                    containerInputs.remove(containerItem);
-                    break;
-                } else {
-                    return false;
+        for (int slot = InventoryHandler.NON_INPUT_SLOTS; slot < inv.getContainerSize(); slot++) {
+            ItemStack stack = inv.getItem(slot);
+            if (!stack.isEmpty() && matchedContainerItems[slot - InventoryHandler.NON_INPUT_SLOTS] == null) {
+                for (Ingredient input : inputs) {
+                    if (!matchedIngredients.contains(input) && input.test(stack)) {
+                        matchedContainerItems[slot - InventoryHandler.NON_INPUT_SLOTS] = input;
+                        matchedIngredients.add(input);
+                    }
                 }
             }
         }
 
-        return true;
+        return matchedIngredients.size() == inputs.size();
     }
 }

@@ -1,6 +1,7 @@
 package com.github.almostreliable.lazierae2.data.client;
 
 import com.github.almostreliable.lazierae2.core.Setup.Items;
+import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -11,7 +12,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static com.github.almostreliable.lazierae2.core.Constants.*;
+import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 public class ItemModelData extends ItemModelProvider {
 
@@ -23,10 +24,10 @@ public class ItemModelData extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        existingParent(AGGREGATOR_ID);
-        existingParent(CENTRIFUGE_ID);
-        existingParent(ENERGIZER_ID);
-        existingParent(ETCHER_ID);
+        existingParent(MachineType.AGGREGATOR.getId());
+        existingParent(MachineType.CENTRIFUGE.getId());
+        existingParent(MachineType.ENERGIZER.getId());
+        existingParent(MachineType.ETCHER.getId());
 
         builder(Items.CARB_FLUIX_DUST);
         builder(Items.COAL_DUST);
