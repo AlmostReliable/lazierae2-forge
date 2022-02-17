@@ -18,13 +18,13 @@ import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
 public final class MachineRecipeBuilder {
 
     private final ItemStack output;
-    private final MachineType machineType;
+    private final MachineType recipeType;
     NonNullList<Ingredient> inputs = NonNullList.create();
     int processingTime;
     int energyCost;
 
-    private MachineRecipeBuilder(MachineType machineType, IItemProvider output, int outputCount) {
-        this.machineType = machineType;
+    private MachineRecipeBuilder(MachineType recipeType, IItemProvider output, int outputCount) {
+        this.recipeType = recipeType;
         this.output = new ItemStack(output, outputCount);
     }
 
@@ -94,15 +94,15 @@ public final class MachineRecipeBuilder {
     }
 
     private void validateProcessingTime() {
-        if (processingTime == 0) processingTime = machineType.getProcessingTime();
+        if (processingTime == 0) processingTime = recipeType.getProcessingTime();
     }
 
     private void validateEnergyCost() {
-        if (energyCost == 0) energyCost = machineType.getEnergyCost();
+        if (energyCost == 0) energyCost = recipeType.getEnergyCost();
     }
 
     String getMachineId() {
-        return machineType.getId();
+        return recipeType.getId();
     }
 
     public ItemStack getOutput() {
@@ -110,6 +110,6 @@ public final class MachineRecipeBuilder {
     }
 
     MachineType getRecipeType() {
-        return machineType;
+        return recipeType;
     }
 }

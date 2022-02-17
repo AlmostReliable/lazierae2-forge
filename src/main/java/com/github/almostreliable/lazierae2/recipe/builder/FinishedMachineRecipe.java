@@ -14,11 +14,11 @@ import static com.github.almostreliable.lazierae2.core.Constants.*;
 public class FinishedMachineRecipe implements IFinishedRecipe {
 
     private final MachineRecipeBuilder builder;
-    private final ResourceLocation recipeId;
+    private final ResourceLocation id;
 
-    FinishedMachineRecipe(MachineRecipeBuilder builder, ResourceLocation recipeId) {
+    FinishedMachineRecipe(MachineRecipeBuilder builder, ResourceLocation id) {
         this.builder = builder;
-        this.recipeId = recipeId;
+        this.id = id;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class FinishedMachineRecipe implements IFinishedRecipe {
 
     @Override
     public ResourceLocation getId() {
-        return recipeId;
+        return id;
     }
 
     @Override
