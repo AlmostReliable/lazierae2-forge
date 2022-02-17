@@ -5,8 +5,8 @@ import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import com.github.almostreliable.lazierae2.component.SideConfiguration;
 import com.github.almostreliable.lazierae2.core.Setup.Tiles;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
+import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
-import com.github.almostreliable.lazierae2.recipe.MachineType;
 import com.github.almostreliable.lazierae2.recipe.MachineRecipe;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import com.github.almostreliable.lazierae2.util.TextUtil;
@@ -284,7 +284,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
             .getRecipeFor(getMachineType(), new RecipeWrapper(inventory), level)
             .orElse(null);
     }
-    
+
     public SideConfiguration getSideConfig() {
         return sideConfig;
     }

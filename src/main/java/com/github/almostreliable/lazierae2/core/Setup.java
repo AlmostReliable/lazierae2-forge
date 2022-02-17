@@ -1,12 +1,12 @@
 package com.github.almostreliable.lazierae2.core;
 
 import com.github.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
+import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import com.github.almostreliable.lazierae2.machine.MachineContainer;
 import com.github.almostreliable.lazierae2.machine.MachineTile;
 import com.github.almostreliable.lazierae2.recipe.MachineRecipe;
 import com.github.almostreliable.lazierae2.recipe.MachineRecipeSerializer;
-import com.github.almostreliable.lazierae2.recipe.MachineType;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
@@ -189,30 +189,28 @@ public final class Setup {
         }
     }
 
-    public static final class Recipes {
+    static final class Recipes {
 
         private Recipes() {}
 
-        public static final class Serializers {
+        static final class Serializers {
 
             private static final DeferredRegister<IRecipeSerializer<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS,
                 MOD_ID
             );
-            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> AGGREGATOR
-                = register(MachineType.AGGREGATOR);
-            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> CENTRIFUGE
-                = register(MachineType.CENTRIFUGE);
-            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> ENERGIZER
-                = register(MachineType.ENERGIZER);
-            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> ETCHER = register(MachineType.ETCHER);
+
+            static final RegistryObject<IRecipeSerializer<MachineRecipe>> AGGREGATOR = register(MachineType.AGGREGATOR);
+            static final RegistryObject<IRecipeSerializer<MachineRecipe>> CENTRIFUGE = register(MachineType.CENTRIFUGE);
+            static final RegistryObject<IRecipeSerializer<MachineRecipe>> ENERGIZER = register(MachineType.ENERGIZER);
+            static final RegistryObject<IRecipeSerializer<MachineRecipe>> ETCHER = register(MachineType.ETCHER);
+
+            private Serializers() {}
 
             private static RegistryObject<IRecipeSerializer<MachineRecipe>> register(
                 MachineType machineType
             ) {
                 return REGISTRY.register(machineType.getId(), () -> new MachineRecipeSerializer(machineType));
             }
-
-            private Serializers() {}
         }
     }
 }

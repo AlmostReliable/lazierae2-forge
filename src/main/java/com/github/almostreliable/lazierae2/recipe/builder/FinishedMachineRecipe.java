@@ -26,11 +26,10 @@ public class FinishedMachineRecipe implements IFinishedRecipe {
         json.addProperty(RECIPE_PROCESS_TIME, builder.processingTime);
         json.addProperty(RECIPE_ENERGY_COST, builder.energyCost);
         JsonObject output = new JsonObject();
-        output.addProperty(RECIPE_ITEM, Objects
-            .requireNonNull(builder.output.getItem().getRegistryName(),
-                () -> "Output in " + builder.getMachineId() + "-recipe was not defined!"
-            )
-            .toString());
+        output.addProperty(RECIPE_ITEM, Objects.requireNonNull(
+            builder.output.getItem().getRegistryName(),
+            () -> "Output in " + builder.getMachineId() + "-recipe was not defined!"
+        ).toString());
         if (builder.output.getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.output.getCount());
         json.add(RECIPE_OUTPUT, output);
         JsonArray inputs = new JsonArray();

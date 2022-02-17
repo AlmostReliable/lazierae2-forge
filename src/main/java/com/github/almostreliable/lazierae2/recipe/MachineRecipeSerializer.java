@@ -1,5 +1,6 @@
 package com.github.almostreliable.lazierae2.recipe;
 
+import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import com.github.almostreliable.lazierae2.util.RecipeUtil;
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;
