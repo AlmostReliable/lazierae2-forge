@@ -39,7 +39,6 @@ public final class Setup {
     private Setup() {}
 
     public static void init(IEventBus modEventBus) {
-        MachineType etcher = MachineType.AGGREGATOR;
         Blocks.REGISTRY.register(modEventBus);
         Items.REGISTRY.register(modEventBus);
         Tiles.REGISTRY.register(modEventBus);
