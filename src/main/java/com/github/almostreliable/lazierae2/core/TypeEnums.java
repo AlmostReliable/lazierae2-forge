@@ -22,7 +22,7 @@ public final class TypeEnums {
      * identify its key inside the lang file.
      */
     public enum TRANSLATE_TYPE {
-        BLOCK, LABEL, TOOLTIP, BLOCK_SIDE, IO_SETTING, NUMBER, STATUS, MODE, ACCURACY
+        BLOCK, LABEL, TOOLTIP, BLOCK_SIDE, IO_SETTING, NUMBER, STATUS, MODE, ACCURACY, CONFIG
     }
 
     /**

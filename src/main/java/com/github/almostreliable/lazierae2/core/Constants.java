@@ -49,4 +49,12 @@ public enum Constants {
     public static final String RECIPE_AMOUNT = "amount";
     // network
     public static final String NETWORK_ID = "network";
+    // config translation
+    public static final String UPGRADE_SLOTS = "upgrade_slots";
+    public static final String ENERGY_BUFFER = "energy_buffer";
+    public static final String ENERGY_BUFFER_UPGRADE = "energy_buffer_upgrade";
+    public static final String ENERGY_USAGE = "energy_usage";
+    public static final String ENERGY_USAGE_UPGRADE = "energy_usage_upgrade";
+    public static final String PROCESS_TIME = "process_time";
+    public static final String PROCESS_TIME_UPGRADE = "process_time_upgrade";
 }
