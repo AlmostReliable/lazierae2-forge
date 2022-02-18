@@ -55,23 +55,23 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private int processTime;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    MachineTile(int inputSlots) {
+    MachineTile(int inputSlots, int energyBuffer) {
         super(Tiles.MACHINE.get());
         inventory = new InventoryHandler(this, inputSlots);
         inventoryCap = LazyOptional.of(() -> inventory);
-        energy = new EnergyHandler(this, 100_000);
+        energy = new EnergyHandler(this, energyBuffer);
         energyCap = LazyOptional.of(() -> energy);
         sideConfig = new SideConfiguration();
     }
 
     /*
      * Constructor called from the registry.
-     * It will call the super constructor and the input slot amount will then be
-     * handled by the load-method since we have no way of accessing block
-     * information from here.
+     * It will call the main constructor with placeholder values.
+     * The actual values will then be handled by the load-method
+     * since we have no way of accessing block information from here.
      */
     public MachineTile() {
-        this(0);
+        this(0, 0);
     }
 
     @Override
@@ -132,8 +132,15 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (canWork(recipe, energyCost)) {
             doWork(recipe, energyCost);
         } else {
-            setActivityState(false);
+            changeActivityState(false);
         }
+    }
+
+    public void recalculateEnergyCapacity() {
+        int baseBuffer = getMachineType().getBaseEnergyBuffer();
+        int upgradeBuffer = getMachineType().getEnergyBufferAdd();
+        int newCapacity = baseBuffer + upgradeBuffer * inventory.getUpgradeCount();
+        if (newCapacity != energy.getMaxEnergyStored()) energy.setCapacity(newCapacity);
     }
 
     @Override
@@ -163,7 +170,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         energy.setEnergy(energy.getEnergyStored() - energyCost);
 
         if (progress < processTime) {
-            setActivityState(true);
+            changeActivityState(true);
             progress++;
         } else {
             finishWork(recipe);
@@ -190,20 +197,26 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     private void stopWork() {
-        setActivityState(false);
+        changeActivityState(false);
         progress = 0;
     }
 
     private int calculateEnergyCost(MachineRecipe recipe) {
         int baseCost = recipe.getEnergyCost();
-        double upgradeMultiplier = getUpgradeEnergyMultiplier();
-        return (int) (baseCost * upgradeMultiplier);
+        double multiplier = calculateMultiplier(getMachineType().getEnergyCostMultiplier());
+        return (int) (baseCost * multiplier);
     }
 
     private int calculateProcessTime(MachineRecipe recipe) {
         int baseTime = recipe.getProcessTime();
-        double upgradeMultiplier = getUpgradeProcessTimeMultiplier();
-        return (int) (baseTime * upgradeMultiplier);
+        double multiplier = calculateMultiplier(getMachineType().getProcessTimeMultiplier());
+        return (int) (baseTime * multiplier);
+    }
+
+    private double calculateMultiplier(double upgradeMultiplier) {
+        int upgradeCount = inventory.getUpgradeCount();
+        if (upgradeCount == 0) return 1.0;
+        return Math.pow(upgradeMultiplier, upgradeCount);
     }
 
     private boolean canWork(IRecipe<IInventory> recipe, int energyCost) {
@@ -234,7 +247,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
             AtomicBoolean outputEmpty = new AtomicBoolean(false);
             target.ifPresent(targetInv -> {
-                // TODO make auto extract amount per operation configurable
                 ItemStack stack = inventory.getStackInOutput();
                 ItemStack remainder = ItemHandlerHelper.insertItem(targetInv, stack, false);
 
@@ -264,16 +276,14 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         return target;
     }
 
-    private double getUpgradeEnergyMultiplier() {
-        int upgradeCount = inventory.getUpgradeCount();
-        if (upgradeCount == 0) return 1.0;
-        return getMachineType().getUpgradeEnergyMultiplier() * upgradeCount;
-    }
-
-    private double getUpgradeProcessTimeMultiplier() {
-        int upgradeCount = inventory.getUpgradeCount();
-        if (upgradeCount == 0) return 1.0;
-        return getMachineType().getUpgradeProcessTimeMultiplier() * upgradeCount;
+    private void changeActivityState(boolean active) {
+        if (level == null) return;
+        BlockState state = level.getBlockState(worldPosition);
+        if (active && state.getValue(MachineBlock.ACTIVE).equals(false)) {
+            updateState(state.setValue(MachineBlock.ACTIVE, true));
+        } else if (!active && state.getValue(MachineBlock.ACTIVE).equals(true)) {
+            updateState(state.setValue(MachineBlock.ACTIVE, false));
+        }
     }
 
     @Nullable
@@ -320,15 +330,5 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     public void setAutoExtract(boolean autoExtract) {
         this.autoExtract = autoExtract;
-    }
-
-    private void setActivityState(boolean active) {
-        if (level == null) return;
-        BlockState state = level.getBlockState(worldPosition);
-        if (active && state.getValue(MachineBlock.ACTIVE).equals(false)) {
-            updateState(state.setValue(MachineBlock.ACTIVE, true));
-        } else if (!active && state.getValue(MachineBlock.ACTIVE).equals(true)) {
-            updateState(state.setValue(MachineBlock.ACTIVE, false));
-        }
     }
 }

@@ -94,11 +94,11 @@ public final class MachineRecipeBuilder {
     }
 
     private void validateProcessingTime() {
-        if (processingTime == 0) processingTime = recipeType.getProcessingTime();
+        if (processingTime == 0) processingTime = recipeType.getBaseProcessTime();
     }
 
     private void validateEnergyCost() {
-        if (energyCost == 0) energyCost = recipeType.getEnergyCost();
+        if (energyCost == 0) energyCost = recipeType.getBaseEnergyCost();
     }
 
     String getMachineId() {

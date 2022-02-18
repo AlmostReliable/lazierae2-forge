@@ -1,7 +1,7 @@
 package com.github.almostreliable.lazierae2.component;
 
+import com.github.almostreliable.lazierae2.machine.MachineTile;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.EnergyStorage;
 
@@ -10,9 +10,9 @@ import static com.github.almostreliable.lazierae2.core.Constants.ENERGY_ID;
 
 public class EnergyHandler extends EnergyStorage implements INBTSerializable<CompoundNBT> {
 
-    private final TileEntity tile;
+    private final MachineTile tile;
 
-    public EnergyHandler(TileEntity tile, int capacity) {
+    public EnergyHandler(MachineTile tile, int capacity) {
         super(capacity);
         this.tile = tile;
     }
@@ -33,6 +33,11 @@ public class EnergyHandler extends EnergyStorage implements INBTSerializable<Com
 
     public void setEnergy(int energy) {
         this.energy = Math.min(energy, capacity);
+        tile.setChanged();
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
         tile.setChanged();
     }
 }

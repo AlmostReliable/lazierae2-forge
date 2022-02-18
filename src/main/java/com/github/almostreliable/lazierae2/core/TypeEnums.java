@@ -1,5 +1,6 @@
 package com.github.almostreliable.lazierae2.core;
 
+import com.github.almostreliable.lazierae2.core.Config.MachineConfig;
 import com.github.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.github.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
@@ -7,6 +8,7 @@ import com.github.almostreliable.lazierae2.recipe.type.TripleInputRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Lazy;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -22,7 +24,7 @@ public final class TypeEnums {
      * identify its key inside the lang file.
      */
     public enum TRANSLATE_TYPE {
-        BLOCK, LABEL, TOOLTIP, BLOCK_SIDE, IO_SETTING, NUMBER, STATUS, MODE, ACCURACY, CONFIG
+        BLOCK, LABEL, TOOLTIP, BLOCK_SIDE, IO_SETTING, CONFIG
     }
 
     /**
@@ -41,27 +43,35 @@ public final class TypeEnums {
 
     public enum MachineType implements IRecipeType<MachineRecipe> {
 
-        AGGREGATOR(AGGREGATOR_ID, 3, 200, 1_000, TripleInputRecipe::new, () -> Serializers.AGGREGATOR),
-        CENTRIFUGE(CENTRIFUGE_ID, 1, 200, 1_000, SingleInputRecipe::new, () -> Serializers.CENTRIFUGE),
-        ENERGIZER(ENERGIZER_ID, 1, 200, 1_000, SingleInputRecipe::new, () -> Serializers.ENERGIZER),
-        ETCHER(ETCHER_ID, 3, 200, 1_000, TripleInputRecipe::new, () -> Serializers.ETCHER);
+        AGGREGATOR(AGGREGATOR_ID,
+            3,
+            () -> Config.COMMON.aggregator,
+            TripleInputRecipe::new,
+            () -> Serializers.AGGREGATOR
+        ),
+        CENTRIFUGE(CENTRIFUGE_ID,
+            1,
+            () -> Config.COMMON.centrifuge,
+            SingleInputRecipe::new,
+            () -> Serializers.CENTRIFUGE
+        ),
+        ENERGIZER(ENERGIZER_ID, 1, () -> Config.COMMON.energizer, SingleInputRecipe::new, () -> Serializers.ENERGIZER),
+        ETCHER(ETCHER_ID, 3, () -> Config.COMMON.etcher, TripleInputRecipe::new, () -> Serializers.ETCHER);
 
         private final String id;
         private final int inputSlots;
-        private final int processingTime;
-        private final int energyCost;
+        private final Lazy<MachineConfig> machineConfig;
         private final BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory;
         private final Supplier<? extends Supplier<IRecipeSerializer<MachineRecipe>>> recipeSerializer;
 
         MachineType(
-            String id, int inputSlots, int processingTime, int energyCost,
+            String id, int inputSlots, Supplier<MachineConfig> machineConfig,
             BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory,
             Supplier<? extends Supplier<IRecipeSerializer<MachineRecipe>>> recipeSerializer
         ) {
             this.id = id;
             this.inputSlots = inputSlots;
-            this.processingTime = processingTime;
-            this.energyCost = energyCost;
+            this.machineConfig = Lazy.of(machineConfig);
             this.recipeFactory = recipeFactory;
             this.recipeSerializer = recipeSerializer;
         }
@@ -75,14 +85,24 @@ public final class TypeEnums {
             return id;
         }
 
-        public int getProcessingTime() {
-            // TODO: grab from config
-            return processingTime;
+        public int getBaseProcessTime() {
+            return machineConfig.get().baseProcessTime.get();
         }
 
-        public int getEnergyCost() {
-            // TODO: grab from config
-            return energyCost;
+        public int getBaseEnergyCost() {
+            return machineConfig.get().baseEnergyUsage.get();
+        }
+
+        public int getUpgradeSlots() {
+            return machineConfig.get().upgradeSlots.get();
+        }
+
+        public int getBaseEnergyBuffer() {
+            return machineConfig.get().baseEnergyBuffer.get();
+        }
+
+        public int getEnergyBufferAdd() {
+            return machineConfig.get().energyBufferAdd.get();
         }
 
         public BiFunction<ResourceLocation, MachineType, MachineRecipe> getRecipeFactory() {
@@ -97,14 +117,12 @@ public final class TypeEnums {
             return inputSlots;
         }
 
-        public double getUpgradeProcessTimeMultiplier() {
-            // TODO: grab from config
-            return 1.0;
+        public double getProcessTimeMultiplier() {
+            return machineConfig.get().processTimeMulti.get();
         }
 
-        public double getUpgradeEnergyMultiplier() {
-            // TODO: grab from config
-            return 1.0;
+        public double getEnergyCostMultiplier() {
+            return machineConfig.get().energyUsageMulti.get();
         }
     }
 }

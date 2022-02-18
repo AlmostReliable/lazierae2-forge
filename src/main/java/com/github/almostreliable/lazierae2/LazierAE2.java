@@ -5,6 +5,7 @@ import com.github.almostreliable.lazierae2.core.Config;
 import com.github.almostreliable.lazierae2.core.Setup;
 import com.github.almostreliable.lazierae2.core.Setup.Blocks;
 import com.github.almostreliable.lazierae2.core.Setup.Containers;
+import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import com.github.almostreliable.lazierae2.data.DataGeneration;
 import com.github.almostreliable.lazierae2.gui.MachineScreen;
 import com.github.almostreliable.lazierae2.network.PacketHandler;
@@ -38,11 +39,10 @@ public class LazierAE2 {
     private static void onCommonSetup(FMLCommonSetupEvent event) {
         PacketHandler.init();
         // add compatibility to acceleration card for own blocks
-        // TODO: read max supported amount of upgrades from config
-        Upgrades.SPEED.registerItem(Blocks.AGGREGATOR.get().asItem(), 8);
-        Upgrades.SPEED.registerItem(Blocks.CENTRIFUGE.get().asItem(), 8);
-        Upgrades.SPEED.registerItem(Blocks.ENERGIZER.get().asItem(), 8);
-        Upgrades.SPEED.registerItem(Blocks.ETCHER.get().asItem(), 8);
+        Upgrades.SPEED.registerItem(Blocks.AGGREGATOR.get().asItem(), MachineType.AGGREGATOR.getUpgradeSlots());
+        Upgrades.SPEED.registerItem(Blocks.CENTRIFUGE.get().asItem(), MachineType.CENTRIFUGE.getUpgradeSlots());
+        Upgrades.SPEED.registerItem(Blocks.ENERGIZER.get().asItem(), MachineType.ENERGIZER.getUpgradeSlots());
+        Upgrades.SPEED.registerItem(Blocks.ETCHER.get().asItem(), MachineType.ETCHER.getUpgradeSlots());
     }
 
     private static void onClientSetup(FMLClientSetupEvent event) {
