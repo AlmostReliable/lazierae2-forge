@@ -51,6 +51,9 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     @Override
     protected void renderTooltip(MatrixStack matrix, int mX, int mY) {
         super.renderTooltip(matrix, mX, mY);
+
+        // TODO: screen tooltips
+
         for (Widget widget : renderables) {
             if (widget.isHovered() && widget.visible) {
                 widget.renderToolTip(matrix, mX, mY);

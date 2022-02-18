@@ -58,7 +58,7 @@ public class MachineContainer extends Container {
             if (!moveItemStackTo(slotStack, inventory.getSlots(), inventory.getSlots() + PLAYER_INV_SIZE, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (GameUtil.isUpgrade(slotStack)) {
+        } else if (GameUtil.isValidUpgrade(slotStack)) {
             // transfer item from inventory to upgrade slot
             if (!moveItemStackTo(slotStack, 0, 1, false)) return ItemStack.EMPTY;
         } else {

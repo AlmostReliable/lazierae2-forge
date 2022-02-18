@@ -2,6 +2,7 @@ package com.github.almostreliable.lazierae2.gui;
 
 import com.github.almostreliable.lazierae2.network.EnergyDumpPacket;
 import com.github.almostreliable.lazierae2.network.PacketHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public class EnergyDumpButton extends GenericButton {
 
@@ -15,6 +16,11 @@ public class EnergyDumpButton extends GenericButton {
         MachineScreen screen
     ) {
         super(screen, POS_X, POS_Y, BUTTON_WIDTH, BUTTON_HEIGHT, TEXTURE_ID);
+    }
+
+    @Override
+    public void renderToolTip(MatrixStack matrix, int mX, int mY) {
+        // TODO
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.github.almostreliable.lazierae2.gui;
 
 import com.github.almostreliable.lazierae2.network.AutoExtractPacket;
 import com.github.almostreliable.lazierae2.network.PacketHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import java.util.function.BooleanSupplier;
 
@@ -21,5 +22,10 @@ public class AutoExtractButton extends ToggleButton {
     @Override
     protected void clickHandler() {
         PacketHandler.CHANNEL.sendToServer(new AutoExtractPacket(!pressed.getAsBoolean()));
+    }
+
+    @Override
+    public void renderToolTip(MatrixStack matrix, int mX, int mY) {
+        // TODO
     }
 }

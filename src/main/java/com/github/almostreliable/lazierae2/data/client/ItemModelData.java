@@ -51,9 +51,7 @@ public class ItemModelData extends ItemModelProvider {
     }
 
     /**
-     * Creates item data from an existing block parent.
-     * <p>
-     * This is mostly used for block items.
+     * Creates block item data from an existing block parent.
      *
      * @param id the id of the item and the parent block to get the data from
      */
@@ -62,6 +60,10 @@ public class ItemModelData extends ItemModelProvider {
         withExistingParent(id, parentLocation);
     }
 
+    /**
+     * Creates basic item data from an item supplier.
+     * @param item the item to create the data for
+     */
     private void builder(Supplier<? extends Item> item) {
         String name = Objects.requireNonNull(item.get().getRegistryName()).getPath();
         ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));

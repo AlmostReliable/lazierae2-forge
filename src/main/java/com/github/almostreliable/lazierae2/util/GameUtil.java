@@ -13,7 +13,7 @@ public final class GameUtil {
 
     private GameUtil() {}
 
-    public static boolean isUpgrade(ItemStack stack) {
+    public static boolean isValidUpgrade(ItemStack stack) {
         return stack.getItem().equals(Api.instance().definitions().materials().cardSpeed().item());
     }
 

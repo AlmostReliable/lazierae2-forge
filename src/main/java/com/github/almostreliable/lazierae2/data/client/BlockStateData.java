@@ -35,9 +35,9 @@ public class BlockStateData extends BlockStateProvider {
     }
 
     /**
-     * Handles the registration of the machine blocks.
+     * Handles the registration of the machine blockstate data.
      * <p>
-     * Creates a block with the same texture on all sides except the facing direction.
+     * Creates a blockstate with the same texture on all sides except the facing direction.
      * The texture of the facing direction depends on the current value of the ACTIVE blockstate.
      *
      * @param block the machine block to register
