@@ -31,7 +31,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,6 +52,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private boolean autoExtract;
     private int progress;
     private int processTime;
+    private MachineRecipe lastRecipe;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     MachineTile(int inputSlots, int energyBuffer) {
@@ -117,15 +117,17 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     @Override
     public void tick() {
         if (level == null || level.isClientSide) return;
+        if (autoExtract && level.getGameTime() % 10 == 0) autoExtract();
 
-        // TODO: make auto extract interval configurable
-        if (autoExtract && level.getGameTime() % 20 == 0) autoExtract();
-
-        // TODO: cache last recipe and check it first
-        MachineRecipe recipe = getRecipe();
-        if (recipe == null) {
-            stopWork();
-            return;
+        MachineRecipe recipe;
+        if (lastRecipe != null && lastRecipe.matches(inventory.asIInventory(), level)) {
+            recipe = lastRecipe;
+        } else {
+            recipe = getRecipe();
+            if (recipe == null) {
+                stopWork();
+                return;
+            }
         }
 
         int energyCost = calculateEnergyCost(recipe);
@@ -172,14 +174,17 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (progress < processTime) {
             changeActivityState(true);
             progress++;
+            setChanged();
         } else {
             finishWork(recipe);
         }
+
+        lastRecipe = recipe;
     }
 
     private void finishWork(IRecipe<? super IInventory> recipe) {
         if (inventory.getStackInOutput().isEmpty()) {
-            inventory.setStackInOutput(recipe.assemble(new RecipeWrapper(inventory)));
+            inventory.setStackInOutput(recipe.assemble(inventory.asIInventory()));
         } else {
             inventory.getStackInOutput().grow(recipe.getResultItem().getCount());
         }
@@ -199,6 +204,8 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private void stopWork() {
         changeActivityState(false);
         progress = 0;
+        lastRecipe = null;
+        setChanged();
     }
 
     private int calculateEnergyCost(MachineRecipe recipe) {
@@ -291,7 +298,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         assert level != null;
         return GameUtil
             .getRecipeManager(level)
-            .getRecipeFor(getMachineType(), new RecipeWrapper(inventory), level)
+            .getRecipeFor(getMachineType(), inventory.asIInventory(), level)
             .orElse(null);
     }
 
