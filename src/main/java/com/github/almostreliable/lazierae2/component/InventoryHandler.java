@@ -22,7 +22,8 @@ public class InventoryHandler extends ItemStackHandler {
 
     public void shrinkInputSlots() {
         for (int i = NON_INPUT_SLOTS; i < getSlots(); i++) {
-            if (getStackInSlot(i).isEmpty()) {
+            if (getStackInSlot(i).isEmpty()) continue;
+            if (getStackInSlot(i).getCount() == 1) {
                 setStackInSlot(i, ItemStack.EMPTY);
             } else {
                 getStackInSlot(i).shrink(1);

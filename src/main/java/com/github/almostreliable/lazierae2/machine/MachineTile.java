@@ -25,7 +25,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -128,6 +127,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
                 stopWork();
                 return;
             }
+            lastRecipe = recipe;
         }
 
         int energyCost = calculateEnergyCost(recipe);
@@ -139,6 +139,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     public void recalculateEnergyCapacity() {
+        if (level == null || level.isClientSide) return;
         int baseBuffer = getMachineType().getBaseEnergyBuffer();
         int upgradeBuffer = getMachineType().getEnergyBufferAdd();
         int newCapacity = baseBuffer + upgradeBuffer * inventory.getUpgradeCount();
@@ -169,17 +170,14 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     private void doWork(MachineRecipe recipe, int energyCost) {
         processTime = calculateProcessTime(recipe);
-        energy.setEnergy(energy.getEnergyStored() - energyCost);
-
         if (progress < processTime) {
             changeActivityState(true);
+            energy.setEnergy(energy.getEnergyStored() - energyCost);
             progress++;
             setChanged();
         } else {
             finishWork(recipe);
         }
-
-        lastRecipe = recipe;
     }
 
     private void finishWork(IRecipe<? super IInventory> recipe) {
@@ -190,22 +188,15 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         }
 
         inventory.shrinkInputSlots();
-        stopWork();
-    }
-
-    private void updateState(BlockState state) {
-        if (level == null) return;
-        BlockState oldState = level.getBlockState(worldPosition);
-        if (!oldState.equals(state)) {
-            level.setBlock(worldPosition, state, BlockFlags.NOTIFY_NEIGHBORS | BlockFlags.BLOCK_UPDATE);
-        }
+        progress = 0;
+        processTime = 0;
+        setChanged();
     }
 
     private void stopWork() {
         changeActivityState(false);
         progress = 0;
         lastRecipe = null;
-        setChanged();
     }
 
     private int calculateEnergyCost(MachineRecipe recipe) {
@@ -229,12 +220,12 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private boolean canWork(IRecipe<IInventory> recipe, int energyCost) {
         if (energyCost > energy.getEnergyStored()) return false;
 
-        ItemStack current = inventory.getStackInOutput();
-        if (current.isEmpty()) return true;
+        ItemStack output = inventory.getStackInOutput();
+        if (output.isEmpty()) return true;
 
         ItemStack finished = recipe.getResultItem();
-        int mergeCount = current.getCount() + finished.getCount();
-        return current.sameItem(finished) && mergeCount <= finished.getMaxStackSize() &&
+        int mergeCount = output.getCount() + finished.getCount();
+        return output.sameItem(finished) && mergeCount <= finished.getMaxStackSize() &&
             mergeCount <= inventory.getSlotLimit(InventoryHandler.OUTPUT_SLOT);
     }
 
@@ -283,13 +274,11 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         return target;
     }
 
-    private void changeActivityState(boolean active) {
-        if (level == null) return;
-        BlockState state = level.getBlockState(worldPosition);
-        if (active && state.getValue(MachineBlock.ACTIVE).equals(false)) {
-            updateState(state.setValue(MachineBlock.ACTIVE, true));
-        } else if (!active && state.getValue(MachineBlock.ACTIVE).equals(true)) {
-            updateState(state.setValue(MachineBlock.ACTIVE, false));
+    private void changeActivityState(boolean state) {
+        if (level == null || level.isClientSide) return;
+        BlockState oldState = level.getBlockState(worldPosition);
+        if (!oldState.getValue(MachineBlock.ACTIVE).equals(state)) {
+            level.setBlockAndUpdate(worldPosition, oldState.setValue(MachineBlock.ACTIVE, state));
         }
     }
 
