@@ -13,6 +13,8 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.IntReferenceHolder;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -26,7 +28,7 @@ import java.util.stream.IntStream;
 public class MachineContainer extends Container {
 
     private static final int PLAYER_INV_SIZE = 36;
-    private final MachineTile tile;
+    public final MachineTile tile;
     private InventoryHandler inventory;
 
     public MachineContainer(int id, MachineTile tile, PlayerInventory playerInventory) {
@@ -101,8 +103,15 @@ public class MachineContainer extends Container {
         addDataSlot(DataSlotUtil.forBoolean(tile, tile::isAutoExtract, tile::setAutoExtract));
         addDataSlot(DataSlotUtil.forInteger(tile, tile::getProgress, tile::setProgress));
         addDataSlot(DataSlotUtil.forInteger(tile, tile::getProcessTime, tile::setProcessTime));
-        addDataSlots(DataSlotUtil.forIntegerSplit(tile, this::getEnergyStored, this::setEnergyStored));
+        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(tile, this::getEnergyStored, this::setEnergyStored));
+        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(tile, this::getEnergyCapacity, this::setEnergyCapacity));
         addDataSlots(tile.getSideConfig().toIIntArray(tile));
+    }
+
+    private void addMultipleDataSlots(IntReferenceHolder... holders) {
+        for (IntReferenceHolder holder : holders) {
+            addDataSlot(holder);
+        }
     }
 
     private void setupContainerInv() {
@@ -173,25 +182,23 @@ public class MachineContainer extends Container {
         }
     }
 
-    public InventoryHandler getInventory() {
-        return inventory;
-    }
-
-    public MachineTile getTile() {
-        return tile;
-    }
-
     public int getEnergyStored() {
-        return tile.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getEnergyStored).orElse(0);
+        return getEnergyCap().map(IEnergyStorage::getEnergyStored).orElse(0);
     }
 
     public void setEnergyStored(int energy) {
-        tile
-            .getCapability(CapabilityEnergy.ENERGY)
-            .ifPresent(energyCap -> ((EnergyHandler) energyCap).setEnergy(energy));
+        getEnergyCap().ifPresent(energyCap -> ((EnergyHandler) energyCap).setEnergy(energy));
     }
 
     public int getEnergyCapacity() {
-        return tile.getCapability(CapabilityEnergy.ENERGY).map(IEnergyStorage::getMaxEnergyStored).orElse(1);
+        return getEnergyCap().map(IEnergyStorage::getMaxEnergyStored).orElse(1);
+    }
+
+    private void setEnergyCapacity(int capacity) {
+        getEnergyCap().ifPresent(energyCap -> ((EnergyHandler) energyCap).setCapacity(capacity));
+    }
+
+    private LazyOptional<IEnergyStorage> getEnergyCap() {
+        return tile.getCapability(CapabilityEnergy.ENERGY);
     }
 }

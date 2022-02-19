@@ -42,11 +42,11 @@ import static com.github.almostreliable.lazierae2.core.Constants.*;
 
 public class MachineTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
 
+    public final SideConfiguration sideConfig;
     private final InventoryHandler inventory;
     private final LazyOptional<InventoryHandler> inventoryCap;
     private final EnergyHandler energy;
     private final LazyOptional<EnergyHandler> energyCap;
-    private final SideConfiguration sideConfig;
     private final Map<Direction, LazyOptional<IItemHandler>> outputsCache = new EnumMap<>(Direction.class);
     private boolean autoExtract;
     private int progress;
@@ -289,10 +289,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
             .getRecipeManager(level)
             .getRecipeFor(getMachineType(), inventory.asIInventory(), level)
             .orElse(null);
-    }
-
-    public SideConfiguration getSideConfig() {
-        return sideConfig;
     }
 
     public MachineType getMachineType() {

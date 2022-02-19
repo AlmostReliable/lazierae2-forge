@@ -8,6 +8,7 @@ import net.minecraft.util.IntReferenceHolder;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
+import java.util.stream.IntStream;
 
 public final class DataSlotUtil {
 
@@ -15,6 +16,33 @@ public final class DataSlotUtil {
     private static final int LOWER = 0x0000_FFFF;
 
     private DataSlotUtil() {}
+
+    /**
+     * Utility method to create a new {@link IntReferenceHolder} for boolean values without
+     * the need to have a clunky anonymous class and conversion.
+     * <p>
+     * Marks the tile entity automatically for saving when changing values.
+     *
+     * @param tile The tile entity to mark for saving.
+     * @param s    The supplier of the boolean value.
+     * @param c    The consumer of the boolean value.
+     * @return The new {@link IntReferenceHolder}.
+     */
+    public static IntReferenceHolder forBoolean(TileEntity tile, BooleanSupplier s, BooleanConsumer c) {
+        return new SyncedIntReferenceHolder() {
+
+            @Override
+            public int get() {
+                return s.getAsBoolean() ? 1 : 0;
+            }
+
+            @Override
+            public void set(int value) {
+                c.accept(value == 1);
+                tile.setChanged();
+            }
+        };
+    }
 
     /**
      * Utility method to create a new {@link IntReferenceHolder} for integer values without
@@ -31,7 +59,7 @@ public final class DataSlotUtil {
      * @return The new {@link IntReferenceHolder}.
      */
     public static IntReferenceHolder forInteger(TileEntity tile, IntSupplier s, IntConsumer c) {
-        return new IntReferenceHolder() {
+        return new SyncedIntReferenceHolder() {
 
             @Override
             public int get() {
@@ -60,12 +88,12 @@ public final class DataSlotUtil {
      * @param c    The consumer of the integer value.
      * @return The new {@link IIntArray}.
      */
-    public static IIntArray forIntegerSplit(TileEntity tile, IntSupplier s, IntConsumer c) {
-        return new IIntArray() {
+    public static IntReferenceHolder[] forIntegerSplit(TileEntity tile, IntSupplier s, IntConsumer c) {
+        return intArrayToReferenceHolder(new IIntArray() {
             @Override
             public int get(int index) {
                 if (index == 0) {
-                    return s.getAsInt() & UPPER;
+                    return (s.getAsInt() >> 16) & LOWER;
                 }
 
                 return s.getAsInt() & LOWER;
@@ -74,9 +102,9 @@ public final class DataSlotUtil {
             @Override
             public void set(int index, int value) {
                 if (index == 0) {
-                    c.accept((value & UPPER) | (s.getAsInt() & LOWER));
+                    c.accept((s.getAsInt() & LOWER) | (value << 16));
                 } else {
-                    c.accept((value & LOWER) | (s.getAsInt() & UPPER));
+                    c.accept((s.getAsInt() & UPPER) + (value & LOWER));
                 }
                 tile.setChanged();
             }
@@ -85,33 +113,41 @@ public final class DataSlotUtil {
             public int getCount() {
                 return 2;
             }
-        };
+        });
     }
 
-    /**
-     * Utility method to create a new {@link IntReferenceHolder} for boolean values without
-     * the need to have a clunky anonymous class and conversion.
-     * <p>
-     * Marks the tile entity automatically for saving when changing values.
-     *
-     * @param tile The tile entity to mark for saving.
-     * @param s    The supplier of the boolean value.
-     * @param c    The consumer of the boolean value.
-     * @return The new {@link IntReferenceHolder}.
-     */
-    public static IntReferenceHolder forBoolean(TileEntity tile, BooleanSupplier s, BooleanConsumer c) {
-        return new IntReferenceHolder() {
+    private static SyncedIntReferenceHolder[] intArrayToReferenceHolder(IIntArray intArray) {
+        return IntStream
+            .range(0, intArray.getCount())
+            .mapToObj(i -> SyncedIntReferenceHolder.of(intArray, i))
+            .toArray(SyncedIntReferenceHolder[]::new);
+    }
 
-            @Override
-            public int get() {
-                return s.getAsBoolean() ? 1 : 0;
-            }
+    private abstract static class SyncedIntReferenceHolder extends IntReferenceHolder {
 
-            @Override
-            public void set(int value) {
-                c.accept(value == 1);
-                tile.setChanged();
+        private boolean initSync = true;
+
+        private static SyncedIntReferenceHolder of(IIntArray data, int index) {
+            return new SyncedIntReferenceHolder() {
+                @Override
+                public int get() {
+                    return data.get(index);
+                }
+
+                @Override
+                public void set(int value) {
+                    data.set(index, value);
+                }
+            };
+        }
+
+        @Override
+        public boolean checkAndClearUpdateFlag() {
+            if (initSync) {
+                initSync = false;
+                return true;
             }
-        };
+            return super.checkAndClearUpdateFlag();
+        }
     }
 }

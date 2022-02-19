@@ -29,14 +29,14 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     public MachineScreen(
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
     ) {
-        super(container, inventory, container.getTile().getDisplayName());
-        progressTexture = TextUtil.getRL("textures/gui/progress/" + container.getTile().getMachineType() + ".png");
+        super(container, inventory, container.tile.getDisplayName());
+        progressTexture = TextUtil.getRL("textures/gui/progress/" + container.tile.getMachineType() + ".png");
     }
 
     @Override
     protected void init() {
         super.init();
-        addRenderable(new AutoExtractButton(this, () -> menu.getTile().isAutoExtract()));
+        addRenderable(new AutoExtractButton(this, menu.tile::isAutoExtract));
         addRenderable(new EnergyDumpButton(this));
         addRenderables(IOControl.setup(this, 7, 7));
     }
@@ -64,6 +64,9 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     @Override
     protected void renderLabels(MatrixStack matrix, int mX, int mY) {
         drawCenteredString(matrix, font, title, (TEXTURE_WIDTH - ENERGY_WIDTH) / 2, -12, 16_777_215);
+
+        // TODO: remove
+        drawString(matrix, font, "Energy: " + menu.getEnergyStored(), 10, 10, 0xff_ffff);
     }
 
     @SuppressWarnings("deprecation")
@@ -85,7 +88,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         );
 
         // upper and lower input slots for triple input machines
-        if (menu.getInventory().getInputSlots() == 3) {
+        if (menu.tile.getMachineType().getInputSlots() == 3) {
             blit(matrix, leftPos + 43, topPos + 7, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             blit(matrix, leftPos + 43, topPos + 49, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
@@ -107,8 +110,8 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
 
         // progress bar
         minecraft.getTextureManager().bind(progressTexture);
-        int progress = menu.getTile().getProgress();
-        int processTime = menu.getTile().getProcessTime();
+        int progress = menu.tile.getProgress();
+        int processTime = menu.tile.getProcessTime();
         int barWidth = processTime > 0 ? progress * (PROGRESS_WIDTH / 2) / processTime : 0;
         blit(matrix,
             leftPos + 78,
