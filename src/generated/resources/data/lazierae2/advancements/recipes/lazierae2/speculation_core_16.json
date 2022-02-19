@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "lazierae2:speculative_core_16"
+      "lazierae2:speculation_core_16"
     ]
   },
   "criteria": {
@@ -11,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "item": "lazierae2:speculative_core_8"
+            "item": "lazierae2:speculation_core_8"
           }
         ]
       }
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "lazierae2:speculative_core_16"
+        "recipe": "lazierae2:speculation_core_16"
       }
     }
   },
