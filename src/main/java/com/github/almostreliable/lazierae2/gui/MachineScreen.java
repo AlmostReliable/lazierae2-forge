@@ -109,7 +109,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         minecraft.getTextureManager().bind(progressTexture);
         int progress = menu.getTile().getProgress();
         int processTime = menu.getTile().getProcessTime();
-        int barWidth = progress > 0 ? progress * (PROGRESS_WIDTH / 2) / processTime : 0;
+        int barWidth = processTime > 0 ? progress * (PROGRESS_WIDTH / 2) / processTime : 0;
         blit(matrix,
             leftPos + 78,
             topPos + 24,
