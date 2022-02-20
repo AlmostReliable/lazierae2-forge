@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class UpgradeSlot extends SlotItemHandler {
 
     private final MachineTile tile;
@@ -32,5 +34,10 @@ public class UpgradeSlot extends SlotItemHandler {
     @Override
     public int getMaxStackSize() {
         return tile.getMachineType().getUpgradeSlots();
+    }
+
+    @Override
+    public int getMaxStackSize(@Nonnull ItemStack stack) {
+        return getMaxStackSize();
     }
 }
