@@ -94,8 +94,8 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         }
 
         // energy bar
-        int energy = menu.getEnergyStored();
         int capacity = menu.getEnergyCapacity();
+        int energy = Math.min(menu.getEnergyStored(), capacity);
         int barHeight = energy > 0 ? energy * ENERGY_HEIGHT / capacity : 0;
         blit(matrix,
             leftPos + 166,
