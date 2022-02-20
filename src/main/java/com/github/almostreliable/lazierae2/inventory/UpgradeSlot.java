@@ -15,7 +15,7 @@ public class UpgradeSlot extends SlotItemHandler {
         MachineContainer parent, IItemHandler itemHandler, int index, int pX, int pY
     ) {
         super(itemHandler, index, pX, pY);
-        tile = parent.getTile();
+        tile = parent.tile;
     }
 
     @Override

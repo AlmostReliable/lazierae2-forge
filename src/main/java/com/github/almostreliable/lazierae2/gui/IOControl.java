@@ -45,7 +45,7 @@ final class IOControl {
 
         private IOButton(MachineScreen screen, BLOCK_SIDE side, int pX, int pY) {
             super(screen, pX, pY, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID);
-            tile = screen.getMenu().getTile();
+            tile = screen.getMenu().tile;
             this.side = side;
         }
 
@@ -57,7 +57,7 @@ final class IOControl {
                 matrix,
                 x + 1,
                 y + 1,
-                BUTTON_SIZE + INNER_SIZE * (float) tile.getSideConfig().get(tile.getBlockState(), side).ordinal(),
+                BUTTON_SIZE + INNER_SIZE * (float) tile.sideConfig.get(tile.getBlockState(), side).ordinal(),
                 0,
                 INNER_SIZE,
                 INNER_SIZE,
@@ -69,7 +69,7 @@ final class IOControl {
         @Override
         protected void clickHandler() {
             changeMode();
-            PacketHandler.CHANNEL.sendToServer(new SideConfigPacket(tile.getSideConfig()));
+            PacketHandler.CHANNEL.sendToServer(new SideConfigPacket(tile.sideConfig));
         }
 
         @Override
@@ -94,7 +94,7 @@ final class IOControl {
         }
 
         private void changeMode() {
-            SideConfiguration config = tile.getSideConfig();
+            SideConfiguration config = tile.sideConfig;
             IO_SETTING setting = config.get(tile.getBlockState(), side);
 
             if (Screen.hasShiftDown()) {

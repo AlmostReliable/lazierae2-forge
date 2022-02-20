@@ -25,8 +25,8 @@ public final class EnergyDumpPacket {
     private static void handlePacket(@Nullable ServerPlayerEntity player) {
         if (player != null && player.containerMenu instanceof MachineContainer) {
             MachineContainer container = (MachineContainer) player.containerMenu;
-            World level = container.getTile().getLevel();
-            if (level == null || !level.isLoaded(container.getTile().getBlockPos())) return;
+            World level = container.tile.getLevel();
+            if (level == null || !level.isLoaded(container.tile.getBlockPos())) return;
             container.setEnergyStored(0);
         }
     }

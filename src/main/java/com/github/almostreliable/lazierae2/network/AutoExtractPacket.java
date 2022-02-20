@@ -34,7 +34,7 @@ public class AutoExtractPacket {
 
     private static void handlePacket(AutoExtractPacket packet, @Nullable ServerPlayerEntity player) {
         if (player != null && player.containerMenu instanceof MachineContainer) {
-            MachineTile tile = ((MachineContainer) player.containerMenu).getTile();
+            MachineTile tile = ((MachineContainer) player.containerMenu).tile;
             World level = tile.getLevel();
             if (level == null || !level.isLoaded(tile.getBlockPos())) return;
             tile.setAutoExtract(packet.value);

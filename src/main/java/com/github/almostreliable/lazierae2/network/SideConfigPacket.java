@@ -36,10 +36,10 @@ public class SideConfigPacket {
 
     private static void handlePacket(SideConfigPacket packet, @Nullable ServerPlayerEntity player) {
         if (player != null && player.containerMenu instanceof MachineContainer) {
-            MachineTile tile = ((MachineContainer) player.containerMenu).getTile();
+            MachineTile tile = ((MachineContainer) player.containerMenu).tile;
             World level = tile.getLevel();
             if (level == null || !level.isLoaded(tile.getBlockPos())) return;
-            tile.getSideConfig().deserializeNBT(packet.config);
+            tile.sideConfig.deserializeNBT(packet.config);
             tile.setChanged();
         }
     }
