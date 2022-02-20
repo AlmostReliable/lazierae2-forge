@@ -117,6 +117,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     public void tick() {
         if (level == null || level.isClientSide) return;
         if (autoExtract && level.getGameTime() % 10 == 0) autoExtract();
+        energy.validateEnergy();
 
         MachineRecipe recipe;
         if (lastRecipe != null && lastRecipe.matches(inventory.toVanilla(), level)) {
