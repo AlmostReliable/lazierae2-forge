@@ -57,7 +57,7 @@ final class IOControl {
                 matrix,
                 x + 1,
                 y + 1,
-                BUTTON_SIZE + INNER_SIZE * (float) tile.sideConfig.get(tile.getBlockState(), side).ordinal(),
+                BUTTON_SIZE + INNER_SIZE * (float) tile.sideConfig.get(side).ordinal(),
                 0,
                 INNER_SIZE,
                 INNER_SIZE,
@@ -95,7 +95,7 @@ final class IOControl {
 
         private void changeMode() {
             SideConfiguration config = tile.sideConfig;
-            IO_SETTING setting = config.get(tile.getBlockState(), side);
+            IO_SETTING setting = config.get(side);
 
             if (Screen.hasShiftDown()) {
                 if (side == BLOCK_SIDE.FRONT) {
@@ -123,7 +123,7 @@ final class IOControl {
                 }
             }
 
-            config.set(tile.getBlockState(), side, setting);
+            config.set(side, setting);
         }
     }
 }

@@ -60,7 +60,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         inventoryCap = LazyOptional.of(() -> inventory);
         energy = new EnergyHandler(this, energyBuffer);
         energyCap = LazyOptional.of(() -> energy);
-        sideConfig = new SideConfiguration();
+        sideConfig = new SideConfiguration(this);
     }
 
     /*

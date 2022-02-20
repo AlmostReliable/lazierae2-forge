@@ -3,7 +3,6 @@ package com.github.almostreliable.lazierae2.component;
 import com.github.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.github.almostreliable.lazierae2.machine.MachineBlock;
-import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -15,29 +14,13 @@ import java.util.function.Consumer;
 
 public class SideConfiguration implements INBTSerializable<CompoundNBT> {
 
+    private final TileEntity tile;
     private final EnumMap<Direction, IO_SETTING> config = new EnumMap<>(Direction.class);
 
-    public SideConfiguration() {
+    public SideConfiguration(TileEntity tile) {
+        this.tile = tile;
         for (Direction direction : Direction.values()) {
             config.put(direction, IO_SETTING.OFF);
-        }
-    }
-
-    private static Direction getDirectionFromSide(BlockState state, BLOCK_SIDE side) {
-        Direction facing = state.getValue(MachineBlock.FACING);
-        switch (side) {
-            case TOP:
-                return Direction.UP;
-            case BOTTOM:
-                return Direction.DOWN;
-            case LEFT:
-                return facing.getClockWise();
-            case RIGHT:
-                return facing.getCounterClockWise();
-            case BACK:
-                return facing.getOpposite();
-            default:
-                return facing;
         }
     }
 
@@ -45,12 +28,13 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
         return config.get(direction);
     }
 
-    public IO_SETTING get(BlockState state, BLOCK_SIDE side) {
-        return config.get(getDirectionFromSide(state, side));
+    public IO_SETTING get(BLOCK_SIDE side) {
+        return config.get(getDirectionFromSide(side));
     }
 
-    public void set(BlockState state, BLOCK_SIDE side, IO_SETTING setting) {
-        config.put(getDirectionFromSide(state, side), setting);
+    public void set(BLOCK_SIDE side, IO_SETTING setting) {
+        config.put(getDirectionFromSide(side), setting);
+        tile.setChanged();
     }
 
     public void reset() {
@@ -67,7 +51,7 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
         }
     }
 
-    public IIntArray toIIntArray(TileEntity tile) {
+    public IIntArray toIIntArray() {
         return new IIntArray() {
             @Override
             public int get(int index) {
@@ -100,6 +84,24 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
     public void deserializeNBT(CompoundNBT nbt) {
         for (Direction direction : Direction.values()) {
             config.put(direction, IO_SETTING.values()[nbt.getInt(direction.toString())]);
+        }
+    }
+
+    private Direction getDirectionFromSide(BLOCK_SIDE side) {
+        Direction facing = tile.getBlockState().getValue(MachineBlock.FACING);
+        switch (side) {
+            case TOP:
+                return Direction.UP;
+            case BOTTOM:
+                return Direction.DOWN;
+            case LEFT:
+                return facing.getClockWise();
+            case RIGHT:
+                return facing.getCounterClockWise();
+            case BACK:
+                return facing.getOpposite();
+            default:
+                return facing;
         }
     }
 }
