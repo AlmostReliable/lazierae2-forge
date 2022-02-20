@@ -213,7 +213,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     private double calculateMultiplier(double upgradeMultiplier) {
         int upgradeCount = inventory.getUpgradeCount();
-        if (upgradeCount == 0) return 1.0;
         return Math.pow(upgradeMultiplier, upgradeCount);
     }
 
