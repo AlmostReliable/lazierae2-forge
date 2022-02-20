@@ -119,7 +119,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (autoExtract && level.getGameTime() % 10 == 0) autoExtract();
 
         MachineRecipe recipe;
-        if (lastRecipe != null && lastRecipe.matches(inventory.asIInventory(), level)) {
+        if (lastRecipe != null && lastRecipe.matches(inventory.toVanilla(), level)) {
             recipe = lastRecipe;
         } else {
             recipe = getRecipe();
@@ -182,7 +182,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     private void finishWork(IRecipe<? super IInventory> recipe) {
         if (inventory.getStackInOutput().isEmpty()) {
-            inventory.setStackInOutput(recipe.assemble(inventory.asIInventory()));
+            inventory.setStackInOutput(recipe.assemble(inventory.toVanilla()));
         } else {
             inventory.getStackInOutput().grow(recipe.getResultItem().getCount());
         }
@@ -286,7 +286,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         assert level != null;
         return GameUtil
             .getRecipeManager(level)
-            .getRecipeFor(getMachineType(), inventory.asIInventory(), level)
+            .getRecipeFor(getMachineType(), inventory.toVanilla(), level)
             .orElse(null);
     }
 

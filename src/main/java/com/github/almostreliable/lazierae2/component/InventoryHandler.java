@@ -12,7 +12,7 @@ public class InventoryHandler extends ItemStackHandler {
     public static final int UPGRADE_SLOT = 0;
     public static final int OUTPUT_SLOT = 1;
     private final TileEntity tile;
-    private IInventory iinventory;
+    private IInventory vanillaInventory;
     private boolean changed;
 
     public InventoryHandler(TileEntity tile, int inputSlots) {
@@ -27,16 +27,17 @@ public class InventoryHandler extends ItemStackHandler {
                 setStackInSlot(i, ItemStack.EMPTY);
             } else {
                 getStackInSlot(i).shrink(1);
+                tile.setChanged();
             }
         }
     }
 
-    public IInventory asIInventory() {
-        if (iinventory == null || changed) {
-            iinventory = new RecipeWrapper(this);
+    public IInventory toVanilla() {
+        if (vanillaInventory == null || changed) {
+            vanillaInventory = new RecipeWrapper(this);
             changed = false;
         }
-        return iinventory;
+        return vanillaInventory;
     }
 
     @Override
