@@ -37,6 +37,8 @@ public enum Constants {
     public static final String SIDE_CONFIG_ID = "side_config";
     public static final String CAPACITY_ID = "capacity";
     public static final String ENERGY_ID = "energy";
+    public static final String MAX_RECEIVE = "max_receive";
+    public static final String MAX_EXTRACT = "max_extract";
     public static final String AUTO_EXTRACT_ID = "auto_extract";
     public static final String PROGRESS_ID = "progress";
     public static final String PROCESS_TIME_ID = "process_time";
