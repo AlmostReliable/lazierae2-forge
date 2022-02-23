@@ -13,6 +13,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public final class GuiUtil {
@@ -74,6 +76,10 @@ public final class GuiUtil {
             for (Tuple<ITextComponent, Supplier<?>[]> tuple : components) {
                 ITextComponent component = tuple.getA();
                 Supplier<?>[] suppliers = tuple.getB();
+                if (component instanceof LogicComponent) {
+                    list.addAll(((LogicComponent) component).resolve());
+                    continue;
+                }
                 if (suppliers.length > 0 && component instanceof TranslationTextComponent) {
                     list.add(new TranslationTextComponent(((TranslationTextComponent) component).getKey(),
                         Arrays.stream(suppliers).map(Supplier::get).toArray()
@@ -203,6 +209,84 @@ public final class GuiUtil {
                 ))
                 .append(" ")
                 .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)), replacements);
+        }
+
+        /**
+         * Adds a conditional component to the tooltip.
+         * <p>
+         * Checks a boolean supplier to determine which component
+         * should be added.
+         *
+         * @param logicBuilder the conditional logic builder
+         * @return an instance of the tooltip builder
+         */
+        public Tooltip conditional(Consumer<? super LogicComponent> logicBuilder) {
+            LogicComponent logic = new LogicComponent();
+            logicBuilder.accept(logic);
+            logic.validate();
+            component(logic);
+            return this;
+        }
+
+        @SuppressWarnings("java:S2160")
+        public static final class LogicComponent extends StringTextComponent {
+
+            private BooleanSupplier condition;
+            private Tooltip right;
+            private Tooltip wrong;
+
+            private LogicComponent() {
+                super("");
+            }
+
+            /**
+             * Adds the condition for the logic component.
+             *
+             * @param condition the boolean supplier to check
+             * @return the instance of the logic component builder
+             */
+            public LogicComponent condition(BooleanSupplier condition) {
+                assert this.condition == null : "condition already set";
+                this.condition = condition;
+                return this;
+            }
+
+            /**
+             * Adds the component to the tooltip for when the condition is true.
+             *
+             * @param right the component to add
+             * @return the instance of the logic component builder
+             */
+            public LogicComponent right(Tooltip right) {
+                assert this.right == null : "right condition already set";
+                this.right = right;
+                return this;
+            }
+
+            /**
+             * Adds the component to the tooltip for when the condition is false.
+             *
+             * @param wrong the component to add
+             * @return the instance of the logic component builder
+             */
+            public LogicComponent wrong(Tooltip wrong) {
+                assert this.wrong == null : "wrong condition already set";
+                this.wrong = wrong;
+                return this;
+            }
+
+            private void validate() {
+                assert condition != null : "condition not set";
+                assert right != null : "right condition not set";
+                assert wrong != null : "wrong condition not set";
+            }
+
+            private List<ITextComponent> resolve() {
+                if (condition.getAsBoolean()) {
+                    return right.resolve();
+                }
+                return wrong.resolve();
+            }
         }
     }
 }
