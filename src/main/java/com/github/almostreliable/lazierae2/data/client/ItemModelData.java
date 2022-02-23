@@ -62,6 +62,7 @@ public class ItemModelData extends ItemModelProvider {
 
     /**
      * Creates basic item data from an item supplier.
+     *
      * @param item the item to create the data for
      */
     private void builder(Supplier<? extends Item> item) {

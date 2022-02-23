@@ -34,6 +34,10 @@ public class EnergyHandler extends EnergyStorage implements INBTSerializable<Com
         maxExtract = nbt.getInt(MAX_EXTRACT);
     }
 
+    public void validateEnergy() {
+        if (energy > capacity) setEnergy(capacity);
+    }
+
     public void setEnergy(int energy) {
         this.energy = Math.min(energy, capacity);
         tile.setChanged();
@@ -44,9 +48,5 @@ public class EnergyHandler extends EnergyStorage implements INBTSerializable<Com
         maxReceive = capacity;
         maxExtract = capacity;
         tile.setChanged();
-    }
-
-    public void validateEnergy() {
-        if (energy > capacity) setEnergy(capacity);
     }
 }
