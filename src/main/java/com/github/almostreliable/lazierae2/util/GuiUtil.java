@@ -4,12 +4,16 @@ import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 public final class GuiUtil {
 
@@ -38,7 +42,7 @@ public final class GuiUtil {
 
     public static final class Tooltip {
 
-        private final List<ITextComponent> components;
+        private final List<Tuple<ITextComponent, Supplier<?>[]>> components;
 
         private Tooltip() {
             components = new ArrayList<>();
@@ -49,22 +53,48 @@ public final class GuiUtil {
         }
 
         /**
-         * Returns the built tooltip as list.
+         * Returns the built tooltip as text component list.
+         * <p>
+         * Replaces placeholders where necessary.
+         * <p>
+         * If no replacements have been used, this method should be directly called
+         * after building the tooltip and statically saved for better performance.
+         * <p>
+         * {@code
+         * %s = String
+         * %d = Number
+         * %1$s = ordered placeholder
+         * }
          *
          * @return the list of tooltip components
          */
-        public List<ITextComponent> build() {
-            return components;
+        public List<ITextComponent> resolve() {
+            List<ITextComponent> list = new ArrayList<>();
+
+            for (Tuple<ITextComponent, Supplier<?>[]> tuple : components) {
+                ITextComponent component = tuple.getA();
+                Supplier<?>[] suppliers = tuple.getB();
+                if (suppliers.length > 0 && component instanceof TranslationTextComponent) {
+                    list.add(new TranslationTextComponent(((TranslationTextComponent) component).getKey(),
+                        Arrays.stream(suppliers).map(Supplier::get).toArray()
+                    ));
+                    continue;
+                }
+                list.add(component);
+            }
+
+            return list;
         }
 
         /**
          * Adds a generic component to the tooltip which is not covered by the builder.
          *
-         * @param component the component to add
+         * @param component    the component to add
+         * @param replacements the optional replacements to apply to the component
          * @return the instance of the tooltip builder
          */
-        public Tooltip component(ITextComponent component) {
-            components.add(component);
+        public Tooltip component(ITextComponent component, Supplier<?>... replacements) {
+            components.add(new Tuple<>(component, replacements));
             return this;
         }
 
@@ -85,44 +115,48 @@ public final class GuiUtil {
          * <p>
          * It has golden text color. It's language key is {@code "mod-id.tooltip.key"}.
          *
-         * @param key the key for the translation
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the header
          * @return the instance of the tooltip builder
          */
-        public Tooltip header(String key) {
-            return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GOLD));
+        public Tooltip header(String key, Supplier<?>... replacements) {
+            return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GOLD), replacements);
         }
 
         /**
          * Adds a description component to the tooltip.
          *
-         * @param key the key for the translation
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the description
          * @return the instance of the tooltip builder
          */
-        public Tooltip description(String key) {
-            return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.WHITE));
+        public Tooltip description(String key, Supplier<?>... replacements) {
+            return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.WHITE), replacements);
         }
 
         /**
          * Adds a click action component to the tooltip.
          *
-         * @param key the key for the translation
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the click action
          * @return the instance of the tooltip builder
          */
-        public Tooltip clickAction(String key) {
+        public Tooltip clickAction(String key, Supplier<?>... replacements) {
             return component(TextUtil
                 .colorize("> ", TextFormatting.GRAY)
                 .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, "action_click", TextFormatting.AQUA))
                 .append(" ")
-                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)));
+                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)), replacements);
         }
 
         /**
          * Adds a shift click action component to the tooltip.
          *
-         * @param key the key for the translation
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the shift click action
          * @return the instance of the tooltip builder
          */
-        public Tooltip shiftClickAction(String key) {
+        public Tooltip shiftClickAction(String key, Supplier<?>... replacements) {
             return component(TextUtil
                 .colorize("> ", TextFormatting.GRAY)
                 .append(TextUtil.colorize(String.format("%s + %s",
@@ -130,34 +164,36 @@ public final class GuiUtil {
                     TextUtil.translateAsString(TRANSLATE_TYPE.TOOLTIP, "action_click")
                 ), TextFormatting.AQUA))
                 .append(" ")
-                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)));
+                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)), replacements);
         }
 
         /**
          * Adds a hotkey action component to the tooltip.
          *
-         * @param hotkey the hotkey from the {@link InputMappings}
-         * @param key    the key for the translation
+         * @param hotkey       the hotkey from the {@link InputMappings}
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the hotkey action
          * @return the instance of the tooltip builder
          */
-        public Tooltip hotkeyAction(String hotkey, String key) {
+        public Tooltip hotkeyAction(String hotkey, String key, Supplier<?>... replacements) {
             return component(TextUtil
                 .colorize("> ", TextFormatting.GRAY)
                 .append(TextUtil.colorize(InputMappings.getKey(hotkey).getDisplayName().getString(),
                     TextFormatting.AQUA
                 ))
                 .append(" ")
-                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)));
+                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)), replacements);
         }
 
         /**
          * Adds a hotkey hold action component to the tooltip.
          *
-         * @param hotkey the hotkey from the {@link InputMappings}
-         * @param key    the key for the translation
+         * @param hotkey       the hotkey from the {@link InputMappings}
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the hotkey hold action
          * @return the instance of the tooltip builder
          */
-        public Tooltip hotkeyHoldAction(String hotkey, String key) {
+        public Tooltip hotkeyHoldAction(String hotkey, String key, Supplier<?>... replacements) {
             return component(TextUtil
                 .colorize("> ", TextFormatting.GRAY)
                 .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, "action_hold", TextFormatting.GRAY))
@@ -166,7 +202,7 @@ public final class GuiUtil {
                     TextFormatting.AQUA
                 ))
                 .append(" ")
-                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)));
+                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)), replacements);
         }
     }
 }
