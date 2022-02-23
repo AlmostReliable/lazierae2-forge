@@ -1,9 +1,12 @@
 package com.github.almostreliable.lazierae2.gui;
 
+import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import com.github.almostreliable.lazierae2.machine.MachineContainer;
+import com.github.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.entity.player.PlayerInventory;
@@ -25,12 +28,14 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     private static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/machine.png");
     private final ResourceLocation progressTexture;
     private final Collection<Widget> renderables = new ArrayList<>();
+    private final Tooltip progressTooltip;
 
     public MachineScreen(
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
     ) {
         super(container, inventory, container.tile.getDisplayName());
         progressTexture = TextUtil.getRL("textures/gui/progress/" + container.tile.getMachineType() + ".png");
+        progressTooltip = setupProgressTooltip();
     }
 
     @Override
@@ -52,7 +57,10 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     protected void renderTooltip(MatrixStack matrix, int mX, int mY) {
         super.renderTooltip(matrix, mX, mY);
 
-        // TODO: screen tooltips
+        // progress bar
+        if (isHovered(mX, mY, 78, 23, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT)) {
+            renderComponentTooltip(matrix, progressTooltip.resolve(), mX, mY);
+        }
 
         for (Widget widget : renderables) {
             if (widget.isHovered() && widget.visible) {
@@ -133,6 +141,31 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
             PROGRESS_WIDTH,
             PROGRESS_HEIGHT
         );
+    }
+
+    private Tooltip setupProgressTooltip() {
+        return Tooltip
+            .builder()
+            .header("progress_header")
+            .blankLine()
+            .conditional(progress -> progress
+                .condition(() -> (menu.tile.getProgress() > 0 && menu.tile.getProcessTime() > 0) ||
+                    menu.tile.getBlockState().getValue(MachineBlock.ACTIVE).equals(true))
+                .right(Tooltip
+                    .builder()
+                    .description("progress_value", menu.tile::getProgress, menu.tile::getProcessTime)
+                    .conditional(extendedInfo -> extendedInfo
+                        .condition(Screen::hasShiftDown)
+                        .right(Tooltip.builder().description("progress_time", menu.tile::getRecipeTime))
+                        .wrong(Tooltip
+                            .builder()
+                            .blankLine()
+                            .hotkeyHoldAction("key.keyboard.left.shift", "extended_info"))))
+                .wrong(Tooltip.builder().description("progress_none")));
+    }
+
+    private boolean isHovered(int mX, int mY, int x, int y, int width, int height) {
+        return mX >= x + leftPos && mX <= x + width + leftPos && mY >= y + topPos && mY <= y + height + topPos;
     }
 
     private void addRenderable(Widget widget) {

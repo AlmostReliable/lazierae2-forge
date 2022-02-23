@@ -103,6 +103,7 @@ public class MachineContainer extends Container {
         addDataSlot(DataSlotUtil.forBoolean(tile, tile::isAutoExtract, tile::setAutoExtract));
         addDataSlot(DataSlotUtil.forInteger(tile, tile::getProgress, tile::setProgress));
         addDataSlot(DataSlotUtil.forInteger(tile, tile::getProcessTime, tile::setProcessTime));
+        addDataSlot(DataSlotUtil.forInteger(tile, tile::getRecipeTime, tile::setRecipeTime));
         addMultipleDataSlots(DataSlotUtil.forIntegerSplit(tile, this::getEnergyStored, this::setEnergyStored));
         addMultipleDataSlots(DataSlotUtil.forIntegerSplit(tile, this::getEnergyCapacity, this::setEnergyCapacity));
         addDataSlots(tile.sideConfig.toIIntArray());

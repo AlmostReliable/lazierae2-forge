@@ -42,6 +42,7 @@ public enum Constants {
     public static final String AUTO_EXTRACT_ID = "auto_extract";
     public static final String PROGRESS_ID = "progress";
     public static final String PROCESS_TIME_ID = "process_time";
+    public static final String RECIPE_TIME_ID = "recipe_time";
     // recipe json keys
     public static final String RECIPE_INPUT = "input";
     public static final String RECIPE_OUTPUT = "output";

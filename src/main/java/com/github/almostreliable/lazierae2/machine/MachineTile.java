@@ -51,6 +51,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private boolean autoExtract;
     private int progress;
     private int processTime;
+    private int recipeTime;
     private MachineRecipe lastRecipe;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
@@ -82,6 +83,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (nbt.contains(AUTO_EXTRACT_ID)) autoExtract = nbt.getBoolean(AUTO_EXTRACT_ID);
         if (nbt.contains(PROGRESS_ID)) progress = nbt.getInt(PROGRESS_ID);
         if (nbt.contains(PROCESS_TIME_ID)) processTime = nbt.getInt(PROCESS_TIME_ID);
+        if (nbt.contains(RECIPE_TIME_ID)) recipeTime = nbt.getInt(RECIPE_TIME_ID);
     }
 
     @Override
@@ -92,6 +94,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         nbt.putBoolean(AUTO_EXTRACT_ID, autoExtract);
         nbt.putInt(PROGRESS_ID, progress);
         nbt.putInt(PROCESS_TIME_ID, processTime);
+        nbt.putInt(RECIPE_TIME_ID, recipeTime);
         return super.save(nbt);
     }
 
@@ -170,6 +173,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     private void doWork(MachineRecipe recipe, int energyCost) {
+        recipeTime = recipe.getProcessTime();
         processTime = calculateProcessTime(recipe);
         if (progress < processTime) {
             changeActivityState(true);
@@ -314,6 +318,14 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     void setProcessTime(int processTime) {
         this.processTime = processTime;
+    }
+
+    public int getRecipeTime() {
+        return recipeTime;
+    }
+
+    void setRecipeTime(int recipeTime) {
+        this.recipeTime = recipeTime;
     }
 
     public boolean isAutoExtract() {
