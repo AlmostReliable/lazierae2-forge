@@ -184,7 +184,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         processTime = calculateProcessTime(recipe);
         if (progress < processTime) {
             changeActivityState(true);
-            energy.setEnergy(energy.getEnergyStored() - energyCost);
+            energy.setEnergy(energy.getEnergyStored() - (energyCost / processTime));
             progress++;
             setChanged();
         } else {
