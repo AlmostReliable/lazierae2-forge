@@ -137,20 +137,20 @@ public final class GuiUtil {
             return this;
         }
 
-        public Tooltip keyValue(String key, String value, Supplier<?>... replacements) {
+        public Tooltip keyValue(String key, Supplier<?>... replacements) {
             components.add(new FormatComponent(TextUtil
-                .translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GREEN)
+                .translate(TRANSLATE_TYPE.TOOLTIP, key + ".key", TextFormatting.GREEN)
                 .append(TextUtil.colorize(": ", TextFormatting.GREEN))
-                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, value)), replacements));
+                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key + ".value")), replacements));
             return this;
         }
 
-        public Tooltip keyValueIf(BooleanSupplier condition, String key, String value, Supplier<?>... replacements) {
+        public Tooltip keyValueIf(BooleanSupplier condition, String key, Supplier<?>... replacements) {
             components.add(new IfComponent(condition,
                 new FormatComponent(TextUtil
-                    .translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GREEN)
+                    .translate(TRANSLATE_TYPE.TOOLTIP, key + ".key", TextFormatting.GREEN)
                     .append(TextUtil.colorize(": ", TextFormatting.GREEN))
-                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, value)), replacements)
+                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key + ".value")), replacements)
             ));
             return this;
         }
