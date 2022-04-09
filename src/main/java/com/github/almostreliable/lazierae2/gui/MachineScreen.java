@@ -162,6 +162,9 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
                             .blankLine()
                             .hotkeyHoldAction("key.keyboard.left.shift", "extended_info"))))
                 .wrong(Tooltip.builder().description("progress_none")));
+
+    private String getMultiplier(int currentVal, int recipeVal) {
+        return TextUtil.formatNumber((double) currentVal / recipeVal, 1, 3);
     }
 
     private boolean isHovered(int mX, int mY, int x, int y, int width, int height) {
@@ -177,5 +180,17 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         for (Widget widget : widgets) {
             addRenderable(widget);
         }
+    }
+
+    private String getProcessTimeMultiplier() {
+        int processTime = menu.tile.getProcessTime();
+        int recipeTime = menu.tile.getRecipeTime();
+        return getMultiplier(processTime, recipeTime);
+    }
+
+    private String getEnergyCostMultiplier() {
+        int energyCost = menu.tile.getEnergyCost();
+        int recipeEnergy = menu.tile.getRecipeEnergy();
+        return getMultiplier(energyCost, recipeEnergy);
     }
 }

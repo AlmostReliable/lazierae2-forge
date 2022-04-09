@@ -99,6 +99,10 @@ public class MachineContainer extends Container {
             );
     }
 
+    public boolean hasUpgrades() {
+        return inventory.getUpgradeCount() > 0;
+    }
+
     private void syncData() {
         addDataSlot(DataSlotUtil.forBoolean(tile, tile::isAutoExtract, tile::setAutoExtract));
         addDataSlot(DataSlotUtil.forInteger(tile, tile::getProgress, tile::setProgress));
