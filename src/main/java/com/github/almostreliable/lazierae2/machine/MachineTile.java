@@ -52,6 +52,8 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private int progress;
     private int processTime;
     private int recipeTime;
+    private int energyCost;
+    private int recipeEnergy;
     private MachineRecipe lastRecipe;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
@@ -84,6 +86,8 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (nbt.contains(PROGRESS_ID)) progress = nbt.getInt(PROGRESS_ID);
         if (nbt.contains(PROCESS_TIME_ID)) processTime = nbt.getInt(PROCESS_TIME_ID);
         if (nbt.contains(RECIPE_TIME_ID)) recipeTime = nbt.getInt(RECIPE_TIME_ID);
+        if (nbt.contains(ENERGY_COST_ID)) energyCost = nbt.getInt(ENERGY_COST_ID);
+        if (nbt.contains(RECIPE_ENERGY_ID)) recipeEnergy = nbt.getInt(RECIPE_ENERGY_ID);
     }
 
     @Override
@@ -95,6 +99,8 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         nbt.putInt(PROGRESS_ID, progress);
         nbt.putInt(PROCESS_TIME_ID, processTime);
         nbt.putInt(RECIPE_TIME_ID, recipeTime);
+        nbt.putInt(ENERGY_COST_ID, energyCost);
+        nbt.putInt(RECIPE_ENERGY_ID, recipeEnergy);
         return super.save(nbt);
     }
 
@@ -134,7 +140,8 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
             lastRecipe = recipe;
         }
 
-        int energyCost = calculateEnergyCost(recipe);
+        energyCost = calculateEnergyCost(recipe);
+        recipeEnergy = recipe.getEnergyCost();
         if (canWork(recipe, energyCost)) {
             doWork(recipe, energyCost);
         } else {
@@ -284,6 +291,22 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (!oldState.getValue(MachineBlock.ACTIVE).equals(state)) {
             level.setBlockAndUpdate(worldPosition, oldState.setValue(MachineBlock.ACTIVE, state));
         }
+    }
+
+    public int getEnergyCost() {
+        return energyCost;
+    }
+
+    public void setEnergyCost(int energyCost) {
+        this.energyCost = energyCost;
+    }
+
+    public int getRecipeEnergy() {
+        return recipeEnergy;
+    }
+
+    public void setRecipeEnergy(int recipeEnergy) {
+        this.recipeEnergy = recipeEnergy;
     }
 
     @Nullable
