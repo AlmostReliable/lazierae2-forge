@@ -18,14 +18,14 @@ import java.util.Collection;
 
 public class MachineScreen extends ContainerScreen<MachineContainer> {
 
-    private static final int TEXTURE_WIDTH = 178;
-    private static final int TEXTURE_HEIGHT = 154;
-    private static final int PROGRESS_WIDTH = 40;
-    private static final int PROGRESS_HEIGHT = 27;
+    public static final int TEXTURE_WIDTH = 178;
+    public static final int TEXTURE_HEIGHT = 154;
+    public static final int PROGRESS_WIDTH = 40;
+    public static final int PROGRESS_HEIGHT = 27;
+    public static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/machine.png");
     private static final int ENERGY_WIDTH = 2;
     private static final int ENERGY_HEIGHT = 58;
     private static final int SLOT_SIZE = 18;
-    private static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/machine.png");
     private final ResourceLocation progressTexture;
     private final Collection<Widget> renderables = new ArrayList<>();
     private final Tooltip progressTooltip;
@@ -64,6 +64,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
             renderComponentTooltip(matrix, progressTooltip.resolve(), mX, mY);
         }
 
+        // widget tooltips
         for (Widget widget : renderables) {
             if (widget.isHovered() && widget.visible) {
                 widget.renderToolTip(matrix, mX, mY);
