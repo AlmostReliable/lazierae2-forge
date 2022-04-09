@@ -4,12 +4,9 @@ import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.util.Tuple;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,9 +39,10 @@ public final class GuiUtil {
         matrix.popPose();
     }
 
+    @SuppressWarnings({"java:S2160", "UnusedReturnValue"})
     public static final class Tooltip {
 
-        private final List<Tuple<ITextComponent, Supplier<?>[]>> components;
+        private final List<Component> components;
 
         private Tooltip() {
             components = new ArrayList<>();
@@ -72,23 +70,9 @@ public final class GuiUtil {
          */
         public List<ITextComponent> resolve() {
             List<ITextComponent> list = new ArrayList<>();
-
-            for (Tuple<ITextComponent, Supplier<?>[]> tuple : components) {
-                ITextComponent component = tuple.getA();
-                Supplier<?>[] suppliers = tuple.getB();
-                if (component instanceof LogicComponent) {
-                    list.addAll(((LogicComponent) component).resolve());
-                    continue;
-                }
-                if (suppliers.length > 0 && component instanceof TranslationTextComponent) {
-                    list.add(new TranslationTextComponent(((TranslationTextComponent) component).getKey(),
-                        Arrays.stream(suppliers).map(Supplier::get).toArray()
-                    ));
-                    continue;
-                }
-                list.add(component);
+            for (Component component : components) {
+                component.resolve(list);
             }
-
             return list;
         }
 
@@ -100,7 +84,7 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip component(ITextComponent component, Supplier<?>... replacements) {
-            components.add(new Tuple<>(component, replacements));
+            components.add(new Component(component, replacements));
             return this;
         }
 
@@ -114,6 +98,11 @@ public final class GuiUtil {
          */
         public Tooltip blankLine() {
             return component(new StringTextComponent(" "));
+        }
+
+        public Tooltip blankLineIf(BooleanSupplier condition) {
+            components.add(new IfComponent(condition, new StringTextComponent(" ")));
+            return this;
         }
 
         /**
@@ -138,6 +127,32 @@ public final class GuiUtil {
          */
         public Tooltip description(String key, Supplier<?>... replacements) {
             return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.WHITE), replacements);
+        }
+
+        public Tooltip descriptionIf(BooleanSupplier condition, String key, Supplier<?>... replacements) {
+            components.add(new IfComponent(condition,
+                TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.WHITE),
+                replacements
+            ));
+            return this;
+        }
+
+        public Tooltip keyValue(String key, String value, Supplier<?>... replacements) {
+            components.add(new FormatComponent(TextUtil
+                .translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GREEN)
+                .append(TextUtil.colorize(": ", TextFormatting.GREEN))
+                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, value)), replacements));
+            return this;
+        }
+
+        public Tooltip keyValueIf(BooleanSupplier condition, String key, String value, Supplier<?>... replacements) {
+            components.add(new IfComponent(condition,
+                new FormatComponent(TextUtil
+                    .translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GREEN)
+                    .append(TextUtil.colorize(": ", TextFormatting.GREEN))
+                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, value)), replacements)
+            ));
+            return this;
         }
 
         /**
@@ -224,19 +239,92 @@ public final class GuiUtil {
             LogicComponent logic = new LogicComponent();
             logicBuilder.accept(logic);
             logic.validate();
-            component(logic);
+            components.add(logic);
             return this;
         }
 
-        @SuppressWarnings("java:S2160")
-        public static final class LogicComponent extends StringTextComponent {
+        public static class Component extends StringTextComponent {
+
+            @Nullable
+            final ITextComponent textComponent;
+            private final Supplier<?>[] replacements;
+
+            Component(@Nullable ITextComponent textComponent, Supplier<?>... replacements) {
+                super("");
+                this.textComponent = textComponent;
+                this.replacements = replacements;
+            }
+
+            public void resolve(List<? super ITextComponent> tooltip) {
+                if (textComponent == null) return;
+                if (replacements.length > 0 && textComponent instanceof TranslationTextComponent) {
+                    tooltip.add(handleReplacements((TranslationTextComponent) textComponent));
+                    return;
+                }
+                tooltip.add(textComponent);
+            }
+
+            TranslationTextComponent handleReplacements(TranslationTextComponent textComponent) {
+                return new TranslationTextComponent(textComponent.getKey(),
+                    Arrays.stream(replacements).map(Supplier::get).toArray()
+                );
+            }
+        }
+
+        private static final class FormatComponent extends Component {
+
+            private FormatComponent(IFormattableTextComponent textComponent, Supplier<?>... replacements) {
+                super(textComponent, replacements);
+            }
+
+            @Override
+            public void resolve(List<? super ITextComponent> tooltip) {
+                assert textComponent != null;
+                ITextComponent value = textComponent.getSiblings().get(1);
+                value = handleReplacements((TranslationTextComponent) value).withStyle(TextFormatting.WHITE);
+                textComponent.getSiblings().set(1, value);
+                tooltip.add(textComponent);
+            }
+        }
+
+        private static final class IfComponent extends Component {
+
+            @Nullable
+            private final Component component;
+            private final BooleanSupplier condition;
+
+            private IfComponent(BooleanSupplier condition, Component component) {
+                super(component.textComponent, component.replacements);
+                this.component = component;
+                this.condition = condition;
+            }
+
+            @SuppressWarnings("OverloadedVarargsMethod")
+            private IfComponent(BooleanSupplier condition, ITextComponent textComponent, Supplier<?>... replacements) {
+                super(textComponent, replacements);
+                component = null;
+                this.condition = condition;
+            }
+
+            @Override
+            public void resolve(List<? super ITextComponent> tooltip) {
+                if (!condition.getAsBoolean()) return;
+                if (component != null) {
+                    component.resolve(tooltip);
+                    return;
+                }
+                super.resolve(tooltip);
+            }
+        }
+
+        public static final class LogicComponent extends Component {
 
             private BooleanSupplier condition;
-            private Tooltip right;
-            private Tooltip wrong;
+            private Tooltip then;
+            private Tooltip otherwise;
 
             private LogicComponent() {
-                super("");
+                super(null);
             }
 
             /**
@@ -254,38 +342,40 @@ public final class GuiUtil {
             /**
              * Adds the component to the tooltip for when the condition is true.
              *
-             * @param right the component to add
+             * @param then the component to add
              * @return the instance of the logic component builder
              */
-            public LogicComponent right(Tooltip right) {
-                assert this.right == null : "right condition already set";
-                this.right = right;
+            public LogicComponent then(Tooltip then) {
+                assert this.then == null : "then condition already set";
+                this.then = then;
                 return this;
             }
 
             /**
              * Adds the component to the tooltip for when the condition is false.
              *
-             * @param wrong the component to add
+             * @param otherwise the component to add
              * @return the instance of the logic component builder
              */
-            public LogicComponent wrong(Tooltip wrong) {
-                assert this.wrong == null : "wrong condition already set";
-                this.wrong = wrong;
+            public LogicComponent otherwise(Tooltip otherwise) {
+                assert this.otherwise == null : "otherwise condition already set";
+                this.otherwise = otherwise;
                 return this;
+            }
+
+            @Override
+            public void resolve(List<? super ITextComponent> tooltip) {
+                if (condition.getAsBoolean()) {
+                    tooltip.addAll(then.resolve());
+                } else {
+                    tooltip.addAll(otherwise.resolve());
+                }
             }
 
             private void validate() {
                 assert condition != null : "condition not set";
-                assert right != null : "right condition not set";
-                assert wrong != null : "wrong condition not set";
-            }
-
-            private List<ITextComponent> resolve() {
-                if (condition.getAsBoolean()) {
-                    return right.resolve();
-                }
-                return wrong.resolve();
+                assert then != null : "then case not set";
+                assert otherwise != null : "otherwise case not set";
             }
         }
     }
