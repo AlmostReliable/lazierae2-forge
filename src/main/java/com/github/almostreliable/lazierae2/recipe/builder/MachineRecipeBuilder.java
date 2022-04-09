@@ -73,11 +73,29 @@ public final class MachineRecipeBuilder {
         return input(Ingredient.of(input));
     }
 
+    /**
+     * Sets the processing time of the recipe. 20 ticks = 1 second.
+     * <p>
+     * Will fall back to a default value from the config if not set.
+     *
+     * @param ticks The processing time of the recipe.
+     * @return The builder instance.
+     */
     public MachineRecipeBuilder processingTime(int ticks) {
         processingTime = ticks;
         return this;
     }
 
+    /**
+     * Sets the energy cost of the recipe.
+     * <p>
+     * This is the amount of energy required to process the whole recipe, not the cost per tick.
+     * <p>
+     * Will fall back to a default value from the config if not set.
+     *
+     * @param energy The energy cost of the recipe.
+     * @return The builder instance.
+     */
     public MachineRecipeBuilder energyCost(int energy) {
         energyCost = energy;
         return this;
