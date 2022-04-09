@@ -350,7 +350,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         this.recipeTime = recipeTime;
     }
 
-    public boolean isAutoExtract() {
+    public boolean isAutoExtracting() {
         return autoExtract;
     }
 

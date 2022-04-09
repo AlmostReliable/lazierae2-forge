@@ -104,7 +104,7 @@ public class MachineContainer extends Container {
     }
 
     private void syncData() {
-        addDataSlot(DataSlotUtil.forBoolean(tile, tile::isAutoExtract, tile::setAutoExtract));
+        addDataSlot(DataSlotUtil.forBoolean(tile, tile::isAutoExtracting, tile::setAutoExtract));
         addDataSlot(DataSlotUtil.forInteger(tile, tile::getProgress, tile::setProgress));
         addDataSlot(DataSlotUtil.forInteger(tile, tile::getProcessTime, tile::setProcessTime));
         addDataSlot(DataSlotUtil.forInteger(tile, tile::getRecipeTime, tile::setRecipeTime));

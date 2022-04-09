@@ -43,7 +43,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     @Override
     protected void init() {
         super.init();
-        addRenderable(new AutoExtractButton(this, menu.tile::isAutoExtract));
+        addRenderable(new AutoExtractButton(this, menu.tile::isAutoExtracting));
         addRenderable(new EnergyDumpButton(this));
         addRenderables(IOControl.setup(this, 7, 7));
     }
