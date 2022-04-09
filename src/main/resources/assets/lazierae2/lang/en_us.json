@@ -29,8 +29,18 @@
   "tooltip.lazierae2.action_hold": "Hold",
   "tooltip.lazierae2.extended_info": "for more information",
 
-  "tooltip.lazierae2.progress_header": "Recipe Progress",
-  "tooltip.lazierae2.progress_value": "Progress: %d / %d ticks",
-  "tooltip.lazierae2.progress_time": "Original process time: %d ticks",
-  "tooltip.lazierae2.progress_none": "There is no recipe being processed!"
+  "tooltip.lazierae2.progress.header": "Recipe Information",
+  "tooltip.lazierae2.progress.progress.key": "Progress",
+  "tooltip.lazierae2.progress.progress.value": "%d / %d ticks",
+  "tooltip.lazierae2.progress.recipe_time.key": "Recipe Time",
+  "tooltip.lazierae2.progress.recipe_time.value": "%d ticks",
+  "tooltip.lazierae2.progress.time_multiplier.key": "Time multiplier",
+  "tooltip.lazierae2.progress.time_multiplier.value": "%dx",
+  "tooltip.lazierae2.progress.energy.key": "Energy Cost",
+  "tooltip.lazierae2.progress.energy.value": "%s",
+  "tooltip.lazierae2.progress.recipe_energy.key": "Recipe Energy Cost",
+  "tooltip.lazierae2.progress.recipe_energy.value": "%s",
+  "tooltip.lazierae2.progress.energy_multiplier.key": "Energy Cost Multiplier",
+  "tooltip.lazierae2.progress.energy_multiplier.value": "%dx",
+  "tooltip.lazierae2.progress.none": "There is no recipe being processed!"
 }

@@ -29,6 +29,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     private final ResourceLocation progressTexture;
     private final Collection<Widget> renderables = new ArrayList<>();
     private final Tooltip progressTooltip;
+    // private final Tooltip energyTooltip;
 
     public MachineScreen(
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
@@ -36,6 +37,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         super(container, inventory, container.tile.getDisplayName());
         progressTexture = TextUtil.getRL("textures/gui/progress/" + container.tile.getMachineType() + ".png");
         progressTooltip = setupProgressTooltip();
+        // energyTooltip = setupEnergyTooltip();
     }
 
     @Override
@@ -146,22 +148,35 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     private Tooltip setupProgressTooltip() {
         return Tooltip
             .builder()
-            .header("progress_header")
+            .header("progress.header")
             .blankLine()
             .conditional(progress -> progress
                 .condition(() -> (menu.tile.getProgress() > 0 && menu.tile.getProcessTime() > 0) ||
                     menu.tile.getBlockState().getValue(MachineBlock.ACTIVE).equals(true))
-                .right(Tooltip
+                .then(Tooltip
                     .builder()
-                    .description("progress_value", menu.tile::getProgress, menu.tile::getProcessTime)
+                    .keyValue("progress.progress", menu.tile::getProgress, menu.tile::getProcessTime)
                     .conditional(extendedInfo -> extendedInfo
                         .condition(Screen::hasShiftDown)
-                        .right(Tooltip.builder().description("progress_time", menu.tile::getRecipeTime))
-                        .wrong(Tooltip
+                        .then(Tooltip
+                            .builder()
+                            .keyValueIf(menu::hasUpgrades, "progress.recipe_time", menu.tile::getRecipeTime)
+                            .keyValueIf(menu::hasUpgrades, "progress.time_multiplier", this::getProcessTimeMultiplier)
+                            .blankLineIf(menu::hasUpgrades)
+                            .keyValue("progress.energy",
+                                () -> TextUtil.formatEnergy(menu.tile.getEnergyCost(), 1, 2, false, true)
+                            )
+                            .keyValueIf(menu::hasUpgrades,
+                                "progress.recipe_energy",
+                                () -> TextUtil.formatEnergy(menu.tile.getRecipeEnergy(), 1, 2, false, true)
+                            )
+                            .keyValueIf(menu::hasUpgrades, "progress.energy_multiplier", this::getEnergyCostMultiplier))
+                        .otherwise(Tooltip
                             .builder()
                             .blankLine()
                             .hotkeyHoldAction("key.keyboard.left.shift", "extended_info"))))
-                .wrong(Tooltip.builder().description("progress_none")));
+                .otherwise(Tooltip.builder().description("progress.none")));
+    }
 
     private String getMultiplier(int currentVal, int recipeVal) {
         return TextUtil.formatNumber((double) currentVal / recipeVal, 1, 3);
