@@ -201,7 +201,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
         inventory.shrinkInputSlots();
         progress = 0;
-        processTime = 0;
         setChanged();
     }
 
