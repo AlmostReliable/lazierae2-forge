@@ -32,7 +32,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     private final ResourceLocation progressTexture;
     private final Collection<Widget> renderables = new ArrayList<>();
     private final Tooltip progressTooltip;
-    // private final Tooltip energyTooltip;
+    private final Tooltip energyTooltip;
 
     public MachineScreen(
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
@@ -40,7 +40,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         super(container, inventory, container.tile.getDisplayName());
         progressTexture = TextUtil.getRL("textures/gui/progress/" + container.tile.getMachineType() + ".png");
         progressTooltip = setupProgressTooltip();
-        // energyTooltip = setupEnergyTooltip();
+        energyTooltip = setupEnergyTooltip();
     }
 
     @Override
@@ -66,6 +66,10 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         if (isHovered(mX, mY, 78, 23, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT)) {
             renderComponentTooltip(matrix, progressTooltip.resolve(), mX, mY);
         }
+        // energy bar
+        if (isHovered(mX, mY, 165, 7, ENERGY_WIDTH + 2, ENERGY_HEIGHT + 2)) {
+            renderComponentTooltip(matrix, energyTooltip.resolve(), mX, mY);
+        }
 
         // widget tooltips
         for (Widget widget : renderables) {
@@ -78,9 +82,6 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     @Override
     protected void renderLabels(MatrixStack matrix, int mX, int mY) {
         drawCenteredString(matrix, font, title, (TEXTURE_WIDTH - ENERGY_WIDTH) / 2, -12, 16_777_215);
-
-        // TODO: remove
-        drawString(matrix, font, "Energy: " + menu.getEnergyStored(), 10, 10, 0xff_ffff);
     }
 
     @SuppressWarnings("deprecation")
@@ -164,22 +165,37 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
                         .condition(Screen::hasShiftDown)
                         .then(Tooltip
                             .builder()
-                            .keyValueIf(menu::hasUpgrades, "progress.recipe_time", menu.tile::getRecipeTime)
-                            .keyValueIf(menu::hasUpgrades, "progress.time_multiplier", this::getProcessTimeMultiplier)
-                            .blankLineIf(menu::hasUpgrades)
+                            .keyValue(menu::hasUpgrades, "progress.recipe_time", menu.tile::getRecipeTime)
+                            .keyValue(menu::hasUpgrades, "progress.time_multiplier", this::getProcessTimeMultiplier)
+                            .blankLine(menu::hasUpgrades)
                             .keyValue("progress.energy",
                                 () -> TextUtil.formatEnergy(menu.tile.getEnergyCost(), 1, 2, false, true)
                             )
-                            .keyValueIf(menu::hasUpgrades,
+                            .keyValue(menu::hasUpgrades,
                                 "progress.recipe_energy",
                                 () -> TextUtil.formatEnergy(menu.tile.getRecipeEnergy(), 1, 2, false, true)
                             )
-                            .keyValueIf(menu::hasUpgrades, "progress.energy_multiplier", this::getEnergyCostMultiplier))
+                            .keyValue(menu::hasUpgrades, "progress.energy_multiplier", this::getEnergyCostMultiplier))
                         .otherwise(Tooltip
                             .builder()
                             .blankLine()
                             .hotkeyHoldAction("key.keyboard.left.shift", "extended_info"))))
                 .otherwise(Tooltip.builder().description("progress.none")));
+    }
+
+    private Tooltip setupEnergyTooltip() {
+        return Tooltip
+            .builder()
+            .header("energy.header")
+            .blankLine()
+            .keyValue("energy.current",
+                () -> TextUtil.formatEnergy(menu.getEnergyStored(), 1, 3, Screen.hasShiftDown(), true)
+            )
+            .keyValue("energy.capacity",
+                () -> TextUtil.formatEnergy(menu.getEnergyCapacity(), 1, 2, Screen.hasShiftDown(), true)
+            )
+            .blankLine(() -> !Screen.hasShiftDown())
+            .hotkeyHoldAction(() -> !Screen.hasShiftDown(), "key.keyboard.left.shift", "extended_numbers");
     }
 
     private String getMultiplier(int currentVal, int recipeVal) {

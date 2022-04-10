@@ -28,6 +28,7 @@
 
   "tooltip.lazierae2.action_hold": "Hold",
   "tooltip.lazierae2.extended_info": "for more information",
+  "tooltip.lazierae2.extended_numbers": "for extended numbers",
 
   "tooltip.lazierae2.progress.header": "Recipe Information",
   "tooltip.lazierae2.progress.progress.key": "Progress",
@@ -42,5 +43,11 @@
   "tooltip.lazierae2.progress.recipe_energy.value": "%s",
   "tooltip.lazierae2.progress.energy_multiplier.key": "Energy Cost Multiplier",
   "tooltip.lazierae2.progress.energy_multiplier.value": "%dx",
-  "tooltip.lazierae2.progress.none": "There is no recipe being processed!"
+  "tooltip.lazierae2.progress.none": "There is no recipe being processed!",
+
+  "tooltip.lazierae2.energy.header": "Energy Information",
+  "tooltip.lazierae2.energy.current.key": "Current",
+  "tooltip.lazierae2.energy.current.value": "%s",
+  "tooltip.lazierae2.energy.capacity.key": "Capacity",
+  "tooltip.lazierae2.energy.capacity.value": "%s"
 }

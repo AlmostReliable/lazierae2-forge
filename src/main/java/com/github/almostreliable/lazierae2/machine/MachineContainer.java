@@ -100,7 +100,7 @@ public class MachineContainer extends Container {
     }
 
     public boolean hasUpgrades() {
-        return inventory.getUpgradeCount() > 0;
+        return getUpgradeCount() > 0;
     }
 
     private void syncData() {
@@ -187,6 +187,10 @@ public class MachineContainer extends Container {
             slotStack.setCount(maxSize);
             slot.setChanged();
         }
+    }
+
+    public int getUpgradeCount() {
+        return inventory.getUpgradeCount();
     }
 
     public int getEnergyStored() {
