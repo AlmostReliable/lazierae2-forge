@@ -4,11 +4,7 @@ import com.github.almostreliable.lazierae2.component.InventoryHandler;
 import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.github.almostreliable.lazierae2.gui.MachineScreen;
 import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
-import com.github.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
-import com.github.almostreliable.lazierae2.util.GuiUtil;
-import com.github.almostreliable.lazierae2.util.GuiUtil.ANCHOR;
 import com.github.almostreliable.lazierae2.util.TextUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -28,18 +24,20 @@ import static com.github.almostreliable.lazierae2.util.TextUtil.f;
 
 public abstract class MachineCategory<R extends MachineRecipe> implements IRecipeCategory<R> {
 
+    final IDrawable progressEmpty;
+    final IDrawableAnimated progress;
     private final String id;
-    private final IDrawable background;
     private final IDrawable icon;
-    private final IDrawableAnimated progress;
 
     MachineCategory(IGuiHelper guiHelper, String id, IItemProvider iconProvider) {
         this.id = id;
         icon = guiHelper.createDrawableIngredient(new ItemStack(iconProvider));
 
-        ResourceLocation backgroundTexture = TextUtil.getRL(f("textures/jei/{}.png", id));
         ResourceLocation progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", id));
-        background = guiHelper.drawableBuilder(backgroundTexture, 0, 0, 90, 60).setTextureSize(90, 60).build();
+        progressEmpty = guiHelper
+            .drawableBuilder(progressTexture, 0, 0, MachineScreen.PROGRESS_WIDTH / 2, MachineScreen.PROGRESS_HEIGHT)
+            .setTextureSize(MachineScreen.PROGRESS_WIDTH, MachineScreen.PROGRESS_HEIGHT)
+            .build();
         IDrawableStatic progressDrawable = guiHelper.drawableBuilder(
             progressTexture,
             MachineScreen.PROGRESS_WIDTH / 2,
@@ -64,18 +62,13 @@ public abstract class MachineCategory<R extends MachineRecipe> implements IRecip
      * @param x       The x position of the slot.
      * @param y       The y position of the slot.
      */
-    private void setupSlot(IGuiItemStackGroup menu, int slot, boolean isInput, int x, int y) {
+    void setupSlot(IGuiItemStackGroup menu, int slot, boolean isInput, int x, int y) {
         menu.init(InventoryHandler.OUTPUT_SLOT + slot, isInput, x - 1, y - 1);
     }
 
     @Override
     public String getTitle() {
         return I18n.get(TextUtil.translate(TRANSLATE_TYPE.BLOCK, id).getKey());
-    }
-
-    @Override
-    public IDrawable getBackground() {
-        return background;
     }
 
     @Override
@@ -92,29 +85,7 @@ public abstract class MachineCategory<R extends MachineRecipe> implements IRecip
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, R recipe, IIngredients ingredients) {
         IGuiItemStackGroup menu = recipeLayout.getItemStacks();
-        // output
-        setupSlot(menu, 0, false, 73, 22);
-        // inputs
-        if (recipe instanceof SingleInputRecipe) {
-            setupSlot(menu, 1, true, 1, 22);
-        } else {
-            setupSlot(menu, 1, true, 1, 1);
-            setupSlot(menu, 2, true, 1, 22);
-            setupSlot(menu, 3, true, 1, 43);
-        }
         // apply ingredients to slots
         menu.set(ingredients);
-    }
-
-    @Override
-    public void draw(R recipe, MatrixStack matrix, double mX, double mY) {
-        // progress
-        progress.draw(matrix, 34, 15);
-        // required energy
-        String energy = TextUtil.formatEnergy(recipe.getEnergyCost(), 1, 3, false, true);
-        GuiUtil.renderText(matrix, energy, ANCHOR.TOP_RIGHT, 89, 46, 0.8f, 0x00_0000);
-        // required time
-        String time = f("{} ticks", recipe.getProcessTime());
-        GuiUtil.renderText(matrix, time, ANCHOR.TOP_RIGHT, 89, 54, 0.8f, 0x00_0000);
     }
 }
