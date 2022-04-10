@@ -3,6 +3,7 @@ package com.github.almostreliable.lazierae2.util;
 import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.util.text.*;
 
@@ -23,20 +24,51 @@ public final class GuiUtil {
      * <p>
      * This method handles the translation and scaling of the text in order
      * to maintain the same position after the scaling.
+     * <p>
+     * The {@link ANCHOR} can be used to specify the alignment of the text.
      *
      * @param matrix the matrix stack for the rendering
+     * @param text   the text to draw
+     * @param anchor the anchor point of the text
      * @param x      the x position
      * @param y      the y position
      * @param scale  the scale of the text
-     * @param text   the text to draw
      * @param color  the color of the text as decimal
      */
-    public static void renderText(MatrixStack matrix, int x, int y, float scale, String text, int color) {
+    public static void renderText(
+        MatrixStack matrix, String text, ANCHOR anchor, int x, int y, float scale, int color
+    ) {
         matrix.pushPose();
         matrix.translate(x, y, 0);
         matrix.scale(scale, scale, 1);
-        Minecraft.getInstance().font.draw(matrix, text, 0, 0, color);
+
+        int xOffset = 0;
+        int yOffset = 0;
+        FontRenderer font = Minecraft.getInstance().font;
+        int width = font.width(text);
+        int height = font.lineHeight;
+        switch (anchor) {
+            case TOP_LEFT:
+                // do nothing
+                break;
+            case TOP_RIGHT:
+                xOffset -= width;
+                break;
+            case BOTTOM_LEFT:
+                yOffset -= height;
+                break;
+            case BOTTOM_RIGHT:
+                xOffset -= width;
+                yOffset -= height;
+                break;
+        }
+
+        font.draw(matrix, text, xOffset, yOffset, color);
         matrix.popPose();
+    }
+
+    public enum ANCHOR {
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
     @SuppressWarnings({"java:S2160", "UnusedReturnValue"})
