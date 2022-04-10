@@ -22,26 +22,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
+
 public abstract class MachineCategory<R extends MachineRecipe> implements IRecipeCategory<R> {
 
     private final String id;
     private final IDrawable background;
     private final IDrawable icon;
-    private final IDrawable progressBackground;
     private final IDrawableAnimated progress;
 
     MachineCategory(IGuiHelper guiHelper, String id, IItemProvider iconProvider) {
         this.id = id;
-        background = guiHelper
-            .drawableBuilder(MachineScreen.TEXTURE, 0, 0, MachineScreen.TEXTURE_WIDTH, MachineScreen.TEXTURE_HEIGHT)
-            .setTextureSize(MachineScreen.TEXTURE_WIDTH, MachineScreen.TEXTURE_HEIGHT)
-            .build();
         icon = guiHelper.createDrawableIngredient(new ItemStack(iconProvider));
-        ResourceLocation progressTexture = TextUtil.getRL("textures/gui/progress/" + id + ".png");
-        progressBackground = guiHelper
-            .drawableBuilder(progressTexture, 0, 0, MachineScreen.TEXTURE_WIDTH / 2, MachineScreen.TEXTURE_HEIGHT)
-            .setTextureSize(MachineScreen.PROGRESS_WIDTH, MachineScreen.PROGRESS_HEIGHT)
-            .build();
+
+        ResourceLocation backgroundTexture = TextUtil.getRL(f("textures/jei/{}.png", id));
+        ResourceLocation progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", id));
+        background = guiHelper.drawableBuilder(backgroundTexture, 0, 0, 90, 60).setTextureSize(90, 60).build();
         IDrawableStatic progressDrawable = guiHelper.drawableBuilder(
             progressTexture,
             MachineScreen.PROGRESS_WIDTH / 2,
@@ -49,7 +45,7 @@ public abstract class MachineCategory<R extends MachineRecipe> implements IRecip
             MachineScreen.PROGRESS_WIDTH / 2,
             MachineScreen.PROGRESS_HEIGHT
         ).setTextureSize(MachineScreen.PROGRESS_WIDTH, MachineScreen.PROGRESS_HEIGHT).build();
-        progress = guiHelper.createAnimatedDrawable(progressDrawable, 60, StartDirection.LEFT, false);
+        progress = guiHelper.createAnimatedDrawable(progressDrawable, 80, StartDirection.LEFT, false);
     }
 
     /**
@@ -95,14 +91,14 @@ public abstract class MachineCategory<R extends MachineRecipe> implements IRecip
     public void setRecipe(IRecipeLayout recipeLayout, R recipe, IIngredients ingredients) {
         IGuiItemStackGroup menu = recipeLayout.getItemStacks();
         // output
-        setupSlot(menu, 0, false, 116, 29);
+        setupSlot(menu, 0, false, 73, 22);
         // inputs
         if (recipe instanceof SingleInputRecipe) {
-            setupSlot(menu, 1, true, 44, 29);
+            setupSlot(menu, 1, true, 1, 22);
         } else {
-            setupSlot(menu, 1, true, 44, 8);
-            setupSlot(menu, 2, true, 44, 29);
-            setupSlot(menu, 3, true, 44, 50);
+            setupSlot(menu, 1, true, 1, 1);
+            setupSlot(menu, 2, true, 1, 22);
+            setupSlot(menu, 3, true, 1, 43);
         }
         // apply ingredients to slots
         menu.set(ingredients);
