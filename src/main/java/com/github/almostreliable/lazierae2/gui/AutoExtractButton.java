@@ -20,12 +20,12 @@ public class AutoExtractButton extends ToggleButton {
     }
 
     @Override
-    protected void clickHandler() {
-        PacketHandler.CHANNEL.sendToServer(new AutoExtractPacket(!pressed.getAsBoolean()));
+    public void renderToolTip(MatrixStack matrix, int mX, int mY) {
+        // TODO
     }
 
     @Override
-    public void renderToolTip(MatrixStack matrix, int mX, int mY) {
-        // TODO
+    protected void clickHandler() {
+        PacketHandler.CHANNEL.sendToServer(new AutoExtractPacket(!pressed.getAsBoolean()));
     }
 }

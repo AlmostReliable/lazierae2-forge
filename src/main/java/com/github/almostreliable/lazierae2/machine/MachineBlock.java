@@ -25,6 +25,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+// TODO: implement saving on block break and machine itself
 public class MachineBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;

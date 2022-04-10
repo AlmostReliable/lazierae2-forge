@@ -23,6 +23,7 @@ public final class TextUtil {
 
     private TextUtil() {}
 
+    // TODO: add documentation, replace in the project
     public static String f(String input, Object... args) {
         for (Object arg : args) {
             input = PLACEHOLDER.matcher(input).replaceFirst(arg.toString());
@@ -70,17 +71,6 @@ public final class TextUtil {
     }
 
     /**
-     * Colors a given String with the given color.
-     *
-     * @param input the string to color
-     * @param color an optional color
-     * @return the colorized string
-     */
-    public static StringTextComponent colorize(String input, TextFormatting color) {
-        return (StringTextComponent) new StringTextComponent(input).withStyle(color);
-    }
-
-    /**
      * Formats a number into a human-readable energy string.
      *
      * @param energy    The energy to format
@@ -116,6 +106,17 @@ public final class TextUtil {
         DF.setMinimumFractionDigits(minPlaces);
         DF.setMaximumFractionDigits(maxPlaces);
         return DF.format(number);
+    }
+
+    /**
+     * Colors a given String with the given color.
+     *
+     * @param input the string to color
+     * @param color an optional color
+     * @return the colorized string
+     */
+    static StringTextComponent colorize(String input, TextFormatting color) {
+        return (StringTextComponent) new StringTextComponent(input).withStyle(color);
     }
 
     /**

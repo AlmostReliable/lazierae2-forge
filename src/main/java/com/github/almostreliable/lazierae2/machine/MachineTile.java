@@ -123,6 +123,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     @Override
     public void tick() {
+        // TODO: check why TripleInputRecipes are not working
         if (level == null || level.isClientSide) return;
         if (autoExtract && level.getGameTime() % 10 == 0) autoExtract();
         energy.validateEnergy();
@@ -227,6 +228,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     private boolean canWork(IRecipe<IInventory> recipe, int energyCost) {
+        // TODO: should this really check if enough energy for the whole recipe is available? maybe prefer per tick
         if (energyCost > energy.getEnergyStored()) return false;
 
         ItemStack output = inventory.getStackInOutput();
