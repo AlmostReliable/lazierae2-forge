@@ -5,6 +5,8 @@ import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.github.almostreliable.lazierae2.gui.MachineScreen;
 import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.github.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
+import com.github.almostreliable.lazierae2.util.GuiUtil;
+import com.github.almostreliable.lazierae2.util.GuiUtil.ANCHOR;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
@@ -106,8 +108,13 @@ public abstract class MachineCategory<R extends MachineRecipe> implements IRecip
 
     @Override
     public void draw(R recipe, MatrixStack matrix, double mX, double mY) {
-        // draw progress
-        progressBackground.draw(matrix, 78, 24);
-        progress.draw(matrix, 78, 24);
+        // progress
+        progress.draw(matrix, 34, 15);
+        // required energy
+        String energy = TextUtil.formatEnergy(recipe.getEnergyCost(), 1, 3, false, true);
+        GuiUtil.renderText(matrix, energy, ANCHOR.TOP_RIGHT, 89, 46, 0.8f, 0x00_0000);
+        // required time
+        String time = f("{} ticks", recipe.getProcessTime());
+        GuiUtil.renderText(matrix, time, ANCHOR.TOP_RIGHT, 89, 54, 0.8f, 0x00_0000);
     }
 }
