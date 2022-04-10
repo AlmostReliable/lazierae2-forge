@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
 
@@ -18,8 +19,19 @@ public final class TextUtil {
     private static final Locale LOCALE = Locale.getDefault();
     private static final DecimalFormat DF = (DecimalFormat) NumberFormat.getInstance(LOCALE).clone();
     private static final String[] UNITS = {"", "k", "M", "G", "T", "P"};
+    private static final Pattern PLACEHOLDER = Pattern.compile("\\{}");
 
     private TextUtil() {}
+
+    public static String f(String input, Object... args) {
+        for (Object arg : args) {
+            input = PLACEHOLDER.matcher(input).replaceFirst(arg.toString());
+        }
+        for (int i = 0; i < args.length; i++) {
+            input = input.replace("{" + i + "}", args[i].toString());
+        }
+        return input;
+    }
 
     /**
      * Gets a resource location with the given key
