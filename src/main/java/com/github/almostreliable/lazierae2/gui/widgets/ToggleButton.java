@@ -1,5 +1,6 @@
-package com.github.almostreliable.lazierae2.gui;
+package com.github.almostreliable.lazierae2.gui.widgets;
 
+import com.github.almostreliable.lazierae2.gui.MachineScreen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 

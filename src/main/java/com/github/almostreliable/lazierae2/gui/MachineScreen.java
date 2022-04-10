@@ -1,5 +1,8 @@
 package com.github.almostreliable.lazierae2.gui;
 
+import com.github.almostreliable.lazierae2.gui.widgets.AutoExtractButton;
+import com.github.almostreliable.lazierae2.gui.widgets.EnergyDumpButton;
+import com.github.almostreliable.lazierae2.gui.widgets.IOControl;
 import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import com.github.almostreliable.lazierae2.machine.MachineContainer;
 import com.github.almostreliable.lazierae2.util.GuiUtil.Tooltip;

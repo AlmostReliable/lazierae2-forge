@@ -1,8 +1,9 @@
-package com.github.almostreliable.lazierae2.gui;
+package com.github.almostreliable.lazierae2.gui.widgets;
 
 import com.github.almostreliable.lazierae2.component.SideConfiguration;
 import com.github.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
+import com.github.almostreliable.lazierae2.gui.MachineScreen;
 import com.github.almostreliable.lazierae2.machine.MachineTile;
 import com.github.almostreliable.lazierae2.network.PacketHandler;
 import com.github.almostreliable.lazierae2.network.SideConfigPacket;
@@ -14,7 +15,7 @@ import net.minecraft.client.gui.screen.Screen;
 import java.util.ArrayList;
 import java.util.Collection;
 
-final class IOControl {
+public final class IOControl {
 
     private static final int BUTTON_SIZE = 6;
     private static final int INNER_SIZE = 4;
@@ -23,7 +24,7 @@ final class IOControl {
     private IOControl() {}
 
     @SuppressWarnings("SameParameterValue")
-    static IOButton[] setup(MachineScreen screen, int x, int y) {
+    public static IOButton[] setup(MachineScreen screen, int x, int y) {
         Collection<IOButton> buttons = new ArrayList<>();
         buttons.add(new IOButton(screen, BLOCK_SIDE.TOP, x + getPosition(1), y + getPosition(0)));
         buttons.add(new IOButton(screen, BLOCK_SIDE.LEFT, x + getPosition(0), y + getPosition(1)));
