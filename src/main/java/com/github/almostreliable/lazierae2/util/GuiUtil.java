@@ -71,7 +71,7 @@ public final class GuiUtil {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
-    @SuppressWarnings({"java:S2160", "UnusedReturnValue"})
+    @SuppressWarnings({"java:S2160", "UnusedReturnValue", "unused"})
     public static final class Tooltip {
 
         private final List<Component> components;

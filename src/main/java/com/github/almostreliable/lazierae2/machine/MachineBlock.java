@@ -1,6 +1,5 @@
 package com.github.almostreliable.lazierae2.machine;
 
-import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;

@@ -1,7 +1,7 @@
 package com.github.almostreliable.lazierae2.compat.jei;
 
-import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import com.github.almostreliable.lazierae2.gui.MachineScreen;
+import com.github.almostreliable.lazierae2.machine.MachineType;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;

@@ -5,8 +5,8 @@ import com.github.almostreliable.lazierae2.compat.jei.category.CentrifugeCategor
 import com.github.almostreliable.lazierae2.compat.jei.category.EnergizerCategory;
 import com.github.almostreliable.lazierae2.compat.jei.category.EtcherCategory;
 import com.github.almostreliable.lazierae2.core.Setup.Blocks;
-import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import com.github.almostreliable.lazierae2.gui.MachineScreen;
+import com.github.almostreliable.lazierae2.machine.MachineType;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.IModPlugin;

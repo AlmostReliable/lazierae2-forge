@@ -1,6 +1,6 @@
 package com.github.almostreliable.lazierae2.recipe.builder;
 
-import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
+import com.github.almostreliable.lazierae2.machine.MachineType;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

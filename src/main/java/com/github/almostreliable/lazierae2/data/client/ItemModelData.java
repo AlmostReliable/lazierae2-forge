@@ -1,7 +1,7 @@
 package com.github.almostreliable.lazierae2.data.client;
 
 import com.github.almostreliable.lazierae2.core.Setup.Items;
-import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
+import com.github.almostreliable.lazierae2.machine.MachineType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;

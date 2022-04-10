@@ -13,7 +13,7 @@ import static com.github.almostreliable.lazierae2.core.Constants.*;
 public final class Config {
 
     public static final ForgeConfigSpec COMMON_SPEC;
-    static final CommonConfig COMMON;
+    public static final CommonConfig COMMON;
 
     static {
         Pair<CommonConfig, ForgeConfigSpec> commonPair = new Builder().configure(CommonConfig::new);
@@ -23,15 +23,15 @@ public final class Config {
 
     private Config() {}
 
-    static final class MachineConfig {
+    public static final class MachineConfig {
 
-        final IntValue upgradeSlots;
-        final IntValue baseEnergyBuffer;
-        final IntValue energyBufferAdd;
-        final IntValue baseEnergyUsage;
-        final DoubleValue energyUsageMulti;
-        final IntValue baseProcessTime;
-        final DoubleValue processTimeMulti;
+        public final IntValue upgradeSlots;
+        public final IntValue baseEnergyBuffer;
+        public final IntValue energyBufferAdd;
+        public final IntValue baseEnergyUsage;
+        public final DoubleValue energyUsageMulti;
+        public final IntValue baseProcessTime;
+        public final DoubleValue processTimeMulti;
         private final String id;
 
         private MachineConfig(
