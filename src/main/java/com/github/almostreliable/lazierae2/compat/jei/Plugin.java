@@ -5,6 +5,7 @@ import com.github.almostreliable.lazierae2.compat.jei.category.CentrifugeCategor
 import com.github.almostreliable.lazierae2.compat.jei.category.EnergizerCategory;
 import com.github.almostreliable.lazierae2.compat.jei.category.EtcherCategory;
 import com.github.almostreliable.lazierae2.core.Setup.Blocks;
+import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import com.github.almostreliable.lazierae2.gui.MachineScreen;
 import com.github.almostreliable.lazierae2.machine.MachineContainer;
 import com.github.almostreliable.lazierae2.util.GameUtil;
@@ -38,9 +39,10 @@ public class Plugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration r) {
         RecipeManager recipeManager = GameUtil.getRecipeManager(null);
-        // TODO: Lytho has to do some enum magic here
-        // it's usually something like this:
-        // r.addRecipes(recipeManager.getAllRecipesFor(Setup.Recipes.Types.AGGREGATOR), AggregatorCategory.UID);
+        r.addRecipes(recipeManager.getAllRecipesFor(MachineType.AGGREGATOR), AggregatorCategory.UID);
+        r.addRecipes(recipeManager.getAllRecipesFor(MachineType.CENTRIFUGE), CentrifugeCategory.UID);
+        r.addRecipes(recipeManager.getAllRecipesFor(MachineType.ENERGIZER), EnergizerCategory.UID);
+        r.addRecipes(recipeManager.getAllRecipesFor(MachineType.ETCHER), EtcherCategory.UID);
     }
 
     @Override
