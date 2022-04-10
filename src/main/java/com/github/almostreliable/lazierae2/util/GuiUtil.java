@@ -109,7 +109,9 @@ public final class GuiUtil {
         }
 
         /**
-         * Adds a generic component to the tooltip which is not covered by the builder.
+         * Adds a raw component to the tooltip.
+         * <p>
+         * Can be used if the exact component type is not covered by the builder.
          *
          * @param component    the component to add
          * @param replacements the optional replacements to apply to the component
@@ -124,7 +126,7 @@ public final class GuiUtil {
          * Adds a blank line to the tooltip.
          * <p>
          * Instead of adding an empty {@link StringTextComponent}, this method adds a line with a single space
-         * to enforce the blank line because auto line breaks caused issues in the past.
+         * to enforce the blank line because auto line breaks are causing issues and remove the blank line.
          *
          * @return the instance of the tooltip builder
          */
@@ -132,7 +134,7 @@ public final class GuiUtil {
             return component(new StringTextComponent(" "));
         }
 
-        public Tooltip blankLineIf(BooleanSupplier condition) {
+        public Tooltip blankLine(BooleanSupplier condition) {
             components.add(new IfComponent(condition, new StringTextComponent(" ")));
             return this;
         }
@@ -140,7 +142,7 @@ public final class GuiUtil {
         /**
          * Adds a header component to the tooltip.
          * <p>
-         * It has golden text color. It's language key is {@code "mod-id.tooltip.key"}.
+         * It uses golden text color.
          *
          * @param key          the key for the translation
          * @param replacements the optional replacements to apply to the header
@@ -161,7 +163,17 @@ public final class GuiUtil {
             return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.WHITE), replacements);
         }
 
-        public Tooltip descriptionIf(BooleanSupplier condition, String key, Supplier<?>... replacements) {
+        /**
+         * Adds a conditional description component to the tooltip.
+         * <p>
+         * If the condition is false, the component will be skipped completely.
+         *
+         * @param condition    the condition to check
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the description
+         * @return the instance of the tooltip builder
+         */
+        public Tooltip description(BooleanSupplier condition, String key, Supplier<?>... replacements) {
             components.add(new IfComponent(condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.WHITE),
                 replacements
@@ -169,6 +181,19 @@ public final class GuiUtil {
             return this;
         }
 
+        /**
+         * Adds a key-value pair component to the tooltip.
+         * <p>
+         * The format will be "Key: Value".
+         * The key and the colon are using green text. The value is white.
+         * <p>
+         * The replacements will only be applied to the value.
+         * This component uses ".key" and ".value" suffixes on the translation key.
+         *
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the value
+         * @return the instance of the tooltip builder
+         */
         public Tooltip keyValue(String key, Supplier<?>... replacements) {
             components.add(new FormatComponent(TextUtil
                 .translate(TRANSLATE_TYPE.TOOLTIP, key + ".key", TextFormatting.GREEN)
@@ -177,7 +202,22 @@ public final class GuiUtil {
             return this;
         }
 
-        public Tooltip keyValueIf(BooleanSupplier condition, String key, Supplier<?>... replacements) {
+        /**
+         * Adds a conditional key-value pair component to the tooltip.
+         * <p>
+         * The format will be "Key: Value".
+         * The key and the colon are using green text. The value is white.
+         * <p>
+         * The replacements will only be applied to the value.
+         * This component uses ".key" and ".value" suffixes on the translation key.
+         * <p>
+         * If the condition is false, the component will be skipped completely.
+         *
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the value
+         * @return the instance of the tooltip builder
+         */
+        public Tooltip keyValue(BooleanSupplier condition, String key, Supplier<?>... replacements) {
             components.add(new IfComponent(condition,
                 new FormatComponent(TextUtil
                     .translate(TRANSLATE_TYPE.TOOLTIP, key + ".key", TextFormatting.GREEN)
@@ -256,6 +296,34 @@ public final class GuiUtil {
                 ))
                 .append(" ")
                 .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)), replacements);
+        }
+
+        /**
+         * Adds a conditional hotkey hold action component to the tooltip.
+         * <p>
+         * If the condition is false, the component will be skipped completely.
+         *
+         * @param hotkey       the hotkey from the {@link InputMappings}
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the hotkey hold action
+         * @return the instance of the tooltip builder
+         */
+        public Tooltip hotkeyHoldAction(
+            BooleanSupplier condition, String hotkey, String key, Supplier<?>... replacements
+        ) {
+            components.add(new IfComponent(condition,
+                TextUtil
+                    .colorize("> ", TextFormatting.GRAY)
+                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, "action_hold", TextFormatting.GRAY))
+                    .append(" ")
+                    .append(TextUtil.colorize(InputMappings.getKey(hotkey).getDisplayName().getString(),
+                        TextFormatting.AQUA
+                    ))
+                    .append(" ")
+                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GRAY)),
+                replacements
+            ));
+            return this;
         }
 
         /**
