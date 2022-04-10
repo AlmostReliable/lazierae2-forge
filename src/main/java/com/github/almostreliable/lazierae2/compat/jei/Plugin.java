@@ -23,7 +23,7 @@ public class Plugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return TextUtil.getRL("jei_plugin");
+        return TextUtil.getRL("main");
     }
 
     @Override
