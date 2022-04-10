@@ -7,7 +7,6 @@ import com.github.almostreliable.lazierae2.compat.jei.category.EtcherCategory;
 import com.github.almostreliable.lazierae2.core.Setup.Blocks;
 import com.github.almostreliable.lazierae2.core.TypeEnums.MachineType;
 import com.github.almostreliable.lazierae2.gui.MachineScreen;
-import com.github.almostreliable.lazierae2.machine.MachineContainer;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.IModPlugin;
@@ -47,10 +46,10 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration r) {
-        r.addRecipeTransferHandler(MachineContainer.class, AggregatorCategory.UID, 2, 3, 5, 36);
-        r.addRecipeTransferHandler(MachineContainer.class, CentrifugeCategory.UID, 2, 1, 3, 36);
-        r.addRecipeTransferHandler(MachineContainer.class, EnergizerCategory.UID, 2, 1, 3, 36);
-        r.addRecipeTransferHandler(MachineContainer.class, EtcherCategory.UID, 2, 3, 5, 36);
+        r.addRecipeTransferHandler(new MachineRecipeInfo(AggregatorCategory.UID, 2, 3, 5, 36));
+        r.addRecipeTransferHandler(new MachineRecipeInfo(CentrifugeCategory.UID, 2, 1, 3, 36));
+        r.addRecipeTransferHandler(new MachineRecipeInfo(EnergizerCategory.UID, 2, 1, 3, 36));
+        r.addRecipeTransferHandler(new MachineRecipeInfo(EtcherCategory.UID, 2, 3, 5, 36));
     }
 
     @Override
@@ -63,16 +62,15 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration r) {
-        r.addRecipeClickArea(
-            MachineScreen.class,
-            78,
-            23,
-            MachineScreen.PROGRESS_WIDTH / 2,
-            MachineScreen.PROGRESS_HEIGHT,
+        r.addGuiContainerHandler(MachineScreen.class, new MachineGuiContainerHandler(
+            0,
+            -12,
+            MachineScreen.TEXTURE_WIDTH - MachineScreen.ENERGY_WIDTH,
+            10,
             AggregatorCategory.UID,
             CentrifugeCategory.UID,
             EnergizerCategory.UID,
             EtcherCategory.UID
-        );
+        ));
     }
 }

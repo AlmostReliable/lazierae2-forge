@@ -24,7 +24,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     public static final int PROGRESS_HEIGHT = 27;
     public static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/machine.png");
     public static final int SLOT_SIZE = 18;
-    private static final int ENERGY_WIDTH = 2;
+    public static final int ENERGY_WIDTH = 2;
     private static final int ENERGY_HEIGHT = 58;
     private final ResourceLocation progressTexture;
     private final Collection<Widget> renderables = new ArrayList<>();
@@ -184,7 +184,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     }
 
     private boolean isHovered(int mX, int mY, int x, int y, int width, int height) {
-        return mX >= x + leftPos && mX <= x + width + leftPos && mY >= y + topPos && mY <= y + height + topPos;
+        return mX >= x + leftPos && mX < x + width + leftPos && mY >= y + topPos && mY < y + height + topPos;
     }
 
     private void addRenderable(Widget widget) {
