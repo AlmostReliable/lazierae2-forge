@@ -27,10 +27,11 @@
   "block.lazierae2.etcher": "Circuit Etcher",
 
   "tooltip.lazierae2.action_hold": "Hold",
+  "tooltip.lazierae2.action_click": "Click",
   "tooltip.lazierae2.extended_info": "for more information",
   "tooltip.lazierae2.extended_numbers": "for extended numbers",
 
-  "tooltip.lazierae2.progress.header": "Recipe Information",
+  "tooltip.lazierae2.progress.title": "Recipe Information",
   "tooltip.lazierae2.progress.progress.key": "Progress",
   "tooltip.lazierae2.progress.progress.value": "%d / %d ticks",
   "tooltip.lazierae2.progress.recipe_time.key": "Recipe Time",
@@ -45,9 +46,14 @@
   "tooltip.lazierae2.progress.energy_multiplier.value": "%dx",
   "tooltip.lazierae2.progress.none": "There is no recipe being processed!",
 
-  "tooltip.lazierae2.energy.header": "Energy Information",
+  "tooltip.lazierae2.energy.title": "Energy Information",
   "tooltip.lazierae2.energy.current.key": "Current",
   "tooltip.lazierae2.energy.current.value": "%s",
   "tooltip.lazierae2.energy.capacity.key": "Capacity",
-  "tooltip.lazierae2.energy.capacity.value": "%s"
+  "tooltip.lazierae2.energy.capacity.value": "%s",
+
+  "tooltip.lazierae2.dump.title": "Dump Energy",
+  "tooltip.lazierae2.dump.description": "This will void the currently stored energy completely.",
+  "tooltip.lazierae2.dump.warning": "You will not be able to recover the energy once removed!",
+  "tooltip.lazierae2.dump.action": "to dump the energy"
 }

@@ -89,7 +89,7 @@ public final class GuiUtil {
          * <p>
          * Replaces placeholders where necessary.
          * <p>
-         * If no replacements have been used, this method should be directly called
+         * If no replacements or conditions have been used, this method should be directly called
          * after building the tooltip and statically saved for better performance.
          * <p>
          * {@code
@@ -100,7 +100,7 @@ public final class GuiUtil {
          *
          * @return the list of tooltip components
          */
-        public List<ITextComponent> resolve() {
+        public List<ITextComponent> build() {
             List<ITextComponent> list = new ArrayList<>();
             for (Component component : components) {
                 component.resolve(list);
@@ -130,52 +130,83 @@ public final class GuiUtil {
          *
          * @return the instance of the tooltip builder
          */
-        public Tooltip blankLine() {
+        public Tooltip blank() {
             return component(new StringTextComponent(" "));
         }
 
-        public Tooltip blankLine(BooleanSupplier condition) {
+        public Tooltip blank(BooleanSupplier condition) {
             components.add(new IfComponent(condition, new StringTextComponent(" ")));
             return this;
         }
 
         /**
-         * Adds a header component to the tooltip.
+         * Adds a title component to the tooltip.
          * <p>
          * It uses golden text color.
          *
          * @param key          the key for the translation
-         * @param replacements the optional replacements to apply to the header
+         * @param replacements the optional replacements to apply to the title
          * @return the instance of the tooltip builder
          */
-        public Tooltip header(String key, Supplier<?>... replacements) {
+        public Tooltip title(String key, Supplier<?>... replacements) {
             return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GOLD), replacements);
         }
 
         /**
-         * Adds a description component to the tooltip.
+         * Adds a line component to the tooltip.
          *
          * @param key          the key for the translation
-         * @param replacements the optional replacements to apply to the description
+         * @param replacements the optional replacements to apply to the line
          * @return the instance of the tooltip builder
          */
-        public Tooltip description(String key, Supplier<?>... replacements) {
+        public Tooltip line(String key, Supplier<?>... replacements) {
             return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.WHITE), replacements);
         }
 
         /**
-         * Adds a conditional description component to the tooltip.
+         * Adds a colored line component to the tooltip.
+         *
+         * @param key          the key for the translation
+         * @param color        the color of the line
+         * @param replacements the optional replacements to apply to the line
+         * @return the instance of the tooltip builder
+         */
+        public Tooltip line(String key, TextFormatting color, Supplier<?>... replacements) {
+            return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, color), replacements);
+        }
+
+        /**
+         * Adds a conditional line component to the tooltip.
          * <p>
          * If the condition is false, the component will be skipped completely.
          *
          * @param condition    the condition to check
          * @param key          the key for the translation
-         * @param replacements the optional replacements to apply to the description
+         * @param replacements the optional replacements to apply to the line
          * @return the instance of the tooltip builder
          */
-        public Tooltip description(BooleanSupplier condition, String key, Supplier<?>... replacements) {
+        public Tooltip line(BooleanSupplier condition, String key, Supplier<?>... replacements) {
             components.add(new IfComponent(condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.WHITE),
+                replacements
+            ));
+            return this;
+        }
+
+        /**
+         * Adds a conditional colored line component to the tooltip.
+         * <p>
+         * If the condition is false, the component will be skipped completely.
+         *
+         * @param condition    the condition to check
+         * @param key          the key for the translation
+         * @param color        the color of the line
+         * @param replacements the optional replacements to apply to the line
+         * @return the instance of the tooltip builder
+         */
+        public Tooltip line(BooleanSupplier condition, String key, TextFormatting color, Supplier<?>... replacements) {
+            components.add(new IfComponent(condition,
+                TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, color),
                 replacements
             ));
             return this;
@@ -466,9 +497,9 @@ public final class GuiUtil {
             @Override
             public void resolve(List<? super ITextComponent> tooltip) {
                 if (condition.getAsBoolean()) {
-                    tooltip.addAll(then.resolve());
+                    tooltip.addAll(then.build());
                 } else {
-                    tooltip.addAll(otherwise.resolve());
+                    tooltip.addAll(otherwise.build());
                 }
             }
 

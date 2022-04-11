@@ -43,6 +43,10 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         energyTooltip = setupEnergyTooltip();
     }
 
+    public boolean isHovered(int mX, int mY, int x, int y, int width, int height) {
+        return mX >= x + leftPos && mX < x + width + leftPos && mY >= y + topPos && mY < y + height + topPos;
+    }
+
     @Override
     protected void init() {
         super.init();
@@ -64,11 +68,11 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
 
         // progress bar
         if (isHovered(mX, mY, 78, 23, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT)) {
-            renderComponentTooltip(matrix, progressTooltip.resolve(), mX, mY);
+            renderComponentTooltip(matrix, progressTooltip.build(), mX, mY);
         }
         // energy bar
         if (isHovered(mX, mY, 165, 7, ENERGY_WIDTH + 2, ENERGY_HEIGHT + 2)) {
-            renderComponentTooltip(matrix, energyTooltip.resolve(), mX, mY);
+            renderComponentTooltip(matrix, energyTooltip.build(), mX, mY);
         }
 
         // widget tooltips
@@ -153,8 +157,8 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     private Tooltip setupProgressTooltip() {
         return Tooltip
             .builder()
-            .header("progress.header")
-            .blankLine()
+            .title("progress.title")
+            .blank()
             .conditional(progress -> progress
                 .condition(() -> (menu.tile.getProgress() > 0 && menu.tile.getProcessTime() > 0) ||
                     menu.tile.getBlockState().getValue(MachineBlock.ACTIVE).equals(true))
@@ -167,7 +171,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
                             .builder()
                             .keyValue(menu::hasUpgrades, "progress.recipe_time", menu.tile::getRecipeTime)
                             .keyValue(menu::hasUpgrades, "progress.time_multiplier", this::getProcessTimeMultiplier)
-                            .blankLine(menu::hasUpgrades)
+                            .blank(menu::hasUpgrades)
                             .keyValue("progress.energy",
                                 () -> TextUtil.formatEnergy(menu.tile.getEnergyCost(), 1, 2, false, true)
                             )
@@ -178,32 +182,28 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
                             .keyValue(menu::hasUpgrades, "progress.energy_multiplier", this::getEnergyCostMultiplier))
                         .otherwise(Tooltip
                             .builder()
-                            .blankLine()
+                            .blank()
                             .hotkeyHoldAction("key.keyboard.left.shift", "extended_info"))))
-                .otherwise(Tooltip.builder().description("progress.none")));
+                .otherwise(Tooltip.builder().line("progress.none")));
     }
 
     private Tooltip setupEnergyTooltip() {
         return Tooltip
             .builder()
-            .header("energy.header")
-            .blankLine()
+            .title("energy.title")
+            .blank()
             .keyValue("energy.current",
                 () -> TextUtil.formatEnergy(menu.getEnergyStored(), 1, 3, Screen.hasShiftDown(), true)
             )
             .keyValue("energy.capacity",
                 () -> TextUtil.formatEnergy(menu.getEnergyCapacity(), 1, 2, Screen.hasShiftDown(), true)
             )
-            .blankLine(() -> !Screen.hasShiftDown())
+            .blank(() -> !Screen.hasShiftDown())
             .hotkeyHoldAction(() -> !Screen.hasShiftDown(), "key.keyboard.left.shift", "extended_numbers");
     }
 
     private String getMultiplier(int currentVal, int recipeVal) {
         return TextUtil.formatNumber((double) currentVal / recipeVal, 1, 3);
-    }
-
-    private boolean isHovered(int mX, int mY, int x, int y, int width, int height) {
-        return mX >= x + leftPos && mX < x + width + leftPos && mY >= y + topPos && mY < y + height + topPos;
     }
 
     private void addRenderable(Widget widget) {

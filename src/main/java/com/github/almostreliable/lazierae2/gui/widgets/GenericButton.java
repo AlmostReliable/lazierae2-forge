@@ -11,6 +11,7 @@ import net.minecraft.util.text.StringTextComponent;
 public abstract class GenericButton extends Button {
 
     final ResourceLocation texture;
+    MachineScreen screen;
 
     GenericButton(
         MachineScreen screen, int pX, int pY, int width, int height, String textureID
@@ -23,6 +24,7 @@ public abstract class GenericButton extends Button {
             StringTextComponent.EMPTY,
             button -> ((GenericButton) button).clickHandler()
         );
+        this.screen = screen;
         texture = TextUtil.getRL("textures/gui/buttons/" + textureID + ".png");
     }
 
