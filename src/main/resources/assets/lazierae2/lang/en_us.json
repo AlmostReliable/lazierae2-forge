@@ -47,13 +47,21 @@
   "tooltip.lazierae2.progress.none": "There is no recipe being processed!",
 
   "tooltip.lazierae2.energy.title": "Energy Information",
-  "tooltip.lazierae2.energy.current.key": "Current",
+  "tooltip.lazierae2.energy.current.key": "Currently stored",
   "tooltip.lazierae2.energy.current.value": "%s",
-  "tooltip.lazierae2.energy.capacity.key": "Capacity",
+  "tooltip.lazierae2.energy.capacity.key": "Maximum capacity",
   "tooltip.lazierae2.energy.capacity.value": "%s",
 
   "tooltip.lazierae2.dump.title": "Dump Energy",
   "tooltip.lazierae2.dump.description": "This will void the currently stored energy completely.",
   "tooltip.lazierae2.dump.warning": "You will not be able to recover the energy once removed!",
-  "tooltip.lazierae2.dump.action": "to dump the energy"
+  "tooltip.lazierae2.dump.action": "to dump the energy",
+
+  "tooltip.lazierae2.extract.title": "Auto Extract",
+  "tooltip.lazierae2.extract.current": "Current setting",
+  "tooltip.lazierae2.extract.description": "Defines if the items from the output slot are automatically transferred to adjacent inventories.",
+  "tooltip.lazierae2.extract.action": "to toggle auto extraction",
+
+  "extract_setting.lazierae2.off": "Disabled",
+  "extract_setting.lazierae2.on": "Enabled"
 }

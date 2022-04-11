@@ -259,6 +259,26 @@ public final class GuiUtil {
         }
 
         /**
+         * Adds a key-enum pair component to the tooltip.
+         * <p>
+         * The format will be "Key: Enum". The key and the colon are using green text. The enum is white.
+         * <p>
+         * The enum will use its own translation key.
+         *
+         * @param key  the key for the translation
+         * @param type the enum translation type
+         * @param e    the enum
+         * @return the instance of the tooltip builder
+         */
+        public Tooltip keyEnum(String key, TRANSLATE_TYPE type, Supplier<Enum<?>> e) {
+            components.add(new EnumComponent(TextUtil
+                .translate(TRANSLATE_TYPE.TOOLTIP, key, TextFormatting.GREEN)
+                .append(TextUtil.colorize(": ", TextFormatting.GREEN))
+                .append(StringTextComponent.EMPTY), type, e));
+            return this;
+        }
+
+        /**
          * Adds a click action component to the tooltip.
          *
          * @param key          the key for the translation
@@ -378,7 +398,7 @@ public final class GuiUtil {
 
             @Nullable
             final ITextComponent textComponent;
-            private final Supplier<?>[] replacements;
+            final Supplier<?>[] replacements;
 
             Component(@Nullable ITextComponent textComponent, Supplier<?>... replacements) {
                 super("");
@@ -414,6 +434,27 @@ public final class GuiUtil {
                 ITextComponent value = textComponent.getSiblings().get(1);
                 value = handleReplacements((TranslationTextComponent) value).withStyle(TextFormatting.WHITE);
                 textComponent.getSiblings().set(1, value);
+                tooltip.add(textComponent);
+            }
+        }
+
+        private static final class EnumComponent extends Component {
+
+            private final TRANSLATE_TYPE type;
+
+            private EnumComponent(IFormattableTextComponent textComponent, TRANSLATE_TYPE type, Supplier<Enum<?>> e) {
+                super(textComponent, e);
+                this.type = type;
+            }
+
+            @Override
+            public void resolve(List<? super ITextComponent> tooltip) {
+                assert textComponent != null;
+                textComponent
+                    .getSiblings()
+                    .set(1,
+                        TextUtil.translate(type, replacements[0].get().toString().toLowerCase(), TextFormatting.WHITE)
+                    );
                 tooltip.add(textComponent);
             }
         }

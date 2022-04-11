@@ -9,7 +9,7 @@ public final class TypeEnums {
      * identify its key inside the lang file.
      */
     public enum TRANSLATE_TYPE {
-        BLOCK, LABEL, TOOLTIP, BLOCK_SIDE, IO_SETTING, CONFIG
+        BLOCK, TOOLTIP, BLOCK_SIDE, IO_SETTING, EXTRACT_SETTING, CONFIG
     }
 
     /**
@@ -24,5 +24,12 @@ public final class TypeEnums {
      */
     public enum IO_SETTING {
         OFF, INPUT, OUTPUT, IO
+    }
+
+    /**
+     * Enum to represent the different states for the auto extraction.
+     */
+    public enum EXTRACT_SETTING {
+        OFF, ON
     }
 }
