@@ -3,6 +3,7 @@ package com.github.almostreliable.lazierae2.gui;
 import com.github.almostreliable.lazierae2.gui.widgets.AutoExtractButton;
 import com.github.almostreliable.lazierae2.gui.widgets.EnergyDumpButton;
 import com.github.almostreliable.lazierae2.gui.widgets.IOControl;
+import com.github.almostreliable.lazierae2.inventory.UpgradeSlot;
 import com.github.almostreliable.lazierae2.machine.MachineBlock;
 import com.github.almostreliable.lazierae2.machine.MachineContainer;
 import com.github.almostreliable.lazierae2.util.GuiUtil.Tooltip;
@@ -15,6 +16,7 @@ import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +35,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
     private final Collection<Widget> renderables = new ArrayList<>();
     private final Tooltip progressTooltip;
     private final Tooltip energyTooltip;
+    private final Tooltip upgradeTooltip;
 
     public MachineScreen(
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
@@ -41,6 +44,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         progressTexture = TextUtil.getRL("textures/gui/progress/" + container.tile.getMachineType() + ".png");
         progressTooltip = setupProgressTooltip();
         energyTooltip = setupEnergyTooltip();
+        upgradeTooltip = setupUpgradeTooltip();
     }
 
     public boolean isHovered(int mX, int mY, int x, int y, int width, int height) {
@@ -64,16 +68,23 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
 
     @Override
     protected void renderTooltip(MatrixStack matrix, int mX, int mY) {
-        super.renderTooltip(matrix, mX, mY);
-
         // progress bar
         if (isHovered(mX, mY, 78, 23, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT)) {
             renderComponentTooltip(matrix, progressTooltip.build(), mX, mY);
+            return;
         }
         // energy bar
         if (isHovered(mX, mY, 165, 7, ENERGY_WIDTH + 2, ENERGY_HEIGHT + 2)) {
             renderComponentTooltip(matrix, energyTooltip.build(), mX, mY);
+            return;
         }
+        // upgrade slot
+        if (hoveredSlot instanceof UpgradeSlot) {
+            renderComponentTooltip(matrix, upgradeTooltip.build(), mX, mY);
+            return;
+        }
+
+        super.renderTooltip(matrix, mX, mY);
 
         // widget tooltips
         for (Widget widget : renderables) {
@@ -202,6 +213,27 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
             .hotkeyHoldAction(() -> !Screen.hasShiftDown(), "key.keyboard.left.shift", "extended_numbers");
     }
 
+    private Tooltip setupUpgradeTooltip() {
+        return Tooltip
+            .builder()
+            .title("upgrade.title")
+            .blank()
+            .conditional(tooltip -> tooltip
+                .condition(menu::hasUpgrades)
+                .then(Tooltip
+                    .builder()
+                    .keyValue("upgrade.current",
+                        menu::getUpgradeCount,
+                        () -> menu.tile.getMachineType().getUpgradeSlots()
+                    )
+                    .keyValue("upgrade.additional", this::getAdditionalUpgradeEnergy))
+                .otherwise(Tooltip
+                    .builder()
+                    .line("upgrade.none", TextFormatting.YELLOW)
+                    .blank()
+                    .line("upgrade.description")));
+    }
+
     private String getMultiplier(int currentVal, int recipeVal) {
         return TextUtil.formatNumber((double) currentVal / recipeVal, 1, 3);
     }
@@ -227,5 +259,11 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         int energyCost = menu.tile.getEnergyCost();
         int recipeEnergy = menu.tile.getRecipeEnergy();
         return getMultiplier(energyCost, recipeEnergy);
+    }
+
+    private String getAdditionalUpgradeEnergy() {
+        assert hoveredSlot != null;
+        int additional = menu.tile.getMachineType().getEnergyBufferAdd() * menu.getUpgradeCount();
+        return TextUtil.formatEnergy(additional, 1, 2, Screen.hasShiftDown(), true);
     }
 }
