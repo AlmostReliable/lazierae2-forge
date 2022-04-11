@@ -62,6 +62,26 @@
   "tooltip.lazierae2.extract.description": "Defines if the items from the output slot are automatically transferred to adjacent inventories.",
   "tooltip.lazierae2.extract.action": "to toggle auto extraction",
 
+  "tooltip.lazierae2.io.title": "I/O Configuration",
+  "tooltip.lazierae2.io.side": "Side",
+  "tooltip.lazierae2.io.current": "Setting",
+  "tooltip.lazierae2.io.description": "Can be used to configure sides that act as inputs and outputs.",
+  "tooltip.lazierae2.io.reset_all": "to reset all sides",
+  "tooltip.lazierae2.io.reset": "to reset this side",
+  "tooltip.lazierae2.io.action": "to toggle this side",
+
   "extract_setting.lazierae2.off": "Disabled",
-  "extract_setting.lazierae2.on": "Enabled"
+  "extract_setting.lazierae2.on": "Enabled",
+
+  "block_side.lazierae2.top": "Top",
+  "block_side.lazierae2.bottom": "Bottom",
+  "block_side.lazierae2.left": "Left",
+  "block_side.lazierae2.right": "Right",
+  "block_side.lazierae2.front": "Front",
+  "block_side.lazierae2.back": "Back",
+
+  "io_setting.lazierae2.input": "Input",
+  "io_setting.lazierae2.output": "Output",
+  "io_setting.lazierae2.io": "I/O",
+  "io_setting.lazierae2.off": "Off"
 }

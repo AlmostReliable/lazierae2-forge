@@ -3,10 +3,12 @@ package com.github.almostreliable.lazierae2.gui.widgets;
 import com.github.almostreliable.lazierae2.component.SideConfiguration;
 import com.github.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.github.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
+import com.github.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.github.almostreliable.lazierae2.gui.MachineScreen;
 import com.github.almostreliable.lazierae2.machine.MachineTile;
 import com.github.almostreliable.lazierae2.network.PacketHandler;
 import com.github.almostreliable.lazierae2.network.SideConfigPacket;
+import com.github.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
@@ -43,11 +45,26 @@ public final class IOControl {
 
         private final MachineTile tile;
         private final BLOCK_SIDE side;
+        private final Tooltip tooltip;
 
         private IOButton(MachineScreen screen, BLOCK_SIDE side, int pX, int pY) {
             super(screen, pX, pY, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID);
             tile = screen.getMenu().tile;
             this.side = side;
+
+            tooltip = Tooltip
+                .builder()
+                .title("io.title")
+                .blank()
+                .keyEnum("io.side", TRANSLATE_TYPE.BLOCK_SIDE, () -> side)
+                .keyEnum("io.current", TRANSLATE_TYPE.IO_SETTING, () -> tile.sideConfig.get(side))
+                .blank()
+                .line("io.description")
+                .blank()
+                .conditional(extendedInfo -> extendedInfo
+                    .condition(() -> side == BLOCK_SIDE.FRONT)
+                    .then(Tooltip.builder().shiftClickAction("io.reset_all"))
+                    .otherwise(Tooltip.builder().clickAction("io.action").shiftClickAction("io.reset")));
         }
 
         @Override
@@ -91,7 +108,7 @@ public final class IOControl {
 
         @Override
         public void renderToolTip(MatrixStack matrix, int mX, int mY) {
-            // TODO
+            screen.renderComponentTooltip(matrix, tooltip.build(), mX, mY);
         }
 
         private void changeMode() {
