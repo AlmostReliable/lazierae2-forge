@@ -78,6 +78,12 @@
   "tooltip.lazierae2.upgrade.none": "There are no upgrades installed!",
   "tooltip.lazierae2.upgrade.description": "Allows you to upgrade the machine's speed and energy storage at the cost of a higher energy consumption. To install upgrades, place Acceleration Cards in this slot.",
 
+  "tooltip.lazierae2.item.upgrades.key": "Installed upgrades",
+  "tooltip.lazierae2.item.upgrades.value": "%d / %d",
+  "tooltip.lazierae2.item.energy.key": "Stored energy",
+  "tooltip.lazierae2.item.energy.value": "%s",
+  "tooltip.lazierae2.item.side_config": "> Machine has a side configuration stored",
+
   "extract_setting.lazierae2.off": "Disabled",
   "extract_setting.lazierae2.on": "Enabled",
 

@@ -9,6 +9,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.function.Consumer;
 
@@ -43,6 +44,10 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
         }
     }
 
+    public boolean hasChanged() {
+        return Arrays.stream(Direction.values()).anyMatch(direction -> config.get(direction) != IO_SETTING.OFF);
+    }
+
     public void forEachOutput(Consumer<? super Direction> consumer) {
         for (Direction direction : Direction.values()) {
             if (config.get(direction) == IO_SETTING.OUTPUT || config.get(direction) == IO_SETTING.IO) {
@@ -74,16 +79,16 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        for (Direction direction : Direction.values()) {
-            nbt.putInt(direction.toString(), config.get(direction).ordinal());
+        for (BLOCK_SIDE side : BLOCK_SIDE.values()) {
+            nbt.putInt(side.toString(), get(side).ordinal());
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        for (Direction direction : Direction.values()) {
-            config.put(direction, IO_SETTING.values()[nbt.getInt(direction.toString())]);
+        for (BLOCK_SIDE side : BLOCK_SIDE.values()) {
+            set(side, IO_SETTING.values()[nbt.getInt(side.toString())]);
         }
     }
 

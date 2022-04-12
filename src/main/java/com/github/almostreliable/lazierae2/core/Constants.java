@@ -45,6 +45,7 @@ public enum Constants {
     public static final String RECIPE_TIME_ID = "recipe_time";
     public static final String ENERGY_COST_ID = "energy_cost";
     public static final String RECIPE_ENERGY_ID = "recipe_energy";
+    public static final String UPGRADES_ID = "upgrades";
     // recipe json keys
     public static final String RECIPE_INPUT = "input";
     public static final String RECIPE_OUTPUT = "output";

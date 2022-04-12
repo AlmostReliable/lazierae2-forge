@@ -1,8 +1,11 @@
 package com.github.almostreliable.lazierae2.component;
 
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
@@ -18,6 +21,24 @@ public class InventoryHandler extends ItemStackHandler {
     public InventoryHandler(TileEntity tile, int inputSlots) {
         super(inputSlots + NON_INPUT_SLOTS);
         this.tile = tile;
+    }
+
+    public void dropContents() {
+        if (tile.getLevel() == null) return;
+        BlockPos pos = tile.getBlockPos();
+        for (int i = OUTPUT_SLOT; i < getSlots(); i++) {
+            ItemStack stack = getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+            tile.getLevel().addFreshEntity(new ItemEntity(tile.getLevel(), pos.getX(), pos.getY(), pos.getZ(), stack));
+        }
+    }
+
+    public CompoundNBT serializeUpgrades() {
+        return getStackInSlot(UPGRADE_SLOT).save(new CompoundNBT());
+    }
+
+    public void deserializeUpgrades(CompoundNBT nbt) {
+        setStackInSlot(UPGRADE_SLOT, ItemStack.of(nbt));
     }
 
     public void shrinkInputSlots() {

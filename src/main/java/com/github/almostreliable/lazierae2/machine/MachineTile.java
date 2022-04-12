@@ -10,6 +10,7 @@ import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.github.almostreliable.lazierae2.util.GameUtil;
 import com.github.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -176,6 +177,33 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
             }
         }
         return super.getCapability(cap, direction);
+    }
+
+    void playerDestroy() {
+        assert level != null;
+        inventory.dropContents();
+        CompoundNBT nbt = new CompoundNBT();
+        if (inventory.getUpgradeCount() > 0) nbt.put(UPGRADES_ID, inventory.serializeUpgrades());
+        if (energy.getEnergyStored() > 0) nbt.put(ENERGY_ID, energy.serializeNBT());
+        if (sideConfig.hasChanged()) nbt.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
+        if (autoExtract) nbt.putBoolean(AUTO_EXTRACT_ID, true);
+        ItemStack stack = new ItemStack(getMachineType().getItemProvider());
+        if (!nbt.isEmpty()) stack.setTag(nbt);
+        level.addFreshEntity(new ItemEntity(level,
+            worldPosition.getX() + 0.5,
+            worldPosition.getY() + 0.5,
+            worldPosition.getZ() + 0.5,
+            stack
+        ));
+    }
+
+    void playerPlace(ItemStack stack) {
+        CompoundNBT nbt = stack.getTag();
+        if (nbt == null) return;
+        if (nbt.contains(UPGRADES_ID)) inventory.deserializeUpgrades(nbt.getCompound(UPGRADES_ID));
+        if (nbt.contains(ENERGY_ID)) energy.deserializeNBT(nbt.getCompound(ENERGY_ID));
+        if (nbt.contains(SIDE_CONFIG_ID)) sideConfig.deserializeNBT(nbt.getCompound(SIDE_CONFIG_ID));
+        if (nbt.contains(AUTO_EXTRACT_ID)) autoExtract = nbt.getBoolean(AUTO_EXTRACT_ID);
     }
 
     private void doWork(MachineRecipe recipe, int energyCost) {
