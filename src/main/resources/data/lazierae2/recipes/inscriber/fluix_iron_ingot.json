@@ -1,0 +1,18 @@
+{
+  "type": "appliedenergistics2:inscriber",
+  "mode": "press",
+  "result": {
+    "item": "lazierae2:fluix_iron_ingot"
+  },
+  "ingredients": {
+    "top": {
+      "tag": "forge:dusts/carbonic_fluix"
+    },
+    "middle": {
+      "tag": "forge:ingots/iron"
+    },
+    "bottom": {
+      "item": "appliedenergistics2:sky_dust"
+    }
+  }
+}
