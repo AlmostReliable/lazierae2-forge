@@ -17,6 +17,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
 
 public enum MachineType implements IRecipeType<MachineRecipe> {
 
@@ -69,6 +70,7 @@ public enum MachineType implements IRecipeType<MachineRecipe> {
         this.itemProvider = itemProvider;
         this.recipeFactory = recipeFactory;
         this.recipeSerializer = recipeSerializer;
+        IRecipeType.register(f("{}:{}", MOD_ID, id));
     }
 
     @Override
