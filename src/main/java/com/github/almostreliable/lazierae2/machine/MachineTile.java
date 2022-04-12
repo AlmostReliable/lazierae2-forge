@@ -142,6 +142,8 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
         energyCost = calculateEnergyCost(recipe);
         recipeEnergy = recipe.getEnergyCost();
+        recipeTime = recipe.getProcessTime();
+        processTime = calculateProcessTime(recipe);
         if (canWork(recipe, energyCost)) {
             doWork(recipe, energyCost);
         } else {
@@ -207,8 +209,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     private void doWork(MachineRecipe recipe, int energyCost) {
-        recipeTime = recipe.getProcessTime();
-        processTime = calculateProcessTime(recipe);
         if (progress < processTime) {
             changeActivityState(true);
             energy.setEnergy(energy.getEnergyStored() - (energyCost / processTime));
@@ -255,8 +255,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     private boolean canWork(IRecipe<IInventory> recipe, int energyCost) {
-        // TODO: should this really check if enough energy for the whole recipe is available? maybe prefer per tick
-        if (energyCost > energy.getEnergyStored()) return false;
+        if (energyCost / processTime > energy.getEnergyStored()) return false;
 
         ItemStack output = inventory.getStackInOutput();
         if (output.isEmpty()) return true;
