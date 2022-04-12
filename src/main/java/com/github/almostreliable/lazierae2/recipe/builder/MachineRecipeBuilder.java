@@ -1,6 +1,7 @@
 package com.github.almostreliable.lazierae2.recipe.builder;
 
 import com.github.almostreliable.lazierae2.machine.MachineType;
+import com.github.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -66,6 +67,13 @@ public final class MachineRecipeBuilder {
         return this;
     }
 
+    public MachineRecipeBuilder input(Ingredient[] inputs) {
+        for (Ingredient input : inputs) {
+            input(input);
+        }
+        return this;
+    }
+
     public MachineRecipeBuilder input(IItemProvider input) {
         return input(Ingredient.of(input));
     }
@@ -110,6 +118,10 @@ public final class MachineRecipeBuilder {
         validateProcessingTime();
         validateEnergyCost();
         consumer.accept(new FinishedMachineRecipe(this, recipeId));
+    }
+
+    public MachineRecipe build(ResourceLocation id) {
+        return recipeType.getRecipeFactory().apply(id, recipeType);
     }
 
     private void validateProcessingTime() {
