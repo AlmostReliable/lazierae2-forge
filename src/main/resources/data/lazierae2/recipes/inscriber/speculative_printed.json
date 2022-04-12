@@ -1,0 +1,15 @@
+{
+  "type": "appliedenergistics2:inscriber",
+  "mode": "inscribe",
+  "result": {
+    "item": "lazierae2:speculative_printed"
+  },
+  "ingredients": {
+    "top": {
+      "item": "lazierae2:universal_press"
+    },
+    "middle": {
+      "item": "lazierae2:speculation_core_64"
+    }
+  }
+}

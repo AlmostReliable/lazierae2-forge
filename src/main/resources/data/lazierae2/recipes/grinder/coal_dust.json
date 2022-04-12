@@ -1,0 +1,13 @@
+{
+  "type": "appliedenergistics2:grinder",
+  "input": {
+    "item": "minecraft:coal"
+  },
+  "result": {
+    "primary": {
+      "item": "lazierae2:coal_dust",
+      "count": 1
+    }
+  },
+  "turns": 4
+}
