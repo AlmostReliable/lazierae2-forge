@@ -123,7 +123,6 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     @Override
     public void tick() {
-        // TODO: check why TripleInputRecipes are not working
         if (level == null || level.isClientSide) return;
         if (autoExtract && level.getGameTime() % 10 == 0) autoExtract();
         energy.validateEnergy();
@@ -297,7 +296,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         return energyCost;
     }
 
-    public void setEnergyCost(int energyCost) {
+    void setEnergyCost(int energyCost) {
         this.energyCost = energyCost;
     }
 
@@ -305,7 +304,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         return recipeEnergy;
     }
 
-    public void setRecipeEnergy(int recipeEnergy) {
+    void setRecipeEnergy(int recipeEnergy) {
         this.recipeEnergy = recipeEnergy;
     }
 
