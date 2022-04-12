@@ -23,7 +23,17 @@ public final class TextUtil {
 
     private TextUtil() {}
 
-    // TODO: add documentation, replace in the project
+    /**
+     * A helper method to format a string with simple bracket placeholders.
+     * <p>
+     * The bracket pairs will be replaced with the given values in the same order.
+     * <p>
+     * Brackets with index values will be replaced with the corresponding value.
+     *
+     * @param input the input string
+     * @param args  the values to replace the brackets with
+     * @return the formatted string
+     */
     public static String f(String input, Object... args) {
         for (Object arg : args) {
             input = PLACEHOLDER.matcher(input).replaceFirst(arg.toString());
@@ -88,7 +98,7 @@ public final class TextUtil {
             (int) (1 + Math.floor(Math.log10(Math.abs(energy.doubleValue()))));
         int base10Exponent = numberOfDigits < 4 ? 0 : 3 * ((numberOfDigits - 1) / 3);
         double normalized = energy.doubleValue() / Math.pow(10, base10Exponent);
-        return formatNumber(normalized, minPlaces, maxPlaces) + (suffix ? " " + UNITS[base10Exponent / 3] + "FE" : "");
+        return formatNumber(normalized, minPlaces, maxPlaces) + (suffix ? f(" {}FE", UNITS[base10Exponent / 3]) : "");
     }
 
     /**

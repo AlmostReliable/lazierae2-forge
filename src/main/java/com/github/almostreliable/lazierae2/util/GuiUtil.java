@@ -15,6 +15,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
+
 public final class GuiUtil {
 
     private GuiUtil() {}
@@ -227,9 +229,9 @@ public final class GuiUtil {
          */
         public Tooltip keyValue(String key, Supplier<?>... replacements) {
             components.add(new FormatComponent(TextUtil
-                .translate(TRANSLATE_TYPE.TOOLTIP, key + ".key", TextFormatting.GREEN)
+                .translate(TRANSLATE_TYPE.TOOLTIP, f("{}.key", key), TextFormatting.GREEN)
                 .append(TextUtil.colorize(": ", TextFormatting.GREEN))
-                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key + ".value")), replacements));
+                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key))), replacements));
             return this;
         }
 
@@ -251,9 +253,9 @@ public final class GuiUtil {
         public Tooltip keyValue(BooleanSupplier condition, String key, Supplier<?>... replacements) {
             components.add(new IfComponent(condition,
                 new FormatComponent(TextUtil
-                    .translate(TRANSLATE_TYPE.TOOLTIP, key + ".key", TextFormatting.GREEN)
+                    .translate(TRANSLATE_TYPE.TOOLTIP, f("{}.key", key), TextFormatting.GREEN)
                     .append(TextUtil.colorize(": ", TextFormatting.GREEN))
-                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key + ".value")), replacements)
+                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key))), replacements)
             ));
             return this;
         }

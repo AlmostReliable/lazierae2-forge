@@ -21,6 +21,8 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
+
 public class MachineScreen extends ContainerScreen<MachineContainer> {
 
     public static final int TEXTURE_WIDTH = 178;
@@ -41,7 +43,7 @@ public class MachineScreen extends ContainerScreen<MachineContainer> {
         MachineContainer container, PlayerInventory inventory, ITextComponent ignoredTitle
     ) {
         super(container, inventory, container.tile.getDisplayName());
-        progressTexture = TextUtil.getRL("textures/gui/progress/" + container.tile.getMachineType() + ".png");
+        progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", container.tile.getMachineType()));
         progressTooltip = setupProgressTooltip();
         energyTooltip = setupEnergyTooltip();
         upgradeTooltip = setupUpgradeTooltip();

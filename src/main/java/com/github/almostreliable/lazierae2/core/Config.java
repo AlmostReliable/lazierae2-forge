@@ -9,6 +9,7 @@ import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import org.apache.commons.lang3.tuple.Pair;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
 
 public final class Config {
 
@@ -41,19 +42,19 @@ public final class Config {
 
             builder.push(id);
             upgradeSlots = builder.comment(
-                " The number of upgrades the " + id + " can hold.",
+                f(" The number of upgrades the {} can hold.", id),
                 " By default, upgrades will speed up the machine and increase the energy buffer at the cost of a higher energy consumption."
             ).translation(machineTranslation(UPGRADE_SLOTS)).defineInRange(UPGRADE_SLOTS, 8, 0, 64);
             baseEnergyBuffer = builder
                 .comment(
-                    " The amount of energy the " + id + " can hold.",
+                    f(" The amount of energy the {} can hold.", id),
                     " The energy buffer is used to store energy before it is used."
                 )
                 .translation(machineTranslation(ENERGY_BUFFER))
                 .defineInRange(ENERGY_BUFFER, 100_000, 0, Integer.MAX_VALUE);
             energyBufferAdd = builder
                 .comment(
-                    " The additional amount of energy the " + id + " can hold per upgrade.",
+                    f(" The additional amount of energy the {} can hold per upgrade.", id),
                     " Each upgrade increases the energy buffer by this amount.",
                     " Setting this to 0 will disable the energy buffer upgrade.",
                     " Calculation: energyBuffer = baseEnergyBuffer + (installedUpgrades * energyBufferAdd)"
@@ -61,14 +62,14 @@ public final class Config {
                 .translation(machineTranslation(ENERGY_BUFFER_UPGRADE))
                 .defineInRange(ENERGY_BUFFER_UPGRADE, 50_000, 0, Integer.MAX_VALUE);
             baseEnergyUsage = builder.comment(
-                " The base amount of energy the " + id + " uses per tick.",
+                f(" The base amount of energy the {} uses per tick.", id),
                 " Each recipe can overwrite this value. This is just a fallback value if a recipe does not specify an energy usage.",
                 " All recipes from the mod itself have an own energy usage value and this setting won't have any effect on them.",
                 " This is only useful for custom recipes e.g. for modpack makers."
             ).translation(machineTranslation(ENERGY_USAGE)).defineInRange(ENERGY_USAGE, 300, 0, Integer.MAX_VALUE);
             energyUsageMulti = builder
                 .comment(
-                    " The energy multiplier the " + id + " uses per tick when upgraded.",
+                    f(" The energy multiplier the {} uses per tick when upgraded.", id),
                     " Each upgrade multiplies the energy usage by this value.",
                     " Setting this to 1 will disable the energy usage multiplier.",
                     " Lower values than 1 will decrease the energy usage, higher values will increase it.",
@@ -77,14 +78,14 @@ public final class Config {
                 .translation(machineTranslation(ENERGY_USAGE_UPGRADE))
                 .defineInRange(ENERGY_USAGE_UPGRADE, 1.3, 0, Double.MAX_VALUE);
             baseProcessTime = builder.comment(
-                " The base processing time the " + id + " needs for a recipe.",
+                f(" The base processing time the {} needs for a recipe.", id),
                 " Each recipe can overwrite this value. This is just a fallback value if a recipe does not specify a processing time.",
                 " All recipes from the mod itself have an own processing time value and this setting won't have any effect on them.",
                 " This is only useful for custom recipes e.g. for modpack makers."
             ).translation(machineTranslation(PROCESS_TIME)).defineInRange(PROCESS_TIME, 200, 0, Integer.MAX_VALUE);
             processTimeMulti = builder
                 .comment(
-                    " The processing time multiplier the " + id + " uses when upgraded.",
+                    f(" The processing time multiplier the {} uses when upgraded.", id),
                     " Each upgrade multiplies the processing time for a recipe by this value.",
                     " Setting this to 1 will disable the processing time multiplier.",
                     " Lower values than 1 will decrease the processing time, higher values will increase it.",

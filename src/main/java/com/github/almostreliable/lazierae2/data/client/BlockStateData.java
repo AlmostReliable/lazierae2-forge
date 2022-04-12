@@ -17,6 +17,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.function.Function;
 
 import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
 
 public class BlockStateData extends BlockStateProvider {
 
@@ -45,11 +46,15 @@ public class BlockStateData extends BlockStateProvider {
     private void registerMachine(MachineBlock block) {
         String id = block.getId();
         ResourceLocation sideTexture = new ResourceLocation(MOD_ID, "block/machine");
-        ResourceLocation inactiveTexture = new ResourceLocation(MOD_ID, "block/" + id);
-        ResourceLocation activeTexture = new ResourceLocation(MOD_ID, "block/" + id + "_active");
+        ResourceLocation inactiveTexture = new ResourceLocation(MOD_ID, f("block/{}", id));
+        ResourceLocation activeTexture = new ResourceLocation(MOD_ID, f("block/{}_active", id));
 
         BlockModelBuilder modelInactive = models().orientable(id, sideTexture, inactiveTexture, sideTexture);
-        BlockModelBuilder modelActive = models().orientable(id + "_active", sideTexture, activeTexture, sideTexture);
+        BlockModelBuilder modelActive = models().orientable(f("{}_active", id),
+            sideTexture,
+            activeTexture,
+            sideTexture
+        );
 
         orientedBlock(block,
             state -> state.getValue(MachineBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive

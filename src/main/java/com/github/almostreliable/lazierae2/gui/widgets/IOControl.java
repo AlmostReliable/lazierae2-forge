@@ -17,6 +17,8 @@ import net.minecraft.client.gui.screen.Screen;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
+
 public final class IOControl {
 
     private static final int BUTTON_SIZE = 6;
@@ -137,7 +139,7 @@ public final class IOControl {
                         setting = IO_SETTING.INPUT;
                         break;
                     default:
-                        throw new IllegalStateException("Unexpected value: " + setting);
+                        throw new IllegalStateException(f("Unexpected value: {}", setting));
                 }
             }
 

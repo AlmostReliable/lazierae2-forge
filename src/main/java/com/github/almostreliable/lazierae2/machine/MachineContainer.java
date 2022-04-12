@@ -25,6 +25,8 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
+
 public class MachineContainer extends Container {
 
     private static final int PLAYER_INV_SIZE = 36;
@@ -132,7 +134,7 @@ public class MachineContainer extends Container {
             addSlot(new SlotItemHandler(inventory, 3, 44, 29));
             addSlot(new SlotItemHandler(inventory, 4, 44, 50));
         } else {
-            throw new IllegalArgumentException("Invalid input slot count: " + inputSlots);
+            throw new IllegalArgumentException(f("Invalid input slot count: {}", inputSlots));
         }
     }
 

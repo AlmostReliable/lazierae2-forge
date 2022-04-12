@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
 
 public class ItemModelData extends ItemModelProvider {
 
@@ -56,7 +57,7 @@ public class ItemModelData extends ItemModelProvider {
      * @param id the id of the item and the parent block to get the data from
      */
     private void existingParent(String id) {
-        ResourceLocation parentLocation = new ResourceLocation(MOD_ID, "block/" + id);
+        ResourceLocation parentLocation = new ResourceLocation(MOD_ID, f("block/{}", id));
         withExistingParent(id, parentLocation);
     }
 
@@ -68,6 +69,6 @@ public class ItemModelData extends ItemModelProvider {
     private void builder(Supplier<? extends Item> item) {
         String name = Objects.requireNonNull(item.get().getRegistryName()).getPath();
         ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
-        getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + name);
+        getBuilder(name).parent(itemGenerated).texture("layer0", f("item/{}", name));
     }
 }

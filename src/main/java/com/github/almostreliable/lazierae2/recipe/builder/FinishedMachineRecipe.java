@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 import static com.github.almostreliable.lazierae2.core.Constants.*;
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
 
 public class FinishedMachineRecipe implements IFinishedRecipe {
 
@@ -28,7 +29,7 @@ public class FinishedMachineRecipe implements IFinishedRecipe {
         JsonObject output = new JsonObject();
         output.addProperty(RECIPE_ITEM, Objects.requireNonNull(
             builder.getOutput().getItem().getRegistryName(),
-            () -> "Output in " + builder.getMachineId() + "-recipe was not defined!"
+            () -> f("Output in {}-recipe was not defined!", builder.getMachineId())
         ).toString());
         if (builder.getOutput().getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.getOutput().getCount());
         json.add(RECIPE_OUTPUT, output);

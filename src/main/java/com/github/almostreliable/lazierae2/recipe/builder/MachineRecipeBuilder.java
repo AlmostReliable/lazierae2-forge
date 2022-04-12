@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.github.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.github.almostreliable.lazierae2.util.TextUtil.f;
 
 public final class MachineRecipeBuilder {
 
@@ -105,7 +106,7 @@ public final class MachineRecipeBuilder {
         ResourceLocation outputId = output.getItem().getRegistryName();
         String modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
             outputId.getNamespace();
-        ResourceLocation recipeId = new ResourceLocation(modID, getMachineId() + "/" + outputId.getPath());
+        ResourceLocation recipeId = new ResourceLocation(modID, f("{}/{}", getMachineId(), outputId.getPath()));
         validateProcessingTime();
         validateEnergyCost();
         consumer.accept(new FinishedMachineRecipe(this, recipeId));
