@@ -1,37 +1,81 @@
 package com.almostreliable.lazierae2.component;
 
-import com.almostreliable.lazierae2.machine.MachineTile;
-import net.minecraft.nbt.CompoundNBT;
+import com.almostreliable.lazierae2.machine.MachineEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import static com.almostreliable.lazierae2.core.Constants.*;
 
-public class EnergyHandler extends EnergyStorage implements INBTSerializable<CompoundNBT> {
+public class EnergyHandler implements IEnergyStorage, INBTSerializable<CompoundTag> {
 
-    private final MachineTile tile;
+    private final MachineEntity entity;
+    protected int energy;
+    private int capacity;
+    private int maxReceive;
+    private int maxExtract;
 
-    public EnergyHandler(MachineTile tile, int capacity) {
-        super(capacity);
-        this.tile = tile;
+    public EnergyHandler(MachineEntity entity) {
+        this.entity = entity;
+        var baseEnergyBuffer = entity.getMachineType().getBaseEnergyBuffer();
+        capacity = baseEnergyBuffer;
+        maxReceive = baseEnergyBuffer;
+        maxExtract = baseEnergyBuffer;
+        energy = 0;
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
-        nbt.putInt(CAPACITY_ID, capacity);
-        nbt.putInt(ENERGY_ID, energy);
-        nbt.putInt(MAX_RECEIVE, maxReceive);
-        nbt.putInt(MAX_EXTRACT, maxExtract);
-        return nbt;
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        if (!canReceive()) return 0;
+        var energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
+        if (!simulate) energy += energyReceived;
+        return energyReceived;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        capacity = nbt.getInt(CAPACITY_ID);
-        energy = nbt.getInt(ENERGY_ID);
-        maxReceive = nbt.getInt(MAX_RECEIVE);
-        maxExtract = nbt.getInt(MAX_EXTRACT);
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        if (!canExtract()) return 0;
+        var energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
+        if (!simulate) energy -= energyExtracted;
+        return energyExtracted;
+    }
+
+    @Override
+    public int getEnergyStored() {
+        return energy;
+    }
+
+    @Override
+    public int getMaxEnergyStored() {
+        return capacity;
+    }
+
+    @Override
+    public boolean canExtract() {
+        return maxExtract > 0;
+    }
+
+    @Override
+    public boolean canReceive() {
+        return maxReceive > 0;
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        var tag = new CompoundTag();
+        tag.putInt(CAPACITY_ID, capacity);
+        tag.putInt(ENERGY_ID, energy);
+        tag.putInt(MAX_RECEIVE, maxReceive);
+        tag.putInt(MAX_EXTRACT, maxExtract);
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag tag) {
+        capacity = tag.getInt(CAPACITY_ID);
+        energy = tag.getInt(ENERGY_ID);
+        maxReceive = tag.getInt(MAX_RECEIVE);
+        maxExtract = tag.getInt(MAX_EXTRACT);
     }
 
     public void validateEnergy() {
@@ -40,13 +84,13 @@ public class EnergyHandler extends EnergyStorage implements INBTSerializable<Com
 
     public void setEnergy(int energy) {
         this.energy = Math.min(energy, capacity);
-        tile.setChanged();
+        entity.setChanged();
     }
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
         maxReceive = capacity;
         maxExtract = capacity;
-        tile.setChanged();
+        entity.setChanged();
     }
 }

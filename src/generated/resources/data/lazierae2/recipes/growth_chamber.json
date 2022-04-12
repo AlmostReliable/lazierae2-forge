@@ -7,16 +7,16 @@
   ],
   "key": {
     "a": {
-      "item": "appliedenergistics2:quartz_growth_accelerator"
+      "item": "ae2:quartz_growth_accelerator"
     },
     "m": {
-      "item": "appliedenergistics2:molecular_assembler"
+      "item": "ae2:molecular_assembler"
     },
     "b": {
       "item": "minecraft:water_bucket"
     },
     "f": {
-      "item": "appliedenergistics2:fluix_glass_cable"
+      "item": "ae2:fluix_glass_cable"
     }
   },
   "result": {

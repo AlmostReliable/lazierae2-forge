@@ -1,9 +1,9 @@
 package com.almostreliable.lazierae2.util;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.IntReferenceHolder;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.IntConsumer;
@@ -18,18 +18,18 @@ public final class DataSlotUtil {
     private DataSlotUtil() {}
 
     /**
-     * Utility method to create a new {@link IntReferenceHolder} for boolean values without
+     * Utility method to create a new {@link DataSlot} for boolean values without
      * the need to have a clunky anonymous class and conversion.
      * <p>
      * Marks the tile entity automatically for saving when changing values.
      *
-     * @param tile The tile entity to mark for saving.
-     * @param s    The supplier of the boolean value.
-     * @param c    The consumer of the boolean value.
-     * @return The new {@link IntReferenceHolder}.
+     * @param entity The block entity to mark for saving.
+     * @param s      The supplier of the boolean value.
+     * @param c      The consumer of the boolean value.
+     * @return The new {@link DataSlot}.
      */
-    public static IntReferenceHolder forBoolean(TileEntity tile, BooleanSupplier s, BooleanConsumer c) {
-        return new SyncedIntReferenceHolder() {
+    public static DataSlot forBoolean(BlockEntity entity, BooleanSupplier s, BooleanConsumer c) {
+        return new SyncedDataSlot() {
 
             @Override
             public int get() {
@@ -39,27 +39,27 @@ public final class DataSlotUtil {
             @Override
             public void set(int value) {
                 c.accept(value == 1);
-                tile.setChanged();
+                entity.setChanged();
             }
         };
     }
 
     /**
-     * Utility method to create a new {@link IntReferenceHolder} for integer values without
+     * Utility method to create a new {@link DataSlot} for integer values without
      * the need to have a clunky anonymous class.
      * <p>
      * Marks the tile entity automatically for saving when changing values.
      * <p>
      * This method should only be used for integer values with the maximum value of 2^15-1.
-     * For larger values, use {@link #forIntegerSplit(TileEntity, IntSupplier, IntConsumer)}.
+     * For larger values, use {@link #forIntegerSplit(BlockEntity, IntSupplier, IntConsumer)}.
      *
-     * @param tile The tile entity to mark for saving.
-     * @param s    The supplier of the integer value.
-     * @param c    The consumer of the integer value.
-     * @return The new {@link IntReferenceHolder}.
+     * @param entity The block entity to mark for saving.
+     * @param s      The supplier of the integer value.
+     * @param c      The consumer of the integer value.
+     * @return The new {@link DataSlot}.
      */
-    public static IntReferenceHolder forInteger(TileEntity tile, IntSupplier s, IntConsumer c) {
-        return new SyncedIntReferenceHolder() {
+    public static DataSlot forInteger(BlockEntity entity, IntSupplier s, IntConsumer c) {
+        return new SyncedDataSlot() {
 
             @Override
             public int get() {
@@ -69,27 +69,27 @@ public final class DataSlotUtil {
             @Override
             public void set(int value) {
                 c.accept(value);
-                tile.setChanged();
+                entity.setChanged();
             }
         };
     }
 
     /**
-     * Utility method to create a new {@link IIntArray} for integer values without
+     * Utility method to create a new {@link ContainerData} for integer values without
      * the need to have a clunky anonymous class.
      * <p>
      * Marks the tile entity automatically for saving when changing values.
      * <p>
      * This method should only be used for integer values with potential higher values than 2^15-1.
-     * For smaller values use {@link #forInteger(TileEntity, IntSupplier, IntConsumer)}.
+     * For smaller values use {@link #forInteger(BlockEntity, IntSupplier, IntConsumer)}.
      *
-     * @param tile The tile entity to mark for saving.
-     * @param s    The supplier of the integer value.
-     * @param c    The consumer of the integer value.
-     * @return The new {@link IIntArray}.
+     * @param entity The tile entity to mark for saving.
+     * @param s      The supplier of the integer value.
+     * @param c      The consumer of the integer value.
+     * @return The new {@link ContainerData}.
      */
-    public static IntReferenceHolder[] forIntegerSplit(TileEntity tile, IntSupplier s, IntConsumer c) {
-        return intArrayToReferenceHolder(new IIntArray() {
+    public static DataSlot[] forIntegerSplit(BlockEntity entity, IntSupplier s, IntConsumer c) {
+        return intArrayToReferenceHolder(new ContainerData() {
             @Override
             public int get(int index) {
                 if (index == 0) {
@@ -106,7 +106,7 @@ public final class DataSlotUtil {
                 } else {
                     c.accept((s.getAsInt() & UPPER) + (value & LOWER));
                 }
-                tile.setChanged();
+                entity.setChanged();
             }
 
             @Override
@@ -116,19 +116,19 @@ public final class DataSlotUtil {
         });
     }
 
-    private static SyncedIntReferenceHolder[] intArrayToReferenceHolder(IIntArray intArray) {
+    private static SyncedDataSlot[] intArrayToReferenceHolder(ContainerData containerData) {
         return IntStream
-            .range(0, intArray.getCount())
-            .mapToObj(i -> SyncedIntReferenceHolder.of(intArray, i))
-            .toArray(SyncedIntReferenceHolder[]::new);
+            .range(0, containerData.getCount())
+            .mapToObj(i -> SyncedDataSlot.of(containerData, i))
+            .toArray(SyncedDataSlot[]::new);
     }
 
-    private abstract static class SyncedIntReferenceHolder extends IntReferenceHolder {
+    private abstract static class SyncedDataSlot extends DataSlot {
 
         private boolean initSync = true;
 
-        private static SyncedIntReferenceHolder of(IIntArray data, int index) {
-            return new SyncedIntReferenceHolder() {
+        private static SyncedDataSlot of(ContainerData data, int index) {
+            return new SyncedDataSlot() {
                 @Override
                 public int get() {
                     return data.get(index);

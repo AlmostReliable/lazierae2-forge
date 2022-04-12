@@ -1,23 +1,20 @@
 package com.almostreliable.lazierae2.gui.widgets;
 
-import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.gui.MachineScreen;
-import com.almostreliable.lazierae2.machine.MachineTile;
+import com.almostreliable.lazierae2.machine.MachineEntity;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.SideConfigPacket;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.gui.screen.Screen;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.sounds.SoundManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
-import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public final class IOControl {
 
@@ -45,13 +42,13 @@ public final class IOControl {
 
     private static final class IOButton extends GenericButton {
 
-        private final MachineTile tile;
+        private final MachineEntity tile;
         private final BLOCK_SIDE side;
         private final Tooltip tooltip;
 
         private IOButton(MachineScreen screen, BLOCK_SIDE side, int pX, int pY) {
             super(screen, pX, pY, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID);
-            tile = screen.getMenu().tile;
+            tile = screen.getMenu().entity;
             this.side = side;
 
             tooltip = Tooltip
@@ -70,11 +67,11 @@ public final class IOControl {
         }
 
         @Override
-        public void renderButton(MatrixStack matrix, int mX, int mY, float partial) {
-            Minecraft.getInstance().getTextureManager().bind(texture);
-            blit(matrix, x, y, 0, 0, BUTTON_SIZE, BUTTON_SIZE, getTextureWidth(), height);
+        public void renderButton(PoseStack stack, int mX, int mY, float partial) {
+            RenderSystem.setShaderTexture(0, texture);
+            blit(stack, x, y, 0, 0, BUTTON_SIZE, BUTTON_SIZE, getTextureWidth(), height);
             blit(
-                matrix,
+                stack,
                 x + 1,
                 y + 1,
                 BUTTON_SIZE + INNER_SIZE * (float) tile.sideConfig.get(side).ordinal(),
@@ -103,19 +100,19 @@ public final class IOControl {
         }
 
         @Override
-        public void playDownSound(SoundHandler handler) {
+        public void playDownSound(SoundManager manager) {
             if (side == BLOCK_SIDE.FRONT && !Screen.hasShiftDown()) return;
-            super.playDownSound(handler);
+            super.playDownSound(manager);
         }
 
         @Override
-        public void renderToolTip(MatrixStack matrix, int mX, int mY) {
-            screen.renderComponentTooltip(matrix, tooltip.build(), mX, mY);
+        public void renderToolTip(PoseStack stack, int mX, int mY) {
+            screen.renderComponentTooltip(stack, tooltip.build(), mX, mY);
         }
 
         private void changeMode() {
-            SideConfiguration config = tile.sideConfig;
-            IO_SETTING setting = config.get(side);
+            var config = tile.sideConfig;
+            var setting = config.get(side);
 
             if (Screen.hasShiftDown()) {
                 if (side == BLOCK_SIDE.FRONT) {
@@ -125,22 +122,12 @@ public final class IOControl {
                 setting = IO_SETTING.OFF;
             } else {
                 if (side == BLOCK_SIDE.FRONT) return;
-                switch (setting) {
-                    case INPUT:
-                        setting = IO_SETTING.OUTPUT;
-                        break;
-                    case OUTPUT:
-                        setting = IO_SETTING.IO;
-                        break;
-                    case IO:
-                        setting = IO_SETTING.OFF;
-                        break;
-                    case OFF:
-                        setting = IO_SETTING.INPUT;
-                        break;
-                    default:
-                        throw new IllegalStateException(f("Unexpected value: {}", setting));
-                }
+                setting = switch (setting) {
+                    case INPUT -> IO_SETTING.OUTPUT;
+                    case OUTPUT -> IO_SETTING.IO;
+                    case IO -> IO_SETTING.OFF;
+                    case OFF -> IO_SETTING.INPUT;
+                };
             }
 
             config.set(side, setting);

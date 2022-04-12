@@ -6,7 +6,7 @@ import com.almostreliable.lazierae2.gui.MachineScreen;
 import com.almostreliable.lazierae2.network.AutoExtractPacket;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.function.BooleanSupplier;
 
@@ -25,8 +25,8 @@ public class AutoExtractButton extends ToggleButton {
     }
 
     @Override
-    public void renderToolTip(MatrixStack matrix, int mX, int mY) {
-        screen.renderComponentTooltip(matrix, tooltip.build(), mX, mY);
+    public void renderToolTip(PoseStack stack, int mX, int mY) {
+        screen.renderComponentTooltip(stack, tooltip.build(), mX, mY);
     }
 
     @Override

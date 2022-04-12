@@ -3,7 +3,7 @@
   "process_time": 100,
   "energy_cost": 1000,
   "output": {
-    "item": "appliedenergistics2:logic_processor"
+    "item": "ae2:logic_processor"
   },
   "input": [
     {

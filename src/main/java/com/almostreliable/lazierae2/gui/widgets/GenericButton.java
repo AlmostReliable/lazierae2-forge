@@ -2,11 +2,11 @@ package com.almostreliable.lazierae2.gui.widgets;
 
 import com.almostreliable.lazierae2.gui.MachineScreen;
 import com.almostreliable.lazierae2.util.TextUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
@@ -23,7 +23,7 @@ public abstract class GenericButton extends Button {
             screen.getGuiTop() + pY,
             width,
             height,
-            StringTextComponent.EMPTY,
+            TextComponent.EMPTY,
             button -> ((GenericButton) button).clickHandler()
         );
         this.screen = screen;
@@ -32,10 +32,10 @@ public abstract class GenericButton extends Button {
 
     @Override
     public void renderButton(
-        MatrixStack matrix, int mX, int mY, float partial
+        PoseStack stack, int mX, int mY, float partial
     ) {
-        Minecraft.getInstance().getTextureManager().bind(texture);
-        blit(matrix, x, y, 0, 0, width, height, getTextureWidth(), getTextureHeight());
+        RenderSystem.setShaderTexture(0, texture);
+        blit(stack, x, y, 0, 0, width, height, getTextureWidth(), getTextureHeight());
     }
 
     protected abstract void clickHandler();

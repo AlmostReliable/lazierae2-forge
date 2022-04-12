@@ -1,5 +1,5 @@
 {
-  "type": "appliedenergistics2:grinder",
+  "type": "ae2:grinder",
   "input": {
     "item": "minecraft:coal"
   },

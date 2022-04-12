@@ -1,9 +1,10 @@
 package com.almostreliable.lazierae2.compat.jei;
 
 import com.almostreliable.lazierae2.machine.MachineContainer;
+import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.Slot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * Default implementation taken from JEIs
  * BasicRecipeTransferInfo.
  */
-public class MachineRecipeInfo implements IRecipeTransferInfo<MachineContainer> {
+public class MachineRecipeInfo implements IRecipeTransferInfo<MachineContainer, MachineRecipe> {
 
     private final ResourceLocation recipeCategoryUid;
     private final int recipeSlotStart;
@@ -37,30 +38,35 @@ public class MachineRecipeInfo implements IRecipeTransferInfo<MachineContainer> 
     }
 
     @Override
+    public Class<MachineRecipe> getRecipeClass() {
+        return MachineRecipe.class;
+    }
+
+    @Override
     public ResourceLocation getRecipeCategoryUid() {
         return recipeCategoryUid;
     }
 
     @Override
-    public boolean canHandle(MachineContainer container) {
-        return container.tile.getMachineType().getId().equals(recipeCategoryUid.getPath());
+    public boolean canHandle(MachineContainer container, MachineRecipe recipe) {
+        return container.entity.getMachineType().getId().equals(recipeCategoryUid.getPath());
     }
 
     @Override
-    public List<Slot> getRecipeSlots(MachineContainer container) {
+    public List<Slot> getRecipeSlots(MachineContainer container, MachineRecipe recipe) {
         List<Slot> slots = new ArrayList<>();
-        for (int i = recipeSlotStart; i < recipeSlotStart + recipeSlotCount; i++) {
-            Slot slot = container.getSlot(i);
+        for (var i = recipeSlotStart; i < recipeSlotStart + recipeSlotCount; i++) {
+            var slot = container.getSlot(i);
             slots.add(slot);
         }
         return slots;
     }
 
     @Override
-    public List<Slot> getInventorySlots(MachineContainer container) {
+    public List<Slot> getInventorySlots(MachineContainer container, MachineRecipe recipe) {
         List<Slot> slots = new ArrayList<>();
-        for (int i = inventorySlotStart; i < inventorySlotStart + inventorySlotCount; i++) {
-            Slot slot = container.getSlot(i);
+        for (var i = inventorySlotStart; i < inventorySlotStart + inventorySlotCount; i++) {
+            var slot = container.getSlot(i);
             slots.add(slot);
         }
         return slots;

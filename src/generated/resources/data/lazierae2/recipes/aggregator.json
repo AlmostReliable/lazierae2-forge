@@ -7,10 +7,10 @@
   ],
   "key": {
     "f": {
-      "item": "appliedenergistics2:fluix_pearl"
+      "item": "ae2:fluix_pearl"
     },
     "m": {
-      "item": "appliedenergistics2:molecular_assembler"
+      "item": "ae2:molecular_assembler"
     },
     "o": {
       "item": "minecraft:observer"
@@ -19,10 +19,10 @@
       "item": "lazierae2:logic_unit"
     },
     "l": {
-      "item": "appliedenergistics2:logic_processor"
+      "item": "ae2:logic_processor"
     },
     "c": {
-      "item": "appliedenergistics2:condenser"
+      "item": "ae2:condenser"
     }
   },
   "result": {

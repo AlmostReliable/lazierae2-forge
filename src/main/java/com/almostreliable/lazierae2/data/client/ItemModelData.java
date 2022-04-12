@@ -3,8 +3,8 @@ package com.almostreliable.lazierae2.data.client;
 import com.almostreliable.lazierae2.core.Setup.Items;
 import com.almostreliable.lazierae2.machine.MachineType;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -57,7 +57,7 @@ public class ItemModelData extends ItemModelProvider {
      * @param id the id of the item and the parent block to get the data from
      */
     private void existingParent(String id) {
-        ResourceLocation parentLocation = new ResourceLocation(MOD_ID, f("block/{}", id));
+        var parentLocation = new ResourceLocation(MOD_ID, f("block/{}", id));
         withExistingParent(id, parentLocation);
     }
 
@@ -67,7 +67,7 @@ public class ItemModelData extends ItemModelProvider {
      * @param item the item to create the data for
      */
     private void builder(Supplier<? extends Item> item) {
-        String name = Objects.requireNonNull(item.get().getRegistryName()).getPath();
+        var name = Objects.requireNonNull(item.get().getRegistryName()).getPath();
         ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
         getBuilder(name).parent(itemGenerated).texture("layer0", f("item/{}", name));
     }

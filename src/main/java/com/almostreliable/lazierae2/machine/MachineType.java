@@ -7,10 +7,10 @@ import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
 import com.almostreliable.lazierae2.recipe.type.TripleInputRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.util.Lazy;
 
 import java.util.function.BiFunction;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 import static com.almostreliable.lazierae2.core.Constants.*;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public enum MachineType implements IRecipeType<MachineRecipe> {
+public enum MachineType implements RecipeType<MachineRecipe> {
 
     AGGREGATOR(
         AGGREGATOR_ID,
@@ -56,13 +56,13 @@ public enum MachineType implements IRecipeType<MachineRecipe> {
     private final Lazy<MachineConfig> machineConfig;
     private final Supplier<? extends Supplier<MachineBlock>> itemProvider;
     private final BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory;
-    private final Supplier<? extends Supplier<IRecipeSerializer<MachineRecipe>>> recipeSerializer;
+    private final Supplier<? extends Supplier<RecipeSerializer<MachineRecipe>>> recipeSerializer;
 
     MachineType(
         String id, int inputSlots, Supplier<MachineConfig> machineConfig,
         Supplier<? extends Supplier<MachineBlock>> itemProvider,
         BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory,
-        Supplier<? extends Supplier<IRecipeSerializer<MachineRecipe>>> recipeSerializer
+        Supplier<? extends Supplier<RecipeSerializer<MachineRecipe>>> recipeSerializer
     ) {
         this.id = id;
         this.inputSlots = inputSlots;
@@ -70,7 +70,7 @@ public enum MachineType implements IRecipeType<MachineRecipe> {
         this.itemProvider = itemProvider;
         this.recipeFactory = recipeFactory;
         this.recipeSerializer = recipeSerializer;
-        IRecipeType.register(f("{}:{}", MOD_ID, id));
+        RecipeType.register(f("{}:{}", MOD_ID, id));
     }
 
     @Override
@@ -78,7 +78,7 @@ public enum MachineType implements IRecipeType<MachineRecipe> {
         return id;
     }
 
-    public IItemProvider getItemProvider() {
+    public ItemLike getItemProvider() {
         return itemProvider.get().get();
     }
 
@@ -110,7 +110,7 @@ public enum MachineType implements IRecipeType<MachineRecipe> {
         return recipeFactory;
     }
 
-    public Supplier<IRecipeSerializer<MachineRecipe>> getRecipeSerializer() {
+    public Supplier<RecipeSerializer<MachineRecipe>> getRecipeSerializer() {
         return recipeSerializer.get();
     }
 

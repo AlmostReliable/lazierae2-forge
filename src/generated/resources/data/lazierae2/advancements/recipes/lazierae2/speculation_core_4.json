@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "lazierae2:speculation_core_2"
+            "items": [
+              "lazierae2:speculation_core_2"
+            ]
           }
         ]
       }

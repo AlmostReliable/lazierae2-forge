@@ -26,9 +26,9 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
-modId="appliedenergistics2"
+modId="ae2"
 mandatory=true
-versionRange="${appeng_version_range}"
+versionRange="${ae2_version_range}"
 ordering="AFTER"
 side="BOTH"
 

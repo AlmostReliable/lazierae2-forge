@@ -1,11 +1,10 @@
 package com.almostreliable.lazierae2.component;
 
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import com.almostreliable.lazierae2.machine.MachineEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
@@ -14,46 +13,48 @@ public class InventoryHandler extends ItemStackHandler {
     public static final int NON_INPUT_SLOTS = 2;
     public static final int UPGRADE_SLOT = 0;
     public static final int OUTPUT_SLOT = 1;
-    private final TileEntity tile;
-    private IInventory vanillaInventory;
+    private final MachineEntity entity;
+    private Container vanillaInventory;
     private boolean changed;
 
-    public InventoryHandler(TileEntity tile, int inputSlots) {
-        super(inputSlots + NON_INPUT_SLOTS);
-        this.tile = tile;
+    public InventoryHandler(MachineEntity entity) {
+        super(entity.getMachineType().getInputSlots() + NON_INPUT_SLOTS);
+        this.entity = entity;
     }
 
     public void dropContents() {
-        if (tile.getLevel() == null) return;
-        BlockPos pos = tile.getBlockPos();
-        for (int i = OUTPUT_SLOT; i < getSlots(); i++) {
-            ItemStack stack = getStackInSlot(i);
+        if (entity.getLevel() == null) return;
+        var pos = entity.getBlockPos();
+        for (var i = OUTPUT_SLOT; i < getSlots(); i++) {
+            var stack = getStackInSlot(i);
             if (stack.isEmpty()) continue;
-            tile.getLevel().addFreshEntity(new ItemEntity(tile.getLevel(), pos.getX(), pos.getY(), pos.getZ(), stack));
+            entity
+                .getLevel()
+                .addFreshEntity(new ItemEntity(entity.getLevel(), pos.getX(), pos.getY(), pos.getZ(), stack));
         }
     }
 
-    public CompoundNBT serializeUpgrades() {
-        return getStackInSlot(UPGRADE_SLOT).save(new CompoundNBT());
+    public CompoundTag serializeUpgrades() {
+        return getStackInSlot(UPGRADE_SLOT).save(new CompoundTag());
     }
 
-    public void deserializeUpgrades(CompoundNBT nbt) {
-        setStackInSlot(UPGRADE_SLOT, ItemStack.of(nbt));
+    public void deserializeUpgrades(CompoundTag tag) {
+        setStackInSlot(UPGRADE_SLOT, ItemStack.of(tag));
     }
 
     public void shrinkInputSlots() {
-        for (int i = NON_INPUT_SLOTS; i < getSlots(); i++) {
+        for (var i = NON_INPUT_SLOTS; i < getSlots(); i++) {
             if (getStackInSlot(i).isEmpty()) continue;
             if (getStackInSlot(i).getCount() == 1) {
                 setStackInSlot(i, ItemStack.EMPTY);
             } else {
                 getStackInSlot(i).shrink(1);
-                tile.setChanged();
+                entity.setChanged();
             }
         }
     }
 
-    public IInventory toVanilla() {
+    public Container toVanilla() {
         if (vanillaInventory == null || changed) {
             vanillaInventory = new RecipeWrapper(this);
             changed = false;
@@ -64,7 +65,7 @@ public class InventoryHandler extends ItemStackHandler {
     @Override
     protected void onContentsChanged(int slot) {
         changed = true;
-        tile.setChanged();
+        entity.setChanged();
     }
 
     public int getInputSlots() {

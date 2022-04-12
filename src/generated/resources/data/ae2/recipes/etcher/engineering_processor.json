@@ -3,11 +3,11 @@
   "process_time": 100,
   "energy_cost": 1000,
   "output": {
-    "item": "appliedenergistics2:calculation_processor"
+    "item": "ae2:engineering_processor"
   },
   "input": [
     {
-      "item": "appliedenergistics2:purified_certus_quartz_crystal"
+      "tag": "forge:gems/diamond"
     },
     {
       "tag": "forge:dusts/redstone"

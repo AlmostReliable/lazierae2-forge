@@ -10,19 +10,19 @@
       "tag": "forge:ingots/fluix_iron"
     },
     "p": {
-      "item": "appliedenergistics2:silicon_press"
+      "item": "ae2:silicon_press"
     },
     "c": {
-      "item": "appliedenergistics2:calculation_processor_press"
+      "item": "ae2:calculation_processor_press"
     },
     "s": {
-      "item": "appliedenergistics2:singularity"
+      "item": "ae2:singularity"
     },
     "l": {
-      "item": "appliedenergistics2:logic_processor_press"
+      "item": "ae2:logic_processor_press"
     },
     "e": {
-      "item": "appliedenergistics2:engineering_processor_press"
+      "item": "ae2:engineering_processor_press"
     }
   },
   "result": {

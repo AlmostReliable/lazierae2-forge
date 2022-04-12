@@ -3,7 +3,7 @@
   "process_time": 80,
   "energy_cost": 800,
   "output": {
-    "item": "appliedenergistics2:ender_dust"
+    "item": "ae2:ender_dust"
   },
   "input": [
     {

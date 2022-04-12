@@ -3,20 +3,20 @@ package com.almostreliable.lazierae2.recipe.type;
 import com.almostreliable.lazierae2.machine.MachineType;
 import com.almostreliable.lazierae2.util.RecipeUtil;
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-public abstract class MachineRecipe implements IRecipe<IInventory> {
+public abstract class MachineRecipe implements Recipe<Container> {
 
     private final MachineType machineType;
     private final ResourceLocation id;
@@ -33,7 +33,7 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public ItemStack assemble(IInventory inv) {
+    public ItemStack assemble(Container inv) {
         return output.copy();
     }
 
@@ -58,12 +58,12 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getSerializer() {
         return machineType.getRecipeSerializer().get();
     }
 
     @Override
-    public IRecipeType<?> getType() {
+    public RecipeType<?> getType() {
         return machineType;
     }
 
@@ -91,7 +91,7 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
         this.output = output;
     }
 
-    public static class MachineRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<MachineRecipe> {
+    public static class MachineRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<MachineRecipe> {
 
         private final MachineType machineType;
 
@@ -101,19 +101,19 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
 
         @Override
         public MachineRecipe fromJson(ResourceLocation id, JsonObject json) {
-            MachineRecipe recipe = machineType.getRecipeFactory().apply(id, machineType);
+            var recipe = machineType.getRecipeFactory().apply(id, machineType);
             return RecipeUtil.fromJSON(json, recipe);
         }
 
         @Nullable
         @Override
-        public MachineRecipe fromNetwork(ResourceLocation id, PacketBuffer buffer) {
-            MachineRecipe recipe = machineType.getRecipeFactory().apply(id, machineType);
+        public MachineRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+            var recipe = machineType.getRecipeFactory().apply(id, machineType);
             return RecipeUtil.fromNetwork(buffer, recipe);
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, MachineRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buffer, MachineRecipe recipe) {
             RecipeUtil.toNetwork(buffer, recipe);
         }
     }

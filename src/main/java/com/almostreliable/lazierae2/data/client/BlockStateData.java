@@ -2,13 +2,11 @@ package com.almostreliable.lazierae2.data.client;
 
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.machine.MachineBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -44,17 +42,13 @@ public class BlockStateData extends BlockStateProvider {
      * @param block the machine block to register
      */
     private void registerMachine(MachineBlock block) {
-        String id = block.getId();
-        ResourceLocation sideTexture = new ResourceLocation(MOD_ID, "block/machine");
-        ResourceLocation inactiveTexture = new ResourceLocation(MOD_ID, f("block/{}", id));
-        ResourceLocation activeTexture = new ResourceLocation(MOD_ID, f("block/{}_active", id));
+        var id = block.getId();
+        var sideTexture = new ResourceLocation(MOD_ID, "block/machine");
+        var inactiveTexture = new ResourceLocation(MOD_ID, f("block/{}", id));
+        var activeTexture = new ResourceLocation(MOD_ID, f("block/{}_active", id));
 
-        BlockModelBuilder modelInactive = models().orientable(id, sideTexture, inactiveTexture, sideTexture);
-        BlockModelBuilder modelActive = models().orientable(f("{}_active", id),
-            sideTexture,
-            activeTexture,
-            sideTexture
-        );
+        var modelInactive = models().orientable(id, sideTexture, inactiveTexture, sideTexture);
+        var modelActive = models().orientable(f("{}_active", id), sideTexture, activeTexture, sideTexture);
 
         orientedBlock(block,
             state -> state.getValue(MachineBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive
@@ -71,7 +65,7 @@ public class BlockStateData extends BlockStateProvider {
         Block block, Function<? super BlockState, ? extends ModelFile> modelFunction
     ) {
         getVariantBuilder(block).forAllStates(state -> {
-            Direction facing = state.getValue(MachineBlock.FACING);
+            var facing = state.getValue(MachineBlock.FACING);
 
             return ConfiguredModel
                 .builder()

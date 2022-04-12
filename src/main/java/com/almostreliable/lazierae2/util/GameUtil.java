@@ -1,11 +1,11 @@
 package com.almostreliable.lazierae2.util;
 
-import appeng.core.Api;
+import appeng.core.definitions.AEItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 
@@ -14,11 +14,11 @@ public final class GameUtil {
     private GameUtil() {}
 
     public static boolean isValidUpgrade(ItemStack stack) {
-        return stack.getItem().equals(Api.instance().definitions().materials().cardSpeed().item());
+        return stack.getItem().equals(AEItems.SPEED_CARD.asItem());
     }
 
-    public static RecipeManager getRecipeManager(@Nullable World world) {
-        if (world != null && world.getServer() != null) return world.getServer().getRecipeManager();
+    public static RecipeManager getRecipeManager(@Nullable Level level) {
+        if (level != null && level.getServer() != null) return level.getServer().getRecipeManager();
         if (ServerLifecycleHooks.getCurrentServer() != null) {
             return ServerLifecycleHooks.getCurrentServer().getRecipeManager();
         }

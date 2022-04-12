@@ -1,5 +1,5 @@
 {
-  "type": "appliedenergistics2:inscriber",
+  "type": "ae2:inscriber",
   "mode": "inscribe",
   "result": {
     "item": "lazierae2:parallel_printed"

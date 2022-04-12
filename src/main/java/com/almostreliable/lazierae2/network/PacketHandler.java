@@ -1,10 +1,10 @@
 package com.almostreliable.lazierae2.network;
 
 import com.almostreliable.lazierae2.util.TextUtil;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 import static com.almostreliable.lazierae2.core.Constants.NETWORK_ID;
 
@@ -22,7 +22,7 @@ public final class PacketHandler {
 
     @SuppressWarnings("ValueOfIncrementOrDecrementUsed")
     public static void init() {
-        int id = -1;
+        var id = -1;
 
         CHANNEL
             .messageBuilder(AutoExtractPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)

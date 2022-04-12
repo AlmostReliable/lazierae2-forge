@@ -3,30 +3,29 @@ package com.almostreliable.lazierae2.core;
 import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import com.almostreliable.lazierae2.machine.MachineBlock;
 import com.almostreliable.lazierae2.machine.MachineContainer;
-import com.almostreliable.lazierae2.machine.MachineTile;
+import com.almostreliable.lazierae2.machine.MachineEntity;
 import com.almostreliable.lazierae2.machine.MachineType;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe.MachineRecipeSerializer;
-import net.minecraft.block.Block;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.Item.Properties;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.tileentity.TileEntityType.Builder;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Function;
 
@@ -41,21 +40,21 @@ public final class Setup {
     public static void init(IEventBus modEventBus) {
         Blocks.REGISTRY.register(modEventBus);
         Items.REGISTRY.register(modEventBus);
-        Tiles.REGISTRY.register(modEventBus);
+        BlockEntities.REGISTRY.register(modEventBus);
         Containers.REGISTRY.register(modEventBus);
         Serializers.REGISTRY.register(modEventBus);
     }
 
-    public static final class Tiles {
+    public static final class BlockEntities {
 
-        private static final DeferredRegister<TileEntityType<?>> REGISTRY
-            = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MOD_ID);
+        private static final DeferredRegister<BlockEntityType<?>> REGISTRY
+            = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
 
-        private Tiles() {}
+        private BlockEntities() {}
 
         @SuppressWarnings("ConstantConditions")
-        public static final RegistryObject<TileEntityType<MachineTile>> MACHINE = REGISTRY.register(MACHINE_ID,
-            () -> Builder.of(MachineTile::new,
+        public static final RegistryObject<BlockEntityType<MachineEntity>> MACHINE = REGISTRY.register(MACHINE_ID,
+            () -> Builder.of(MachineEntity::new,
                 Blocks.AGGREGATOR.get(),
                 Blocks.CENTRIFUGE.get(),
                 Blocks.ENERGIZER.get(),
@@ -66,20 +65,22 @@ public final class Setup {
 
     public static final class Containers {
 
-        private static final DeferredRegister<ContainerType<?>> REGISTRY
+        private static final DeferredRegister<MenuType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
-        public static final RegistryObject<ContainerType<MachineContainer>> MACHINE = REGISTRY.register(MACHINE_ID,
-            () -> IForgeContainerType.create((containerID, inventory, data) -> {
-                TileEntity tile = inventory.player.level.getBlockEntity(data.readBlockPos());
-                if (!(tile instanceof MachineTile)) throw new IllegalStateException("Tile is not a LazierAE2 machine!");
-                return new MachineContainer(containerID, (MachineTile) tile, inventory);
+        public static final RegistryObject<MenuType<MachineContainer>> MACHINE = REGISTRY.register(MACHINE_ID,
+            () -> IForgeMenuType.create((containerID, inventory, data) -> {
+                var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
+                if (!(entity instanceof MachineEntity)) {
+                    throw new IllegalStateException("Tile is not a LazierAE2 machine!");
+                }
+                return new MachineContainer(containerID, (MachineEntity) entity, inventory);
             })
         );
 
         private Containers() {}
     }
 
-    private static final class Tab extends ItemGroup {
+    private static final class Tab extends CreativeModeTab {
 
         private Tab(String label) {
             super(label);
@@ -150,41 +151,41 @@ public final class Setup {
         private Tags() {}
 
         public static final class Items {
-            public static final INamedTag<Item> DUSTS_COAL = forge("dusts/coal");
-            public static final INamedTag<Item> DUSTS_CARBONIC_FLUIX = forge("dusts/carbonic_fluix");
-            public static final INamedTag<Item> GEMS_RESONATING = forge("gems/resonating");
-            public static final INamedTag<Item> INGOTS_FLUIX_IRON = forge("ingots/fluix_iron");
-            public static final INamedTag<Item> INGOTS_FLUIX_STEEL = forge("ingots/fluix_steel");
+            public static final TagKey<Item> DUSTS_COAL = forge("dusts/coal");
+            public static final TagKey<Item> DUSTS_CARBONIC_FLUIX = forge("dusts/carbonic_fluix");
+            public static final TagKey<Item> GEMS_RESONATING = forge("gems/resonating");
+            public static final TagKey<Item> INGOTS_FLUIX_IRON = forge("ingots/fluix_iron");
+            public static final TagKey<Item> INGOTS_FLUIX_STEEL = forge("ingots/fluix_steel");
 
-            public static final INamedTag<Item> PROCESSOR_PARALLEL = mod("processors/parallel");
-            public static final INamedTag<Item> PROCESSOR_SPEC = mod("processors/speculative");
+            public static final TagKey<Item> PROCESSOR_PARALLEL = mod("processors/parallel");
+            public static final TagKey<Item> PROCESSOR_SPEC = mod("processors/speculative");
 
             // Applied Energistics 2
-            public static final INamedTag<Item> SILICON = ItemTags.bind("forge:silicon");
+            public static final TagKey<Item> SILICON = forge("silicon");
 
             private Items() {}
 
-            private static INamedTag<Item> forge(String path) {
-                return ItemTags.bind(new ResourceLocation("forge", path).toString());
+            private static TagKey<Item> forge(String path) {
+                return ItemTags.create(new ResourceLocation("forge", path));
             }
 
-            private static INamedTag<Item> mod(String path) {
-                return ItemTags.bind(new ResourceLocation(MOD_ID, path).toString());
+            private static TagKey<Item> mod(String path) {
+                return ItemTags.create(new ResourceLocation(MOD_ID, path));
             }
         }
 
         public static final class Blocks {
 
             private static final String MACHINE_ENTRY = "machines/";
-            public static final INamedTag<Block> AGGREGATOR = mod(MACHINE_ENTRY + MachineType.AGGREGATOR.getId());
-            public static final INamedTag<Block> CENTRIFUGE = mod(MACHINE_ENTRY + MachineType.CENTRIFUGE.getId());
-            public static final INamedTag<Block> ENERGIZER = mod(MACHINE_ENTRY + MachineType.ENERGIZER.getId());
-            public static final INamedTag<Block> ETCHER = mod(MACHINE_ENTRY + MachineType.ETCHER.getId());
+            public static final TagKey<Block> AGGREGATOR = mod(MACHINE_ENTRY + MachineType.AGGREGATOR.getId());
+            public static final TagKey<Block> CENTRIFUGE = mod(MACHINE_ENTRY + MachineType.CENTRIFUGE.getId());
+            public static final TagKey<Block> ENERGIZER = mod(MACHINE_ENTRY + MachineType.ENERGIZER.getId());
+            public static final TagKey<Block> ETCHER = mod(MACHINE_ENTRY + MachineType.ETCHER.getId());
 
             private Blocks() {}
 
-            private static INamedTag<Block> mod(String path) {
-                return BlockTags.bind(new ResourceLocation(MOD_ID, path).toString());
+            private static TagKey<Block> mod(String path) {
+                return BlockTags.create(new ResourceLocation(MOD_ID, path));
             }
         }
     }
@@ -195,21 +196,21 @@ public final class Setup {
 
         public static final class Serializers {
 
-            private static final DeferredRegister<IRecipeSerializer<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS,
+            private static final DeferredRegister<RecipeSerializer<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS,
                 MOD_ID
             );
 
-            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> AGGREGATOR
+            public static final RegistryObject<RecipeSerializer<MachineRecipe>> AGGREGATOR
                 = register(MachineType.AGGREGATOR);
-            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> CENTRIFUGE
+            public static final RegistryObject<RecipeSerializer<MachineRecipe>> CENTRIFUGE
                 = register(MachineType.CENTRIFUGE);
-            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> ENERGIZER
+            public static final RegistryObject<RecipeSerializer<MachineRecipe>> ENERGIZER
                 = register(MachineType.ENERGIZER);
-            public static final RegistryObject<IRecipeSerializer<MachineRecipe>> ETCHER = register(MachineType.ETCHER);
+            public static final RegistryObject<RecipeSerializer<MachineRecipe>> ETCHER = register(MachineType.ETCHER);
 
             private Serializers() {}
 
-            private static RegistryObject<IRecipeSerializer<MachineRecipe>> register(
+            private static RegistryObject<RecipeSerializer<MachineRecipe>> register(
                 MachineType machineType
             ) {
                 return REGISTRY.register(machineType.getId(), () -> new MachineRecipeSerializer(machineType));

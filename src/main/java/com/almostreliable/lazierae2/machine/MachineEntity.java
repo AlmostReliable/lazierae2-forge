@@ -3,26 +3,26 @@ package com.almostreliable.lazierae2.machine;
 import com.almostreliable.lazierae2.component.EnergyHandler;
 import com.almostreliable.lazierae2.component.InventoryHandler;
 import com.almostreliable.lazierae2.component.SideConfiguration;
-import com.almostreliable.lazierae2.core.Setup.Tiles;
+import com.almostreliable.lazierae2.core.Setup.BlockEntities;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.almostreliable.lazierae2.core.Constants.*;
 
-public class MachineTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider {
+public class MachineEntity extends BlockEntity implements MenuProvider {
 
     public final SideConfiguration sideConfig;
     private final InventoryHandler inventory;
@@ -57,73 +57,93 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private MachineRecipe lastRecipe;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    MachineTile(int inputSlots, int energyBuffer) {
-        super(Tiles.MACHINE.get());
-        inventory = new InventoryHandler(this, inputSlots);
+    public MachineEntity(BlockPos pos, BlockState state) {
+        super(BlockEntities.MACHINE.get(), pos, state);
+        inventory = new InventoryHandler(this);
         inventoryCap = LazyOptional.of(() -> inventory);
-        energy = new EnergyHandler(this, energyBuffer);
+        energy = new EnergyHandler(this);
         energyCap = LazyOptional.of(() -> energy);
         sideConfig = new SideConfiguration(this);
     }
 
-    /*
-     * Constructor called from the registry.
-     * It will call the main constructor with placeholder values.
-     * The actual values will then be handled by the load-method
-     * since we have no way of accessing block information from here.
-     */
-    public MachineTile() {
-        this(0, 0);
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains(INVENTORY_ID)) inventory.deserializeNBT(tag.getCompound(INVENTORY_ID));
+        if (tag.contains(ENERGY_ID)) energy.deserializeNBT(tag.getCompound(ENERGY_ID));
+        if (tag.contains(SIDE_CONFIG_ID)) sideConfig.deserializeNBT(tag.getCompound(SIDE_CONFIG_ID));
+        if (tag.contains(AUTO_EXTRACT_ID)) autoExtract = tag.getBoolean(AUTO_EXTRACT_ID);
+        if (tag.contains(PROGRESS_ID)) progress = tag.getInt(PROGRESS_ID);
+        if (tag.contains(PROCESS_TIME_ID)) processTime = tag.getInt(PROCESS_TIME_ID);
+        if (tag.contains(RECIPE_TIME_ID)) recipeTime = tag.getInt(RECIPE_TIME_ID);
+        if (tag.contains(ENERGY_COST_ID)) energyCost = tag.getInt(ENERGY_COST_ID);
+        if (tag.contains(RECIPE_ENERGY_ID)) recipeEnergy = tag.getInt(RECIPE_ENERGY_ID);
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt) {
-        super.load(state, nbt);
-        if (nbt.contains(INVENTORY_ID)) inventory.deserializeNBT(nbt.getCompound(INVENTORY_ID));
-        if (nbt.contains(ENERGY_ID)) energy.deserializeNBT(nbt.getCompound(ENERGY_ID));
-        if (nbt.contains(SIDE_CONFIG_ID)) sideConfig.deserializeNBT(nbt.getCompound(SIDE_CONFIG_ID));
-        if (nbt.contains(AUTO_EXTRACT_ID)) autoExtract = nbt.getBoolean(AUTO_EXTRACT_ID);
-        if (nbt.contains(PROGRESS_ID)) progress = nbt.getInt(PROGRESS_ID);
-        if (nbt.contains(PROCESS_TIME_ID)) processTime = nbt.getInt(PROCESS_TIME_ID);
-        if (nbt.contains(RECIPE_TIME_ID)) recipeTime = nbt.getInt(RECIPE_TIME_ID);
-        if (nbt.contains(ENERGY_COST_ID)) energyCost = nbt.getInt(ENERGY_COST_ID);
-        if (nbt.contains(RECIPE_ENERGY_ID)) recipeEnergy = nbt.getInt(RECIPE_ENERGY_ID);
+    public void saveAdditional(CompoundTag tag) {
+        tag.put(INVENTORY_ID, inventory.serializeNBT());
+        tag.put(ENERGY_ID, energy.serializeNBT());
+        tag.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
+        tag.putBoolean(AUTO_EXTRACT_ID, autoExtract);
+        tag.putInt(PROGRESS_ID, progress);
+        tag.putInt(PROCESS_TIME_ID, processTime);
+        tag.putInt(RECIPE_TIME_ID, recipeTime);
+        tag.putInt(ENERGY_COST_ID, energyCost);
+        tag.putInt(RECIPE_ENERGY_ID, recipeEnergy);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT nbt) {
-        nbt.put(INVENTORY_ID, inventory.serializeNBT());
-        nbt.put(ENERGY_ID, energy.serializeNBT());
-        nbt.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
-        nbt.putBoolean(AUTO_EXTRACT_ID, autoExtract);
-        nbt.putInt(PROGRESS_ID, progress);
-        nbt.putInt(PROCESS_TIME_ID, processTime);
-        nbt.putInt(RECIPE_TIME_ID, recipeTime);
-        nbt.putInt(ENERGY_COST_ID, energyCost);
-        nbt.putInt(RECIPE_ENERGY_ID, recipeEnergy);
-        return super.save(nbt);
-    }
-
-    @Override
-    public CompoundNBT getUpdateTag() {
-        return save(super.getUpdateTag());
+    public CompoundTag getUpdateTag() {
+        var tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
     }
 
     @Nullable
     @Override
-    public Container createMenu(
-        int menuID, PlayerInventory playerInventory, PlayerEntity player
+    public AbstractContainerMenu createMenu(
+        int menuID, Inventory inventory, Player player
     ) {
-        return new MachineContainer(menuID, this, playerInventory);
+        return new MachineContainer(menuID, this, inventory);
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT nbt) {
-        load(state, nbt);
+    public void handleUpdateTag(CompoundTag tag) {
+        load(tag);
+    }
+
+    public void recalculateEnergyCapacity() {
+        if (level == null || level.isClientSide) return;
+        var baseBuffer = getMachineType().getBaseEnergyBuffer();
+        var upgradeBuffer = getMachineType().getEnergyBufferAdd();
+        var newCapacity = baseBuffer + upgradeBuffer * inventory.getUpgradeCount();
+        if (newCapacity != energy.getMaxEnergyStored()) energy.setCapacity(newCapacity);
     }
 
     @Override
-    public void tick() {
+    public void invalidateCaps() {
+        super.invalidateCaps();
+        inventoryCap.invalidate();
+        energyCap.invalidate();
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(
+        @Nonnull Capability<T> cap, @Nullable Direction direction
+    ) {
+        if (!remove) {
+            if (cap.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
+                if (direction == null || sideConfig.get(direction) != IO_SETTING.OFF) return inventoryCap.cast();
+            } else if (cap.equals(CapabilityEnergy.ENERGY)) {
+                return energyCap.cast();
+            }
+        }
+        return super.getCapability(cap, direction);
+    }
+
+    void tick() {
         if (level == null || level.isClientSide) return;
         if (autoExtract && level.getGameTime() % 10 == 0) autoExtract();
         energy.validateEnergy();
@@ -151,46 +171,16 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         }
     }
 
-    public void recalculateEnergyCapacity() {
-        if (level == null || level.isClientSide) return;
-        int baseBuffer = getMachineType().getBaseEnergyBuffer();
-        int upgradeBuffer = getMachineType().getEnergyBufferAdd();
-        int newCapacity = baseBuffer + upgradeBuffer * inventory.getUpgradeCount();
-        if (newCapacity != energy.getMaxEnergyStored()) energy.setCapacity(newCapacity);
-    }
-
-    @Override
-    protected void invalidateCaps() {
-        super.invalidateCaps();
-        inventoryCap.invalidate();
-        energyCap.invalidate();
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(
-        @Nonnull Capability<T> cap, @Nullable Direction direction
-    ) {
-        if (!remove) {
-            if (cap.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
-                if (direction == null || sideConfig.get(direction) != IO_SETTING.OFF) return inventoryCap.cast();
-            } else if (cap.equals(CapabilityEnergy.ENERGY)) {
-                return energyCap.cast();
-            }
-        }
-        return super.getCapability(cap, direction);
-    }
-
     void playerDestroy() {
         assert level != null;
         inventory.dropContents();
-        CompoundNBT nbt = new CompoundNBT();
-        if (inventory.getUpgradeCount() > 0) nbt.put(UPGRADES_ID, inventory.serializeUpgrades());
-        if (energy.getEnergyStored() > 0) nbt.put(ENERGY_ID, energy.serializeNBT());
-        if (sideConfig.hasChanged()) nbt.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
-        if (autoExtract) nbt.putBoolean(AUTO_EXTRACT_ID, true);
-        ItemStack stack = new ItemStack(getMachineType().getItemProvider());
-        if (!nbt.isEmpty()) stack.setTag(nbt);
+        var tag = new CompoundTag();
+        if (inventory.getUpgradeCount() > 0) tag.put(UPGRADES_ID, inventory.serializeUpgrades());
+        if (energy.getEnergyStored() > 0) tag.put(ENERGY_ID, energy.serializeNBT());
+        if (sideConfig.hasChanged()) tag.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
+        if (autoExtract) tag.putBoolean(AUTO_EXTRACT_ID, true);
+        var stack = new ItemStack(getMachineType().getItemProvider());
+        if (!tag.isEmpty()) stack.setTag(tag);
         level.addFreshEntity(new ItemEntity(level,
             worldPosition.getX() + 0.5,
             worldPosition.getY() + 0.5,
@@ -200,12 +190,12 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     void playerPlace(ItemStack stack) {
-        CompoundNBT nbt = stack.getTag();
-        if (nbt == null) return;
-        if (nbt.contains(UPGRADES_ID)) inventory.deserializeUpgrades(nbt.getCompound(UPGRADES_ID));
-        if (nbt.contains(ENERGY_ID)) energy.deserializeNBT(nbt.getCompound(ENERGY_ID));
-        if (nbt.contains(SIDE_CONFIG_ID)) sideConfig.deserializeNBT(nbt.getCompound(SIDE_CONFIG_ID));
-        if (nbt.contains(AUTO_EXTRACT_ID)) autoExtract = nbt.getBoolean(AUTO_EXTRACT_ID);
+        var tag = stack.getTag();
+        if (tag == null) return;
+        if (tag.contains(UPGRADES_ID)) inventory.deserializeUpgrades(tag.getCompound(UPGRADES_ID));
+        if (tag.contains(ENERGY_ID)) energy.deserializeNBT(tag.getCompound(ENERGY_ID));
+        if (tag.contains(SIDE_CONFIG_ID)) sideConfig.deserializeNBT(tag.getCompound(SIDE_CONFIG_ID));
+        if (tag.contains(AUTO_EXTRACT_ID)) autoExtract = tag.getBoolean(AUTO_EXTRACT_ID);
     }
 
     private void doWork(MachineRecipe recipe, int energyCost) {
@@ -219,7 +209,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         }
     }
 
-    private void finishWork(IRecipe<? super IInventory> recipe) {
+    private void finishWork(Recipe<? super Container> recipe) {
         if (inventory.getStackInOutput().isEmpty()) {
             inventory.setStackInOutput(recipe.assemble(inventory.toVanilla()));
         } else {
@@ -238,30 +228,30 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     private int calculateEnergyCost(MachineRecipe recipe) {
-        int baseCost = recipe.getEnergyCost();
-        double multiplier = calculateMultiplier(getMachineType().getEnergyCostMultiplier());
+        var baseCost = recipe.getEnergyCost();
+        var multiplier = calculateMultiplier(getMachineType().getEnergyCostMultiplier());
         return (int) (baseCost * multiplier);
     }
 
     private int calculateProcessTime(MachineRecipe recipe) {
-        int baseTime = recipe.getProcessTime();
-        double multiplier = calculateMultiplier(getMachineType().getProcessTimeMultiplier());
+        var baseTime = recipe.getProcessTime();
+        var multiplier = calculateMultiplier(getMachineType().getProcessTimeMultiplier());
         return (int) (baseTime * multiplier);
     }
 
     private double calculateMultiplier(double upgradeMultiplier) {
-        int upgradeCount = inventory.getUpgradeCount();
+        var upgradeCount = inventory.getUpgradeCount();
         return Math.pow(upgradeMultiplier, upgradeCount);
     }
 
-    private boolean canWork(IRecipe<IInventory> recipe, int energyCost) {
+    private boolean canWork(Recipe<Container> recipe, int energyCost) {
         if (energyCost / processTime > energy.getEnergyStored()) return false;
 
-        ItemStack output = inventory.getStackInOutput();
+        var output = inventory.getStackInOutput();
         if (output.isEmpty()) return true;
 
-        ItemStack finished = recipe.getResultItem();
-        int mergeCount = output.getCount() + finished.getCount();
+        var finished = recipe.getResultItem();
+        var mergeCount = output.getCount() + finished.getCount();
         return output.sameItem(finished) && mergeCount <= finished.getMaxStackSize() &&
             mergeCount <= inventory.getSlotLimit(InventoryHandler.OUTPUT_SLOT);
     }
@@ -271,19 +261,19 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
         if (inventory.getStackInOutput().isEmpty()) return;
 
-        EnumMap<Direction, TileEntity> possibleOutputs = new EnumMap<>(Direction.class);
+        var possibleOutputs = new EnumMap<Direction, BlockEntity>(Direction.class);
         sideConfig.forEachOutput(direction -> possibleOutputs.put(direction,
             level.getBlockEntity(worldPosition.relative(direction, 1))
         ));
 
-        for (Entry<Direction, TileEntity> entry : possibleOutputs.entrySet()) {
-            LazyOptional<IItemHandler> target = getOrUpdateOutputCache(entry);
+        for (var entry : possibleOutputs.entrySet()) {
+            var target = getOrUpdateOutputCache(entry);
             if (target == null) continue;
 
-            AtomicBoolean outputEmpty = new AtomicBoolean(false);
+            var outputEmpty = new AtomicBoolean(false);
             target.ifPresent(targetInv -> {
-                ItemStack stack = inventory.getStackInOutput();
-                ItemStack remainder = ItemHandlerHelper.insertItem(targetInv, stack, false);
+                var stack = inventory.getStackInOutput();
+                var remainder = ItemHandlerHelper.insertItem(targetInv, stack, false);
 
                 if (remainder.getCount() != stack.getCount() || !remainder.sameItem(stack)) {
                     inventory.setStackInOutput(remainder);
@@ -296,8 +286,8 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     @Nullable
-    private LazyOptional<IItemHandler> getOrUpdateOutputCache(Entry<Direction, ? extends TileEntity> entry) {
-        LazyOptional<IItemHandler> target = outputsCache.get(entry.getKey());
+    private LazyOptional<IItemHandler> getOrUpdateOutputCache(Entry<Direction, ? extends BlockEntity> entry) {
+        var target = outputsCache.get(entry.getKey());
 
         if (target == null) {
             ICapabilityProvider provider = entry.getValue();
@@ -313,7 +303,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     private void changeActivityState(boolean state) {
         if (level == null || level.isClientSide) return;
-        BlockState oldState = level.getBlockState(worldPosition);
+        var oldState = level.getBlockState(worldPosition);
         if (!oldState.getValue(MachineBlock.ACTIVE).equals(state)) {
             level.setBlockAndUpdate(worldPosition, oldState.setValue(MachineBlock.ACTIVE, state));
         }
@@ -349,7 +339,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     }
 
     @Override
-    public ITextComponent getDisplayName() {
+    public Component getDisplayName() {
         return TextUtil.translate(TRANSLATE_TYPE.BLOCK, getMachineType().getId());
     }
 

@@ -7,13 +7,13 @@ import com.almostreliable.lazierae2.inventory.OutputSlot;
 import com.almostreliable.lazierae2.inventory.UpgradeSlot;
 import com.almostreliable.lazierae2.util.DataSlotUtil;
 import com.almostreliable.lazierae2.util.GameUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.IntReferenceHolder;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -27,34 +27,34 @@ import java.util.stream.IntStream;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public class MachineContainer extends Container {
+public class MachineContainer extends AbstractContainerMenu {
 
     private static final int PLAYER_INV_SIZE = 36;
-    public final MachineTile tile;
+    public final MachineEntity entity;
     private InventoryHandler inventory;
 
-    public MachineContainer(int id, MachineTile tile, PlayerInventory playerInventory) {
+    public MachineContainer(int id, MachineEntity entity, Inventory inventory) {
         super(Containers.MACHINE.get(), id);
-        this.tile = tile;
-        tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
-            inventory = (InventoryHandler) inv;
+        this.entity = entity;
+        entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
+            this.inventory = (InventoryHandler) inv;
             setupContainerInv();
         });
-        setupPlayerInventory(new InvWrapper(playerInventory));
+        setupPlayerInventory(new InvWrapper(inventory));
         syncData();
     }
 
     @SuppressWarnings("java:S3776")
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int index) {
-        // this should be refactored, but I'm too lazy to do that for 1.16
-        ItemStack stack = ItemStack.EMPTY;
-        Slot slot = slots.get(index);
+    public ItemStack quickMoveStack(Player player, int index) {
+        // TODO: this should be refactored, but I'm too lazy to do that for 1.16
+        var stack = ItemStack.EMPTY;
+        var slot = slots.get(index);
 
         // check if the slot exists and has an item inside
-        if (slot == null || !slot.hasItem()) return stack;
+        if (!slot.hasItem()) return stack;
 
-        ItemStack slotStack = slot.getItem();
+        var slotStack = slot.getItem();
         stack = slotStack.copy();
 
         // decide where to put the item
@@ -68,7 +68,7 @@ public class MachineContainer extends Container {
             if (!moveItemStackTo(slotStack, 0, 1, false)) return ItemStack.EMPTY;
         } else {
             // transfer item from inventory to machine input slots
-            Slot inputSlot = inputsContainItem(stack);
+            var inputSlot = inputsContainItem(stack);
             if (slotStack.isStackable() && inputSlot != null && (inputSlot.getItem().getCount() <
                 Math.min(inputSlot.getMaxStackSize(), inputSlot.getItem().getMaxStackSize()))) {
                 // merge item stack if one input slot has the same item already
@@ -94,12 +94,12 @@ public class MachineContainer extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
-        return tile.getLevel() != null &&
-            Container.stillValid(IWorldPosCallable.create(tile.getLevel(), tile.getBlockPos()),
-                player,
-                tile.getBlockState().getBlock()
-            );
+    public boolean stillValid(Player player) {
+        return entity.getLevel() != null && AbstractContainerMenu.stillValid(
+            ContainerLevelAccess.create(entity.getLevel(), entity.getBlockPos()),
+            player,
+            entity.getBlockState().getBlock()
+        );
     }
 
     public boolean hasUpgrades() {
@@ -107,25 +107,25 @@ public class MachineContainer extends Container {
     }
 
     private void syncData() {
-        addDataSlot(DataSlotUtil.forBoolean(tile, tile::isAutoExtracting, tile::setAutoExtract));
-        addDataSlot(DataSlotUtil.forInteger(tile, tile::getProgress, tile::setProgress));
-        addDataSlot(DataSlotUtil.forInteger(tile, tile::getProcessTime, tile::setProcessTime));
-        addDataSlot(DataSlotUtil.forInteger(tile, tile::getRecipeTime, tile::setRecipeTime));
-        addDataSlot(DataSlotUtil.forInteger(tile, tile::getEnergyCost, tile::setEnergyCost));
-        addDataSlot(DataSlotUtil.forInteger(tile, tile::getRecipeEnergy, tile::setRecipeEnergy));
-        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(tile, this::getEnergyStored, this::setEnergyStored));
-        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(tile, this::getEnergyCapacity, this::setEnergyCapacity));
-        addDataSlots(tile.sideConfig.toIIntArray());
+        addDataSlot(DataSlotUtil.forBoolean(entity, entity::isAutoExtracting, entity::setAutoExtract));
+        addDataSlot(DataSlotUtil.forInteger(entity, entity::getProgress, entity::setProgress));
+        addDataSlot(DataSlotUtil.forInteger(entity, entity::getProcessTime, entity::setProcessTime));
+        addDataSlot(DataSlotUtil.forInteger(entity, entity::getRecipeTime, entity::setRecipeTime));
+        addDataSlot(DataSlotUtil.forInteger(entity, entity::getEnergyCost, entity::setEnergyCost));
+        addDataSlot(DataSlotUtil.forInteger(entity, entity::getRecipeEnergy, entity::setRecipeEnergy));
+        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(entity, this::getEnergyStored, this::setEnergyStored));
+        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(entity, this::getEnergyCapacity, this::setEnergyCapacity));
+        addDataSlots(entity.sideConfig.toContainerData());
     }
 
-    private void addMultipleDataSlots(IntReferenceHolder... holders) {
-        for (IntReferenceHolder holder : holders) {
+    private void addMultipleDataSlots(DataSlot... holders) {
+        for (var holder : holders) {
             addDataSlot(holder);
         }
     }
 
     private void setupContainerInv() {
-        int inputSlots = inventory.getInputSlots();
+        var inputSlots = inventory.getInputSlots();
         addSlot(new UpgradeSlot(this, inventory, InventoryHandler.UPGRADE_SLOT, 8, 50));
         addSlot(new OutputSlot(inventory, InventoryHandler.OUTPUT_SLOT, 116, 29));
         if (inputSlots == 1) {
@@ -141,13 +141,13 @@ public class MachineContainer extends Container {
 
     private void setupPlayerInventory(IItemHandler inventory) {
         // main inventory
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
+        for (var i = 0; i < 3; i++) {
+            for (var j = 0; j < 9; j++) {
                 addSlot(new SlotItemHandler(inventory, j + i * 9 + 9, 8 + j * 18, 72 + i * 18));
             }
         }
         // hot bar
-        for (int i = 0; i < 9; i++) {
+        for (var i = 0; i < 9; i++) {
             addSlot(new SlotItemHandler(inventory, i, 8 + i * 18, 130));
         }
     }
@@ -163,7 +163,7 @@ public class MachineContainer extends Container {
         return IntStream
             .range(InventoryHandler.NON_INPUT_SLOTS, inventory.getInputSlots() + InventoryHandler.NON_INPUT_SLOTS)
             .mapToObj(slots::get)
-            .filter(slot -> Container.consideredTheSameItem(slot.getItem(), stack))
+            .filter(slot -> ItemStack.isSameItemSameTags(slot.getItem(), stack))
             .findFirst()
             .orElse(null);
     }
@@ -177,10 +177,10 @@ public class MachineContainer extends Container {
      * @param slot  the slot to merge the item stack to
      */
     private void mergeItemStackTo(ItemStack stack, Slot slot) {
-        ItemStack slotStack = slot.getItem();
+        var slotStack = slot.getItem();
 
-        int mergedAmount = slotStack.getCount() + stack.getCount();
-        int maxSize = Math.min(slot.getMaxStackSize(), stack.getMaxStackSize());
+        var mergedAmount = slotStack.getCount() + stack.getCount();
+        var maxSize = Math.min(slot.getMaxStackSize(), stack.getMaxStackSize());
         if (mergedAmount <= maxSize) {
             stack.setCount(0);
             slotStack.setCount(mergedAmount);
@@ -213,6 +213,6 @@ public class MachineContainer extends Container {
     }
 
     private LazyOptional<IEnergyStorage> getEnergyCap() {
-        return tile.getCapability(CapabilityEnergy.ENERGY);
+        return entity.getCapability(CapabilityEnergy.ENERGY);
     }
 }

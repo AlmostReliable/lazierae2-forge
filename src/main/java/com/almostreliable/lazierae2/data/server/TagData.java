@@ -3,9 +3,9 @@ package com.almostreliable.lazierae2.data.server;
 import com.almostreliable.lazierae2.core.Setup;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Items;
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.ItemTagsProvider;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

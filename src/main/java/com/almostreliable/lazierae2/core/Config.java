@@ -6,7 +6,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
-import org.apache.commons.lang3.tuple.Pair;
 
 import static com.almostreliable.lazierae2.core.Constants.*;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
@@ -17,7 +16,7 @@ public final class Config {
     public static final CommonConfig COMMON;
 
     static {
-        Pair<CommonConfig, ForgeConfigSpec> commonPair = new Builder().configure(CommonConfig::new);
+        var commonPair = new Builder().configure(CommonConfig::new);
         COMMON_SPEC = commonPair.getRight();
         COMMON = commonPair.getLeft();
     }

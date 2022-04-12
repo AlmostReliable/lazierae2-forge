@@ -10,16 +10,16 @@
       "tag": "forge:ingots/fluix_steel"
     },
     "c": {
-      "item": "appliedenergistics2:charger"
+      "item": "ae2:charger"
     },
     "q": {
-      "item": "appliedenergistics2:quartz_fiber"
+      "item": "ae2:quartz_fiber"
     },
     "u": {
       "item": "lazierae2:logic_unit"
     },
     "d": {
-      "item": "appliedenergistics2:energy_cell"
+      "item": "ae2:energy_cell"
     }
   },
   "result": {

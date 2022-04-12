@@ -5,14 +5,14 @@ import com.almostreliable.lazierae2.recipe.type.TripleInputRecipe;
 import com.almostreliable.lazierae2.util.GuiUtil;
 import com.almostreliable.lazierae2.util.GuiUtil.ANCHOR;
 import com.almostreliable.lazierae2.util.TextUtil;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import mezz.jei.api.gui.IRecipeLayout;
+import com.mojang.blaze3d.vertex.PoseStack;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.level.ItemLike;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
@@ -21,9 +21,9 @@ public abstract class TripleInputCategory extends MachineCategory<TripleInputRec
     private final IDrawable background;
     private final IDrawable slot;
 
-    TripleInputCategory(IGuiHelper guiHelper, String id, IItemProvider iconProvider) {
+    TripleInputCategory(IGuiHelper guiHelper, String id, ItemLike iconProvider) {
         super(guiHelper, id, iconProvider);
-        ResourceLocation backgroundTexture = MachineScreen.TEXTURE;
+        var backgroundTexture = MachineScreen.TEXTURE;
         background = guiHelper
             .drawableBuilder(backgroundTexture, 42, 6, 92, 62)
             .setTextureSize(MachineScreen.TEXTURE_WIDTH, MachineScreen.TEXTURE_HEIGHT)
@@ -32,18 +32,6 @@ public abstract class TripleInputCategory extends MachineCategory<TripleInputRec
             .drawableBuilder(backgroundTexture, 43, 28, MachineScreen.SLOT_SIZE, MachineScreen.SLOT_SIZE)
             .setTextureSize(MachineScreen.TEXTURE_WIDTH, MachineScreen.TEXTURE_HEIGHT)
             .build();
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, TripleInputRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup menu = recipeLayout.getItemStacks();
-        // output
-        setupSlot(menu, 0, false, 74, 23);
-        // inputs
-        setupSlot(menu, 1, true, 2, 2);
-        setupSlot(menu, 2, true, 2, 23);
-        setupSlot(menu, 3, true, 2, 44);
-        super.setRecipe(recipeLayout, recipe, ingredients);
     }
 
     @Override
@@ -57,18 +45,30 @@ public abstract class TripleInputCategory extends MachineCategory<TripleInputRec
     }
 
     @Override
-    public void draw(TripleInputRecipe recipe, MatrixStack matrix, double mX, double mY) {
+    public void setRecipe(IRecipeLayoutBuilder builder, TripleInputRecipe recipe, IFocusGroup focuses) {
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 23);
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 2);
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 23);
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 44);
+        builder.setShapeless();
+        super.setRecipe(builder, recipe, focuses);
+    }
+
+    @Override
+    public void draw(
+        TripleInputRecipe recipe, IRecipeSlotsView slotsView, PoseStack stack, double mX, double mY
+    ) {
         // additional input slots
-        slot.draw(matrix, 1, 1);
-        slot.draw(matrix, 1, 43);
+        slot.draw(stack, 1, 1);
+        slot.draw(stack, 1, 43);
         // progress
-        progressEmpty.draw(matrix, 36, 17);
-        progress.draw(matrix, 36, 17);
+        progressEmpty.draw(stack, 36, 17);
+        progress.draw(stack, 36, 17);
         // required energy
-        String energy = TextUtil.formatEnergy(recipe.getEnergyCost(), 1, 3, false, true);
-        GuiUtil.renderText(matrix, energy, ANCHOR.TOP_RIGHT, 91, 46, 0.8f, 0x00_0000);
+        var energy = TextUtil.formatEnergy(recipe.getEnergyCost(), 1, 3, false, true);
+        GuiUtil.renderText(stack, energy, ANCHOR.TOP_RIGHT, 91, 46, 0.8f, 0x00_0000);
         // required time
-        String time = f("{} ticks", recipe.getProcessTime());
-        GuiUtil.renderText(matrix, time, ANCHOR.TOP_RIGHT, 91, 54, 0.8f, 0x00_0000);
+        var time = f("{} ticks", recipe.getProcessTime());
+        GuiUtil.renderText(stack, time, ANCHOR.TOP_RIGHT, 91, 54, 0.8f, 0x00_0000);
     }
 }

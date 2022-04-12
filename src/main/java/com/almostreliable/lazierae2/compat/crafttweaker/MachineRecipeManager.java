@@ -1,15 +1,14 @@
 package com.almostreliable.lazierae2.compat.crafttweaker;
 
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
-import com.blamejared.crafttweaker.CraftTweaker;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.openzen.zencode.java.ZenCodeType.Method;
 import org.openzen.zencode.java.ZenCodeType.Name;
 
@@ -18,25 +17,19 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 @SuppressWarnings({"unused", "WeakerAccess"})
 @ZenRegister
 @Name("mods." + MOD_ID + ".MachineRecipeManager")
-public interface MachineRecipeManager extends IRecipeManager {
+public interface MachineRecipeManager extends IRecipeManager<MachineRecipe> {
 
     @Method
     default void addRecipe(
         String name, IItemStack output, int processTime, int energyCost, IItemStack... inputs
     ) {
-        ResourceLocation id = new ResourceLocation(CraftTweaker.MODID, fixRecipeName(name));
-        Ingredient[] ingredients = new Ingredient[inputs.length];
-        for (int i = 0; i < inputs.length; i++) {
+        var id = new ResourceLocation("crafttweaker", fixRecipeName(name));
+        var ingredients = new Ingredient[inputs.length];
+        for (var i = 0; i < inputs.length; i++) {
             ingredients[i] = inputs[i].asVanillaIngredient();
         }
-        MachineRecipe recipe = createRecipe(id,
-            output.getInternal(),
-            output.getAmount(),
-            ingredients,
-            processTime,
-            energyCost
-        );
-        CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, ""));
+        var recipe = createRecipe(id, output.getInternal(), output.getAmount(), ingredients, processTime, energyCost);
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, ""));
     }
 
     MachineRecipe createRecipe(

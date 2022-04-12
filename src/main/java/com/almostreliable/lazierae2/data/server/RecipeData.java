@@ -1,25 +1,22 @@
 package com.almostreliable.lazierae2.data.server;
 
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IMaterials;
-import appeng.api.definitions.IParts;
 import appeng.api.util.AEColor;
-import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 import com.almostreliable.lazierae2.core.Setup;
 import com.almostreliable.lazierae2.recipe.builder.MachineRecipeBuilder;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.*;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.recipes.*;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
 public class RecipeData extends RecipeProvider {
 
-    private static final IBlocks AE_BLOCKS = Api.instance().definitions().blocks();
-    private static final IMaterials AE_MATERIALS = Api.instance().definitions().materials();
-    private static final IParts AE_PARTS = Api.instance().definitions().parts();
     private static final String HAS_CONDITION = "has_item";
 
     public RecipeData(DataGenerator gen) {
@@ -27,7 +24,7 @@ public class RecipeData extends RecipeProvider {
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> c) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> c) {
         shapedBlocks(c);
         shapedItems(c);
         shapelessItems(c);
@@ -38,18 +35,18 @@ public class RecipeData extends RecipeProvider {
         etcherRecipes(c);
     }
 
-    private void shapedBlocks(Consumer<IFinishedRecipe> c) {
+    private void shapedBlocks(Consumer<FinishedRecipe> c) {
         ShapedRecipeBuilder
             .shaped(Setup.Blocks.AGGREGATOR.get())
             .pattern("fmf")
             .pattern("ouo")
             .pattern("lcl")
-            .define('f', AE_MATERIALS.fluixPearl().item())
-            .define('m', AE_BLOCKS.molecularAssembler().item())
+            .define('f', AEItems.FLUIX_PEARL.asItem())
+            .define('m', AEBlocks.MOLECULAR_ASSEMBLER.asItem())
             .define('o', Blocks.OBSERVER)
             .define('u', Setup.Items.LOGIC_UNIT.get())
-            .define('l', AE_MATERIALS.logicProcessor().item())
-            .define('c', AE_BLOCKS.condenser().item())
+            .define('l', AEItems.LOGIC_PROCESSOR.asItem())
+            .define('c', AEBlocks.CONDENSER.asItem())
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
             .save(c);
         ShapedRecipeBuilder
@@ -70,10 +67,10 @@ public class RecipeData extends RecipeProvider {
             .pattern("quq")
             .pattern("fdf")
             .define('f', Setup.Tags.Items.INGOTS_FLUIX_STEEL)
-            .define('c', AE_BLOCKS.charger().item())
-            .define('q', AE_PARTS.quartzFiber().item())
+            .define('c', AEBlocks.CHARGER.asItem())
+            .define('q', AEParts.QUARTZ_FIBER.asItem())
             .define('u', Setup.Items.LOGIC_UNIT.get())
-            .define('d', AE_BLOCKS.energyCell().item())
+            .define('d', AEBlocks.ENERGY_CELL.asItem())
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
             .save(c);
         ShapedRecipeBuilder
@@ -82,7 +79,7 @@ public class RecipeData extends RecipeProvider {
             .pattern("ili")
             .pattern("pup")
             .define('f', Setup.Tags.Items.INGOTS_FLUIX_STEEL)
-            .define('i', AE_BLOCKS.inscriber().item())
+            .define('i', AEBlocks.INSCRIBER.asItem())
             .define('l', Setup.Items.LOGIC_UNIT.get())
             .define('p', Setup.Tags.Items.PROCESSOR_SPEC)
             .define('u', Setup.Items.UNIVERSAL_PRESS.get())
@@ -90,16 +87,16 @@ public class RecipeData extends RecipeProvider {
             .save(c);
     }
 
-    private void shapedItems(Consumer<IFinishedRecipe> c) {
+    private void shapedItems(Consumer<FinishedRecipe> c) {
         ShapedRecipeBuilder
             .shaped(Setup.Items.LOGIC_UNIT.get())
             .pattern("sgs")
             .pattern("dpd")
             .pattern("sgs")
             .define('s', Setup.Tags.Items.INGOTS_FLUIX_STEEL)
-            .define('g', AE_BLOCKS.quartzGlass().item())
+            .define('g', AEBlocks.QUARTZ_GLASS.asItem())
             .define('d', Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
-            .define('p', AE_MATERIALS.engProcessor().item())
+            .define('p', AEItems.ENGINEERING_PROCESSOR.asItem())
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX))
             .save(c);
         ShapedRecipeBuilder
@@ -107,11 +104,11 @@ public class RecipeData extends RecipeProvider {
             .pattern("ama")
             .pattern("aba")
             .pattern("afa")
-            .define('a', AE_BLOCKS.quartzGrowthAccelerator().item())
-            .define('m', AE_BLOCKS.molecularAssembler().item())
+            .define('a', AEBlocks.QUARTZ_GROWTH_ACCELERATOR.asItem())
+            .define('m', AEBlocks.MOLECULAR_ASSEMBLER.asItem())
             .define('b', Items.WATER_BUCKET.asItem())
-            .define('f', AE_PARTS.cableGlass().item(AEColor.TRANSPARENT))
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(AE_BLOCKS.quartzGrowthAccelerator().item()))
+            .define('f', AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT))
+            .unlockedBy(HAS_CONDITION, RecipeProvider.has(AEBlocks.QUARTZ_GROWTH_ACCELERATOR.asItem()))
             .save(c);
         ShapedRecipeBuilder
             .shaped(Setup.Items.UNIVERSAL_PRESS.get())
@@ -119,19 +116,19 @@ public class RecipeData extends RecipeProvider {
             .pattern("csl")
             .pattern("iei")
             .define('i', Setup.Tags.Items.INGOTS_FLUIX_IRON)
-            .define('p', AE_MATERIALS.siliconPress().item())
-            .define('c', AE_MATERIALS.calcProcessorPress().item())
-            .define('s', AE_MATERIALS.singularity().item())
-            .define('l', AE_MATERIALS.logicProcessorPress().item())
-            .define('e', AE_MATERIALS.engProcessorPress().item())
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(AE_MATERIALS.singularity().item()))
+            .define('p', AEItems.SILICON_PRESS.asItem())
+            .define('c', AEItems.CALCULATION_PROCESSOR_PRESS.asItem())
+            .define('s', AEItems.SINGULARITY.asItem())
+            .define('l', AEItems.LOGIC_PROCESSOR_PRESS.asItem())
+            .define('e', AEItems.ENGINEERING_PROCESSOR_PRESS.asItem())
+            .unlockedBy(HAS_CONDITION, RecipeProvider.has(AEItems.SINGULARITY.asItem()))
             .save(c);
     }
 
-    private void shapelessItems(Consumer<IFinishedRecipe> c) {
+    private void shapelessItems(Consumer<FinishedRecipe> c) {
         ShapelessRecipeBuilder
             .shapeless(Setup.Items.CARB_FLUIX_DUST.get())
-            .requires(AE_MATERIALS.fluixDust().item(), 2)
+            .requires(AEItems.FLUIX_DUST.asItem(), 2)
             .requires(Setup.Tags.Items.DUSTS_COAL)
             .requires(Setup.Tags.Items.DUSTS_COAL)
             .requires(Setup.Tags.Items.SILICON)
@@ -151,19 +148,19 @@ public class RecipeData extends RecipeProvider {
             .save(c);
         ShapelessRecipeBuilder
             .shapeless(Setup.Items.SPEC_CORE_8.get())
-            .requires(AE_MATERIALS.logicProcessor().item())
+            .requires(AEItems.LOGIC_PROCESSOR.asItem())
             .requires(Setup.Items.SPEC_CORE_4.get(), 2)
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_4.get()))
             .save(c);
         ShapelessRecipeBuilder
             .shapeless(Setup.Items.SPEC_CORE_16.get())
-            .requires(AE_MATERIALS.calcProcessor().item())
+            .requires(AEItems.CALCULATION_PROCESSOR.asItem())
             .requires(Setup.Items.SPEC_CORE_8.get(), 2)
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_8.get()))
             .save(c);
         ShapelessRecipeBuilder
             .shapeless(Setup.Items.SPEC_CORE_32.get())
-            .requires(AE_MATERIALS.engProcessor().item())
+            .requires(AEItems.ENGINEERING_PROCESSOR.asItem())
             .requires(Setup.Items.SPEC_CORE_16.get(), 2)
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_16.get()))
             .save(c);
@@ -175,18 +172,18 @@ public class RecipeData extends RecipeProvider {
             .save(c);
     }
 
-    private void cookingItems(Consumer<IFinishedRecipe> c) {
-        CookingRecipeBuilder
+    private void cookingItems(Consumer<FinishedRecipe> c) {
+        SimpleCookingRecipeBuilder
             .smelting(Ingredient.of(Setup.Tags.Items.INGOTS_FLUIX_IRON), Setup.Items.FLUIX_STEEL.get(), 0.15F, 120)
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.INGOTS_FLUIX_IRON))
             .save(c);
     }
 
-    private void aggregatorRecipes(Consumer<? super IFinishedRecipe> c) {
+    private void aggregatorRecipes(Consumer<? super FinishedRecipe> c) {
         MachineRecipeBuilder
             .aggregator(Setup.Items.FLUIX_STEEL.get())
             .input(Setup.Tags.Items.DUSTS_COAL)
-            .input(AE_MATERIALS.fluixDust())
+            .input(AEItems.FLUIX_DUST.asItem())
             .input(Tags.Items.INGOTS_IRON)
             .processingTime(80)
             .energyCost(1_500)
@@ -194,31 +191,31 @@ public class RecipeData extends RecipeProvider {
         MachineRecipeBuilder
             .aggregator(Setup.Items.CARB_FLUIX_DUST.get())
             .input(Setup.Tags.Items.DUSTS_COAL)
-            .input(AE_MATERIALS.fluixDust())
+            .input(AEItems.FLUIX_DUST.asItem())
             .input(Setup.Tags.Items.SILICON)
             .processingTime(30)
             .energyCost(300)
             .build(c);
         MachineRecipeBuilder
-            .aggregator(AE_MATERIALS.fluixCrystal(), 2)
+            .aggregator(AEItems.FLUIX_CRYSTAL.asItem(), 2)
             .input(Tags.Items.GEMS_QUARTZ)
             .input(Tags.Items.DUSTS_REDSTONE)
-            .input(AE_MATERIALS.certusQuartzCrystalCharged())
+            .input(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
             .processingTime(25)
             .energyCost(250)
             .build(c);
         MachineRecipeBuilder
             .aggregator(Setup.Items.RESONATING_GEM.get())
-            .input(AE_MATERIALS.skyDust())
+            .input(AEItems.SKY_DUST.asItem())
             .input(Tags.Items.GEMS_DIAMOND)
-            .input(AE_MATERIALS.enderDust())
+            .input(AEItems.ENDER_DUST.asItem())
             .processingTime(120)
             .energyCost(2_000)
             .build(c);
         MachineRecipeBuilder
             .aggregator(Setup.Items.SPEC_CORE_1.get())
-            .input(AE_MATERIALS.skyDust())
-            .input(AE_MATERIALS.matterBall())
+            .input(AEItems.SKY_DUST.asItem())
+            .input(AEItems.MATTER_BALL.asItem())
             .input(Setup.Items.CARB_FLUIX_DUST.get())
             .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
             .processingTime(60)
@@ -226,57 +223,33 @@ public class RecipeData extends RecipeProvider {
             .build(c);
     }
 
-    private void centrifugeRecipes(Consumer<? super IFinishedRecipe> c) {
+    private void centrifugeRecipes(Consumer<? super FinishedRecipe> c) {
         MachineRecipeBuilder
-            .centrifuge(AE_MATERIALS.purifiedCertusQuartzCrystal(), 2)
-            .input(AE_MATERIALS.certusQuartzCrystal())
-            .processingTime(180)
-            .energyCost(2_000)
-            .build(c);
-        MachineRecipeBuilder
-            .centrifuge(AE_MATERIALS.purifiedNetherQuartzCrystal(), 2)
-            .input(Tags.Items.GEMS_QUARTZ)
-            .processingTime(180)
-            .energyCost(2_000)
-            .build(c);
-        MachineRecipeBuilder
-            .centrifuge(AE_MATERIALS.purifiedFluixCrystal(), 2)
-            .input(AE_MATERIALS.fluixCrystal())
-            .processingTime(180)
-            .energyCost(2_000)
-            .build(c);
-        MachineRecipeBuilder
-            .centrifuge(AE_MATERIALS.skyDust())
-            .input(AE_BLOCKS.skyStoneBlock())
+            .centrifuge(AEItems.SKY_DUST.asItem())
+            .input(AEBlocks.SKY_STONE_BLOCK.asItem())
             .processingTime(80)
             .energyCost(800)
             .build(c);
         MachineRecipeBuilder
-            .centrifuge(AE_MATERIALS.enderDust())
+            .centrifuge(AEItems.ENDER_DUST.asItem())
             .input(Tags.Items.ENDER_PEARLS)
             .processingTime(80)
             .energyCost(800)
             .build(c);
-        MachineRecipeBuilder
-            .centrifuge(AE_MATERIALS.flour())
-            .input(Tags.Items.CROPS_WHEAT)
-            .processingTime(30)
-            .energyCost(250)
-            .build(c);
     }
 
-    private void energizerRecipes(Consumer<? super IFinishedRecipe> c) {
+    private void energizerRecipes(Consumer<? super FinishedRecipe> c) {
         MachineRecipeBuilder
-            .energizer(AE_MATERIALS.certusQuartzCrystalCharged())
-            .input(AE_MATERIALS.certusQuartzCrystal())
+            .energizer(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
+            .input(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
             .processingTime(80)
             .energyCost(1_500)
             .build(c);
     }
 
-    private void etcherRecipes(Consumer<? super IFinishedRecipe> c) {
+    private void etcherRecipes(Consumer<? super FinishedRecipe> c) {
         MachineRecipeBuilder
-            .etcher(AE_MATERIALS.logicProcessor().item())
+            .etcher(AEItems.LOGIC_PROCESSOR.asItem())
             .input(Tags.Items.INGOTS_GOLD)
             .input(Tags.Items.DUSTS_REDSTONE)
             .input(Setup.Tags.Items.SILICON)
@@ -284,15 +257,15 @@ public class RecipeData extends RecipeProvider {
             .energyCost(1_000)
             .build(c);
         MachineRecipeBuilder
-            .etcher(AE_MATERIALS.calcProcessor().item())
-            .input(AE_MATERIALS.purifiedCertusQuartzCrystal().item())
+            .etcher(AEItems.CALCULATION_PROCESSOR.asItem())
+            .input(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
             .input(Tags.Items.DUSTS_REDSTONE)
             .input(Setup.Tags.Items.SILICON)
             .processingTime(100)
             .energyCost(1_000)
             .build(c);
         MachineRecipeBuilder
-            .etcher(AE_MATERIALS.engProcessor().item())
+            .etcher(AEItems.ENGINEERING_PROCESSOR.asItem())
             .input(Tags.Items.GEMS_DIAMOND)
             .input(Tags.Items.DUSTS_REDSTONE)
             .input(Setup.Tags.Items.SILICON)
@@ -319,7 +292,7 @@ public class RecipeData extends RecipeProvider {
             .etcher(Setup.Items.FLUIX_IRON.get())
             .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
             .input(Tags.Items.INGOTS_IRON)
-            .input(AE_MATERIALS.skyDust().item())
+            .input(AEItems.SKY_DUST.asItem())
             .processingTime(40)
             .energyCost(200)
             .build(c);

@@ -3,24 +3,24 @@ package com.almostreliable.lazierae2.component;
 import com.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.machine.MachineBlock;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.function.Consumer;
 
-public class SideConfiguration implements INBTSerializable<CompoundNBT> {
+public class SideConfiguration implements INBTSerializable<CompoundTag> {
 
-    private final TileEntity tile;
+    private final BlockEntity entity;
     private final EnumMap<Direction, IO_SETTING> config = new EnumMap<>(Direction.class);
 
-    public SideConfiguration(TileEntity tile) {
-        this.tile = tile;
-        for (Direction direction : Direction.values()) {
+    public SideConfiguration(BlockEntity entity) {
+        this.entity = entity;
+        for (var direction : Direction.values()) {
             config.put(direction, IO_SETTING.OFF);
         }
     }
@@ -35,11 +35,11 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
 
     public void set(BLOCK_SIDE side, IO_SETTING setting) {
         config.put(getDirectionFromSide(side), setting);
-        tile.setChanged();
+        entity.setChanged();
     }
 
     public void reset() {
-        for (Direction direction : Direction.values()) {
+        for (var direction : Direction.values()) {
             config.put(direction, IO_SETTING.OFF);
         }
     }
@@ -49,15 +49,15 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
     }
 
     public void forEachOutput(Consumer<? super Direction> consumer) {
-        for (Direction direction : Direction.values()) {
+        for (var direction : Direction.values()) {
             if (config.get(direction) == IO_SETTING.OUTPUT || config.get(direction) == IO_SETTING.IO) {
                 consumer.accept(direction);
             }
         }
     }
 
-    public IIntArray toIIntArray() {
-        return new IIntArray() {
+    public ContainerData toContainerData() {
+        return new ContainerData() {
             @Override
             public int get(int index) {
                 return config.get(Direction.values()[index]).ordinal();
@@ -66,7 +66,7 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
             @Override
             public void set(int index, int value) {
                 config.put(Direction.values()[index], IO_SETTING.values()[value]);
-                tile.setChanged();
+                entity.setChanged();
             }
 
             @Override
@@ -77,36 +77,30 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
-        for (BLOCK_SIDE side : BLOCK_SIDE.values()) {
+    public CompoundTag serializeNBT() {
+        var nbt = new CompoundTag();
+        for (var side : BLOCK_SIDE.values()) {
             nbt.putInt(side.toString(), get(side).ordinal());
         }
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
-        for (BLOCK_SIDE side : BLOCK_SIDE.values()) {
-            set(side, IO_SETTING.values()[nbt.getInt(side.toString())]);
+    public void deserializeNBT(CompoundTag tag) {
+        for (var side : BLOCK_SIDE.values()) {
+            set(side, IO_SETTING.values()[tag.getInt(side.toString())]);
         }
     }
 
     private Direction getDirectionFromSide(BLOCK_SIDE side) {
-        Direction facing = tile.getBlockState().getValue(MachineBlock.FACING);
-        switch (side) {
-            case TOP:
-                return Direction.UP;
-            case BOTTOM:
-                return Direction.DOWN;
-            case LEFT:
-                return facing.getClockWise();
-            case RIGHT:
-                return facing.getCounterClockWise();
-            case BACK:
-                return facing.getOpposite();
-            default:
-                return facing;
-        }
+        var facing = entity.getBlockState().getValue(MachineBlock.FACING);
+        return switch (side) {
+            case TOP -> Direction.UP;
+            case BOTTOM -> Direction.DOWN;
+            case LEFT -> facing.getClockWise();
+            case RIGHT -> facing.getCounterClockWise();
+            case BACK -> facing.getOpposite();
+            default -> facing;
+        };
     }
 }

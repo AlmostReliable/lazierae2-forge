@@ -10,13 +10,13 @@
       "tag": "forge:ingots/fluix_steel"
     },
     "g": {
-      "item": "appliedenergistics2:quartz_glass"
+      "item": "ae2:quartz_glass"
     },
     "d": {
       "tag": "forge:dusts/carbonic_fluix"
     },
     "p": {
-      "item": "appliedenergistics2:engineering_processor"
+      "item": "ae2:engineering_processor"
     }
   },
   "result": {

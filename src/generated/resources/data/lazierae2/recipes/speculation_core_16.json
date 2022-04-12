@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "appliedenergistics2:calculation_processor"
+      "item": "ae2:calculation_processor"
     },
     {
       "item": "lazierae2:speculation_core_8"

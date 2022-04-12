@@ -2,9 +2,9 @@ package com.almostreliable.lazierae2.recipe.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -12,7 +12,7 @@ import java.util.Objects;
 import static com.almostreliable.lazierae2.core.Constants.*;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public class FinishedMachineRecipe implements IFinishedRecipe {
+public class FinishedMachineRecipe implements FinishedRecipe {
 
     private final MachineRecipeBuilder builder;
     private final ResourceLocation id;
@@ -26,14 +26,14 @@ public class FinishedMachineRecipe implements IFinishedRecipe {
     public void serializeRecipeData(JsonObject json) {
         json.addProperty(RECIPE_PROCESS_TIME, builder.processingTime);
         json.addProperty(RECIPE_ENERGY_COST, builder.energyCost);
-        JsonObject output = new JsonObject();
+        var output = new JsonObject();
         output.addProperty(RECIPE_ITEM, Objects.requireNonNull(
             builder.getOutput().getItem().getRegistryName(),
             () -> f("Output in {}-recipe was not defined!", builder.getMachineId())
         ).toString());
         if (builder.getOutput().getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.getOutput().getCount());
         json.add(RECIPE_OUTPUT, output);
-        JsonArray inputs = new JsonArray();
+        var inputs = new JsonArray();
         builder.inputs.forEach(input -> inputs.add(input.toJson()));
         json.add(RECIPE_INPUT, inputs);
     }
@@ -44,7 +44,7 @@ public class FinishedMachineRecipe implements IFinishedRecipe {
     }
 
     @Override
-    public IRecipeSerializer<?> getType() {
+    public RecipeSerializer<?> getType() {
         return builder.getRecipeType().getRecipeSerializer().get();
     }
 

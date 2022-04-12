@@ -1,11 +1,9 @@
 package com.almostreliable.lazierae2.network;
 
 import com.almostreliable.lazierae2.machine.MachineContainer;
-import com.almostreliable.lazierae2.machine.MachineTile;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkEvent.Context;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -20,29 +18,29 @@ public class AutoExtractPacket {
 
     private AutoExtractPacket() {}
 
-    static AutoExtractPacket decode(PacketBuffer buffer) {
-        AutoExtractPacket packet = new AutoExtractPacket();
+    static AutoExtractPacket decode(FriendlyByteBuf buffer) {
+        var packet = new AutoExtractPacket();
         packet.value = buffer.readBoolean();
         return packet;
     }
 
     static void handle(AutoExtractPacket packet, Supplier<? extends Context> context) {
-        ServerPlayerEntity player = context.get().getSender();
+        var player = context.get().getSender();
         context.get().enqueueWork(() -> handlePacket(packet, player));
         context.get().setPacketHandled(true);
     }
 
-    private static void handlePacket(AutoExtractPacket packet, @Nullable ServerPlayerEntity player) {
+    private static void handlePacket(AutoExtractPacket packet, @Nullable ServerPlayer player) {
         if (player != null && player.containerMenu instanceof MachineContainer) {
-            MachineTile tile = ((MachineContainer) player.containerMenu).tile;
-            World level = tile.getLevel();
+            var tile = ((MachineContainer) player.containerMenu).entity;
+            var level = tile.getLevel();
             if (level == null || !level.isLoaded(tile.getBlockPos())) return;
             tile.setAutoExtract(packet.value);
             tile.setChanged();
         }
     }
 
-    void encode(PacketBuffer buffer) {
+    void encode(FriendlyByteBuf buffer) {
         buffer.writeBoolean(value);
     }
 }

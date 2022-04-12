@@ -1,10 +1,10 @@
 package com.almostreliable.lazierae2.util;
 
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -35,10 +35,10 @@ public final class TextUtil {
      * @return the formatted string
      */
     public static String f(String input, Object... args) {
-        for (Object arg : args) {
+        for (var arg : args) {
             input = PLACEHOLDER.matcher(input).replaceFirst(arg.toString());
         }
-        for (int i = 0; i < args.length; i++) {
+        for (var i = 0; i < args.length; i++) {
             input = input.replace("{" + i + "}", args[i].toString());
         }
         return input;
@@ -75,11 +75,11 @@ public final class TextUtil {
      * @param color an optional color
      * @return the translated phrase
      */
-    public static TranslationTextComponent translate(
-        TRANSLATE_TYPE type, String key, TextFormatting... color
+    public static TranslatableComponent translate(
+        TRANSLATE_TYPE type, String key, ChatFormatting... color
     ) {
-        TranslationTextComponent output = new TranslationTextComponent(getTranslationKey(type, key));
-        return color.length == 0 ? output : (TranslationTextComponent) output.withStyle(color[0]);
+        var output = new TranslatableComponent(getTranslationKey(type, key));
+        return color.length == 0 ? output : (TranslatableComponent) output.withStyle(color[0]);
     }
 
     /**
@@ -96,10 +96,10 @@ public final class TextUtil {
         // extended format
         if (extended) return formatNumber(energy, minPlaces, maxPlaces) + (suffix ? " FE" : "");
         // compact format
-        int numberOfDigits = energy.intValue() == 0 ? 0 :
+        var numberOfDigits = energy.intValue() == 0 ? 0 :
             (int) (1 + Math.floor(Math.log10(Math.abs(energy.doubleValue()))));
-        int base10Exponent = numberOfDigits < 4 ? 0 : 3 * ((numberOfDigits - 1) / 3);
-        double normalized = energy.doubleValue() / Math.pow(10, base10Exponent);
+        var base10Exponent = numberOfDigits < 4 ? 0 : 3 * ((numberOfDigits - 1) / 3);
+        var normalized = energy.doubleValue() / Math.pow(10, base10Exponent);
         return formatNumber(normalized, minPlaces, maxPlaces) + (suffix ? f(" {}FE", UNITS[base10Exponent / 3]) : "");
     }
 
@@ -127,8 +127,8 @@ public final class TextUtil {
      * @param color an optional color
      * @return the colorized string
      */
-    static StringTextComponent colorize(String input, TextFormatting color) {
-        return (StringTextComponent) new StringTextComponent(input).withStyle(color);
+    static TextComponent colorize(String input, ChatFormatting color) {
+        return (TextComponent) new TextComponent(input).withStyle(color);
     }
 
     /**

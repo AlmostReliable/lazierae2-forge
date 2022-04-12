@@ -2,14 +2,14 @@ package com.almostreliable.lazierae2.recipe.builder;
 
 import com.almostreliable.lazierae2.machine.MachineType;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -25,40 +25,40 @@ public final class MachineRecipeBuilder {
     int processingTime;
     int energyCost;
 
-    private MachineRecipeBuilder(MachineType recipeType, IItemProvider output, int outputCount) {
+    private MachineRecipeBuilder(MachineType recipeType, ItemLike output, int outputCount) {
         this.recipeType = recipeType;
         this.output = new ItemStack(output, outputCount);
     }
 
-    public static MachineRecipeBuilder aggregator(IItemProvider output, int outputCount) {
+    public static MachineRecipeBuilder aggregator(ItemLike output, int outputCount) {
         return new MachineRecipeBuilder(MachineType.AGGREGATOR, output, outputCount);
     }
 
-    public static MachineRecipeBuilder aggregator(IItemProvider output) {
+    public static MachineRecipeBuilder aggregator(ItemLike output) {
         return aggregator(output, 1);
     }
 
-    public static MachineRecipeBuilder centrifuge(IItemProvider output, int outputCount) {
+    public static MachineRecipeBuilder centrifuge(ItemLike output, int outputCount) {
         return new MachineRecipeBuilder(MachineType.CENTRIFUGE, output, outputCount);
     }
 
-    public static MachineRecipeBuilder centrifuge(IItemProvider output) {
+    public static MachineRecipeBuilder centrifuge(ItemLike output) {
         return centrifuge(output, 1);
     }
 
-    public static MachineRecipeBuilder energizer(IItemProvider output, int outputCount) {
+    public static MachineRecipeBuilder energizer(ItemLike output, int outputCount) {
         return new MachineRecipeBuilder(MachineType.ENERGIZER, output, outputCount);
     }
 
-    public static MachineRecipeBuilder energizer(IItemProvider output) {
+    public static MachineRecipeBuilder energizer(ItemLike output) {
         return energizer(output, 1);
     }
 
-    public static MachineRecipeBuilder etcher(IItemProvider output, int outputCount) {
+    public static MachineRecipeBuilder etcher(ItemLike output, int outputCount) {
         return new MachineRecipeBuilder(MachineType.ETCHER, output, outputCount);
     }
 
-    public static MachineRecipeBuilder etcher(IItemProvider output) {
+    public static MachineRecipeBuilder etcher(ItemLike output) {
         return etcher(output, 1);
     }
 
@@ -67,18 +67,18 @@ public final class MachineRecipeBuilder {
         return this;
     }
 
-    public MachineRecipeBuilder input(Ingredient[] inputs) {
-        for (Ingredient input : inputs) {
+    public MachineRecipeBuilder input(Ingredient... inputs) {
+        for (var input : inputs) {
             input(input);
         }
         return this;
     }
 
-    public MachineRecipeBuilder input(IItemProvider input) {
+    public MachineRecipeBuilder input(ItemLike input) {
         return input(Ingredient.of(input));
     }
 
-    public MachineRecipeBuilder input(ITag<Item> input) {
+    public MachineRecipeBuilder input(TagKey<Item> input) {
         return input(Ingredient.of(input));
     }
 
@@ -110,11 +110,11 @@ public final class MachineRecipeBuilder {
         return this;
     }
 
-    public void build(Consumer<? super IFinishedRecipe> consumer) {
-        ResourceLocation outputId = output.getItem().getRegistryName();
-        String modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
+    public void build(Consumer<? super FinishedRecipe> consumer) {
+        var outputId = output.getItem().getRegistryName();
+        var modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
             outputId.getNamespace();
-        ResourceLocation recipeId = new ResourceLocation(modID, f("{}/{}", getMachineId(), outputId.getPath()));
+        var recipeId = new ResourceLocation(modID, f("{}/{}", getMachineId(), outputId.getPath()));
         validateProcessingTime();
         validateEnergyCost();
         consumer.accept(new FinishedMachineRecipe(this, recipeId));

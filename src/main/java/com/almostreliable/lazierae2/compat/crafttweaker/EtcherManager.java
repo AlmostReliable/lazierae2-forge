@@ -3,11 +3,11 @@ package com.almostreliable.lazierae2.compat.crafttweaker;
 import com.almostreliable.lazierae2.machine.MachineType;
 import com.almostreliable.lazierae2.recipe.builder.MachineRecipeBuilder;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType.Name;
 
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
@@ -32,7 +32,7 @@ public class EtcherManager implements MachineRecipeManager {
     }
 
     @Override
-    public IRecipeType<MachineRecipe> getRecipeType() {
+    public RecipeType<MachineRecipe> getRecipeType() {
         return MachineType.ETCHER;
     }
 }

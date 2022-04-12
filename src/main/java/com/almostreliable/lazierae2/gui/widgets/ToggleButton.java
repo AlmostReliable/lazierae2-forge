@@ -1,8 +1,8 @@
 package com.almostreliable.lazierae2.gui.widgets;
 
 import com.almostreliable.lazierae2.gui.MachineScreen;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import java.util.function.BooleanSupplier;
 
@@ -19,10 +19,10 @@ public abstract class ToggleButton extends GenericButton {
 
     @Override
     public void renderButton(
-        MatrixStack matrix, int mX, int mY, float partial
+        PoseStack stack, int mX, int mY, float partial
     ) {
-        Minecraft.getInstance().getTextureManager().bind(texture);
-        blit(matrix, x, y, 0, pressed.getAsBoolean() ? height : 0, width, height, width, height * 2);
+        RenderSystem.setShaderTexture(0, texture);
+        blit(stack, x, y, 0, pressed.getAsBoolean() ? height : 0, width, height, width, height * 2);
     }
 
     @Override

@@ -1,5 +1,5 @@
 {
-  "type": "appliedenergistics2:inscriber",
+  "type": "ae2:inscriber",
   "mode": "press",
   "result": {
     "item": "lazierae2:speculative_processor"
@@ -12,7 +12,7 @@
       "tag": "forge:dusts/redstone"
     },
     "bottom": {
-      "item": "appliedenergistics2:printed_silicon"
+      "item": "ae2:printed_silicon"
     }
   }
 }

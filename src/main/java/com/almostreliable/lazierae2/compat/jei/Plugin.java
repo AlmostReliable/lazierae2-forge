@@ -11,11 +11,9 @@ import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 @SuppressWarnings("unused")
 @JeiPlugin
@@ -28,7 +26,7 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration r) {
-        IGuiHelper guiHelper = r.getJeiHelpers().getGuiHelper();
+        var guiHelper = r.getJeiHelpers().getGuiHelper();
         r.addRecipeCategories(new AggregatorCategory(guiHelper));
         r.addRecipeCategories(new CentrifugeCategory(guiHelper));
         r.addRecipeCategories(new EnergizerCategory(guiHelper));
@@ -37,7 +35,7 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration r) {
-        RecipeManager recipeManager = GameUtil.getRecipeManager(null);
+        var recipeManager = GameUtil.getRecipeManager(null);
         r.addRecipes(recipeManager.getAllRecipesFor(MachineType.AGGREGATOR), AggregatorCategory.UID);
         r.addRecipes(recipeManager.getAllRecipesFor(MachineType.CENTRIFUGE), CentrifugeCategory.UID);
         r.addRecipes(recipeManager.getAllRecipesFor(MachineType.ENERGIZER), EnergizerCategory.UID);
