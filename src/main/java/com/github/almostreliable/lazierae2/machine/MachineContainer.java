@@ -44,9 +44,10 @@ public class MachineContainer extends Container {
         syncData();
     }
 
+    @SuppressWarnings("java:S3776")
     @Override
     public ItemStack quickMoveStack(PlayerEntity player, int index) {
-        // TODO: refactor this
+        // this should be refactored, but I'm too lazy to do that for 1.16
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = slots.get(index);
 
