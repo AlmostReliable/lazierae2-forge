@@ -22,22 +22,28 @@ public interface MachineRecipeManager extends IRecipeManager {
 
     @Method
     default void addRecipe(
-        String name, IItemStack output, int amount, IItemStack[] inputs, int processTime, int energyCost
+        String name, IItemStack output, IItemStack[] inputs, int processTime, int energyCost
     ) {
         ResourceLocation id = new ResourceLocation(CraftTweaker.MODID, fixRecipeName(name));
         Ingredient[] ingredients = new Ingredient[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
             ingredients[i] = inputs[i].asVanillaIngredient();
         }
-        MachineRecipe recipe = createRecipe(id, output.getInternal(), amount, ingredients, processTime, energyCost);
+        MachineRecipe recipe = createRecipe(id,
+            output.getInternal(),
+            output.getAmount(),
+            ingredients,
+            processTime,
+            energyCost
+        );
         CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, ""));
     }
 
     @Method
     default void addRecipe(
-        String name, IItemStack output, int amount, IItemStack input, int processTime, int energyCost
+        String name, IItemStack output, IItemStack input, int processTime, int energyCost
     ) {
-        addRecipe(name, output, amount, new IItemStack[]{input}, processTime, energyCost);
+        addRecipe(name, output, new IItemStack[]{input}, processTime, energyCost);
     }
 
     MachineRecipe createRecipe(
