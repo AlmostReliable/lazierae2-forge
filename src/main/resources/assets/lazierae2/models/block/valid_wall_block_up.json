@@ -6,7 +6,7 @@
     "south": "lazierae2:block/valid_wall_block",
     "east": "lazierae2:block/valid_wall_block",
     "west": "lazierae2:block/valid_wall_block",
-    "up": "lazierae2:block/valid_wall_block",
+    "up": "lazierae2:block/valid_wall_block_direction",
     "down": "lazierae2:block/valid_wall_block"
   }
 }

@@ -14,6 +14,14 @@
     "facing=west": {
       "model": "lazierae2:block/controller_block",
       "y": 270
+    },
+    "facing=up": {
+      "model": "lazierae2:block/controller_block",
+      "x": 270
+    },
+    "facing=down": {
+      "model": "lazierae2:block/controller_block",
+      "x": 90
     }
   }
 }
