@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "lazierae2:block/controller_block"
+    },
+    "facing=east": {
+      "model": "lazierae2:block/controller_block",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "lazierae2:block/controller_block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "lazierae2:block/controller_block",
+      "y": 270
+    }
+  }
+}

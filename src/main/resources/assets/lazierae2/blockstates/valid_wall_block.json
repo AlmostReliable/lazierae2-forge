@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "controller_direction=north": {
+      "model": "lazierae2:block/valid_wall_block"
+    },
+    "controller_direction=east": {
+      "model": "lazierae2:block/valid_wall_block",
+      "y": 90
+    },
+    "controller_direction=south": {
+      "model": "lazierae2:block/valid_wall_block",
+      "y": 180
+    },
+    "controller_direction=west": {
+      "model": "lazierae2:block/valid_wall_block",
+      "y": 270
+    },
+    "controller_direction=up": {
+      "model": "lazierae2:block/valid_wall_block",
+      "x": 270
+    },
+    "controller_direction=down": {
+      "model": "lazierae2:block/valid_wall_block",
+      "x": 90
+    }
+  }
+}

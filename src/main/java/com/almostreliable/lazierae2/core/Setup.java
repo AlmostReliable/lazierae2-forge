@@ -5,6 +5,9 @@ import com.almostreliable.lazierae2.machine.MachineBlock;
 import com.almostreliable.lazierae2.machine.MachineContainer;
 import com.almostreliable.lazierae2.machine.MachineEntity;
 import com.almostreliable.lazierae2.machine.MachineType;
+import com.almostreliable.lazierae2.multiblock.ControllerBlock;
+import com.almostreliable.lazierae2.multiblock.ValidWallBlock;
+import com.almostreliable.lazierae2.multiblock.WallBlock;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe.MachineRecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +24,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -105,6 +110,18 @@ public final class Setup {
         public static final RegistryObject<MachineBlock> ENERGIZER = register(MachineBlock::new, MachineType.ENERGIZER);
         public static final RegistryObject<MachineBlock> ETCHER = register(MachineBlock::new, MachineType.ETCHER);
 
+        public static final RegistryObject<ControllerBlock> CONTROLLER_BLOCK = REGISTRY.register("controller_block",
+            () -> new ControllerBlock(BlockBehaviour.Properties.of(Material.STONE))
+        );
+
+        public static final RegistryObject<ValidWallBlock> VALID_WALL_BLOCK = REGISTRY.register("valid_wall_block",
+            () -> new ValidWallBlock(BlockBehaviour.Properties.of(Material.STONE))
+        );
+
+        public static final RegistryObject<WallBlock> WALL_BLOCK = REGISTRY.register("wall_block",
+            () -> new WallBlock(BlockBehaviour.Properties.of(Material.STONE))
+        );
+
         private Blocks() {}
 
         private static <B extends MachineBlock> RegistryObject<B> register(
@@ -138,6 +155,19 @@ public final class Setup {
         public static final RegistryObject<Item> SPEC_PRINTED = register(SPEC_PRINTED_ID);
         public static final RegistryObject<Item> SPEC_PROCESSOR = register(SPEC_PROCESSOR_ID);
         public static final RegistryObject<Item> UNIVERSAL_PRESS = register(UNIVERSAL_PRESS_ID);
+
+        public static final RegistryObject<BlockItem> CONTROLLER_BLOCK = REGISTRY.register("controller_block",
+            () -> new BlockItem(Blocks.CONTROLLER_BLOCK.get(), new Item.Properties().tab(TAB))
+        );
+
+        // TODO remove valid wall block item as it should be not possible to create it by user
+        public static final RegistryObject<BlockItem> VALID_WALL_BLOCK = REGISTRY.register("valid_wall_block",
+            () -> new BlockItem(Blocks.VALID_WALL_BLOCK.get(), new Item.Properties().tab(TAB))
+        );
+
+        public static final RegistryObject<BlockItem> WALL_BLOCK = REGISTRY.register("wall_block",
+            () -> new BlockItem(Blocks.WALL_BLOCK.get(), new Item.Properties().tab(TAB))
+        );
 
         private Items() {}
 
