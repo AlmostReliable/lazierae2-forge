@@ -41,8 +41,8 @@ public abstract class SingleInputCategory extends MachineCategory<SingleInputRec
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, SingleInputRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 7);
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 7);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 7).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 7).addIngredients(recipe.getInputs().get(0));
         super.setRecipe(builder, recipe, focuses);
     }
 

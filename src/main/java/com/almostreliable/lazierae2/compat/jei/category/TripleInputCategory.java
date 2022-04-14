@@ -46,10 +46,10 @@ public abstract class TripleInputCategory extends MachineCategory<TripleInputRec
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, TripleInputRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 23);
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 2);
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 23);
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 44);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 23).addItemStack(recipe.getResultItem());
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 2).addIngredients(recipe.getInputs().get(0));
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 23).addIngredients(recipe.getInputs().get(1));
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 44).addIngredients(recipe.getInputs().get(2));
         builder.setShapeless();
         super.setRecipe(builder, recipe, focuses);
     }
