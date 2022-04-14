@@ -18,11 +18,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.function.Consumer;
 
 public class ControllerBlock extends Block {
     public static int MIN_SIZE = 5;
@@ -74,62 +69,5 @@ public class ControllerBlock extends Block {
 
         player.sendMessage(new TextComponent("Valid multiblock"), player.getUUID());
         return InteractionResult.CONSUME;
-    }
-
-    public Direction[] getIterationDirection(Direction direction) {
-        return switch (direction) {
-            case UP -> new Direction[]{Direction.DOWN, Direction.EAST, Direction.SOUTH};
-            case DOWN -> new Direction[]{Direction.UP, Direction.WEST, Direction.NORTH};
-            default -> new Direction[]{direction.getOpposite(), direction.getOpposite().getClockWise(), Direction.UP};
-        };
-    }
-
-    public LinkedList<BlockPos> findValidRow(
-        Level level, BlockPos blockPos, Direction negativeDirection, Direction positiveDirection
-    ) {
-        LinkedList<BlockPos> frontRow = new LinkedList<>();
-        frontRow.add(blockPos.immutable());
-
-        boolean continueNegative = true;
-        boolean continuePositive = true;
-        do {
-
-            if (continuePositive &&
-                !blockPosIsValid(level, frontRow.getLast().relative(positiveDirection), frontRow::addLast)) {
-                continuePositive = false;
-            }
-
-            if (continueNegative &&
-                !blockPosIsValid(level, frontRow.getFirst().relative(negativeDirection), frontRow::addFirst)) {
-                continueNegative = false;
-            }
-        } while (frontRow.size() <= MAX_SIZE && (continueNegative || continuePositive));
-
-        return frontRow;
-    }
-
-    protected boolean blockPosIsValid(Level level, BlockPos curPos, Consumer<BlockPos> consumer) {
-        BlockState blockState = level.getBlockState(curPos);
-        if (blockState.getBlock() instanceof ValidEdgeBlock) {
-            consumer.accept(curPos);
-            return true;
-        }
-        return false;
-    }
-
-    public Collection<BlockPos> findValidBlockPos(Level level, BlockPos blockPos, Direction direction, int maxSteps) {
-        Set<BlockPos> blockPosSet = new HashSet<>();
-        BlockPos curPos;
-        for (int i = 0; i < maxSteps; i++) {
-            curPos = blockPos.relative(direction);
-            BlockState curBlockState = level.getBlockState(curPos);
-
-            if (!(curBlockState.getBlock() instanceof ValidEdgeBlock)) {
-                return blockPosSet;
-            }
-
-            blockPosSet.add(curPos);
-        }
-        return blockPosSet;
     }
 }
