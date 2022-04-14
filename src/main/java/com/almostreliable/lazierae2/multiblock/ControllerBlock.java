@@ -2,6 +2,7 @@ package com.almostreliable.lazierae2.multiblock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +23,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.IntPredicate;
 
 public class ControllerBlock extends Block {
     public static int MIN_SIZE = 5;
@@ -60,94 +60,19 @@ public class ControllerBlock extends Block {
             return super.use(blockState, level, blockPos, player, hand, hit);
         }
 
-        System.out.println("==== Use ====");
-        // Direction direction = blockState.getValue(FACING);
-        // Direction left = direction.getClockWise();
-        // Direction right = direction.getCounterClockWise();
+        boolean valid = new MultiBlockValidator(MIN_SIZE, MAX_SIZE)
+            .onValidateCenter((l, s, p) -> s.getBlock() == Blocks.AIR)
+            .onValidateEdge((l, s, p) -> s.getBlock() == Blocks.DIAMOND_BLOCK)
+            .onValidateWall((l, s, p) -> s.getBlock() == Blocks.GOLD_BLOCK || p.equals(blockPos))
+            .onValidateCorner((l, s, p) -> s.getBlock() == Blocks.DIAMOND_BLOCK)
+            .validate(level, blockPos, blockState.getValue(FACING));
 
-        Direction direction = blockState.getValue(FACING);
-        Direction[] iterationDirection = getIterationDirection(direction);
-        Direction mDir = iterationDirection[0];
-        Direction rDir = iterationDirection[1];
-        Direction cDir = iterationDirection[2];
-
-        LinkedList<BlockPos> horizontalRow = findValidRow(level, blockPos, rDir.getOpposite(), rDir);
-        LinkedList<BlockPos> verticalRow = findValidRow(level, blockPos, cDir.getOpposite(), cDir);
-
-        System.out.println(horizontalRow);
-        System.out.println(verticalRow);
-
-        BlockPos horizontalToController = horizontalRow.getFirst().subtract(blockPos);
-        BlockPos verticalToController = verticalRow.getFirst().subtract(blockPos);
-        BlockPos startPos = blockPos.offset(horizontalToController.offset(verticalToController));
-        System.out.println("H to C:   " + horizontalToController.toShortString());
-        System.out.println("V to C:   " + verticalToController.toShortString());
-        System.out.println("StartPos: " + startPos.toShortString());
-
-        int size = horizontalRow.size();
-
-        if (size != verticalRow.size() || size < MIN_SIZE) {
+        if (!valid) {
+            player.sendMessage(new TextComponent("Invalid multiblock"), player.getUUID());
             return InteractionResult.FAIL;
         }
 
-        Block wallBlock = Blocks.STONE; //Blocks.GREEN_STAINED_GLASS;
-        Block edgeBlock = Blocks.STONE; //Blocks.RED_STAINED_GLASS;
-        Block centerBlock = Blocks.STONE; //Blocks.BLUE_STAINED_GLASS;
-        Block borderBlock = Blocks.STONE; //Blocks.MAGENTA_STAINED_GLASS;
-
-        IntPredicate isCenter = value -> 0 < value && value < size - 1;
-        IntPredicate isEdge = value -> value == 0 || value == size - 1;
-
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                for (int k = 0; k < size; k++) {
-                    BlockPos position = startPos.relative(mDir, i).relative(rDir, j).relative(cDir, k);
-                    BlockState curState = level.getBlockState(position);
-                    if (!(curState.getBlock() instanceof WallBlock || curState.getBlock() instanceof ControllerBlock)) {
-                        if (position.equals(startPos)) {
-                            level.setBlock(position, Blocks.STONE.defaultBlockState(), 2 | 16);
-                        } else if (isCenter.test(i) && isCenter.test(j) && isCenter.test(k)) {
-                            level.setBlock(position, centerBlock.defaultBlockState(), 2 | 16);
-                        } else if (isEdge.test(i) && isEdge.test(j) && isEdge.test(k)) {
-                            level.setBlock(position, edgeBlock.defaultBlockState(), 2 | 16);
-                        } else if (isEdge.test(i) && isEdge.test(j) || isEdge.test(i) && isEdge.test(k) ||
-                            isEdge.test(j) && isEdge.test(k)) {
-                            level.setBlock(position, borderBlock.defaultBlockState(), 2 | 16);
-                        } else {
-                            level.setBlock(position, wallBlock.defaultBlockState(), 2 | 16);
-                        }
-                    }
-                }
-            }
-        }
-        // for (Integer d : depth) {
-        // for (Integer r : row) {
-        //     for (Integer c : column) {
-        //         BlockPos cur = new BlockPos(startPos.getX(), startPos.getY() + c, startPos.getZ() + r);
-        //         System.out.println(cur.toShortString());
-        //
-        //         BlockState curState = level.getBlockState(cur);
-        //         if (!(curState.getBlock() instanceof WallBlock)) {
-        //             Block toSet = curState.getBlock() == Blocks.STONE ? Blocks.DIORITE : Blocks.STONE; // TODO Debug
-        //             level.setBlock(cur, toSet.defaultBlockState(), 2 | 16);
-        //         }
-        //     }
-        // }
-        // }
-        // BlockPos topRight = horizontalRow.getLast().above(verticalRow.getLast().getY() - blockPos.getY());
-        // BlockPos bottomLeft = horizontalRow.getFirst().below(verticalRow.getFirst().getY() - blockPos.getY());
-        // BlockPos bottomRight = horizontalRow.getLast().below(verticalRow.getFirst().getY() - blockPos.getY());
-
-        // BlockPos.MutableBlockPos cur = bottomLeft.mutable();
-        // for (int depth = 0; depth < size; depth++) {
-        //     for (int column = 0; column < size; column++) {
-        //         for (int row = 0; row < size; row++) {
-        //
-        //         }
-        //     }
-        //     cur = cur.relative(mDir).mutable();
-        // }
-
+        player.sendMessage(new TextComponent("Valid multiblock"), player.getUUID());
         return InteractionResult.CONSUME;
     }
 
@@ -169,11 +94,13 @@ public class ControllerBlock extends Block {
         boolean continuePositive = true;
         do {
 
-            if (continuePositive && !blockPosIsValid(level, frontRow.getLast().relative(positiveDirection), frontRow::addLast)) {
+            if (continuePositive &&
+                !blockPosIsValid(level, frontRow.getLast().relative(positiveDirection), frontRow::addLast)) {
                 continuePositive = false;
             }
 
-            if (continueNegative && !blockPosIsValid(level, frontRow.getFirst().relative(negativeDirection), frontRow::addFirst)) {
+            if (continueNegative &&
+                !blockPosIsValid(level, frontRow.getFirst().relative(negativeDirection), frontRow::addFirst)) {
                 continueNegative = false;
             }
         } while (frontRow.size() <= MAX_SIZE && (continueNegative || continuePositive));
