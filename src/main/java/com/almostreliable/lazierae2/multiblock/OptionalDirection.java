@@ -59,7 +59,7 @@ public enum OptionalDirection implements StringRepresentable {
 
     public void relative(BlockPos.MutableBlockPos blockPos) {
         if (direction != null) {
-            blockPos.set(direction.getNormal());
+            blockPos.move(direction.getNormal());
         }
     }
 

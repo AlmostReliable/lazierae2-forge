@@ -11,7 +11,12 @@ public class ValidEdgeBlock extends AbstractValidBlock {
 
     public ValidEdgeBlock(Properties props) {
         super(props);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(POWERED, true));
+        this.registerDefaultState(this
+            .getStateDefinition()
+            .any()
+            .setValue(CTRL_HORIZONTAL, OptionalDirection.NONE)
+            .setValue(CTRL_VERTICAL, OptionalDirection.NONE)
+            .setValue(POWERED, false));
     }
 
     @Override

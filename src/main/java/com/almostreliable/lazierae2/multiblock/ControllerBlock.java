@@ -75,13 +75,35 @@ public class ControllerBlock extends Block {
         }
 
         for (BlockPos wallPos : walls) {
-            level.setBlock(wallPos, Setup.Blocks.VALID_WALL_BLOCK.get().defaultBlockState(), 2 | 16, 1);
+            OptionalDirection horizontalOffset = getHorizontalOffset(blockPos, wallPos);
+            OptionalDirection verticalOffset = getVerticalOffset(blockPos, wallPos);
+            level.setBlock(wallPos,
+                Setup.Blocks.VALID_WALL_BLOCK
+                    .get()
+                    .defaultBlockState()
+                    .setValue(AbstractValidBlock.CTRL_HORIZONTAL, horizontalOffset)
+                    .setValue(AbstractValidBlock.CTRL_VERTICAL, verticalOffset),
+                2 | 16,
+                1
+            );
         }
 
         for (BlockPos edgePos : edges) {
-            level.setBlock(edgePos, Setup.Blocks.VALID_EDGE_BLOCK.get().defaultBlockState(), 2 | 16, 1);
+            OptionalDirection horizontalOffset = getHorizontalOffset(blockPos, edgePos);
+            OptionalDirection verticalOffset = getVerticalOffset(blockPos, edgePos);
+            level.setBlock(
+                edgePos,
+                Setup.Blocks.VALID_EDGE_BLOCK
+                    .get()
+                    .defaultBlockState()
+                    .setValue(AbstractValidBlock.CTRL_HORIZONTAL, horizontalOffset)
+                    .setValue(AbstractValidBlock.CTRL_VERTICAL, verticalOffset),
+                2 | 16,
+                1
+            );
         }
 
+        level.setBlock(blockPos, blockState.setValue(VALID, true), 3);
         player.sendMessage(new TextComponent("Valid multiblock"), player.getUUID());
         return InteractionResult.CONSUME;
     }
@@ -100,5 +122,33 @@ public class ControllerBlock extends Block {
             return true;
         }
         return false;
+    }
+
+    public OptionalDirection getVerticalOffset(BlockPos centerPos, BlockPos blockPos) {
+        if (centerPos.getY() == blockPos.getY()) {
+            return OptionalDirection.NONE;
+        }
+
+        return centerPos.getY() < blockPos.getY() ? OptionalDirection.DOWN : OptionalDirection.UP;
+    }
+
+    public OptionalDirection getHorizontalOffset(BlockPos centerPos, BlockPos blockPos) {
+        if (centerPos.getX() == blockPos.getX() && centerPos.getZ() == blockPos.getZ()) {
+            return OptionalDirection.NONE;
+        }
+
+        if (centerPos.getZ() > blockPos.getZ()) {
+            return OptionalDirection.SOUTH;
+        }
+
+        if (centerPos.getZ() < blockPos.getZ()) {
+            return OptionalDirection.NORTH;
+        }
+
+        if (centerPos.getX() > blockPos.getX()) {
+            return OptionalDirection.EAST;
+        }
+
+        return OptionalDirection.WEST;
     }
 }

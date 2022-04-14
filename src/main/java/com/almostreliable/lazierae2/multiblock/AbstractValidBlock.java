@@ -1,10 +1,15 @@
 package com.almostreliable.lazierae2.multiblock;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 
@@ -21,16 +26,37 @@ public abstract class AbstractValidBlock extends Block {
             .setValue(CTRL_VERTICAL, OptionalDirection.NONE));
     }
 
+    @Override
+    public InteractionResult use(
+        BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult hit
+    ) {
+        if (level.isClientSide() || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
+            return super.use(blockState, level, blockPos, player, hand, hit);
+        }
+
+        OptionalDirection horizontalDirection = blockState.getValue(CTRL_HORIZONTAL);
+        OptionalDirection verticalDirection = blockState.getValue(CTRL_VERTICAL);
+
+        BlockState foundState = findControllerBlockState(level, blockPos, horizontalDirection, verticalDirection);
+        System.out.println(foundState);
+        if(foundState != null) {
+            player.sendMessage(new TextComponent("Controller found " + foundState),player.getUUID());
+        }
+
+        return InteractionResult.CONSUME;
+    }
+
     @Nullable
     public BlockState findControllerBlockState(
         Level level, BlockPos blockPos, OptionalDirection horizontalDirection, OptionalDirection verticalDirection
     ) {
+        BlockPos.MutableBlockPos mutable = blockPos.mutable();
         for (int i = 0; i < ControllerBlock.MAX_SIZE; i++) {
-            BlockPos.MutableBlockPos mutable = blockPos.mutable();
             horizontalDirection.relative(mutable);
             verticalDirection.relative(mutable);
 
             BlockState relativeBlockState = level.getBlockState(mutable);
+            System.out.println(blockPos + " | " + relativeBlockState);
             if (relativeBlockState.getBlock() instanceof ControllerBlock) {
                 return relativeBlockState;
             }
