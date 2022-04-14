@@ -11,6 +11,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.util.Lazy;
 
 import java.util.function.BiFunction;
@@ -70,7 +71,7 @@ public enum MachineType implements IRecipeType<MachineRecipe> {
         this.itemProvider = itemProvider;
         this.recipeFactory = recipeFactory;
         this.recipeSerializer = recipeSerializer;
-        IRecipeType.register(f("{}:{}", MOD_ID, id));
+        Registry.register(Registry.RECIPE_TYPE, f("{}:{}", MOD_ID, id), this);
     }
 
     @Override
