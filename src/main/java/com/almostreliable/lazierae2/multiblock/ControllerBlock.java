@@ -110,7 +110,7 @@ public class ControllerBlock extends Block {
 
     protected boolean blockPosIsValid(Level level, BlockPos curPos, Consumer<BlockPos> consumer) {
         BlockState blockState = level.getBlockState(curPos);
-        if (blockState.getBlock() instanceof WallBlock) {
+        if (blockState.getBlock() instanceof ValidEdgeBlock) {
             consumer.accept(curPos);
             return true;
         }
@@ -124,7 +124,7 @@ public class ControllerBlock extends Block {
             curPos = blockPos.relative(direction);
             BlockState curBlockState = level.getBlockState(curPos);
 
-            if (!(curBlockState.getBlock() instanceof WallBlock)) {
+            if (!(curBlockState.getBlock() instanceof ValidEdgeBlock)) {
                 return blockPosSet;
             }
 

@@ -6,8 +6,8 @@ import com.almostreliable.lazierae2.machine.MachineContainer;
 import com.almostreliable.lazierae2.machine.MachineEntity;
 import com.almostreliable.lazierae2.machine.MachineType;
 import com.almostreliable.lazierae2.multiblock.ControllerBlock;
+import com.almostreliable.lazierae2.multiblock.ValidEdgeBlock;
 import com.almostreliable.lazierae2.multiblock.ValidWallBlock;
-import com.almostreliable.lazierae2.multiblock.WallBlock;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe.MachineRecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
@@ -118,8 +118,8 @@ public final class Setup {
             () -> new ValidWallBlock(BlockBehaviour.Properties.of(Material.STONE))
         );
 
-        public static final RegistryObject<WallBlock> WALL_BLOCK = REGISTRY.register("wall_block",
-            () -> new WallBlock(BlockBehaviour.Properties.of(Material.STONE))
+        public static final RegistryObject<ValidEdgeBlock> VALID_EDGE_BLOCK = REGISTRY.register("valid_edge_block",
+            () -> new ValidEdgeBlock(BlockBehaviour.Properties.of(Material.STONE))
         );
 
         private Blocks() {}
@@ -165,8 +165,8 @@ public final class Setup {
             () -> new BlockItem(Blocks.VALID_WALL_BLOCK.get(), new Item.Properties().tab(TAB))
         );
 
-        public static final RegistryObject<BlockItem> WALL_BLOCK = REGISTRY.register("wall_block",
-            () -> new BlockItem(Blocks.WALL_BLOCK.get(), new Item.Properties().tab(TAB))
+        public static final RegistryObject<BlockItem> VALID_EDGE_BLOCK = REGISTRY.register("valid_edge_block",
+            () -> new BlockItem(Blocks.VALID_EDGE_BLOCK.get(), new Item.Properties().tab(TAB))
         );
 
         private Items() {}

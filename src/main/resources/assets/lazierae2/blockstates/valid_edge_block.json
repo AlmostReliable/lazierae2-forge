@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "lazierae2:block/valid_edge_block"
+    }
+  }
+}

@@ -1,61 +1,7 @@
 {
   "variants": {
-    "horizontal=none,vertical=none": {
-      "model": "lazierae2:block/valid_wall_block_none"
-    },
-    "horizontal=none,vertical=up": {
-      "model": "lazierae2:block/valid_wall_block_up_none"
-    },
-    "horizontal=none,vertical=down": {
-      "model": "lazierae2:block/valid_wall_block_down_none"
-    },
-
-    "horizontal=north,vertical=up": {
-      "model": "lazierae2:block/valid_wall_block_up"
-    },
-    "horizontal=east,vertical=up": {
-      "model": "lazierae2:block/valid_wall_block_up",
-      "y": 90
-    },
-    "horizontal=south,vertical=up": {
-      "model": "lazierae2:block/valid_wall_block_up",
-      "y": 180
-    },
-    "horizontal=west,vertical=up": {
-      "model": "lazierae2:block/valid_wall_block_up",
-      "y": 270
-    },
-
-    "horizontal=north,vertical=down": {
-      "model": "lazierae2:block/valid_wall_block_down"
-    },
-    "horizontal=east,vertical=down": {
-      "model": "lazierae2:block/valid_wall_block_down",
-      "y": 90
-    },
-    "horizontal=south,vertical=down": {
-      "model": "lazierae2:block/valid_wall_block_down",
-      "y": 180
-    },
-    "horizontal=west,vertical=down": {
-      "model": "lazierae2:block/valid_wall_block_down",
-      "y": 270
-    },
-
-    "horizontal=north,vertical=none": {
+    "": {
       "model": "lazierae2:block/valid_wall_block"
-    },
-    "horizontal=east,vertical=none": {
-      "model": "lazierae2:block/valid_wall_block",
-      "y": 90
-    },
-    "horizontal=south,vertical=none": {
-      "model": "lazierae2:block/valid_wall_block",
-      "y": 180
-    },
-    "horizontal=west,vertical=none": {
-      "model": "lazierae2:block/valid_wall_block",
-      "y": 270
     }
   }
 }

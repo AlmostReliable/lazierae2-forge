@@ -1,12 +1,6 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "particle": "lazierae2:block/valid_wall_block",
-    "north": "lazierae2:block/valid_wall_block_direction",
-    "south": "lazierae2:block/valid_wall_block",
-    "east": "lazierae2:block/valid_wall_block",
-    "west": "lazierae2:block/valid_wall_block",
-    "up": "lazierae2:block/valid_wall_block",
-    "down": "lazierae2:block/valid_wall_block"
+    "all": "lazierae2:block/valid_wall_block"
   }
 }
