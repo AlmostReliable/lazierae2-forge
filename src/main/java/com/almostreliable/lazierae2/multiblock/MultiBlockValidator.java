@@ -51,12 +51,13 @@ public class MultiBlockValidator {
             negativeColumnResult.blockPos()
         );
 
-        System.out.println("Start: " + startPosition);
-
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 for (int k = 0; k < size; k++) {
-                    BlockPos position = startPosition.relative(mDir, i).relative(rDir, j).relative(cDir, k);
+                    int x = startPosition.getX() + (mDir.getStepX() * i) + (rDir.getStepX() * j) + (cDir.getStepX() * k);
+                    int y = startPosition.getY() + (mDir.getStepY() * i) + (rDir.getStepY() * j) + (cDir.getStepY() * k);
+                    int z = startPosition.getZ() + (mDir.getStepZ() * i) + (rDir.getStepZ() * j) + (cDir.getStepZ() * k);
+                    BlockPos position = new BlockPos(x, y, z);
                     if (!handleEachPosition(level, position, i, j, k, size)) {
                         return false;
                     }
