@@ -58,6 +58,7 @@ public class MultiBlockValidator {
                     int y = startPosition.getY() + (mDir.getStepY() * i) + (rDir.getStepY() * j) + (cDir.getStepY() * k);
                     int z = startPosition.getZ() + (mDir.getStepZ() * i) + (rDir.getStepZ() * j) + (cDir.getStepZ() * k);
                     BlockPos position = new BlockPos(x, y, z);
+                    if(position.equals(controllerBlockPos)) continue;
                     if (!handleEachPosition(level, position, i, j, k, size)) {
                         return false;
                     }
