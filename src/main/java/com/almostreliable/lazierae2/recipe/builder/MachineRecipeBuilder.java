@@ -67,7 +67,7 @@ public final class MachineRecipeBuilder {
         return this;
     }
 
-    public MachineRecipeBuilder input(Ingredient[] inputs) {
+    public MachineRecipeBuilder input(Ingredient... inputs) {
         for (Ingredient input : inputs) {
             input(input);
         }
@@ -121,7 +121,14 @@ public final class MachineRecipeBuilder {
     }
 
     public MachineRecipe build(ResourceLocation id) {
-        return recipeType.getRecipeFactory().apply(id, recipeType);
+        validateProcessingTime();
+        validateEnergyCost();
+        MachineRecipe recipe = recipeType.getRecipeFactory().apply(id, recipeType);
+        recipe.setInputs(inputs);
+        recipe.setOutput(output);
+        recipe.setProcessTime(processingTime);
+        recipe.setEnergyCost(energyCost);
+        return recipe;
     }
 
     private void validateProcessingTime() {

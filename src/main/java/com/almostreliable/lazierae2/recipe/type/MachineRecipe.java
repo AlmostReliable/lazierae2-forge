@@ -87,6 +87,10 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
         return inputs;
     }
 
+    public void setInputs(NonNullList<Ingredient> inputs) {
+        this.inputs = inputs;
+    }
+
     public void setOutput(ItemStack output) {
         this.output = output;
     }
