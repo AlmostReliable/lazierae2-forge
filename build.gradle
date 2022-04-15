@@ -111,6 +111,10 @@ repositories {
         url "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
+        name 'BlameJared' // CraftTweaker
+        url 'https://maven.blamejared.com'
+    }
+    maven {
         name 'CurseMaven'
         url 'https://cursemaven.com'
         content {
@@ -123,8 +127,9 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // required dependencies
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     implementation fg.deobf("appeng:appliedenergistics2:${appeng_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crt_version}")
 
     // runtime dependencies
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}") // JEI - in sync with API version
@@ -148,8 +153,9 @@ def replaceProperties = [mod_id                 : mod_id,
                          loader_version_range   : loader_version_range,
                          github_user            : github_user,
                          github_repo            : github_repo,
+                         appeng_version_range   : appeng_version_range,
                          jei_version_range      : jei_version_range,
-                         appeng_version_range   : appeng_version_range]
+                         crt_version_range      : crt_version_range]
 processResources {
     inputs.properties replaceProperties
     replaceProperties.put 'project', project
