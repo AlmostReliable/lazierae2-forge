@@ -39,8 +39,8 @@ public abstract class AbstractValidBlock extends Block {
 
         BlockState foundState = findControllerBlockState(level, blockPos, horizontalDirection, verticalDirection);
         System.out.println(foundState);
-        if(foundState != null) {
-            player.sendMessage(new TextComponent("Controller found " + foundState),player.getUUID());
+        if (foundState != null) {
+            player.sendMessage(new TextComponent("Controller found " + foundState), player.getUUID());
         }
 
         return InteractionResult.CONSUME;
@@ -68,6 +68,43 @@ public abstract class AbstractValidBlock extends Block {
             }
         }
         return null;
+    }
+
+    public BlockState createValidBlockState(BlockPos blockPos, BlockPos lookPos) {
+        OptionalDirection horizontalOffset = getHorizontalOffset(blockPos, lookPos);
+        OptionalDirection verticalOffset = getVerticalOffset(blockPos, lookPos);
+
+        return defaultBlockState()
+            .setValue(AbstractValidBlock.CTRL_HORIZONTAL, horizontalOffset)
+            .setValue(AbstractValidBlock.CTRL_VERTICAL, verticalOffset);
+    }
+
+    protected OptionalDirection getVerticalOffset(BlockPos blockPos, BlockPos lookPos) {
+        if (lookPos.getY() == blockPos.getY()) {
+            return OptionalDirection.NONE;
+        }
+
+        return lookPos.getY() < blockPos.getY() ? OptionalDirection.DOWN : OptionalDirection.UP;
+    }
+
+    protected OptionalDirection getHorizontalOffset(BlockPos blockPos, BlockPos lookPos) {
+        if (lookPos.getX() == blockPos.getX() && lookPos.getZ() == blockPos.getZ()) {
+            return OptionalDirection.NONE;
+        }
+
+        if (lookPos.getZ() > blockPos.getZ()) {
+            return OptionalDirection.SOUTH;
+        }
+
+        if (lookPos.getZ() < blockPos.getZ()) {
+            return OptionalDirection.NORTH;
+        }
+
+        if (lookPos.getX() > blockPos.getX()) {
+            return OptionalDirection.EAST;
+        }
+
+        return OptionalDirection.WEST;
     }
 
     @Override

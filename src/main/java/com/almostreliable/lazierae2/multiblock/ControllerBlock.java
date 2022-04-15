@@ -12,6 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DirectionalBlock;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -21,9 +23,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
 
-public class ControllerBlock extends Block {
+public class ControllerBlock extends Block implements EntityBlock {
     public static int MIN_SIZE = 5;
     public static int MAX_SIZE = 13;
     public static BooleanProperty VALID = BooleanProperty.create("valid");
@@ -59,96 +60,87 @@ public class ControllerBlock extends Block {
             return super.use(blockState, level, blockPos, player, hand, hit);
         }
 
+        if (!(level.getBlockEntity(blockPos) instanceof ControllerBlockEntity blockEntity)) {
+            return InteractionResult.FAIL;
+        }
+
+        MultiBlock.IterateDirections itDirs = MultiBlock.IterateDirections.ofFacing(blockState.getValue(FACING));
+        MultiBlock.Data multiBlockData = MultiBlock.Data.of(blockPos,
+            itDirs,
+            MIN_SIZE,
+            MAX_SIZE,
+            potentialEdge -> isValidForEdge(level.getBlockState(potentialEdge))
+        );
+
+        if (multiBlockData == null) {
+            player.sendMessage(new TextComponent("Could not determine multi block edges or size is incorrect"),
+                player.getUUID()
+            );
+            return InteractionResult.FAIL;
+        }
+
         Set<BlockPos> walls = new HashSet<>();
         Set<BlockPos> edges = new HashSet<>();
+        boolean result = MultiBlock.iterateMultiBlock(multiBlockData, (type, currentPos) -> {
+            if (currentPos.equals(blockPos)) return true;
+            BlockState currentBlockState = level.getBlockState(currentPos);
+            switch (type) {
+                case WALL:
+                    if (isValidForWall(currentBlockState)) {
+                        walls.add(currentPos);
+                        return true;
+                    }
+                case CORNER, EDGE:
+                    if (isValidForEdge(currentBlockState)) {
+                        edges.add(currentPos);
+                        return true;
+                    }
+                    break;
+                case CENTER:
+                    return currentBlockState.getBlock() == Blocks.AIR;
+            }
+            return false;
+        });
 
-        boolean valid = new MultiBlockValidator(MIN_SIZE, MAX_SIZE)
-            .onValidateCenter((l, s, p) -> s.getBlock() == Blocks.AIR)
-            .onValidateEdge((l, s, p) -> consumeEdgeIfValid(s, p, edges::add))
-            .onValidateWall((l, s, p) -> consumeWallIfValid(s, p, walls::add))
-            .onValidateCorner((l, s, p) -> consumeEdgeIfValid(s, p, edges::add))
-            .validate(level, blockPos, blockState.getValue(FACING));
-
-        if (!valid) {
+        if (!result) {
             player.sendMessage(new TextComponent("Invalid multiblock"), player.getUUID());
             return InteractionResult.FAIL;
         }
 
         for (BlockPos wallPos : walls) {
-            OptionalDirection horizontalOffset = getHorizontalOffset(blockPos, wallPos);
-            OptionalDirection verticalOffset = getVerticalOffset(blockPos, wallPos);
             level.setBlock(wallPos,
-                Setup.Blocks.VALID_WALL_BLOCK
-                    .get()
-                    .defaultBlockState()
-                    .setValue(AbstractValidBlock.CTRL_HORIZONTAL, horizontalOffset)
-                    .setValue(AbstractValidBlock.CTRL_VERTICAL, verticalOffset),
+                Setup.Blocks.VALID_WALL_BLOCK.get().createValidBlockState(wallPos, blockPos),
                 2 | 16,
                 1
             );
         }
 
         for (BlockPos edgePos : edges) {
-            OptionalDirection horizontalOffset = getHorizontalOffset(blockPos, edgePos);
-            OptionalDirection verticalOffset = getVerticalOffset(blockPos, edgePos);
-            level.setBlock(
-                edgePos,
-                Setup.Blocks.VALID_EDGE_BLOCK
-                    .get()
-                    .defaultBlockState()
-                    .setValue(AbstractValidBlock.CTRL_HORIZONTAL, horizontalOffset)
-                    .setValue(AbstractValidBlock.CTRL_VERTICAL, verticalOffset),
+            level.setBlock(edgePos,
+                Setup.Blocks.VALID_EDGE_BLOCK.get().createValidBlockState(edgePos, blockPos),
                 2 | 16,
                 1
             );
         }
 
         level.setBlock(blockPos, blockState.setValue(VALID, true), 3);
+        blockEntity.setMultiBlockData(multiBlockData);
+
         player.sendMessage(new TextComponent("Valid multiblock"), player.getUUID());
         return InteractionResult.CONSUME;
     }
 
-    public boolean consumeEdgeIfValid(BlockState blockState, BlockPos blockPos, Consumer<BlockPos> consumer) {
-        if (blockState.getBlock() == Blocks.DIAMOND_BLOCK) {
-            consumer.accept(blockPos);
-            return true;
-        }
-        return false;
+    public boolean isValidForWall(BlockState blockState) {
+        return blockState.getBlock() == Blocks.GOLD_BLOCK;
     }
 
-    public boolean consumeWallIfValid(BlockState blockState, BlockPos blockPos, Consumer<BlockPos> consumer) {
-        if (blockState.getBlock() == Blocks.GOLD_BLOCK) {
-            consumer.accept(blockPos);
-            return true;
-        }
-        return false;
+    public boolean isValidForEdge(BlockState blockState) {
+        return blockState.getBlock() == Blocks.DIAMOND_BLOCK;
     }
 
-    public OptionalDirection getVerticalOffset(BlockPos centerPos, BlockPos blockPos) {
-        if (centerPos.getY() == blockPos.getY()) {
-            return OptionalDirection.NONE;
-        }
-
-        return centerPos.getY() < blockPos.getY() ? OptionalDirection.DOWN : OptionalDirection.UP;
-    }
-
-    public OptionalDirection getHorizontalOffset(BlockPos centerPos, BlockPos blockPos) {
-        if (centerPos.getX() == blockPos.getX() && centerPos.getZ() == blockPos.getZ()) {
-            return OptionalDirection.NONE;
-        }
-
-        if (centerPos.getZ() > blockPos.getZ()) {
-            return OptionalDirection.SOUTH;
-        }
-
-        if (centerPos.getZ() < blockPos.getZ()) {
-            return OptionalDirection.NORTH;
-        }
-
-        if (centerPos.getX() > blockPos.getX()) {
-            return OptionalDirection.EAST;
-        }
-
-        return OptionalDirection.WEST;
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new ControllerBlockEntity(blockPos, blockState);
     }
 }

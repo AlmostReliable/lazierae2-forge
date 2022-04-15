@@ -6,6 +6,7 @@ import com.almostreliable.lazierae2.machine.MachineContainer;
 import com.almostreliable.lazierae2.machine.MachineEntity;
 import com.almostreliable.lazierae2.machine.MachineType;
 import com.almostreliable.lazierae2.multiblock.ControllerBlock;
+import com.almostreliable.lazierae2.multiblock.ControllerBlockEntity;
 import com.almostreliable.lazierae2.multiblock.ValidEdgeBlock;
 import com.almostreliable.lazierae2.multiblock.ValidWallBlock;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
@@ -54,6 +55,10 @@ public final class Setup {
 
         private static final DeferredRegister<BlockEntityType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
+        public static final RegistryObject<BlockEntityType<ControllerBlockEntity>> CONTROLLER = REGISTRY.register(
+            "controller_block",
+            () -> Builder.of(ControllerBlockEntity::new, Blocks.CONTROLLER_BLOCK.get()).build(null)
+        );
 
         private BlockEntities() {}
 
