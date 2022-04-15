@@ -3,6 +3,7 @@ package com.almostreliable.lazierae2.component;
 import com.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.machine.MachineBlock;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -92,8 +93,19 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
         }
     }
 
-    private Direction getDirectionFromSide(BLOCK_SIDE side) {
-        Direction facing = tile.getBlockState().getValue(MachineBlock.FACING);
+    public void deserializeNBT(BlockState state, CompoundNBT nbt) {
+        for (BLOCK_SIDE side : BLOCK_SIDE.values()) {
+            set(state, side, IO_SETTING.values()[nbt.getInt(side.toString())]);
+        }
+    }
+
+    private void set(BlockState state, BLOCK_SIDE side, IO_SETTING setting) {
+        config.put(getDirectionFromSide(state, side), setting);
+        tile.setChanged();
+    }
+
+    private Direction getDirectionFromSide(BlockState state, BLOCK_SIDE side) {
+        Direction facing = state.getValue(MachineBlock.FACING);
         switch (side) {
             case TOP:
                 return Direction.UP;
@@ -108,5 +120,9 @@ public class SideConfiguration implements INBTSerializable<CompoundNBT> {
             default:
                 return facing;
         }
+    }
+
+    private Direction getDirectionFromSide(BLOCK_SIDE side) {
+        return getDirectionFromSide(tile.getBlockState(), side);
     }
 }

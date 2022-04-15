@@ -81,7 +81,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         super.load(state, nbt);
         if (nbt.contains(INVENTORY_ID)) inventory.deserializeNBT(nbt.getCompound(INVENTORY_ID));
         if (nbt.contains(ENERGY_ID)) energy.deserializeNBT(nbt.getCompound(ENERGY_ID));
-        if (nbt.contains(SIDE_CONFIG_ID)) sideConfig.deserializeNBT(nbt.getCompound(SIDE_CONFIG_ID));
+        if (nbt.contains(SIDE_CONFIG_ID)) sideConfig.deserializeNBT(state, nbt.getCompound(SIDE_CONFIG_ID));
         if (nbt.contains(AUTO_EXTRACT_ID)) autoExtract = nbt.getBoolean(AUTO_EXTRACT_ID);
         if (nbt.contains(PROGRESS_ID)) progress = nbt.getInt(PROGRESS_ID);
         if (nbt.contains(PROCESS_TIME_ID)) processTime = nbt.getInt(PROCESS_TIME_ID);
