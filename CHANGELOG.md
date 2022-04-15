@@ -8,13 +8,13 @@ and this project adheres to [Semantic Versioning].
 ## [Unreleased]
 - /
 
-## [1.0.0] - 2021-09-29
-- initial release
+## [2.0.0] - 2022-04-16
+- rewrite
 
 <!-- Links -->
 [keep a changelog]: https://keepachangelog.com/en/1.0.0/
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/AlmostReliable/template-forge/compare/v1.16-1.0.0...HEAD
-[1.0.0]: https://github.com/AlmostReliable/template-forge/releases/tag/v1.16-1.0.0
+[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.16-2.0.0...HEAD
+[2.0.0]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.16-2.0.0
