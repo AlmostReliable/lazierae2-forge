@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.recipe.builder;
 
-import com.almostreliable.lazierae2.machine.MachineType;
+import com.almostreliable.lazierae2.content.machine.MachineType;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -121,7 +121,14 @@ public final class MachineRecipeBuilder {
     }
 
     public MachineRecipe build(ResourceLocation id) {
-        return recipeType.getRecipeFactory().apply(id, recipeType);
+        validateProcessingTime();
+        validateEnergyCost();
+        var recipe = recipeType.getRecipeFactory().apply(id, recipeType);
+        recipe.setInputs(inputs);
+        recipe.setOutput(output);
+        recipe.setProcessTime(processingTime);
+        recipe.setEnergyCost(energyCost);
+        return recipe;
     }
 
     private void validateProcessingTime() {

@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.recipe.type;
 
-import com.almostreliable.lazierae2.machine.MachineType;
+import com.almostreliable.lazierae2.content.machine.MachineType;
 import com.almostreliable.lazierae2.util.RecipeUtil;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
@@ -85,6 +85,10 @@ public abstract class MachineRecipe implements Recipe<Container> {
 
     public NonNullList<Ingredient> getInputs() {
         return inputs;
+    }
+
+    public void setInputs(NonNullList<Ingredient> inputs) {
+        this.inputs = inputs;
     }
 
     public void setOutput(ItemStack output) {
