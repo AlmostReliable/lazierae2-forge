@@ -2,6 +2,8 @@ package com.almostreliable.lazierae2.multiblock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
@@ -129,6 +131,25 @@ public class MultiBlock {
             );
 
             return new Data(size, startPosition, itDirs);
+        }
+
+        public static Data load(CompoundTag tag) {
+            int size = tag.getInt("size");
+            BlockPos startPosition = NbtUtils.readBlockPos(tag);
+            Direction mDir = Direction.valueOf(tag.getString("mDir"));
+            Direction rDir = Direction.valueOf(tag.getString("rDir"));
+            Direction cDir = Direction.valueOf(tag.getString("cDir"));
+            return new Data(size, startPosition, new IterateDirections(mDir, rDir, cDir));
+        }
+
+        public static CompoundTag save(Data data) {
+            CompoundTag tag = new CompoundTag();
+            tag.putInt("size", data.size);
+            NbtUtils.writeBlockPos(data.startPosition);
+            tag.putString("mDir", data.itDirs.mDir().toString());
+            tag.putString("rDir", data.itDirs.rDir().toString());
+            tag.putString("cDir", data.itDirs.cDir().toString());
+            return tag;
         }
     }
 }

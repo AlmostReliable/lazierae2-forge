@@ -6,17 +6,12 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
-public class ValidEdgeBlock extends AbstractValidBlock {
+public class AssemblerFrameBlock extends AbstractAssemblerBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
-    public ValidEdgeBlock(Properties props) {
+    public AssemblerFrameBlock(Properties props) {
         super(props);
-        this.registerDefaultState(this
-            .getStateDefinition()
-            .any()
-            .setValue(CTRL_HORIZONTAL, OptionalDirection.NONE)
-            .setValue(CTRL_VERTICAL, OptionalDirection.NONE)
-            .setValue(POWERED, false));
+        this.registerDefaultState(defaultBlockState().setValue(POWERED, false));
     }
 
     @Override

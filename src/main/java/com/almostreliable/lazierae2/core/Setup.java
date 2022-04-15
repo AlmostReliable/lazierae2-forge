@@ -5,10 +5,10 @@ import com.almostreliable.lazierae2.machine.MachineBlock;
 import com.almostreliable.lazierae2.machine.MachineContainer;
 import com.almostreliable.lazierae2.machine.MachineEntity;
 import com.almostreliable.lazierae2.machine.MachineType;
+import com.almostreliable.lazierae2.multiblock.AssemblerWallBlock;
 import com.almostreliable.lazierae2.multiblock.ControllerBlock;
 import com.almostreliable.lazierae2.multiblock.ControllerBlockEntity;
-import com.almostreliable.lazierae2.multiblock.ValidEdgeBlock;
-import com.almostreliable.lazierae2.multiblock.ValidWallBlock;
+import com.almostreliable.lazierae2.multiblock.AssemblerFrameBlock;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe.MachineRecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
@@ -119,12 +119,12 @@ public final class Setup {
             () -> new ControllerBlock(BlockBehaviour.Properties.of(Material.STONE))
         );
 
-        public static final RegistryObject<ValidWallBlock> VALID_WALL_BLOCK = REGISTRY.register("valid_wall_block",
-            () -> new ValidWallBlock(BlockBehaviour.Properties.of(Material.STONE))
+        public static final RegistryObject<AssemblerWallBlock> ASSEMBLER_WALL_BLOCK = REGISTRY.register("valid_wall_block",
+            () -> new AssemblerWallBlock(BlockBehaviour.Properties.of(Material.STONE))
         );
 
-        public static final RegistryObject<ValidEdgeBlock> VALID_EDGE_BLOCK = REGISTRY.register("valid_edge_block",
-            () -> new ValidEdgeBlock(BlockBehaviour.Properties.of(Material.STONE))
+        public static final RegistryObject<AssemblerFrameBlock> ASSEMBLER_FRAME_BLOCK = REGISTRY.register("valid_edge_block",
+            () -> new AssemblerFrameBlock(BlockBehaviour.Properties.of(Material.STONE))
         );
 
         private Blocks() {}
@@ -167,11 +167,11 @@ public final class Setup {
 
         // TODO remove valid wall block item as it should be not possible to create it by user
         public static final RegistryObject<BlockItem> VALID_WALL_BLOCK = REGISTRY.register("valid_wall_block",
-            () -> new BlockItem(Blocks.VALID_WALL_BLOCK.get(), new Item.Properties().tab(TAB))
+            () -> new BlockItem(Blocks.ASSEMBLER_WALL_BLOCK.get(), new Item.Properties().tab(TAB))
         );
 
         public static final RegistryObject<BlockItem> VALID_EDGE_BLOCK = REGISTRY.register("valid_edge_block",
-            () -> new BlockItem(Blocks.VALID_EDGE_BLOCK.get(), new Item.Properties().tab(TAB))
+            () -> new BlockItem(Blocks.ASSEMBLER_FRAME_BLOCK.get(), new Item.Properties().tab(TAB))
         );
 
         private Items() {}
