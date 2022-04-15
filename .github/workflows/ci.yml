@@ -14,8 +14,8 @@ on:
 env:
   JAVA_DIST: 'zulu'
   JAVA_VERSION: 11
-  MOD_ID: 'templatemod'
-  MOD_NAME: 'TemplateMod'
+  MOD_ID: 'lazierae2'
+  MOD_NAME: 'LazierAE2'
 
 jobs:
   build:
@@ -43,12 +43,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      #      - name: SonarCloud Cache
-      #        uses: actions/cache@v2
-      #        with:
-      #          path: ~/.sonar/cache
-      #          key: ${{ runner.os }}-sonar
-      #          restore-keys: ${{ runner.os }}-sonar
+      - name: SonarCloud Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
 
       - name: Build and Analyze
         env:
@@ -56,8 +56,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           chmod +x ./gradlew
-          ./gradlew build --stacktrace --no-daemon
-        # ./gradlew build sonarqube --stacktrace --no-daemon
+          ./gradlew build sonarqube --stacktrace --no-daemon
 
   release:
     name: Release
