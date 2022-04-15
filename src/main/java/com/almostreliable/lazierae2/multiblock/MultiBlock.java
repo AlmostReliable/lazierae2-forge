@@ -84,7 +84,7 @@ public class MultiBlock {
 
     public record SizeCheckResult(BlockPos blockPos, int size) {}
 
-    public record IterateDirections(Direction mDir, Direction rDir, Direction cDir) {
+    public record IterateDirections(Direction depthDirection, Direction rowDirection, Direction columnDirection) {
         public static IterateDirections ofFacing(Direction facing) {
             return switch (facing) {
                 case UP -> new IterateDirections(Direction.DOWN, Direction.EAST, Direction.SOUTH);
@@ -97,9 +97,12 @@ public class MultiBlock {
         }
 
         public BlockPos relative(BlockPos blockPos, int i, int j, int k) {
-            int x = blockPos.getX() + (mDir().getStepX() * i) + (rDir().getStepX() * j) + (cDir().getStepX() * k);
-            int y = blockPos.getY() + (mDir().getStepY() * i) + (rDir().getStepY() * j) + (cDir().getStepY() * k);
-            int z = blockPos.getZ() + (mDir().getStepZ() * i) + (rDir().getStepZ() * j) + (cDir().getStepZ() * k);
+            int x = blockPos.getX() + (depthDirection().getStepX() * i) + (rowDirection().getStepX() * j) +
+                (columnDirection().getStepX() * k);
+            int y = blockPos.getY() + (depthDirection().getStepY() * i) + (rowDirection().getStepY() * j) +
+                (columnDirection().getStepY() * k);
+            int z = blockPos.getZ() + (depthDirection().getStepZ() * i) + (rowDirection().getStepZ() * j) +
+                (columnDirection().getStepZ() * k);
             return new BlockPos(x, y, z);
         }
     }
@@ -109,10 +112,20 @@ public class MultiBlock {
         public static Data of(
             BlockPos originPos, IterateDirections itDirs, int minSize, int maxSize, Predicate<BlockPos> edgeCheck
         ) {
-            SizeCheckResult negativeRowResult = findEdge(originPos, itDirs.rDir().getOpposite(), maxSize, edgeCheck);
-            SizeCheckResult positiveRowResult = findEdge(originPos, itDirs.rDir(), maxSize, edgeCheck);
-            SizeCheckResult negativeColumnResult = findEdge(originPos, itDirs.cDir().getOpposite(), maxSize, edgeCheck);
-            SizeCheckResult positiveColumnResult = findEdge(originPos, itDirs.cDir(), maxSize, edgeCheck);
+            SizeCheckResult negativeRowResult = findEdge(
+                originPos,
+                itDirs.rowDirection().getOpposite(),
+                maxSize,
+                edgeCheck
+            );
+            SizeCheckResult positiveRowResult = findEdge(originPos, itDirs.rowDirection(), maxSize, edgeCheck);
+            SizeCheckResult negativeColumnResult = findEdge(
+                originPos,
+                itDirs.columnDirection().getOpposite(),
+                maxSize,
+                edgeCheck
+            );
+            SizeCheckResult positiveColumnResult = findEdge(originPos, itDirs.columnDirection(), maxSize, edgeCheck);
 
             if (negativeRowResult == null || positiveRowResult == null || negativeColumnResult == null ||
                 positiveColumnResult == null) {
@@ -136,9 +149,9 @@ public class MultiBlock {
         public static Data load(CompoundTag tag) {
             int size = tag.getInt("size");
             BlockPos startPosition = NbtUtils.readBlockPos(tag);
-            Direction mDir = Direction.valueOf(tag.getString("mDir"));
-            Direction rDir = Direction.valueOf(tag.getString("rDir"));
-            Direction cDir = Direction.valueOf(tag.getString("cDir"));
+            Direction mDir = Direction.valueOf(tag.getString("depthDirection"));
+            Direction rDir = Direction.valueOf(tag.getString("rowDirection"));
+            Direction cDir = Direction.valueOf(tag.getString("columnDirection"));
             return new Data(size, startPosition, new IterateDirections(mDir, rDir, cDir));
         }
 
@@ -146,9 +159,9 @@ public class MultiBlock {
             CompoundTag tag = new CompoundTag();
             tag.putInt("size", data.size);
             NbtUtils.writeBlockPos(data.startPosition);
-            tag.putString("mDir", data.itDirs.mDir().toString());
-            tag.putString("rDir", data.itDirs.rDir().toString());
-            tag.putString("cDir", data.itDirs.cDir().toString());
+            tag.putString("depthDirection", data.itDirs.depthDirection().toString());
+            tag.putString("rowDirection", data.itDirs.rowDirection().toString());
+            tag.putString("columnDirection", data.itDirs.columnDirection().toString());
             return tag;
         }
     }
