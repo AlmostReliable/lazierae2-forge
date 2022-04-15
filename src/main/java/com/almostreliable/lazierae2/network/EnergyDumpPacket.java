@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.network;
 
-import com.almostreliable.lazierae2.machine.MachineContainer;
+import com.almostreliable.lazierae2.content.machine.MachineMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent.Context;
@@ -22,7 +22,7 @@ public final class EnergyDumpPacket {
     }
 
     private static void handlePacket(@Nullable ServerPlayer player) {
-        if (player != null && player.containerMenu instanceof MachineContainer container) {
+        if (player != null && player.containerMenu instanceof MachineMenu container) {
             var level = container.entity.getLevel();
             if (level == null || !level.isLoaded(container.entity.getBlockPos())) return;
             container.setEnergyStored(0);

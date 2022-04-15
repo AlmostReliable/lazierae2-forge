@@ -1,9 +1,10 @@
-package com.almostreliable.lazierae2.machine;
+package com.almostreliable.lazierae2.content.machine;
 
 import com.almostreliable.lazierae2.component.EnergyHandler;
-import com.almostreliable.lazierae2.component.InventoryHandler;
+import com.almostreliable.lazierae2.component.InventoryHandler.MachineInventory;
 import com.almostreliable.lazierae2.component.SideConfiguration;
-import com.almostreliable.lazierae2.core.Setup.BlockEntities;
+import com.almostreliable.lazierae2.content.GenericEntity;
+import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
@@ -14,7 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -40,11 +40,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.almostreliable.lazierae2.core.Constants.*;
 
-public class MachineEntity extends BlockEntity implements MenuProvider {
+public class MachineEntity extends GenericEntity {
 
     public final SideConfiguration sideConfig;
-    private final InventoryHandler inventory;
-    private final LazyOptional<InventoryHandler> inventoryCap;
+    private final MachineInventory inventory;
+    private final LazyOptional<MachineInventory> inventoryCap;
     private final EnergyHandler energy;
     private final LazyOptional<EnergyHandler> energyCap;
     private final Map<Direction, LazyOptional<IItemHandler>> outputsCache = new EnumMap<>(Direction.class);
@@ -58,8 +58,8 @@ public class MachineEntity extends BlockEntity implements MenuProvider {
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     public MachineEntity(BlockPos pos, BlockState state) {
-        super(BlockEntities.MACHINE.get(), pos, state);
-        inventory = new InventoryHandler(this);
+        super(Entities.MACHINE.get(), pos, state);
+        inventory = new MachineInventory(this);
         inventoryCap = LazyOptional.of(() -> inventory);
         energy = new EnergyHandler(this);
         energyCap = LazyOptional.of(() -> energy);
@@ -82,6 +82,7 @@ public class MachineEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.put(INVENTORY_ID, inventory.serializeNBT());
         tag.put(ENERGY_ID, energy.serializeNBT());
         tag.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
@@ -93,24 +94,12 @@ public class MachineEntity extends BlockEntity implements MenuProvider {
         tag.putInt(RECIPE_ENERGY_ID, recipeEnergy);
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
-        var tag = super.getUpdateTag();
-        saveAdditional(tag);
-        return tag;
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(
         int menuID, Inventory inventory, Player player
     ) {
-        return new MachineContainer(menuID, this, inventory);
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        load(tag);
+        return new MachineMenu(menuID, this, inventory);
     }
 
     public void recalculateEnergyCapacity() {
@@ -253,7 +242,7 @@ public class MachineEntity extends BlockEntity implements MenuProvider {
         var finished = recipe.getResultItem();
         var mergeCount = output.getCount() + finished.getCount();
         return output.sameItem(finished) && mergeCount <= finished.getMaxStackSize() &&
-            mergeCount <= inventory.getSlotLimit(InventoryHandler.OUTPUT_SLOT);
+            mergeCount <= inventory.getSlotLimit(MachineInventory.OUTPUT_SLOT);
     }
 
     private void autoExtract() {
@@ -299,14 +288,6 @@ public class MachineEntity extends BlockEntity implements MenuProvider {
             target.addListener(self -> outputsCache.put(entry.getKey(), null));
         }
         return target;
-    }
-
-    private void changeActivityState(boolean state) {
-        if (level == null || level.isClientSide) return;
-        var oldState = level.getBlockState(worldPosition);
-        if (!oldState.getValue(MachineBlock.ACTIVE).equals(state)) {
-            level.setBlockAndUpdate(worldPosition, oldState.setValue(MachineBlock.ACTIVE, state));
-        }
     }
 
     public int getEnergyCost() {

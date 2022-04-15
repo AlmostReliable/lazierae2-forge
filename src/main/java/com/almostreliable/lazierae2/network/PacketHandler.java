@@ -42,5 +42,23 @@ public final class PacketHandler {
             .encoder(SideConfigPacket::encode)
             .consumer(SideConfigPacket::handle)
             .add();
+        CHANNEL
+            .messageBuilder(RequestCountPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
+            .decoder(RequestCountPacket::decode)
+            .encoder(RequestCountPacket::encode)
+            .consumer(RequestCountPacket::handle)
+            .add();
+        CHANNEL
+            .messageBuilder(RequestBatchPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
+            .decoder(RequestBatchPacket::decode)
+            .encoder(RequestBatchPacket::encode)
+            .consumer(RequestBatchPacket::handle)
+            .add();
+        CHANNEL
+            .messageBuilder(RequestStatePacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
+            .decoder(RequestStatePacket::decode)
+            .encoder(RequestStatePacket::encode)
+            .consumer(RequestStatePacket::handle)
+            .add();
     }
 }

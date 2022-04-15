@@ -1,5 +1,5 @@
 @ParametersAreNonnullByDefault @MethodsReturnNonnullByDefault
-package com.almostreliable.lazierae2.machine;
+package com.almostreliable.lazierae2.content;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
