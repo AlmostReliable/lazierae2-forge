@@ -18,10 +18,10 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 @SuppressWarnings({"unused", "WeakerAccess"})
 @ZenRegister
 @Name("mods." + MOD_ID + ".MachineRecipeManager")
-public interface MachineRecipeManager extends IRecipeManager {
+public abstract class MachineRecipeManager implements IRecipeManager {
 
     @Method
-    default void addRecipe(
+    public void addRecipe(
         String name, IItemStack output, int processTime, int energyCost, IItemStack... inputs
     ) {
         ResourceLocation id = new ResourceLocation(CraftTweaker.MODID, fixRecipeName(name));
@@ -39,7 +39,15 @@ public interface MachineRecipeManager extends IRecipeManager {
         CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, ""));
     }
 
-    MachineRecipe createRecipe(
+    @Method
+    public RecipeBuilderWrapper builder(String name, IItemStack output) {
+        ResourceLocation id = new ResourceLocation(CraftTweaker.MODID, fixRecipeName(name));
+        return createRecipeBuilder(id, output);
+    }
+
+    protected abstract RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output);
+
+    protected abstract MachineRecipe createRecipe(
         ResourceLocation id, ItemStack output, int amount, Ingredient[] ingredients, int processTime, int energyCost
     );
 }

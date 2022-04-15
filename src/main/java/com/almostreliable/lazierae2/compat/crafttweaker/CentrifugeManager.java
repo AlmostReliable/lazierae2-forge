@@ -4,6 +4,7 @@ import com.almostreliable.lazierae2.machine.MachineType;
 import com.almostreliable.lazierae2.recipe.builder.MachineRecipeBuilder;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
@@ -15,9 +16,14 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 @SuppressWarnings("unused")
 @ZenRegister
 @Name("mods." + MOD_ID + ".Centrifuge")
-public class CentrifugeManager implements MachineRecipeManager {
+public class CentrifugeManager extends MachineRecipeManager {
 
     public static final CentrifugeManager INSTANCE = new CentrifugeManager();
+
+    @Override
+    protected RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
+        return new RecipeBuilderWrapper(this, MachineType.CENTRIFUGE, id, output);
+    }
 
     @Override
     public MachineRecipe createRecipe(
