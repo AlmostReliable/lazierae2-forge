@@ -2,13 +2,14 @@ package com.almostreliable.lazierae2;
 
 import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEItems;
+import com.almostreliable.lazierae2.content.machine.MachineType;
 import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
-import com.almostreliable.lazierae2.core.Setup.Containers;
+import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.data.DataGeneration;
 import com.almostreliable.lazierae2.gui.MachineScreen;
-import com.almostreliable.lazierae2.machine.MachineType;
+import com.almostreliable.lazierae2.gui.MaintainerScreen;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -56,7 +57,8 @@ public class LazierAE2 {
 
     private static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            MenuScreens.register(Containers.MACHINE.get(), MachineScreen::new);
+            MenuScreens.register(Menus.MACHINE.get(), MachineScreen::new);
+            MenuScreens.register(Menus.MAINTAINER.get(), MaintainerScreen::new);
         });
     }
 }

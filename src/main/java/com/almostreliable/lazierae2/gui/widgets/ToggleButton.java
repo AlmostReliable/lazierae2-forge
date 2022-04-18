@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.gui.widgets;
 
-import com.almostreliable.lazierae2.gui.MachineScreen;
+import com.almostreliable.lazierae2.gui.GenericScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -11,7 +11,7 @@ public abstract class ToggleButton extends GenericButton {
     final BooleanSupplier pressed;
 
     ToggleButton(
-        MachineScreen screen, int pX, int pY, int width, int height, String textureID, BooleanSupplier pressed
+        GenericScreen<?> screen, int pX, int pY, int width, int height, String textureID, BooleanSupplier pressed
     ) {
         super(screen, pX, pY, width, height, textureID);
         this.pressed = pressed;

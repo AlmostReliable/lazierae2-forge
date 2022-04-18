@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.compat.crafttweaker;
 
-import com.almostreliable.lazierae2.machine.MachineType;
+import com.almostreliable.lazierae2.content.machine.MachineType;
 import com.almostreliable.lazierae2.recipe.builder.MachineRecipeBuilder;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;

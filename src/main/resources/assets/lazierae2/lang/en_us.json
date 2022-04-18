@@ -25,6 +25,7 @@
   "block.lazierae2.centrifuge": "Pulse Centrifuge",
   "block.lazierae2.energizer": "Crystal Energizer",
   "block.lazierae2.etcher": "Circuit Etcher",
+  "block.lazierae2.maintainer": "Level Maintainer",
 
   "tooltip.lazierae2.action_hold": "Hold",
   "tooltip.lazierae2.action_click": "Click",

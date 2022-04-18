@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.gui.widgets;
 
-import com.almostreliable.lazierae2.gui.MachineScreen;
+import com.almostreliable.lazierae2.gui.GenericScreen;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,10 +13,10 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 public abstract class GenericButton extends Button {
 
     final ResourceLocation texture;
-    MachineScreen screen;
+    GenericScreen<?> screen;
 
     GenericButton(
-        MachineScreen screen, int pX, int pY, int width, int height, String textureID
+        GenericScreen<?> screen, int pX, int pY, int width, int height, String textureID
     ) {
         super(
             screen.getGuiLeft() + pX,

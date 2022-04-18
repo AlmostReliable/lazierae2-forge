@@ -1,7 +1,9 @@
 package com.almostreliable.lazierae2.network;
 
 import com.almostreliable.lazierae2.component.SideConfiguration;
-import com.almostreliable.lazierae2.machine.MachineContainer;
+import com.almostreliable.lazierae2.content.GenericMenu;
+import com.almostreliable.lazierae2.content.machine.MachineEntity;
+import com.almostreliable.lazierae2.content.machine.MachineMenu;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,12 +35,13 @@ public class SideConfigPacket {
     }
 
     private static void handlePacket(SideConfigPacket packet, @Nullable ServerPlayer player) {
-        if (player != null && player.containerMenu instanceof MachineContainer) {
-            var entity = ((MachineContainer) player.containerMenu).entity;
-            var level = entity.getLevel();
-            if (level == null || !level.isLoaded(entity.getBlockPos())) return;
-            entity.sideConfig.deserializeNBT(packet.config);
-            entity.setChanged();
+        if (player != null && player.containerMenu instanceof MachineMenu) {
+            var entity = ((GenericMenu<?>) player.containerMenu).entity;
+            if (!(entity instanceof MachineEntity machine)) return;
+            var level = machine.getLevel();
+            if (level == null || !level.isLoaded(machine.getBlockPos())) return;
+            machine.sideConfig.deserializeNBT(packet.config);
+            machine.setChanged();
         }
     }
 

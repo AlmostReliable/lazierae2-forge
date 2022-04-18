@@ -1,5 +1,15 @@
 package com.almostreliable.lazierae2.core;
 
+import com.almostreliable.lazierae2.content.GenericBlock;
+import com.almostreliable.lazierae2.content.GenericEntity;
+import com.almostreliable.lazierae2.content.GenericMenu;
+import com.almostreliable.lazierae2.content.machine.MachineBlock;
+import com.almostreliable.lazierae2.content.machine.MachineEntity;
+import com.almostreliable.lazierae2.content.machine.MachineMenu;
+import com.almostreliable.lazierae2.content.machine.MachineType;
+import com.almostreliable.lazierae2.content.maintainer.MaintainerBlock;
+import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
 import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import com.almostreliable.lazierae2.machine.MachineBlock;
 import com.almostreliable.lazierae2.machine.MachineContainer;
@@ -24,16 +34,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.Arrays;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.almostreliable.lazierae2.core.Constants.*;
 
@@ -46,12 +60,12 @@ public final class Setup {
     public static void init(IEventBus modEventBus) {
         Blocks.REGISTRY.register(modEventBus);
         Items.REGISTRY.register(modEventBus);
-        BlockEntities.REGISTRY.register(modEventBus);
-        Containers.REGISTRY.register(modEventBus);
+        Entities.REGISTRY.register(modEventBus);
+        Menus.REGISTRY.register(modEventBus);
         Serializers.REGISTRY.register(modEventBus);
     }
 
-    public static final class BlockEntities {
+    public static final class Entities {
 
         private static final DeferredRegister<BlockEntityType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
@@ -60,34 +74,66 @@ public final class Setup {
             () -> Builder.of(ControllerBlockEntity::new, Blocks.CONTROLLER_BLOCK.get()).build(null)
         );
 
-        private BlockEntities() {}
+        private Entities() {}
 
-        @SuppressWarnings("ConstantConditions")
-        public static final RegistryObject<BlockEntityType<MachineEntity>> MACHINE = REGISTRY.register(MACHINE_ID,
-            () -> Builder.of(MachineEntity::new,
-                Blocks.AGGREGATOR.get(),
-                Blocks.CENTRIFUGE.get(),
-                Blocks.ENERGIZER.get(),
-                Blocks.ETCHER.get()
-            ).build(null)
+        @SafeVarargs
+        private static <E extends GenericEntity, B extends GenericBlock> RegistryObject<BlockEntityType<E>> register(
+            String id, BlockEntitySupplier<E> entity, RegistryObject<B>... blocks
+        ) {
+            // noinspection ConstantConditions
+            return REGISTRY.register(id,
+                () -> Builder
+                    .of(entity, Arrays.stream(blocks).map(RegistryObject::get).toArray(GenericBlock[]::new))
+                    .build(null)
+            );
+        }
+
+        public static final RegistryObject<BlockEntityType<MaintainerEntity>> MAINTAINER = register(MAINTAINER_ID,
+            MaintainerEntity::new,
+            Blocks.MAINTAINER
+        );
+
+        public static final RegistryObject<BlockEntityType<MachineEntity>> MACHINE = register(MACHINE_ID,
+            MachineEntity::new,
+            Blocks.AGGREGATOR,
+            Blocks.CENTRIFUGE,
+            Blocks.ENERGIZER,
+            Blocks.ETCHER
         );
     }
 
-    public static final class Containers {
+    public static final class Menus {
 
         private static final DeferredRegister<MenuType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
-        public static final RegistryObject<MenuType<MachineContainer>> MACHINE = REGISTRY.register(MACHINE_ID,
-            () -> IForgeMenuType.create((containerID, inventory, data) -> {
+
+        public static final RegistryObject<MenuType<MachineMenu>> MACHINE = register(MACHINE_ID,
+            (windowId, inventory, data) -> {
                 var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
-                if (!(entity instanceof MachineEntity)) {
+                if (!(entity instanceof MachineEntity machine)) {
                     throw new IllegalStateException("Tile is not a LazierAE2 machine!");
                 }
-                return new MachineContainer(containerID, (MachineEntity) entity, inventory);
-            })
+                return new MachineMenu(windowId, machine, inventory);
+            }
         );
 
-        private Containers() {}
+        public static final RegistryObject<MenuType<MaintainerMenu>> MAINTAINER = register(MAINTAINER_ID,
+            (windowId, inventory, data) -> {
+                var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
+                if (!(entity instanceof MaintainerEntity maintainer)) {
+                    throw new IllegalStateException("Tile is not a LazierAE2 maintainer!");
+                }
+                return new MaintainerMenu(windowId, maintainer, inventory);
+            }
+        );
+
+        private Menus() {}
+
+        private static <M extends GenericMenu<?>> RegistryObject<MenuType<M>> register(
+            String id, IContainerFactory<M> factory
+        ) {
+            return REGISTRY.register(id, () -> IForgeMenuType.create(factory));
+        }
     }
 
     private static final class Tab extends CreativeModeTab {
@@ -127,14 +173,29 @@ public final class Setup {
             () -> new AssemblerFrameBlock(BlockBehaviour.Properties.of(Material.STONE))
         );
 
+        public static final RegistryObject<MaintainerBlock> MAINTAINER = register(MAINTAINER_ID, MaintainerBlock::new);
+
         private Blocks() {}
 
-        private static <B extends MachineBlock> RegistryObject<B> register(
+        @SuppressWarnings("SameParameterValue")
+        private static <B extends GenericBlock> RegistryObject<B> register(
+            String id, Supplier<? extends B> constructor
+        ) {
+            RegistryObject<B> block = REGISTRY.register(id, constructor);
+            registerBlockItem(id, block);
+            return block;
+        }
+
+        private static <B extends GenericBlock> RegistryObject<B> register(
             Function<? super MachineType, ? extends B> constructor, MachineType machineType
         ) {
             RegistryObject<B> block = REGISTRY.register(machineType.getId(), () -> constructor.apply(machineType));
-            Items.REGISTRY.register(machineType.getId(), () -> new BlockItem(block.get(), new Properties().tab(TAB)));
+            registerBlockItem(machineType.getId(), block);
             return block;
+        }
+
+        private static <B extends GenericBlock> void registerBlockItem(String id, RegistryObject<B> block) {
+            Items.REGISTRY.register(id, () -> new BlockItem(block.get(), new Properties().tab(TAB)));
         }
     }
 

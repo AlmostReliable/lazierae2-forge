@@ -1,7 +1,8 @@
 package com.almostreliable.lazierae2.data.client;
 
+import com.almostreliable.lazierae2.content.GenericBlock;
+import com.almostreliable.lazierae2.content.machine.MachineBlock;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
-import com.almostreliable.lazierae2.machine.MachineBlock;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +15,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.function.Function;
 
+import static com.almostreliable.lazierae2.core.Constants.MAINTAINER_ID;
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
@@ -31,18 +33,28 @@ public class BlockStateData extends BlockStateProvider {
         registerMachine(Blocks.CENTRIFUGE.get());
         registerMachine(Blocks.ENERGIZER.get());
         registerMachine(Blocks.ETCHER.get());
+        registerBlock(MAINTAINER_ID, Blocks.MAINTAINER.get());
     }
 
     /**
      * Handles the registration of the machine blockstate data.
-     * <p>
-     * Creates a blockstate with the same texture on all sides except the facing direction.
-     * The texture of the facing direction depends on the current value of the ACTIVE blockstate.
      *
      * @param block the machine block to register
      */
     private void registerMachine(MachineBlock block) {
-        var id = block.getId();
+        registerBlock(block.getId(), block);
+    }
+
+    /**
+     * Handles the registration of the generic blockstate data.
+     * <p>
+     * Creates a blockstate with the same texture on all sides except the facing direction.
+     * The texture of the facing direction depends on the current value of the ACTIVE blockstate.
+     *
+     * @param id    the id of the block
+     * @param block the generic block to register
+     */
+    private void registerBlock(String id, GenericBlock block) {
         var sideTexture = new ResourceLocation(MOD_ID, "block/machine");
         var inactiveTexture = new ResourceLocation(MOD_ID, f("block/{}", id));
         var activeTexture = new ResourceLocation(MOD_ID, f("block/{}_active", id));
@@ -51,7 +63,7 @@ public class BlockStateData extends BlockStateProvider {
         var modelActive = models().orientable(f("{}_active", id), sideTexture, activeTexture, sideTexture);
 
         orientedBlock(block,
-            state -> state.getValue(MachineBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive
+            state -> state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive
         );
     }
 
@@ -65,7 +77,7 @@ public class BlockStateData extends BlockStateProvider {
         Block block, Function<? super BlockState, ? extends ModelFile> modelFunction
     ) {
         getVariantBuilder(block).forAllStates(state -> {
-            var facing = state.getValue(MachineBlock.FACING);
+            var facing = state.getValue(GenericBlock.FACING);
 
             return ConfiguredModel
                 .builder()

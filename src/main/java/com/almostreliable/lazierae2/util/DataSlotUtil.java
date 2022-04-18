@@ -89,7 +89,7 @@ public final class DataSlotUtil {
      * @return The new {@link ContainerData}.
      */
     public static DataSlot[] forIntegerSplit(BlockEntity entity, IntSupplier s, IntConsumer c) {
-        return intArrayToReferenceHolder(new ContainerData() {
+        return containerDataToDataSlot(new ContainerData() {
             @Override
             public int get(int index) {
                 if (index == 0) {
@@ -116,7 +116,7 @@ public final class DataSlotUtil {
         });
     }
 
-    private static SyncedDataSlot[] intArrayToReferenceHolder(ContainerData containerData) {
+    private static SyncedDataSlot[] containerDataToDataSlot(ContainerData containerData) {
         return IntStream
             .range(0, containerData.getCount())
             .mapToObj(i -> SyncedDataSlot.of(containerData, i))

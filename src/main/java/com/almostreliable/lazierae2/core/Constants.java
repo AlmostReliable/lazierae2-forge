@@ -12,6 +12,7 @@ public enum Constants {
     public static final String CENTRIFUGE_ID = "centrifuge";
     public static final String ENERGIZER_ID = "energizer";
     public static final String ETCHER_ID = "etcher";
+    public static final String MAINTAINER_ID = "maintainer";
     // item ids
     public static final String CARB_FLUIX_DUST_ID = "carbonic_fluix_dust";
     public static final String COAL_DUST_ID = "coal_dust";
@@ -46,6 +47,9 @@ public enum Constants {
     public static final String ENERGY_COST_ID = "energy_cost";
     public static final String RECIPE_ENERGY_ID = "recipe_energy";
     public static final String UPGRADES_ID = "upgrades";
+    public static final String CRAFT_TRACKER_ID = "craft_tracker";
+    public static final String CRAFT_REQUESTS_ID = "craft_requests";
+    public static final String CRAFT_RESULTS_ID = "craft_results";
     // recipe json keys
     public static final String RECIPE_INPUT = "input";
     public static final String RECIPE_OUTPUT = "output";

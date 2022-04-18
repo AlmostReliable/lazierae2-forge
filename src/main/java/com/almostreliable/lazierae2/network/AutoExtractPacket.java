@@ -1,6 +1,8 @@
 package com.almostreliable.lazierae2.network;
 
-import com.almostreliable.lazierae2.machine.MachineContainer;
+import com.almostreliable.lazierae2.content.GenericMenu;
+import com.almostreliable.lazierae2.content.machine.MachineEntity;
+import com.almostreliable.lazierae2.content.machine.MachineMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent.Context;
@@ -31,12 +33,13 @@ public class AutoExtractPacket {
     }
 
     private static void handlePacket(AutoExtractPacket packet, @Nullable ServerPlayer player) {
-        if (player != null && player.containerMenu instanceof MachineContainer) {
-            var tile = ((MachineContainer) player.containerMenu).entity;
-            var level = tile.getLevel();
-            if (level == null || !level.isLoaded(tile.getBlockPos())) return;
-            tile.setAutoExtract(packet.value);
-            tile.setChanged();
+        if (player != null && player.containerMenu instanceof MachineMenu) {
+            var entity = ((GenericMenu<?>) player.containerMenu).entity;
+            if (!(entity instanceof MachineEntity machine)) return;
+            var level = machine.getLevel();
+            if (level == null || !level.isLoaded(machine.getBlockPos())) return;
+            machine.setAutoExtract(packet.value);
+            machine.setChanged();
         }
     }
 

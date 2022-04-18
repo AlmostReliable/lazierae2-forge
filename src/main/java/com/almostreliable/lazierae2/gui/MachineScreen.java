@@ -1,29 +1,24 @@
 package com.almostreliable.lazierae2.gui;
 
+import com.almostreliable.lazierae2.content.GenericBlock;
+import com.almostreliable.lazierae2.content.machine.MachineMenu;
 import com.almostreliable.lazierae2.gui.widgets.AutoExtractButton;
 import com.almostreliable.lazierae2.gui.widgets.EnergyDumpButton;
 import com.almostreliable.lazierae2.gui.widgets.IOControl;
 import com.almostreliable.lazierae2.inventory.UpgradeSlot;
-import com.almostreliable.lazierae2.machine.MachineBlock;
-import com.almostreliable.lazierae2.machine.MachineContainer;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public class MachineScreen extends AbstractContainerScreen<MachineContainer> {
+public class MachineScreen extends GenericScreen<MachineMenu> {
 
     public static final int TEXTURE_WIDTH = 178;
     public static final int TEXTURE_HEIGHT = 154;
@@ -34,23 +29,18 @@ public class MachineScreen extends AbstractContainerScreen<MachineContainer> {
     public static final int ENERGY_WIDTH = 2;
     private static final int ENERGY_HEIGHT = 58;
     private final ResourceLocation progressTexture;
-    private final Collection<AbstractWidget> toRender = new ArrayList<>();
     private final Tooltip progressTooltip;
     private final Tooltip energyTooltip;
     private final Tooltip upgradeTooltip;
 
     public MachineScreen(
-        MachineContainer container, Inventory inventory, Component ignoredTitle
+        MachineMenu menu, Inventory inventory, Component ignoredTitle
     ) {
-        super(container, inventory, container.entity.getDisplayName());
-        progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", container.entity.getMachineType()));
+        super(menu, inventory);
+        progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", menu.entity.getMachineType()));
         progressTooltip = setupProgressTooltip();
         energyTooltip = setupEnergyTooltip();
         upgradeTooltip = setupUpgradeTooltip();
-    }
-
-    public boolean isHovered(int mX, int mY, int x, int y, int width, int height) {
-        return mX >= x + leftPos && mX < x + width + leftPos && mY >= y + topPos && mY < y + height + topPos;
     }
 
     @Override
@@ -59,41 +49,6 @@ public class MachineScreen extends AbstractContainerScreen<MachineContainer> {
         addRenderable(new AutoExtractButton(this, menu.entity::isAutoExtracting));
         addRenderable(new EnergyDumpButton(this));
         addRenderables(IOControl.setup(this, 7, 7));
-    }
-
-    @Override
-    public void render(PoseStack matrix, int mX, int mY, float partial) {
-        renderBackground(matrix);
-        super.render(matrix, mX, mY, partial);
-        renderTooltip(matrix, mX, mY);
-    }
-
-    @Override
-    protected void renderTooltip(PoseStack stack, int mX, int mY) {
-        // progress bar
-        if (isHovered(mX, mY, 78, 23, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT)) {
-            renderComponentTooltip(stack, progressTooltip.build(), mX, mY);
-            return;
-        }
-        // energy bar
-        if (isHovered(mX, mY, 165, 7, ENERGY_WIDTH + 2, ENERGY_HEIGHT + 2)) {
-            renderComponentTooltip(stack, energyTooltip.build(), mX, mY);
-            return;
-        }
-        // upgrade slot
-        if (hoveredSlot instanceof UpgradeSlot) {
-            renderComponentTooltip(stack, upgradeTooltip.build(), mX, mY);
-            return;
-        }
-
-        super.renderTooltip(stack, mX, mY);
-
-        // widget tooltips
-        for (var widget : toRender) {
-            if (widget.isHoveredOrFocused() && widget.visible) {
-                widget.renderToolTip(stack, mX, mY);
-            }
-        }
     }
 
     @Override
@@ -158,6 +113,27 @@ public class MachineScreen extends AbstractContainerScreen<MachineContainer> {
         );
     }
 
+    @Override
+    protected void renderTooltip(PoseStack stack, int mX, int mY) {
+        // progress bar
+        if (isHovered(mX, mY, 78, 23, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT)) {
+            renderComponentTooltip(stack, progressTooltip.build(), mX, mY);
+            return;
+        }
+        // energy bar
+        if (isHovered(mX, mY, 165, 7, ENERGY_WIDTH + 2, ENERGY_HEIGHT + 2)) {
+            renderComponentTooltip(stack, energyTooltip.build(), mX, mY);
+            return;
+        }
+        // upgrade slot
+        if (hoveredSlot instanceof UpgradeSlot) {
+            renderComponentTooltip(stack, upgradeTooltip.build(), mX, mY);
+            return;
+        }
+
+        super.renderTooltip(stack, mX, mY);
+    }
+
     private Tooltip setupProgressTooltip() {
         return Tooltip
             .builder()
@@ -165,7 +141,7 @@ public class MachineScreen extends AbstractContainerScreen<MachineContainer> {
             .blank()
             .conditional(progress -> progress
                 .condition(() -> (menu.entity.getProgress() > 0 && menu.entity.getProcessTime() > 0) ||
-                    menu.entity.getBlockState().getValue(MachineBlock.ACTIVE).equals(true))
+                    menu.entity.getBlockState().getValue(GenericBlock.ACTIVE).equals(true))
                 .then(Tooltip
                     .builder()
                     .keyValue("progress.progress", menu.entity::getProgress, menu.entity::getProcessTime)
@@ -232,17 +208,6 @@ public class MachineScreen extends AbstractContainerScreen<MachineContainer> {
 
     private String getMultiplier(int currentVal, int recipeVal) {
         return TextUtil.formatNumber((double) currentVal / recipeVal, 1, 3);
-    }
-
-    private void addRenderable(AbstractWidget widget) {
-        addRenderableWidget(widget);
-        toRender.add(widget);
-    }
-
-    private void addRenderables(AbstractWidget... widgets) {
-        for (var widget : widgets) {
-            addRenderable(widget);
-        }
     }
 
     private String getProcessTimeMultiplier() {

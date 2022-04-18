@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.component;
 
-import com.almostreliable.lazierae2.machine.MachineEntity;
+import com.almostreliable.lazierae2.content.machine.MachineEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.IEnergyStorage;

@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.machine;
+package com.almostreliable.lazierae2.content.machine;
 
 import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Config.MachineConfig;
@@ -7,6 +7,7 @@ import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
 import com.almostreliable.lazierae2.recipe.type.TripleInputRecipe;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -70,7 +71,7 @@ public enum MachineType implements RecipeType<MachineRecipe> {
         this.itemProvider = itemProvider;
         this.recipeFactory = recipeFactory;
         this.recipeSerializer = recipeSerializer;
-        RecipeType.register(f("{}:{}", MOD_ID, id));
+        Registry.register(Registry.RECIPE_TYPE, f("{}:{}", MOD_ID, id), this);
     }
 
     @Override

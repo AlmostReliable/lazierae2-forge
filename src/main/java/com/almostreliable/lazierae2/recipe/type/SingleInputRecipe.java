@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.recipe.type;
 
-import com.almostreliable.lazierae2.machine.MachineType;
+import com.almostreliable.lazierae2.content.machine.MachineType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;

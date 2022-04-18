@@ -2,6 +2,7 @@
 1653826831e5afd44033a1a67f6ff28da1a01245 assets/lazierae2/blockstates/centrifuge.json
 a7a33081180565e55b6e19e0bd1505651be4b89a assets/lazierae2/blockstates/energizer.json
 5319659155704484a04a89b07f0624eb3689cb4d assets/lazierae2/blockstates/etcher.json
+ec0d6d317111b358a42cca52c1d963103823ffae assets/lazierae2/blockstates/maintainer.json
 5b92289e7d4405e670a18ef21f56dd401386c610 assets/lazierae2/models/block/aggregator.json
 80ea9ccd878c0e11a53290033ef00b95450eb084 assets/lazierae2/models/block/aggregator_active.json
 9102ff62ad280515b86da1cea07af7f4479d2474 assets/lazierae2/models/block/centrifuge.json
@@ -10,6 +11,8 @@ a7a33081180565e55b6e19e0bd1505651be4b89a assets/lazierae2/blockstates/energizer.
 4f2f8613cf56f64802749e28c42be2ce603cd18c assets/lazierae2/models/block/energizer_active.json
 ba4072bc9a905212c0e13fdd3fbe5f2d3736889c assets/lazierae2/models/block/etcher.json
 2d04060914a553d6162d18e39d0b5930d708ad5f assets/lazierae2/models/block/etcher_active.json
+816aad50b85779683365c4046ecc6196b101cfb9 assets/lazierae2/models/block/maintainer.json
+b0416ae4f464b072070c36f3f761e271fa938e80 assets/lazierae2/models/block/maintainer_active.json
 ea1a14374c11f7d4d0ba8960c3f4b927056cbee0 assets/lazierae2/models/item/aggregator.json
 2ee0aa4e8678d31f7ef1f6ddfda2ba92dcb0eea9 assets/lazierae2/models/item/carbonic_fluix_dust.json
 00752141d556a625621471808baf34dd06b2bb1c assets/lazierae2/models/item/centrifuge.json
@@ -20,6 +23,7 @@ ea1a14374c11f7d4d0ba8960c3f4b927056cbee0 assets/lazierae2/models/item/aggregator
 9a2b72cd1df733594fd7dd12902d57f7a2e5ac3b assets/lazierae2/models/item/fluix_steel_ingot.json
 e78f29cce725f5d419f86cc1c35f78f2b3c39f5d assets/lazierae2/models/item/growth_chamber.json
 11421fd63db166665618729013446ca11250af13 assets/lazierae2/models/item/logic_unit.json
+362d86366c3ecf3c2048e0732b888f3a4bfc3254 assets/lazierae2/models/item/maintainer.json
 3b980a4813899e1759112414bafd558dac124493 assets/lazierae2/models/item/parallel_printed.json
 9bb4df94036883976e176bc8bdbc2216b0229058 assets/lazierae2/models/item/parallel_processor.json
 88a8e95c182523b546c3dd2ac6b9041476e26cb3 assets/lazierae2/models/item/resonating_gem.json
