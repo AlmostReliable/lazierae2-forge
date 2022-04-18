@@ -1,8 +1,8 @@
 package com.almostreliable.lazierae2.compat.crafttweaker;
 
-import com.almostreliable.lazierae2.content.machine.MachineType;
-import com.almostreliable.lazierae2.recipe.builder.MachineRecipeBuilder;
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.recipe.builder.ProcessorRecipeBuilder;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -15,15 +15,15 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 @SuppressWarnings("unused")
 @ZenRegister
 @Name("mods." + MOD_ID + ".Centrifuge")
-public class CentrifugeManager implements MachineRecipeManager {
+public class CentrifugeManager implements ProcessorRecipeManager {
 
     public static final CentrifugeManager INSTANCE = new CentrifugeManager();
 
     @Override
-    public MachineRecipe createRecipe(
+    public ProcessorRecipe createRecipe(
         ResourceLocation id, ItemStack output, int amount, Ingredient[] ingredients, int processTime, int energyCost
     ) {
-        return MachineRecipeBuilder
+        return ProcessorRecipeBuilder
             .centrifuge(output.getItem(), amount)
             .input(ingredients)
             .processingTime(processTime)
@@ -32,7 +32,7 @@ public class CentrifugeManager implements MachineRecipeManager {
     }
 
     @Override
-    public RecipeType<MachineRecipe> getRecipeType() {
-        return MachineType.CENTRIFUGE;
+    public RecipeType<ProcessorRecipe> getRecipeType() {
+        return ProcessorType.CENTRIFUGE;
     }
 }

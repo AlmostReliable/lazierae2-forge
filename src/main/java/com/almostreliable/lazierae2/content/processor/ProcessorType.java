@@ -1,10 +1,10 @@
-package com.almostreliable.lazierae2.content.machine;
+package com.almostreliable.lazierae2.content.processor;
 
 import com.almostreliable.lazierae2.core.Config;
-import com.almostreliable.lazierae2.core.Config.MachineConfig;
+import com.almostreliable.lazierae2.core.Config.ProcessorConfig;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
 import com.almostreliable.lazierae2.recipe.type.TripleInputRecipe;
 import net.minecraft.core.Registry;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import static com.almostreliable.lazierae2.core.Constants.*;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public enum MachineType implements RecipeType<MachineRecipe> {
+public enum ProcessorType implements RecipeType<ProcessorRecipe> {
 
     AGGREGATOR(
         AGGREGATOR_ID,
@@ -54,20 +54,20 @@ public enum MachineType implements RecipeType<MachineRecipe> {
 
     private final String id;
     private final int inputSlots;
-    private final Lazy<MachineConfig> machineConfig;
-    private final Supplier<? extends Supplier<MachineBlock>> itemProvider;
-    private final BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory;
-    private final Supplier<? extends Supplier<RecipeSerializer<MachineRecipe>>> recipeSerializer;
+    private final Lazy<ProcessorConfig> processorConfig;
+    private final Supplier<? extends Supplier<ProcessorBlock>> itemProvider;
+    private final BiFunction<ResourceLocation, ProcessorType, ProcessorRecipe> recipeFactory;
+    private final Supplier<? extends Supplier<RecipeSerializer<ProcessorRecipe>>> recipeSerializer;
 
-    MachineType(
-        String id, int inputSlots, Supplier<MachineConfig> machineConfig,
-        Supplier<? extends Supplier<MachineBlock>> itemProvider,
-        BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory,
-        Supplier<? extends Supplier<RecipeSerializer<MachineRecipe>>> recipeSerializer
+    ProcessorType(
+        String id, int inputSlots, Supplier<ProcessorConfig> processorConfig,
+        Supplier<? extends Supplier<ProcessorBlock>> itemProvider,
+        BiFunction<ResourceLocation, ProcessorType, ProcessorRecipe> recipeFactory,
+        Supplier<? extends Supplier<RecipeSerializer<ProcessorRecipe>>> recipeSerializer
     ) {
         this.id = id;
         this.inputSlots = inputSlots;
-        this.machineConfig = Lazy.of(machineConfig);
+        this.processorConfig = Lazy.of(processorConfig);
         this.itemProvider = itemProvider;
         this.recipeFactory = recipeFactory;
         this.recipeSerializer = recipeSerializer;
@@ -88,30 +88,30 @@ public enum MachineType implements RecipeType<MachineRecipe> {
     }
 
     public int getBaseProcessTime() {
-        return machineConfig.get().baseProcessTime.get();
+        return processorConfig.get().baseProcessTime.get();
     }
 
     public int getBaseEnergyCost() {
-        return machineConfig.get().baseEnergyUsage.get();
+        return processorConfig.get().baseEnergyUsage.get();
     }
 
     public int getUpgradeSlots() {
-        return machineConfig.get().upgradeSlots.get();
+        return processorConfig.get().upgradeSlots.get();
     }
 
     public int getBaseEnergyBuffer() {
-        return machineConfig.get().baseEnergyBuffer.get();
+        return processorConfig.get().baseEnergyBuffer.get();
     }
 
     public int getEnergyBufferAdd() {
-        return machineConfig.get().energyBufferAdd.get();
+        return processorConfig.get().energyBufferAdd.get();
     }
 
-    public BiFunction<ResourceLocation, MachineType, MachineRecipe> getRecipeFactory() {
+    public BiFunction<ResourceLocation, ProcessorType, ProcessorRecipe> getRecipeFactory() {
         return recipeFactory;
     }
 
-    public Supplier<RecipeSerializer<MachineRecipe>> getRecipeSerializer() {
+    public Supplier<RecipeSerializer<ProcessorRecipe>> getRecipeSerializer() {
         return recipeSerializer.get();
     }
 
@@ -120,10 +120,10 @@ public enum MachineType implements RecipeType<MachineRecipe> {
     }
 
     public double getProcessTimeMultiplier() {
-        return machineConfig.get().processTimeMulti.get();
+        return processorConfig.get().processTimeMulti.get();
     }
 
     public double getEnergyCostMultiplier() {
-        return machineConfig.get().energyUsageMulti.get();
+        return processorConfig.get().energyUsageMulti.get();
     }
 }

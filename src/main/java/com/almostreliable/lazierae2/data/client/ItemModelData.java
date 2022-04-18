@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.data.client;
 
-import com.almostreliable.lazierae2.content.machine.MachineType;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.core.Setup.Items;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -26,10 +26,10 @@ public class ItemModelData extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        existingParent(MachineType.AGGREGATOR.getId());
-        existingParent(MachineType.CENTRIFUGE.getId());
-        existingParent(MachineType.ENERGIZER.getId());
-        existingParent(MachineType.ETCHER.getId());
+        existingParent(ProcessorType.AGGREGATOR.getId());
+        existingParent(ProcessorType.CENTRIFUGE.getId());
+        existingParent(ProcessorType.ENERGIZER.getId());
+        existingParent(ProcessorType.ETCHER.getId());
         existingParent(MAINTAINER_ID);
 
         builder(Items.CARB_FLUIX_DUST);

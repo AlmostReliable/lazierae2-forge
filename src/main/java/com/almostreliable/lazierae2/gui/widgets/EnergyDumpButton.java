@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.gui.widgets;
 
-import com.almostreliable.lazierae2.gui.MachineScreen;
+import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.network.EnergyDumpPacket;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
@@ -18,7 +18,7 @@ public class EnergyDumpButton extends GenericButton {
     private final Tooltip tooltip = setupTooltip();
 
     public EnergyDumpButton(
-        MachineScreen screen
+        ProcessorScreen screen
     ) {
         super(screen, POS_X, POS_Y, BUTTON_WIDTH, BUTTON_HEIGHT, TEXTURE_ID);
     }

@@ -1,7 +1,7 @@
 package com.almostreliable.lazierae2.recipe.builder;
 
-import com.almostreliable.lazierae2.content.machine.MachineType;
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -17,68 +17,68 @@ import java.util.function.Consumer;
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public final class MachineRecipeBuilder {
+public final class ProcessorRecipeBuilder {
 
     private final ItemStack output;
-    private final MachineType recipeType;
+    private final ProcessorType recipeType;
     NonNullList<Ingredient> inputs = NonNullList.create();
     int processingTime;
     int energyCost;
 
-    private MachineRecipeBuilder(MachineType recipeType, ItemLike output, int outputCount) {
+    private ProcessorRecipeBuilder(ProcessorType recipeType, ItemLike output, int outputCount) {
         this.recipeType = recipeType;
         this.output = new ItemStack(output, outputCount);
     }
 
-    public static MachineRecipeBuilder aggregator(ItemLike output, int outputCount) {
-        return new MachineRecipeBuilder(MachineType.AGGREGATOR, output, outputCount);
+    public static ProcessorRecipeBuilder aggregator(ItemLike output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.AGGREGATOR, output, outputCount);
     }
 
-    public static MachineRecipeBuilder aggregator(ItemLike output) {
+    public static ProcessorRecipeBuilder aggregator(ItemLike output) {
         return aggregator(output, 1);
     }
 
-    public static MachineRecipeBuilder centrifuge(ItemLike output, int outputCount) {
-        return new MachineRecipeBuilder(MachineType.CENTRIFUGE, output, outputCount);
+    public static ProcessorRecipeBuilder centrifuge(ItemLike output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.CENTRIFUGE, output, outputCount);
     }
 
-    public static MachineRecipeBuilder centrifuge(ItemLike output) {
+    public static ProcessorRecipeBuilder centrifuge(ItemLike output) {
         return centrifuge(output, 1);
     }
 
-    public static MachineRecipeBuilder energizer(ItemLike output, int outputCount) {
-        return new MachineRecipeBuilder(MachineType.ENERGIZER, output, outputCount);
+    public static ProcessorRecipeBuilder energizer(ItemLike output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.ENERGIZER, output, outputCount);
     }
 
-    public static MachineRecipeBuilder energizer(ItemLike output) {
+    public static ProcessorRecipeBuilder energizer(ItemLike output) {
         return energizer(output, 1);
     }
 
-    public static MachineRecipeBuilder etcher(ItemLike output, int outputCount) {
-        return new MachineRecipeBuilder(MachineType.ETCHER, output, outputCount);
+    public static ProcessorRecipeBuilder etcher(ItemLike output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.ETCHER, output, outputCount);
     }
 
-    public static MachineRecipeBuilder etcher(ItemLike output) {
+    public static ProcessorRecipeBuilder etcher(ItemLike output) {
         return etcher(output, 1);
     }
 
-    public MachineRecipeBuilder input(Ingredient input) {
+    public ProcessorRecipeBuilder input(Ingredient input) {
         if (inputs.size() < 3) inputs.add(input);
         return this;
     }
 
-    public MachineRecipeBuilder input(Ingredient... inputs) {
+    public ProcessorRecipeBuilder input(Ingredient... inputs) {
         for (var input : inputs) {
             input(input);
         }
         return this;
     }
 
-    public MachineRecipeBuilder input(ItemLike input) {
+    public ProcessorRecipeBuilder input(ItemLike input) {
         return input(Ingredient.of(input));
     }
 
-    public MachineRecipeBuilder input(TagKey<Item> input) {
+    public ProcessorRecipeBuilder input(TagKey<Item> input) {
         return input(Ingredient.of(input));
     }
 
@@ -90,7 +90,7 @@ public final class MachineRecipeBuilder {
      * @param ticks The processing time of the recipe.
      * @return The builder instance.
      */
-    public MachineRecipeBuilder processingTime(int ticks) {
+    public ProcessorRecipeBuilder processingTime(int ticks) {
         processingTime = ticks;
         return this;
     }
@@ -105,7 +105,7 @@ public final class MachineRecipeBuilder {
      * @param energy The energy cost of the recipe.
      * @return The builder instance.
      */
-    public MachineRecipeBuilder energyCost(int energy) {
+    public ProcessorRecipeBuilder energyCost(int energy) {
         energyCost = energy;
         return this;
     }
@@ -114,13 +114,13 @@ public final class MachineRecipeBuilder {
         var outputId = output.getItem().getRegistryName();
         var modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
             outputId.getNamespace();
-        var recipeId = new ResourceLocation(modID, f("{}/{}", getMachineId(), outputId.getPath()));
+        var recipeId = new ResourceLocation(modID, f("{}/{}", getProcessorId(), outputId.getPath()));
         validateProcessingTime();
         validateEnergyCost();
-        consumer.accept(new FinishedMachineRecipe(this, recipeId));
+        consumer.accept(new FinishedProcessorRecipe(this, recipeId));
     }
 
-    public MachineRecipe build(ResourceLocation id) {
+    public ProcessorRecipe build(ResourceLocation id) {
         validateProcessingTime();
         validateEnergyCost();
         var recipe = recipeType.getRecipeFactory().apply(id, recipeType);
@@ -139,7 +139,7 @@ public final class MachineRecipeBuilder {
         if (energyCost == 0) energyCost = recipeType.getBaseEnergyCost();
     }
 
-    String getMachineId() {
+    String getProcessorId() {
         return recipeType.getId();
     }
 
@@ -147,7 +147,7 @@ public final class MachineRecipeBuilder {
         return output;
     }
 
-    MachineType getRecipeType() {
+    ProcessorType getRecipeType() {
         return recipeType;
     }
 }

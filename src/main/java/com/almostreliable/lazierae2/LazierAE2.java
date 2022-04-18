@@ -2,14 +2,14 @@ package com.almostreliable.lazierae2;
 
 import appeng.api.upgrades.Upgrades;
 import appeng.core.definitions.AEItems;
-import com.almostreliable.lazierae2.content.machine.MachineType;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.data.DataGeneration;
-import com.almostreliable.lazierae2.gui.MachineScreen;
 import com.almostreliable.lazierae2.gui.MaintainerScreen;
+import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -42,22 +42,22 @@ public class LazierAE2 {
         // add compatibility to acceleration card for own blocks
         Upgrades.add(AEItems.SPEED_CARD.asItem(),
             Blocks.AGGREGATOR.get().asItem(),
-            MachineType.AGGREGATOR.getUpgradeSlots()
+            ProcessorType.AGGREGATOR.getUpgradeSlots()
         );
         Upgrades.add(AEItems.SPEED_CARD.asItem(),
             Blocks.CENTRIFUGE.get().asItem(),
-            MachineType.CENTRIFUGE.getUpgradeSlots()
+            ProcessorType.CENTRIFUGE.getUpgradeSlots()
         );
         Upgrades.add(AEItems.SPEED_CARD.asItem(),
             Blocks.ENERGIZER.get().asItem(),
-            MachineType.ENERGIZER.getUpgradeSlots()
+            ProcessorType.ENERGIZER.getUpgradeSlots()
         );
-        Upgrades.add(AEItems.SPEED_CARD.asItem(), Blocks.ETCHER.get().asItem(), MachineType.ETCHER.getUpgradeSlots());
+        Upgrades.add(AEItems.SPEED_CARD.asItem(), Blocks.ETCHER.get().asItem(), ProcessorType.ETCHER.getUpgradeSlots());
     }
 
     private static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            MenuScreens.register(Menus.MACHINE.get(), MachineScreen::new);
+            MenuScreens.register(Menus.PROCESSOR.get(), ProcessorScreen::new);
             MenuScreens.register(Menus.MAINTAINER.get(), MaintainerScreen::new);
         });
     }

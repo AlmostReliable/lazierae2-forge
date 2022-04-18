@@ -12,12 +12,12 @@ import java.util.Objects;
 import static com.almostreliable.lazierae2.core.Constants.*;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public class FinishedMachineRecipe implements FinishedRecipe {
+public class FinishedProcessorRecipe implements FinishedRecipe {
 
-    private final MachineRecipeBuilder builder;
+    private final ProcessorRecipeBuilder builder;
     private final ResourceLocation id;
 
-    FinishedMachineRecipe(MachineRecipeBuilder builder, ResourceLocation id) {
+    FinishedProcessorRecipe(ProcessorRecipeBuilder builder, ResourceLocation id) {
         this.builder = builder;
         this.id = id;
     }
@@ -29,7 +29,7 @@ public class FinishedMachineRecipe implements FinishedRecipe {
         var output = new JsonObject();
         output.addProperty(RECIPE_ITEM, Objects.requireNonNull(
             builder.getOutput().getItem().getRegistryName(),
-            () -> f("Output in {}-recipe was not defined!", builder.getMachineId())
+            () -> f("Output in {}-recipe was not defined!", builder.getProcessorId())
         ).toString());
         if (builder.getOutput().getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.getOutput().getCount());
         json.add(RECIPE_OUTPUT, output);

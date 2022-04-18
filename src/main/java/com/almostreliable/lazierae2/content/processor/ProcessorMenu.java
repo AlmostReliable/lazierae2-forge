@@ -1,7 +1,7 @@
-package com.almostreliable.lazierae2.content.machine;
+package com.almostreliable.lazierae2.content.processor;
 
 import com.almostreliable.lazierae2.component.EnergyHandler;
-import com.almostreliable.lazierae2.component.InventoryHandler.MachineInventory;
+import com.almostreliable.lazierae2.component.InventoryHandler.ProcessorInventory;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.inventory.OutputSlot;
@@ -24,14 +24,14 @@ import java.util.stream.IntStream;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public class MachineMenu extends GenericMenu<MachineEntity> {
+public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
 
-    private MachineInventory machineInventory;
+    private ProcessorInventory processorInventory;
 
-    public MachineMenu(int id, MachineEntity entity, Inventory menuInventory) {
-        super(Menus.MACHINE.get(), id, entity, menuInventory);
+    public ProcessorMenu(int id, ProcessorEntity entity, Inventory menuInventory) {
+        super(Menus.PROCESSOR.get(), id, entity, menuInventory);
         entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(inv -> {
-            machineInventory = (MachineInventory) inv;
+            processorInventory = (ProcessorInventory) inv;
             setupContainerInventory();
         });
         setupPlayerInventory();
@@ -52,11 +52,11 @@ public class MachineMenu extends GenericMenu<MachineEntity> {
         stack = slotStack.copy();
 
         // decide where to put the item
-        if (index < machineInventory.getSlots()) {
-            // transfer item from machine to inventory
+        if (index < processorInventory.getSlots()) {
+            // transfer item from processor to inventory
             if (!moveItemStackTo(slotStack,
-                machineInventory.getSlots(),
-                machineInventory.getSlots() + PLAYER_INV_SIZE,
+                processorInventory.getSlots(),
+                processorInventory.getSlots() + PLAYER_INV_SIZE,
                 false
             )) {
                 return ItemStack.EMPTY;
@@ -65,7 +65,7 @@ public class MachineMenu extends GenericMenu<MachineEntity> {
             // transfer item from inventory to upgrade slot
             if (!moveItemStackTo(slotStack, 0, 1, false)) return ItemStack.EMPTY;
         } else {
-            // transfer item from inventory to machine input slots
+            // transfer item from inventory to processor input slots
             var inputSlot = inputsContainItem(stack);
             if (slotStack.isStackable() && inputSlot != null && (inputSlot.getItem().getCount() <
                 Math.min(inputSlot.getMaxStackSize(), inputSlot.getItem().getMaxStackSize()))) {
@@ -73,7 +73,7 @@ public class MachineMenu extends GenericMenu<MachineEntity> {
                 mergeItemStackTo(stack, inputSlot);
             } else {
                 // transfer item stack if there are empty inventory slots
-                if (!moveItemStackTo(slotStack, 2, machineInventory.getSlots(), false)) return ItemStack.EMPTY;
+                if (!moveItemStackTo(slotStack, 2, processorInventory.getSlots(), false)) return ItemStack.EMPTY;
             }
         }
 
@@ -97,15 +97,15 @@ public class MachineMenu extends GenericMenu<MachineEntity> {
 
     @Override
     protected void setupContainerInventory() {
-        var inputSlots = machineInventory.getInputSlots();
-        addSlot(new UpgradeSlot(this, machineInventory, MachineInventory.UPGRADE_SLOT, 8, 50));
-        addSlot(new OutputSlot(machineInventory, MachineInventory.OUTPUT_SLOT, 116, 29));
+        var inputSlots = processorInventory.getInputSlots();
+        addSlot(new UpgradeSlot(this, processorInventory, ProcessorInventory.UPGRADE_SLOT, 8, 50));
+        addSlot(new OutputSlot(processorInventory, ProcessorInventory.OUTPUT_SLOT, 116, 29));
         if (inputSlots == 1) {
-            addSlot(new SlotItemHandler(machineInventory, 2, 44, 29));
+            addSlot(new SlotItemHandler(processorInventory, 2, 44, 29));
         } else if (inputSlots == 3) {
-            addSlot(new SlotItemHandler(machineInventory, 2, 44, 8));
-            addSlot(new SlotItemHandler(machineInventory, 3, 44, 29));
-            addSlot(new SlotItemHandler(machineInventory, 4, 44, 50));
+            addSlot(new SlotItemHandler(processorInventory, 2, 44, 8));
+            addSlot(new SlotItemHandler(processorInventory, 3, 44, 29));
+            addSlot(new SlotItemHandler(processorInventory, 4, 44, 50));
         } else {
             throw new IllegalArgumentException(f("Invalid input slot count: {}", inputSlots));
         }
@@ -143,8 +143,8 @@ public class MachineMenu extends GenericMenu<MachineEntity> {
     @Nullable
     private Slot inputsContainItem(ItemStack stack) {
         return IntStream
-            .range(MachineInventory.NON_INPUT_SLOTS,
-                machineInventory.getInputSlots() + MachineInventory.NON_INPUT_SLOTS
+            .range(ProcessorInventory.NON_INPUT_SLOTS,
+                processorInventory.getInputSlots() + ProcessorInventory.NON_INPUT_SLOTS
             )
             .mapToObj(slots::get)
             .filter(slot -> ItemStack.isSameItemSameTags(slot.getItem(), stack))
@@ -177,7 +177,7 @@ public class MachineMenu extends GenericMenu<MachineEntity> {
     }
 
     public int getUpgradeCount() {
-        return machineInventory.getUpgradeCount();
+        return processorInventory.getUpgradeCount();
     }
 
     public int getEnergyStored() {

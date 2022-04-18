@@ -1,7 +1,7 @@
 package com.almostreliable.lazierae2.inventory;
 
-import com.almostreliable.lazierae2.content.machine.MachineEntity;
-import com.almostreliable.lazierae2.content.machine.MachineMenu;
+import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
+import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
 import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -11,10 +11,10 @@ import javax.annotation.Nonnull;
 
 public class UpgradeSlot extends SlotItemHandler {
 
-    private final MachineEntity tile;
+    private final ProcessorEntity tile;
 
     public UpgradeSlot(
-        MachineMenu parent, IItemHandler itemHandler, int index, int pX, int pY
+        ProcessorMenu parent, IItemHandler itemHandler, int index, int pX, int pY
     ) {
         super(itemHandler, index, pX, pY);
         tile = parent.entity;
@@ -33,7 +33,7 @@ public class UpgradeSlot extends SlotItemHandler {
 
     @Override
     public int getMaxStackSize() {
-        return tile.getMachineType().getUpgradeSlots();
+        return tile.getProcessorType().getUpgradeSlots();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.almostreliable.lazierae2.data.client;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
-import com.almostreliable.lazierae2.content.machine.MachineBlock;
+import com.almostreliable.lazierae2.content.processor.ProcessorBlock;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.data.DataGenerator;
@@ -29,19 +29,19 @@ public class BlockStateData extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        registerMachine(Blocks.AGGREGATOR.get());
-        registerMachine(Blocks.CENTRIFUGE.get());
-        registerMachine(Blocks.ENERGIZER.get());
-        registerMachine(Blocks.ETCHER.get());
+        registerProcessor(Blocks.AGGREGATOR.get());
+        registerProcessor(Blocks.CENTRIFUGE.get());
+        registerProcessor(Blocks.ENERGIZER.get());
+        registerProcessor(Blocks.ETCHER.get());
         registerBlock(MAINTAINER_ID, Blocks.MAINTAINER.get());
     }
 
     /**
-     * Handles the registration of the machine blockstate data.
+     * Handles the registration of the processor blockstate data.
      *
-     * @param block the machine block to register
+     * @param block the processor block to register
      */
-    private void registerMachine(MachineBlock block) {
+    private void registerProcessor(ProcessorBlock block) {
         registerBlock(block.getId(), block);
     }
 
@@ -55,7 +55,7 @@ public class BlockStateData extends BlockStateProvider {
      * @param block the generic block to register
      */
     private void registerBlock(String id, GenericBlock block) {
-        var sideTexture = new ResourceLocation(MOD_ID, "block/machine");
+        var sideTexture = new ResourceLocation(MOD_ID, "block/processor");
         var inactiveTexture = new ResourceLocation(MOD_ID, f("block/{}", id));
         var activeTexture = new ResourceLocation(MOD_ID, f("block/{}_active", id));
 
@@ -70,7 +70,7 @@ public class BlockStateData extends BlockStateProvider {
     /**
      * Generates the blockstate variants depending on the facing direction of the block.
      *
-     * @param block         the machine block to generate the variants for
+     * @param block         the processor block to generate the variants for
      * @param modelFunction the function to get the correct model file
      */
     private void orientedBlock(

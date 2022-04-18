@@ -1,7 +1,7 @@
 package com.almostreliable.lazierae2.compat.jei;
 
-import com.almostreliable.lazierae2.content.machine.MachineMenu;
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
@@ -13,7 +13,7 @@ import java.util.List;
  * Default implementation taken from JEIs
  * BasicRecipeTransferInfo.
  */
-public class MachineRecipeInfo implements IRecipeTransferInfo<MachineMenu, MachineRecipe> {
+public class ProcessorRecipeInfo implements IRecipeTransferInfo<ProcessorMenu, ProcessorRecipe> {
 
     private final ResourceLocation recipeCategoryUid;
     private final int recipeSlotStart;
@@ -21,7 +21,7 @@ public class MachineRecipeInfo implements IRecipeTransferInfo<MachineMenu, Machi
     private final int inventorySlotStart;
     private final int inventorySlotCount;
 
-    MachineRecipeInfo(
+    ProcessorRecipeInfo(
         ResourceLocation recipeCategoryUid, int recipeSlotStart, int recipeSlotCount, int inventorySlotStart,
         int inventorySlotCount
     ) {
@@ -33,13 +33,13 @@ public class MachineRecipeInfo implements IRecipeTransferInfo<MachineMenu, Machi
     }
 
     @Override
-    public Class<MachineMenu> getContainerClass() {
-        return MachineMenu.class;
+    public Class<ProcessorMenu> getContainerClass() {
+        return ProcessorMenu.class;
     }
 
     @Override
-    public Class<MachineRecipe> getRecipeClass() {
-        return MachineRecipe.class;
+    public Class<ProcessorRecipe> getRecipeClass() {
+        return ProcessorRecipe.class;
     }
 
     @Override
@@ -48,12 +48,12 @@ public class MachineRecipeInfo implements IRecipeTransferInfo<MachineMenu, Machi
     }
 
     @Override
-    public boolean canHandle(MachineMenu container, MachineRecipe recipe) {
-        return container.entity.getMachineType().getId().equals(recipeCategoryUid.getPath());
+    public boolean canHandle(ProcessorMenu container, ProcessorRecipe recipe) {
+        return container.entity.getProcessorType().getId().equals(recipeCategoryUid.getPath());
     }
 
     @Override
-    public List<Slot> getRecipeSlots(MachineMenu container, MachineRecipe recipe) {
+    public List<Slot> getRecipeSlots(ProcessorMenu container, ProcessorRecipe recipe) {
         List<Slot> slots = new ArrayList<>();
         for (var i = recipeSlotStart; i < recipeSlotStart + recipeSlotCount; i++) {
             var slot = container.getSlot(i);
@@ -63,7 +63,7 @@ public class MachineRecipeInfo implements IRecipeTransferInfo<MachineMenu, Machi
     }
 
     @Override
-    public List<Slot> getInventorySlots(MachineMenu container, MachineRecipe recipe) {
+    public List<Slot> getInventorySlots(ProcessorMenu container, ProcessorRecipe recipe) {
         List<Slot> slots = new ArrayList<>();
         for (var i = inventorySlotStart; i < inventorySlotStart + inventorySlotCount; i++) {
             var slot = container.getSlot(i);

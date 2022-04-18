@@ -1,7 +1,7 @@
 package com.almostreliable.lazierae2.gui;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
-import com.almostreliable.lazierae2.content.machine.MachineMenu;
+import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
 import com.almostreliable.lazierae2.gui.widgets.AutoExtractButton;
 import com.almostreliable.lazierae2.gui.widgets.EnergyDumpButton;
 import com.almostreliable.lazierae2.gui.widgets.IOControl;
@@ -18,13 +18,13 @@ import net.minecraft.world.entity.player.Inventory;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public class MachineScreen extends GenericScreen<MachineMenu> {
+public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
 
     public static final int TEXTURE_WIDTH = 178;
     public static final int TEXTURE_HEIGHT = 154;
     public static final int PROGRESS_WIDTH = 40;
     public static final int PROGRESS_HEIGHT = 27;
-    public static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/machine.png");
+    public static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/processor.png");
     public static final int SLOT_SIZE = 18;
     public static final int ENERGY_WIDTH = 2;
     private static final int ENERGY_HEIGHT = 58;
@@ -33,11 +33,11 @@ public class MachineScreen extends GenericScreen<MachineMenu> {
     private final Tooltip energyTooltip;
     private final Tooltip upgradeTooltip;
 
-    public MachineScreen(
-        MachineMenu menu, Inventory inventory, Component ignoredTitle
+    public ProcessorScreen(
+        ProcessorMenu menu, Inventory inventory, Component ignoredTitle
     ) {
         super(menu, inventory);
-        progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", menu.entity.getMachineType()));
+        progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", menu.entity.getProcessorType()));
         progressTooltip = setupProgressTooltip();
         energyTooltip = setupEnergyTooltip();
         upgradeTooltip = setupUpgradeTooltip();
@@ -62,8 +62,8 @@ public class MachineScreen extends GenericScreen<MachineMenu> {
         RenderSystem.setShaderTexture(0, TEXTURE);
         blit(stack, leftPos, topPos, 0, 0, TEXTURE_WIDTH - ENERGY_WIDTH, TEXTURE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
-        // upper and lower input slots for triple input machines
-        if (menu.entity.getMachineType().getInputSlots() == 3) {
+        // upper and lower input slots for triple input processors
+        if (menu.entity.getProcessorType().getInputSlots() == 3) {
             blit(stack, leftPos + 43, topPos + 7, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             blit(stack, leftPos + 43, topPos + 49, 43, 28, SLOT_SIZE, SLOT_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
@@ -196,7 +196,7 @@ public class MachineScreen extends GenericScreen<MachineMenu> {
                     .builder()
                     .keyValue("upgrade.current",
                         menu::getUpgradeCount,
-                        () -> menu.entity.getMachineType().getUpgradeSlots()
+                        () -> menu.entity.getProcessorType().getUpgradeSlots()
                     )
                     .keyValue("upgrade.additional", this::getAdditionalUpgradeEnergy))
                 .otherwise(Tooltip
@@ -224,7 +224,7 @@ public class MachineScreen extends GenericScreen<MachineMenu> {
 
     private String getAdditionalUpgradeEnergy() {
         assert hoveredSlot != null;
-        var additional = menu.entity.getMachineType().getEnergyBufferAdd() * menu.getUpgradeCount();
+        var additional = menu.entity.getProcessorType().getEnergyBufferAdd() * menu.getUpgradeCount();
         return TextUtil.formatEnergy(additional, 1, 2, Screen.hasShiftDown(), true);
     }
 }

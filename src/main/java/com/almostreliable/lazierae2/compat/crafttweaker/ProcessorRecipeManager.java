@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.compat.crafttweaker;
 
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
@@ -16,8 +16,8 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @ZenRegister
-@Name("mods." + MOD_ID + ".MachineRecipeManager")
-public interface MachineRecipeManager extends IRecipeManager<MachineRecipe> {
+@Name("mods." + MOD_ID + ".ProcessorRecipeManager")
+public interface ProcessorRecipeManager extends IRecipeManager<ProcessorRecipe> {
 
     @Method
     default void addRecipe(
@@ -32,7 +32,7 @@ public interface MachineRecipeManager extends IRecipeManager<MachineRecipe> {
         CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, ""));
     }
 
-    MachineRecipe createRecipe(
+    ProcessorRecipe createRecipe(
         ResourceLocation id, ItemStack output, int amount, Ingredient[] ingredients, int processTime, int energyCost
     );
 }

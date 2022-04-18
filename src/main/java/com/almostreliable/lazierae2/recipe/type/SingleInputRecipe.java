@@ -1,14 +1,14 @@
 package com.almostreliable.lazierae2.recipe.type;
 
-import com.almostreliable.lazierae2.content.machine.MachineType;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.Level;
 
-public class SingleInputRecipe extends MachineRecipe {
+public class SingleInputRecipe extends ProcessorRecipe {
 
-    public SingleInputRecipe(ResourceLocation id, MachineType machineType) {
-        super(id, machineType);
+    public SingleInputRecipe(ResourceLocation id, ProcessorType processorType) {
+        super(id, processorType);
     }
 
     @Override

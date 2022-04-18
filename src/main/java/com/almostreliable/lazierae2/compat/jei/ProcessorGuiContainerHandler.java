@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.compat.jei;
 
-import com.almostreliable.lazierae2.gui.MachineScreen;
+import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.IFocusFactory;
@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class MachineGuiContainerHandler implements IGuiContainerHandler<MachineScreen> {
+public class ProcessorGuiContainerHandler implements IGuiContainerHandler<ProcessorScreen> {
 
     private final int x;
     private final int y;
@@ -23,7 +23,7 @@ public class MachineGuiContainerHandler implements IGuiContainerHandler<MachineS
     private final int height;
     private final ResourceLocation[] categories;
 
-    MachineGuiContainerHandler(int x, int y, int width, int height, ResourceLocation... categories) {
+    ProcessorGuiContainerHandler(int x, int y, int width, int height, ResourceLocation... categories) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -33,17 +33,17 @@ public class MachineGuiContainerHandler implements IGuiContainerHandler<MachineS
 
     @Override
     public Collection<IGuiClickableArea> getGuiClickableAreas(
-        MachineScreen screen, double mX, double mY
+        ProcessorScreen screen, double mX, double mY
     ) {
         return Collections.singleton(createClickArea(screen, x, y, width, height, categories));
     }
 
     @OnlyIn(Dist.CLIENT)
     private IGuiClickableArea createClickArea(
-        MachineScreen screen, int x, int y, int width, int height, ResourceLocation... categories
+        ProcessorScreen screen, int x, int y, int width, int height, ResourceLocation... categories
     ) {
         var clickableArea = new Rect2i(x, y, width, height);
-        var type = screen.getMenu().entity.getMachineType();
+        var type = screen.getMenu().entity.getProcessorType();
 
         return new IGuiClickableArea() {
             @Override

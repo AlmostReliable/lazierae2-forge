@@ -7,7 +7,7 @@ public enum Constants {
     // mod info
     public static final String MOD_ID = "lazierae2";
     // block ids
-    public static final String MACHINE_ID = "machine";
+    public static final String PROCESSOR_ID = "processor";
     public static final String AGGREGATOR_ID = "aggregator";
     public static final String CENTRIFUGE_ID = "centrifuge";
     public static final String ENERGIZER_ID = "energizer";

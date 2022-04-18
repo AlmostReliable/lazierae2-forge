@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.content.machine;
+package com.almostreliable.lazierae2.content.processor;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
@@ -23,12 +23,12 @@ import java.util.List;
 
 import static com.almostreliable.lazierae2.core.Constants.*;
 
-public class MachineBlock extends GenericBlock {
+public class ProcessorBlock extends GenericBlock {
 
-    private final MachineType machineType;
+    private final ProcessorType processorType;
 
-    public MachineBlock(MachineType machineType) {
-        this.machineType = machineType;
+    public ProcessorBlock(ProcessorType processorType) {
+        this.processorType = processorType;
     }
 
     @Override
@@ -36,8 +36,8 @@ public class MachineBlock extends GenericBlock {
         Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack
     ) {
         var entity = level.getBlockEntity(pos);
-        if (!level.isClientSide && entity instanceof MachineEntity machine) {
-            machine.playerPlace(stack);
+        if (!level.isClientSide && entity instanceof ProcessorEntity processor) {
+            processor.playerPlace(stack);
         }
         super.setPlacedBy(level, pos, state, placer, stack);
     }
@@ -45,8 +45,8 @@ public class MachineBlock extends GenericBlock {
     @Override
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         var entity = level.getBlockEntity(pos);
-        if (!level.isClientSide && entity instanceof MachineEntity machine && !player.isCreative()) {
-            machine.playerDestroy();
+        if (!level.isClientSide && entity instanceof ProcessorEntity processor && !player.isCreative()) {
+            processor.playerDestroy();
         }
         super.playerWillDestroy(level, pos, state, player);
     }
@@ -71,7 +71,7 @@ public class MachineBlock extends GenericBlock {
             var finalSideConfig = sideConfig;
             tooltip.addAll(Tooltip
                 .builder()
-                .keyValue("item.upgrades", () -> finalUpgrades, machineType::getUpgradeSlots)
+                .keyValue("item.upgrades", () -> finalUpgrades, processorType::getUpgradeSlots)
                 .keyValue("item.energy", () -> TextUtil.formatEnergy(finalEnergy, 1, 3, Screen.hasShiftDown(), true))
                 .line(() -> finalSideConfig, "item.side_config", ChatFormatting.YELLOW)
                 .build());
@@ -83,7 +83,7 @@ public class MachineBlock extends GenericBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new MachineEntity(pos, state);
+        return new ProcessorEntity(pos, state);
     }
 
     @Nullable
@@ -93,8 +93,8 @@ public class MachineBlock extends GenericBlock {
     ) {
         if (level.isClientSide) return null;
         return (entityLevel, entityState, entityType, entity) -> {
-            if (entity instanceof MachineEntity machine) {
-                machine.tick();
+            if (entity instanceof ProcessorEntity processor) {
+                processor.tick();
             }
         };
     }
@@ -105,7 +105,7 @@ public class MachineBlock extends GenericBlock {
         return registryName.getPath();
     }
 
-    MachineType getMachineType() {
-        return machineType;
+    ProcessorType getProcessorType() {
+        return processorType;
     }
 }

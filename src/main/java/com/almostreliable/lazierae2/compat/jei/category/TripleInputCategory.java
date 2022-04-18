@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.compat.jei.category;
 
-import com.almostreliable.lazierae2.gui.MachineScreen;
+import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.recipe.type.TripleInputRecipe;
 import com.almostreliable.lazierae2.util.GuiUtil;
 import com.almostreliable.lazierae2.util.GuiUtil.ANCHOR;
@@ -16,21 +16,21 @@ import net.minecraft.world.level.ItemLike;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public abstract class TripleInputCategory extends MachineCategory<TripleInputRecipe> {
+public abstract class TripleInputCategory extends ProcessorCategory<TripleInputRecipe> {
 
     private final IDrawable background;
     private final IDrawable slot;
 
     TripleInputCategory(IGuiHelper guiHelper, String id, ItemLike iconProvider) {
         super(guiHelper, id, iconProvider);
-        var backgroundTexture = MachineScreen.TEXTURE;
+        var backgroundTexture = ProcessorScreen.TEXTURE;
         background = guiHelper
             .drawableBuilder(backgroundTexture, 42, 6, 92, 62)
-            .setTextureSize(MachineScreen.TEXTURE_WIDTH, MachineScreen.TEXTURE_HEIGHT)
+            .setTextureSize(ProcessorScreen.TEXTURE_WIDTH, ProcessorScreen.TEXTURE_HEIGHT)
             .build();
         slot = guiHelper
-            .drawableBuilder(backgroundTexture, 43, 28, MachineScreen.SLOT_SIZE, MachineScreen.SLOT_SIZE)
-            .setTextureSize(MachineScreen.TEXTURE_WIDTH, MachineScreen.TEXTURE_HEIGHT)
+            .drawableBuilder(backgroundTexture, 43, 28, ProcessorScreen.SLOT_SIZE, ProcessorScreen.SLOT_SIZE)
+            .setTextureSize(ProcessorScreen.TEXTURE_WIDTH, ProcessorScreen.TEXTURE_HEIGHT)
             .build();
     }
 
