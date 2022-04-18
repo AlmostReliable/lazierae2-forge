@@ -229,6 +229,10 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             }
         }
 
+        public Request get(int slot) {
+            return requests[slot];
+        }
+
         public boolean matches(int slot, AEKey what) {
             return what.matches(GenericStack.fromItemStack(requests[slot].stack));
         }
@@ -242,10 +246,6 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             var stack = requests[slot].stack.copy();
             stack.setCount(count);
             return Objects.requireNonNull(GenericStack.fromItemStack(stack));
-        }
-
-        public boolean isRequesting(int slot) {
-            return !requests[slot].stack.isEmpty();
         }
 
         public void populateWatcher(IStackWatcher watcher) {
@@ -280,26 +280,13 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
         }
 
         public boolean isRequesting() {
-            for (var i = 0; i < slots; i++) {
-                if (isRequesting(i)) return true;
+            for (Request request : requests) {
+                if (request.isRequesting()) return true;
             }
             return false;
         }
 
-        @SuppressWarnings({"ClassCanBeRecord", "EqualsAndHashcode"})
-        private static final class Request {
-
-            private final boolean state;
-            private final ItemStack stack;
-            private final long count;
-            private final long batch;
-
-            private Request(boolean state, ItemStack stack, long count, long batch) {
-                this.state = state;
-                this.stack = stack;
-                this.count = count;
-                this.batch = batch;
-            }
+        public record Request(boolean state, ItemStack stack, long count, long batch) {
 
             private static Request deserializeNBT(CompoundTag tag) {
                 return new Request(
@@ -323,6 +310,10 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
                 tag.putInt("count", (int) count);
                 tag.putInt("batch", (int) batch);
                 return tag;
+            }
+
+            public boolean isRequesting() {
+                return !stack.isEmpty();
             }
         }
     }

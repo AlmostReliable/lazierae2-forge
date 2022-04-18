@@ -1,0 +1,20 @@
+@startuml
+
+[*] --> IdleState
+IdleState --> ExportSlotState : * buffer amount > 0
+IdleState --> RequestCraftState : * requesting & buffer amount == 0
+IdleState --> IdleState : * !ExportSlotState && !RequestCraftState
+ExportSlotState --> ExportSlotState : * remaining > 0
+ExportSlotState --> RequestCraftState : * remaining == 0
+RequestCraftState --> CraftingPlanState
+CraftingPlanState --> CraftingLinkState
+CraftingPlanState --> CraftingPlanState : * if not done
+CraftingLinkState --> CraftingLinkState
+CraftingLinkState --> ExportSlotState : * is done
+
+ExportSlotState --> [*]
+RequestCraftState --> [*] : * if no crafting needed
+CraftingPlanState --> [*] : * if cancelled
+CraftingLinkState --> [*] : * if cancelled
+
+@enduml
