@@ -1,60 +1,50 @@
-package com.almostreliable.lazierae2.multiblock;
+package com.almostreliable.lazierae2.content.assembler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractAssemblerBlock extends Block {
+public abstract class AssemblerBlock extends Block {
+
     public static final OptionalDirectionProperty CTRL_HORIZONTAL = OptionalDirectionProperty.HORIZONTAL;
     public static final OptionalDirectionProperty CTRL_VERTICAL = OptionalDirectionProperty.VERTICAL;
     public static final BooleanProperty VALID = BooleanProperty.create("valid");
 
-    public AbstractAssemblerBlock(Properties props) {
+    protected AssemblerBlock(Properties props) {
         super(props);
-        this.registerDefaultState(this
-            .getStateDefinition()
-            .any()
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState()
             .setValue(CTRL_HORIZONTAL, OptionalDirection.NONE)
             .setValue(CTRL_VERTICAL, OptionalDirection.NONE)
-            .setValue(VALID, false));
+            .setValue(VALID, false);
     }
 
     @Override
-    public InteractionResult use(
-        BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult hit
-    ) {
-        if (level.isClientSide() || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
-            return super.use(blockState, level, blockPos, player, hand, hit);
-        }
-
-        OptionalDirection horizontalDirection = blockState.getValue(CTRL_HORIZONTAL);
-        OptionalDirection verticalDirection = blockState.getValue(CTRL_VERTICAL);
-
-        Tuple<BlockState, BlockPos> found = findControllerBlockState(level,
-            blockPos,
-            horizontalDirection,
-            verticalDirection
-        );
-        // TODO open guy
-
-        return InteractionResult.CONSUME;
+    protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
+        builder.add(CTRL_HORIZONTAL, CTRL_VERTICAL, VALID);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void onRemove(BlockState oldState, Level level, BlockPos blockPos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.isAir()) {
-            Tuple<BlockState, BlockPos> controllerTuple = findControllerBlockState(level,
-                blockPos,
+            var controllerTuple = findControllerBlockState(level,
+                pos,
                 oldState.getValue(CTRL_HORIZONTAL),
                 oldState.getValue(CTRL_VERTICAL)
             );
@@ -64,27 +54,45 @@ public abstract class AbstractAssemblerBlock extends Block {
         }
     }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public InteractionResult use(
+        BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
+    ) {
+        if (level.isClientSide() || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
+            return super.use(state, level, pos, player, hand, hit);
+        }
+
+        var horizontalDirection = state.getValue(CTRL_HORIZONTAL);
+        var verticalDirection = state.getValue(CTRL_VERTICAL);
+
+        var found = findControllerBlockState(level, pos, horizontalDirection, verticalDirection);
+        // TODO open gui
+
+        return InteractionResult.CONSUME;
+    }
+
     @Nullable
     public Tuple<BlockState, BlockPos> findControllerBlockState(
-        Level level, BlockPos blockPos, OptionalDirection horizontalDirection, OptionalDirection verticalDirection
+        Level level, BlockPos pos, OptionalDirection horizontalDirection, OptionalDirection verticalDirection
     ) {
         if (horizontalDirection == OptionalDirection.NONE && verticalDirection == OptionalDirection.NONE) {
             return null;
         }
 
-        BlockPos.MutableBlockPos mutable = blockPos.mutable();
-        for (int i = 0; i < ControllerBlock.MAX_SIZE; i++) {
+        var mutable = pos.mutable();
+        for (var i = 0; i < ControllerBlock.MAX_SIZE; i++) {
             horizontalDirection.relative(mutable);
             verticalDirection.relative(mutable);
 
-            BlockState relativeBlockState = level.getBlockState(mutable);
+            var relativeBlockState = level.getBlockState(mutable);
             if (relativeBlockState.getBlock() instanceof ControllerBlock) {
                 return new Tuple<>(relativeBlockState, mutable.immutable());
             }
 
-            if (relativeBlockState.getBlock() instanceof AbstractAssemblerBlock) {
-                OptionalDirection horizontal = relativeBlockState.getValue(CTRL_HORIZONTAL);
-                OptionalDirection vertical = relativeBlockState.getValue(CTRL_VERTICAL);
+            if (relativeBlockState.getBlock() instanceof AssemblerBlock) {
+                var horizontal = relativeBlockState.getValue(CTRL_HORIZONTAL);
+                var vertical = relativeBlockState.getValue(CTRL_VERTICAL);
                 return findControllerBlockState(level, mutable, horizontal, vertical);
             }
         }
@@ -92,17 +100,17 @@ public abstract class AbstractAssemblerBlock extends Block {
     }
 
     public BlockState createValidBlockState(BlockPos blockPos, BlockPos lookPos) {
-        OptionalDirection horizontalOffset = getHorizontalOffset(blockPos, lookPos);
-        OptionalDirection verticalOffset = getVerticalOffset(blockPos, lookPos);
+        var horizontalOffset = getHorizontalOffset(blockPos, lookPos);
+        var verticalOffset = getVerticalOffset(blockPos, lookPos);
 
         return defaultBlockState()
-            .setValue(AbstractAssemblerBlock.CTRL_HORIZONTAL, horizontalOffset)
-            .setValue(AbstractAssemblerBlock.CTRL_VERTICAL, verticalOffset)
-            .setValue(AbstractAssemblerBlock.VALID, true);
+            .setValue(CTRL_HORIZONTAL, horizontalOffset)
+            .setValue(CTRL_VERTICAL, verticalOffset)
+            .setValue(VALID, true);
     }
 
-    public boolean isValid(BlockState blockState) {
-        return blockState.getBlock() instanceof AbstractAssemblerBlock && blockState.getValue(VALID);
+    public boolean isValid(BlockState state) {
+        return state.getBlock() instanceof AssemblerBlock && state.getValue(VALID);
     }
 
     protected OptionalDirection getVerticalOffset(BlockPos blockPos, BlockPos lookPos) {
@@ -131,10 +139,5 @@ public abstract class AbstractAssemblerBlock extends Block {
         }
 
         return OptionalDirection.WEST;
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(CTRL_HORIZONTAL, CTRL_VERTICAL, VALID);
     }
 }

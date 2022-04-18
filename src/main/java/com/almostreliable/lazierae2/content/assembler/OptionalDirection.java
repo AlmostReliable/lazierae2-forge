@@ -1,14 +1,16 @@
-package com.almostreliable.lazierae2.multiblock;
+package com.almostreliable.lazierae2.content.assembler;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 
 import javax.annotation.Nullable;
 
 public enum OptionalDirection implements StringRepresentable {
+
     NONE("none", null),
     UP("up", Direction.UP),
     DOWN("down", Direction.DOWN),
@@ -18,16 +20,15 @@ public enum OptionalDirection implements StringRepresentable {
     WEST("west", Direction.WEST);
 
     private static final BiMap<OptionalDirection, Direction> OPT_TO_DIR = HashBiMap.create();
-
-    static {
-        for (OptionalDirection value : OptionalDirection.values()) {
-            OPT_TO_DIR.put(value, value.direction);
-        }
-    }
-
     @Nullable
     private final Direction direction;
     private final String name;
+
+    static {
+        for (var value : values()) {
+            OPT_TO_DIR.put(value, value.direction);
+        }
+    }
 
     OptionalDirection(String name, @Nullable Direction direction) {
         this.name = name;
@@ -44,23 +45,23 @@ public enum OptionalDirection implements StringRepresentable {
         return OPT_TO_DIR.get(direction);
     }
 
+    public BlockPos relative(BlockPos pos) {
+        if (direction == null) {
+            return pos;
+        }
+
+        return pos.relative(direction);
+    }
+
+    public void relative(MutableBlockPos pos) {
+        if (direction != null) {
+            pos.move(direction.getNormal());
+        }
+    }
+
     @Nullable
     public Direction getDirection() {
         return direction;
-    }
-
-    public BlockPos relative(BlockPos blockPos) {
-        if (direction == null) {
-            return blockPos;
-        }
-
-        return blockPos.relative(direction);
-    }
-
-    public void relative(BlockPos.MutableBlockPos blockPos) {
-        if (direction != null) {
-            blockPos.move(direction.getNormal());
-        }
     }
 
     @Override

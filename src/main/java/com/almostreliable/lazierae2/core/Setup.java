@@ -3,6 +3,10 @@ package com.almostreliable.lazierae2.core;
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.GenericMenu;
+import com.almostreliable.lazierae2.content.assembler.AssemblerFrameBlock;
+import com.almostreliable.lazierae2.content.assembler.AssemblerWallBlock;
+import com.almostreliable.lazierae2.content.assembler.ControllerBlock;
+import com.almostreliable.lazierae2.content.assembler.ControllerEntity;
 import com.almostreliable.lazierae2.content.machine.MachineBlock;
 import com.almostreliable.lazierae2.content.machine.MachineEntity;
 import com.almostreliable.lazierae2.content.machine.MachineMenu;
@@ -11,14 +15,6 @@ import com.almostreliable.lazierae2.content.maintainer.MaintainerBlock;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
 import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
-import com.almostreliable.lazierae2.machine.MachineBlock;
-import com.almostreliable.lazierae2.machine.MachineContainer;
-import com.almostreliable.lazierae2.machine.MachineEntity;
-import com.almostreliable.lazierae2.machine.MachineType;
-import com.almostreliable.lazierae2.multiblock.AssemblerWallBlock;
-import com.almostreliable.lazierae2.multiblock.ControllerBlock;
-import com.almostreliable.lazierae2.multiblock.ControllerBlockEntity;
-import com.almostreliable.lazierae2.multiblock.AssemblerFrameBlock;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe.MachineRecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
@@ -69,10 +65,6 @@ public final class Setup {
 
         private static final DeferredRegister<BlockEntityType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
-        public static final RegistryObject<BlockEntityType<ControllerBlockEntity>> CONTROLLER = REGISTRY.register(
-            "controller_block",
-            () -> Builder.of(ControllerBlockEntity::new, Blocks.CONTROLLER_BLOCK.get()).build(null)
-        );
 
         private Entities() {}
 
@@ -87,6 +79,10 @@ public final class Setup {
                     .build(null)
             );
         }
+
+        public static final RegistryObject<BlockEntityType<ControllerEntity>> CONTROLLER = REGISTRY.register("controller_block",
+            () -> Builder.of(ControllerEntity::new, Blocks.CONTROLLER_BLOCK.get()).build(null)
+        );
 
         public static final RegistryObject<BlockEntityType<MaintainerEntity>> MAINTAINER = register(MAINTAINER_ID,
             MaintainerEntity::new,
@@ -228,11 +224,11 @@ public final class Setup {
 
         // TODO remove valid wall block item as it should be not possible to create it by user
         public static final RegistryObject<BlockItem> VALID_WALL_BLOCK = REGISTRY.register("valid_wall_block",
-            () -> new BlockItem(Blocks.ASSEMBLER_WALL_BLOCK.get(), new Item.Properties().tab(TAB))
+            () -> new BlockItem(Blocks.ASSEMBLER_WALL_BLOCK.get(), new Properties().tab(TAB))
         );
 
         public static final RegistryObject<BlockItem> VALID_EDGE_BLOCK = REGISTRY.register("valid_edge_block",
-            () -> new BlockItem(Blocks.ASSEMBLER_FRAME_BLOCK.get(), new Item.Properties().tab(TAB))
+            () -> new BlockItem(Blocks.ASSEMBLER_FRAME_BLOCK.get(), new Properties().tab(TAB))
         );
 
         private Items() {}
