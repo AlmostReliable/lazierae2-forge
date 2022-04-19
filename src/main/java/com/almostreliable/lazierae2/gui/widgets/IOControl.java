@@ -6,7 +6,7 @@ import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.gui.MachineScreen;
 import com.almostreliable.lazierae2.network.PacketHandler;
-import com.almostreliable.lazierae2.network.SideConfigPacket;
+import com.almostreliable.lazierae2.network.packets.SideConfigPacket;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

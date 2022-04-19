@@ -1,18 +1,17 @@
-package com.almostreliable.lazierae2.network;
+package com.almostreliable.lazierae2.network.packets;
 
 import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.content.machine.MachineEntity;
 import com.almostreliable.lazierae2.content.machine.MachineMenu;
+import com.almostreliable.lazierae2.network.ClientToServerPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent.Context;
 
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
 
-public class SideConfigPacket {
+public class SideConfigPacket extends ClientToServerPacket<SideConfigPacket> {
 
     private CompoundTag config;
 
@@ -20,21 +19,22 @@ public class SideConfigPacket {
         this.config = config.serializeNBT();
     }
 
-    private SideConfigPacket() {}
+    public SideConfigPacket() {}
 
-    static SideConfigPacket decode(FriendlyByteBuf buffer) {
+    @Override
+    public void encode(SideConfigPacket packet, FriendlyByteBuf buffer) {
+        buffer.writeNbt(config);
+    }
+
+    @Override
+    public SideConfigPacket decode(FriendlyByteBuf buffer) {
         var packet = new SideConfigPacket();
         packet.config = buffer.readNbt();
         return packet;
     }
 
-    static void handle(SideConfigPacket packet, Supplier<? extends Context> context) {
-        var player = context.get().getSender();
-        context.get().enqueueWork(() -> handlePacket(packet, player));
-        context.get().setPacketHandled(true);
-    }
-
-    private static void handlePacket(SideConfigPacket packet, @Nullable ServerPlayer player) {
+    @Override
+    protected void handlePacket(SideConfigPacket packet, @Nullable ServerPlayer player) {
         if (player != null && player.containerMenu instanceof MachineMenu) {
             var entity = ((GenericMenu<?>) player.containerMenu).entity;
             if (!(entity instanceof MachineEntity machine)) return;
@@ -43,9 +43,5 @@ public class SideConfigPacket {
             machine.sideConfig.deserializeNBT(packet.config);
             machine.setChanged();
         }
-    }
-
-    void encode(FriendlyByteBuf buffer) {
-        buffer.writeNbt(config);
     }
 }

@@ -2,9 +2,9 @@ package com.almostreliable.lazierae2.gui.widgets;
 
 import com.almostreliable.lazierae2.gui.MaintainerScreen;
 import com.almostreliable.lazierae2.network.PacketHandler;
-import com.almostreliable.lazierae2.network.RequestBatchPacket;
-import com.almostreliable.lazierae2.network.RequestCountPacket;
-import com.almostreliable.lazierae2.network.RequestStatePacket;
+import com.almostreliable.lazierae2.network.packets.RequestBatchPacket;
+import com.almostreliable.lazierae2.network.packets.RequestCountPacket;
+import com.almostreliable.lazierae2.network.packets.RequestStatePacket;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;

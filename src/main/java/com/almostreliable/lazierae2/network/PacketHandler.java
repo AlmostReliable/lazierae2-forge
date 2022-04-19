@@ -1,9 +1,9 @@
 package com.almostreliable.lazierae2.network;
 
+import com.almostreliable.lazierae2.network.packets.*;
 import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.NetworkRegistry.ChannelBuilder;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import static com.almostreliable.lazierae2.core.Constants.NETWORK_ID;
@@ -12,53 +12,27 @@ public final class PacketHandler {
 
     private static final ResourceLocation ID = TextUtil.getRL(NETWORK_ID);
     private static final String PROTOCOL = "1";
-    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(ID,
-        () -> PROTOCOL,
-        PROTOCOL::equals,
-        PROTOCOL::equals
-    );
+    public static final SimpleChannel CHANNEL = ChannelBuilder
+        .named(ID)
+        .networkProtocolVersion(() -> PROTOCOL)
+        .clientAcceptedVersions(PROTOCOL::equals)
+        .serverAcceptedVersions(PROTOCOL::equals)
+        .simpleChannel();
 
     private PacketHandler() {}
 
     @SuppressWarnings("ValueOfIncrementOrDecrementUsed")
     public static void init() {
-        var id = -1;
+        var packetId = -1;
+        register(++packetId, AutoExtractPacket.class, new AutoExtractPacket());
+        register(++packetId, EnergyDumpPacket.class, new EnergyDumpPacket());
+        register(++packetId, RequestBatchPacket.class, new RequestBatchPacket());
+        register(++packetId, RequestCountPacket.class, new RequestCountPacket());
+        register(++packetId, RequestStatePacket.class, new RequestStatePacket());
+        register(++packetId, SideConfigPacket.class, new SideConfigPacket());
+    }
 
-        CHANNEL
-            .messageBuilder(AutoExtractPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
-            .decoder(AutoExtractPacket::decode)
-            .encoder(AutoExtractPacket::encode)
-            .consumer(AutoExtractPacket::handle)
-            .add();
-        CHANNEL
-            .messageBuilder(EnergyDumpPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
-            .decoder(EnergyDumpPacket::decode)
-            .encoder(EnergyDumpPacket::encode)
-            .consumer(EnergyDumpPacket::handle)
-            .add();
-        CHANNEL
-            .messageBuilder(SideConfigPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
-            .decoder(SideConfigPacket::decode)
-            .encoder(SideConfigPacket::encode)
-            .consumer(SideConfigPacket::handle)
-            .add();
-        CHANNEL
-            .messageBuilder(RequestCountPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
-            .decoder(RequestCountPacket::decode)
-            .encoder(RequestCountPacket::encode)
-            .consumer(RequestCountPacket::handle)
-            .add();
-        CHANNEL
-            .messageBuilder(RequestBatchPacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
-            .decoder(RequestBatchPacket::decode)
-            .encoder(RequestBatchPacket::encode)
-            .consumer(RequestBatchPacket::handle)
-            .add();
-        CHANNEL
-            .messageBuilder(RequestStatePacket.class, ++id, NetworkDirection.PLAY_TO_SERVER)
-            .decoder(RequestStatePacket::decode)
-            .encoder(RequestStatePacket::encode)
-            .consumer(RequestStatePacket::handle)
-            .add();
+    private static <T> void register(int packetId, Class<T> clazz, IPacket<T> packet) {
+        CHANNEL.registerMessage(packetId, clazz, packet::encode, packet::decode, packet::handle);
     }
 }
