@@ -98,7 +98,7 @@ public class BlockStateData extends BlockStateProvider {
             orientedBlock(block,
                 ControllerBlock.FACING,
                 state -> state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive,
-                AssemblerBlock.VALID
+                AssemblerBlock.IS_MULTIBLOCK
             );
         }
     }
@@ -129,7 +129,7 @@ public class BlockStateData extends BlockStateProvider {
         getVariantBuilder(block).forAllStatesExcept(state -> ConfiguredModel
             .builder()
             .modelFile(modelFunction.apply(state))
-            .build(), AssemblerBlock.VALID, HullBlock.HORIZONTAL, HullBlock.VERTICAL);
+            .build(), AssemblerBlock.IS_MULTIBLOCK, HullBlock.HORIZONTAL, HullBlock.VERTICAL);
     }
 
     private String getActiveId(String id) {

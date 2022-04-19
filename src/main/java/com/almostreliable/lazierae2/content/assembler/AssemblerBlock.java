@@ -11,19 +11,19 @@ import javax.annotation.Nullable;
 
 public abstract class AssemblerBlock extends GenericBlock {
 
-    public static final BooleanProperty VALID = BooleanProperty.create("valid");
+    public static final BooleanProperty IS_MULTIBLOCK = BooleanProperty.create("is_multiblock");
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         var superState = super.getStateForPlacement(context);
         var state = superState == null ? defaultBlockState() : superState;
-        return state.setValue(VALID, false);
+        return state.setValue(IS_MULTIBLOCK, false);
     }
 
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(VALID);
+        builder.add(IS_MULTIBLOCK);
     }
 }

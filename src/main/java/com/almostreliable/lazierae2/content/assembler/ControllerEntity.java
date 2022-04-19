@@ -43,8 +43,8 @@ public class ControllerEntity extends GenericEntity {
         return null;
     }
 
-    public boolean isValid() {
-        return getBlockState().getValue(ControllerBlock.VALID);
+    public boolean isMultiBlockMaster() {
+        return getBlockState().getValue(ControllerBlock.IS_MULTIBLOCK);
     }
 
     @Nullable

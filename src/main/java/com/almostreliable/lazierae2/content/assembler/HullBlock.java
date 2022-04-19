@@ -23,6 +23,13 @@ public class HullBlock extends AssemblerBlock {
 
     public HullBlock(HULL_TYPE type) {
         this.type = type;
+        this.registerDefaultState(this
+            .getStateDefinition()
+            .any()
+            .setValue(HORIZONTAL, OptionalDirection.NONE)
+            .setValue(VERTICAL, OptionalDirection.NONE)
+            .setValue(IS_MULTIBLOCK, false)
+            .setValue(ACTIVE, false));
     }
 
     @Nullable
@@ -99,18 +106,19 @@ public class HullBlock extends AssemblerBlock {
         return null;
     }
 
-    public BlockState createValidBlockState(BlockPos blockPos, BlockPos lookPos) {
+    public BlockState createDefaultMultiBlockState(BlockPos blockPos, BlockPos lookPos) {
         var horizontalOffset = getHorizontalOffset(blockPos, lookPos);
         var verticalOffset = getVerticalOffset(blockPos, lookPos);
 
         return defaultBlockState()
             .setValue(HORIZONTAL, horizontalOffset)
             .setValue(VERTICAL, verticalOffset)
-            .setValue(VALID, true);
+            .setValue(IS_MULTIBLOCK, true)
+            .setValue(ACTIVE, true); // TODO probably just set this active if energy exist?
     }
 
-    public boolean isValid(BlockState state) {
-        return state.getBlock() instanceof HullBlock && state.getValue(VALID);
+    public boolean isUsableForMultiBlock(BlockState state) {
+        return state.getBlock() instanceof HullBlock && !state.getValue(IS_MULTIBLOCK);
     }
 
     protected OptionalDirection getVerticalOffset(BlockPos blockPos, BlockPos lookPos) {

@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.content.assembler;
 
+import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.Data;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirections;
 import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
@@ -33,6 +34,15 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     private static final int MIN_SIZE = 5;
     private static final Logger LOG = LogUtils.getLogger();
 
+    public ControllerBlock() {
+        super();
+        this.registerDefaultState(this
+            .getStateDefinition()
+            .any()
+            .setValue(AssemblerBlock.IS_MULTIBLOCK, false)
+            .setValue(GenericBlock.ACTIVE, false));
+    }
+
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -50,7 +60,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if ((newState.isAir() || (newState.getBlock() instanceof ControllerBlock && !newState.getValue(VALID))) &&
+        if ((newState.isAir() || (newState.getBlock() instanceof ControllerBlock && !newState.getValue(IS_MULTIBLOCK))) &&
             level.getBlockEntity(pos) instanceof ControllerEntity blockEntity) {
             destroyMultiBlock(level, blockEntity);
         }
@@ -71,19 +81,19 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             return InteractionResult.FAIL;
         }
 
-        if (blockEntity.isValid()) {
+        if (blockEntity.isMultiBlockMaster()) {
             return InteractionResult.PASS;
         }
 
         return tryCreateMultiBlock(state, level, pos, blockEntity);
     }
 
-    public boolean isValidForWall(BlockState state) {
-        return state.getBlock() instanceof HullBlock hull && hull.isValid(state) && hull.type == HULL_TYPE.WALL;
+    public boolean isUsableForWall(BlockState state) {
+        return state.getBlock() instanceof HullBlock hull && hull.isUsableForMultiBlock(state) && hull.type == HULL_TYPE.WALL;
     }
 
-    public boolean isValidForFrame(BlockState state) {
-        return state.getBlock() instanceof HullBlock hull && hull.isValid(state) && hull.type == HULL_TYPE.FRAME;
+    public boolean isUsableForFrame(BlockState state) {
+        return state.getBlock() instanceof HullBlock hull && hull.isUsableForMultiBlock(state) && hull.type == HULL_TYPE.FRAME;
     }
 
     @Nullable
@@ -93,8 +103,8 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     }
 
     public void invalidate(Level level, BlockState state, BlockPos pos) {
-        if (state.getBlock() instanceof ControllerBlock && state.getValue(VALID).equals(true)) {
-            level.setBlock(pos, state.setValue(VALID, false), 3);
+        if (state.getBlock() instanceof ControllerBlock && state.getValue(IS_MULTIBLOCK).equals(true)) {
+            level.setBlock(pos, state.setValue(IS_MULTIBLOCK, false), 3);
         }
 
         throw new IllegalStateException("Controller is not valid");
@@ -117,12 +127,11 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
                         level.setBlock(pos, Assembler.FRAME.get().defaultBlockState(), 2 | 16);
                     }
                 }
-                default -> throw new IllegalStateException("Invalid multi block type");
             }
             return true;
         });
         entity.setMultiBlockData(null);
-        level.setBlock(entity.getBlockPos(), entity.getBlockState().setValue(VALID, false), 3);
+        level.setBlock(entity.getBlockPos(), entity.getBlockState().setValue(IS_MULTIBLOCK, false), 3);
     }
 
     private InteractionResult tryCreateMultiBlock(
@@ -133,7 +142,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             itDirs,
             MIN_SIZE,
             MAX_SIZE,
-            potentialFrame -> isValidForFrame(level.getBlockState(potentialFrame))
+            potentialFrame -> isUsableForFrame(level.getBlockState(potentialFrame))
         );
 
         if (multiBlockData == null) {
@@ -149,13 +158,13 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             var currentBlockState = level.getBlockState(currentPos);
             switch (type) {
                 case WALL:
-                    if (isValidForWall(currentBlockState)) {
+                    if (isUsableForWall(currentBlockState)) {
                         walls.add(currentPos);
                         return true;
                     }
                     break;
                 case CORNER, EDGE:
-                    if (isValidForFrame(currentBlockState)) {
+                    if (isUsableForFrame(currentBlockState)) {
                         edges.add(currentPos);
                         return true;
                     }
@@ -172,14 +181,14 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         }
 
         for (var wallPos : walls) {
-            level.setBlock(wallPos, Assembler.WALL.get().createValidBlockState(wallPos, pos), 2 | 16);
+            level.setBlock(wallPos, Assembler.WALL.get().createDefaultMultiBlockState(wallPos, pos), 2 | 16);
         }
 
         for (var edgePos : edges) {
-            level.setBlock(edgePos, Assembler.FRAME.get().createValidBlockState(edgePos, pos), 2 | 16);
+            level.setBlock(edgePos, Assembler.FRAME.get().createDefaultMultiBlockState(edgePos, pos), 2 | 16);
         }
 
-        level.setBlock(pos, state.setValue(VALID, true), 3);
+        level.setBlock(pos, state.setValue(IS_MULTIBLOCK, true), 3);
         entity.setMultiBlockData(multiBlockData);
         return InteractionResult.SUCCESS;
     }
