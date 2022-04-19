@@ -29,6 +29,14 @@ public class MaintainerScreen extends GenericScreen<MaintainerMenu> {
         maintainerControl = MaintainerControl.create(this, menu.getRequestSlots());
     }
 
+    public void updateCountBox(int slot, long count) {
+        maintainerControl[slot].updateCountBox(count);
+    }
+
+    public void updateBatchBox(int slot, long batch) {
+        maintainerControl[slot].updateBatchBox(batch);
+    }
+
     @Override
     protected void init() {
         super.init();

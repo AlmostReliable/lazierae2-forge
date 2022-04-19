@@ -23,7 +23,7 @@ public class SideConfigPacket extends ClientToServerPacket<SideConfigPacket> {
 
     @Override
     public void encode(SideConfigPacket packet, FriendlyByteBuf buffer) {
-        buffer.writeNbt(config);
+        buffer.writeNbt(packet.config);
     }
 
     @Override

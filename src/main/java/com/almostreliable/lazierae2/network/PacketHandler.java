@@ -24,12 +24,15 @@ public final class PacketHandler {
     @SuppressWarnings("ValueOfIncrementOrDecrementUsed")
     public static void init() {
         var packetId = -1;
+        // client to server
         register(++packetId, AutoExtractPacket.class, new AutoExtractPacket());
         register(++packetId, EnergyDumpPacket.class, new EnergyDumpPacket());
         register(++packetId, RequestBatchPacket.class, new RequestBatchPacket());
         register(++packetId, RequestCountPacket.class, new RequestCountPacket());
         register(++packetId, RequestStatePacket.class, new RequestStatePacket());
         register(++packetId, SideConfigPacket.class, new SideConfigPacket());
+        // server to client
+        register(++packetId, MaintainerSyncPacket.class, new MaintainerSyncPacket());
     }
 
     private static <T> void register(int packetId, Class<T> clazz, IPacket<T> packet) {

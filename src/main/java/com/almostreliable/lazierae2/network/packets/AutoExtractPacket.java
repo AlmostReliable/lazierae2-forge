@@ -21,7 +21,7 @@ public class AutoExtractPacket extends ClientToServerPacket<AutoExtractPacket> {
 
     @Override
     public void encode(AutoExtractPacket packet, FriendlyByteBuf buffer) {
-        buffer.writeBoolean(value);
+        buffer.writeBoolean(packet.value);
     }
 
     @Override

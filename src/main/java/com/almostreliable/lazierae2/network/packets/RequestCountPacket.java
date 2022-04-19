@@ -4,6 +4,7 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
 import com.almostreliable.lazierae2.network.ClientToServerPacket;
+import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket.SYNC_FLAGS;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -23,8 +24,8 @@ public class RequestCountPacket extends ClientToServerPacket<RequestCountPacket>
 
     @Override
     public void encode(RequestCountPacket packet, FriendlyByteBuf buffer) {
-        buffer.writeInt(slot);
-        buffer.writeLong(value);
+        buffer.writeInt(packet.slot);
+        buffer.writeLong(packet.value);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class RequestCountPacket extends ClientToServerPacket<RequestCountPacket>
             var level = maintainer.getLevel();
             if (level == null || !level.isLoaded(maintainer.getBlockPos())) return;
             maintainer.craftRequests.updateCount(packet.slot, packet.value);
-            maintainer.syncClient();
+            maintainer.syncData(packet.slot, SYNC_FLAGS.COUNT);
         }
     }
 }

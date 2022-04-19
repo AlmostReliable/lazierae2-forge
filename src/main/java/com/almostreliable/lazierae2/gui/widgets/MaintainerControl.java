@@ -14,10 +14,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
 
 @OnlyIn(Dist.CLIENT)
-public record MaintainerControl(MaintainerScreen screen, int slot) {
+public final class MaintainerControl {
+
+    // TODO: add tooltips for everything
 
     private static final int POS_Y = 9;
     private static final int GAP = 10;
+    private final MaintainerScreen screen;
+    private final int slot;
+    private CountBox countBox;
+    private BatchBox batchBox;
+
+    private MaintainerControl(MaintainerScreen screen, int slot) {
+        this.screen = screen;
+        this.slot = slot;
+    }
 
     @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
     public static MaintainerControl[] create(MaintainerScreen screen, int slotCount) {
@@ -28,9 +39,17 @@ public record MaintainerControl(MaintainerScreen screen, int slot) {
         return controls;
     }
 
+    public void updateCountBox(long count) {
+        countBox.changeValue(count);
+    }
+
+    public void updateBatchBox(long batch) {
+        batchBox.changeValue(batch);
+    }
+
     public AbstractWidget[] createWidgets() {
-        var countBox = new CountBox(screen, slot);
-        var batchBox = new BatchBox(screen, slot);
+        countBox = new CountBox(screen, slot);
+        batchBox = new BatchBox(screen, slot);
         return new AbstractWidget[]{new StateButton(screen,
             slot
         ), countBox, countBox.submitButton, batchBox, batchBox.submitButton};
@@ -42,7 +61,6 @@ public record MaintainerControl(MaintainerScreen screen, int slot) {
         private static final int HEIGHT = 11;
         final MaintainerScreen screen;
         final SubmitButton submitButton;
-        private final int slot;
 
         @SuppressWarnings("AbstractMethodCallInConstructor")
         private TextField(
@@ -55,7 +73,6 @@ public record MaintainerControl(MaintainerScreen screen, int slot) {
                 HEIGHT,
                 TextComponent.EMPTY
             );
-            this.slot = slot;
             this.screen = screen;
             submitButton = new SubmitButton(screen, slot, x + WIDTH);
             setBordered(false);
@@ -65,7 +82,40 @@ public record MaintainerControl(MaintainerScreen screen, int slot) {
             setValue(String.valueOf(getOldValue()));
         }
 
+        @Override
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+            // submit text field on enter
+            if (keyCode == InputConstants.getKey("key.keyboard.enter").getValue()) {
+                validate();
+                syncValue();
+                setFocus(false);
+                return true;
+            }
+            return super.keyPressed(keyCode, scanCode, modifiers);
+        }
+
         protected abstract void syncValue();
+
+        void changeValue(long value) {
+            var oldValue = getValue();
+            var newValue = String.valueOf(value);
+            setValue(newValue);
+            if (!newValue.equals(oldValue)) {
+                syncValue();
+            }
+        }
+
+        private void validate() {
+            var oldValue = getOldValue();
+            long value;
+            try {
+                value = Long.parseLong(getValue());
+            } catch (NumberFormatException e) {
+                setValue(String.valueOf(oldValue));
+                return;
+            }
+            changeValue(value);
+        }
 
         long getNumberValue() {
             return Long.parseLong(getValue());
@@ -79,22 +129,9 @@ public record MaintainerControl(MaintainerScreen screen, int slot) {
             return isHovered;
         }
 
-        @Override
-        public void setValue(String pText) {
-            super.setValue(pText);
-        }
-
-        @Override
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            // submit text field on enter
-            if (keyCode == InputConstants.getKey("key.keyboard.enter").getValue()) {
-                setFocus(false);
-                return true;
-            }
-            return super.keyPressed(keyCode, scanCode, modifiers);
-        }
-
         private final class SubmitButton extends GenericButton {
+
+            // TODO: make a hover effect with another texture
 
             private static final String TEXTURE_ID = "submit";
             private static final int BUTTON_SIZE = 13;
@@ -118,31 +155,12 @@ public record MaintainerControl(MaintainerScreen screen, int slot) {
             protected int getTextureHeight() {
                 return BUTTON_SIZE * 2;
             }
-
-            private void changeValue(long value) {
-                var oldValue = getValue();
-                var newValue = String.valueOf(value);
-                setValue(newValue);
-                if (!newValue.equals(oldValue)) {
-                    syncValue();
-                }
-            }
-
-            private void validate() {
-                var oldValue = getOldValue();
-                long value;
-                try {
-                    value = Long.parseLong(getValue());
-                } catch (NumberFormatException e) {
-                    setValue(String.valueOf(oldValue));
-                    return;
-                }
-                changeValue(value);
-            }
         }
     }
 
     private final class StateButton extends ToggleButton {
+
+        // TODO: make this a checkbox instead
 
         private static final String TEXTURE_ID = "state";
         private static final int POS_X = 9;

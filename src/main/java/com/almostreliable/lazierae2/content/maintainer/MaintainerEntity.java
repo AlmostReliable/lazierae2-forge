@@ -25,20 +25,19 @@ import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
+import com.almostreliable.lazierae2.network.PacketHandler;
+import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -75,15 +74,23 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        var tag = pkt.getTag();
-        if (tag != null) load(tag);
-    }
-
-    @Override
     public void onLoad() {
         super.onLoad();
         mainNode.create(level, worldPosition);
+    }
+
+    public void syncData(int slot, int flags) {
+        if (level == null || level.isClientSide) return;
+        var packet = new MaintainerSyncPacket(slot,
+            flags,
+            craftRequests.getState(slot),
+            craftRequests.getStackInSlot(slot),
+            craftRequests.getCount(slot),
+            craftRequests.getBatch(slot)
+        );
+        PacketHandler.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)),
+            packet
+        );
     }
 
     @Override
@@ -102,12 +109,6 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         craftResults.writeToChildTag(tag, CRAFT_RESULTS_ID);
     }
 
-    @Nullable
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public void setRemoved() {
         super.setRemoved();
@@ -118,11 +119,6 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         mainNode.destroy();
-    }
-
-    public void syncClient() {
-        if (level == null || level.isClientSide) return;
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
     }
 
     @Nullable
