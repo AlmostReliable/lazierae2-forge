@@ -140,7 +140,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(1, 20, !hasWork(), false);
+        return new TickingRequest(1, 20, false, false);
     }
 
     @Override
