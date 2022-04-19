@@ -3,10 +3,9 @@ package com.almostreliable.lazierae2.core;
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.GenericMenu;
-import com.almostreliable.lazierae2.content.assembler.AssemblerFrameBlock;
-import com.almostreliable.lazierae2.content.assembler.AssemblerWallBlock;
 import com.almostreliable.lazierae2.content.assembler.ControllerBlock;
 import com.almostreliable.lazierae2.content.assembler.ControllerEntity;
+import com.almostreliable.lazierae2.content.assembler.HullBlock;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerBlock;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
@@ -14,7 +13,9 @@ import com.almostreliable.lazierae2.content.processor.ProcessorBlock;
 import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
+import com.almostreliable.lazierae2.core.TypeEnums.HULL_TYPE;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe.ProcessorRecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
@@ -32,8 +33,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.network.IContainerFactory;
@@ -80,8 +79,12 @@ public final class Setup {
             );
         }
 
-        public static final RegistryObject<BlockEntityType<ControllerEntity>> CONTROLLER = REGISTRY.register("controller_block",
-            () -> Builder.of(ControllerEntity::new, Blocks.CONTROLLER_BLOCK.get()).build(null)
+        public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(PROCESSOR_ID,
+            ProcessorEntity::new,
+            Blocks.AGGREGATOR,
+            Blocks.CENTRIFUGE,
+            Blocks.ENERGIZER,
+            Blocks.ETCHER
         );
 
         public static final RegistryObject<BlockEntityType<MaintainerEntity>> MAINTAINER = register(MAINTAINER_ID,
@@ -89,12 +92,9 @@ public final class Setup {
             Blocks.MAINTAINER
         );
 
-        public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(PROCESSOR_ID,
-            ProcessorEntity::new,
-            Blocks.AGGREGATOR,
-            Blocks.CENTRIFUGE,
-            Blocks.ENERGIZER,
-            Blocks.ETCHER
+        public static final RegistryObject<BlockEntityType<ControllerEntity>> ASSEMBLER_CONTROLLER = register(CONTROLLER_ID,
+            ControllerEntity::new,
+            Assembler.CONTROLLER
         );
     }
 
@@ -159,18 +159,6 @@ public final class Setup {
         );
         public static final RegistryObject<ProcessorBlock> ETCHER = register(ProcessorBlock::new, ProcessorType.ETCHER);
 
-        public static final RegistryObject<ControllerBlock> CONTROLLER_BLOCK = REGISTRY.register("controller_block",
-            () -> new ControllerBlock(BlockBehaviour.Properties.of(Material.STONE))
-        );
-
-        public static final RegistryObject<AssemblerWallBlock> ASSEMBLER_WALL_BLOCK = REGISTRY.register("valid_wall_block",
-            () -> new AssemblerWallBlock(BlockBehaviour.Properties.of(Material.STONE))
-        );
-
-        public static final RegistryObject<AssemblerFrameBlock> ASSEMBLER_FRAME_BLOCK = REGISTRY.register("valid_edge_block",
-            () -> new AssemblerFrameBlock(BlockBehaviour.Properties.of(Material.STONE))
-        );
-
         public static final RegistryObject<MaintainerBlock> MAINTAINER = register(MAINTAINER_ID, MaintainerBlock::new);
 
         private Blocks() {}
@@ -194,6 +182,25 @@ public final class Setup {
 
         private static <B extends GenericBlock> void registerBlockItem(String id, RegistryObject<B> block) {
             Items.REGISTRY.register(id, () -> new BlockItem(block.get(), new Properties().tab(TAB)));
+        }
+
+        public static final class Assembler {
+
+            public static final RegistryObject<ControllerBlock> CONTROLLER = Blocks.register(CONTROLLER_ID,
+                ControllerBlock::new
+            );
+            public static final RegistryObject<HullBlock> WALL = register(WALL_ID, HULL_TYPE.WALL, HullBlock::new);
+            public static final RegistryObject<HullBlock> FRAME = register(FRAME_ID, HULL_TYPE.FRAME, HullBlock::new);
+
+            private Assembler() {}
+
+            private static <B extends GenericBlock> RegistryObject<B> register(
+                String id, HULL_TYPE type, Function<? super HULL_TYPE, ? extends B> constructor
+            ) {
+                RegistryObject<B> block = REGISTRY.register(id, () -> constructor.apply(type));
+                registerBlockItem(id, block);
+                return block;
+            }
         }
     }
 
@@ -219,19 +226,6 @@ public final class Setup {
         public static final RegistryObject<Item> SPEC_PRINTED = register(SPEC_PRINTED_ID);
         public static final RegistryObject<Item> SPEC_PROCESSOR = register(SPEC_PROCESSOR_ID);
         public static final RegistryObject<Item> UNIVERSAL_PRESS = register(UNIVERSAL_PRESS_ID);
-
-        public static final RegistryObject<BlockItem> CONTROLLER_BLOCK = REGISTRY.register("controller_block",
-            () -> new BlockItem(Blocks.CONTROLLER_BLOCK.get(), new Item.Properties().tab(TAB))
-        );
-
-        // TODO remove valid wall block item as it should be not possible to create it by user
-        public static final RegistryObject<BlockItem> VALID_WALL_BLOCK = REGISTRY.register("valid_wall_block",
-            () -> new BlockItem(Blocks.ASSEMBLER_WALL_BLOCK.get(), new Properties().tab(TAB))
-        );
-
-        public static final RegistryObject<BlockItem> VALID_EDGE_BLOCK = REGISTRY.register("valid_edge_block",
-            () -> new BlockItem(Blocks.ASSEMBLER_FRAME_BLOCK.get(), new Properties().tab(TAB))
-        );
 
         private Items() {}
 

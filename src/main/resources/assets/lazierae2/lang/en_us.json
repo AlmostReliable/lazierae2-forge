@@ -26,6 +26,9 @@
   "block.lazierae2.energizer": "Crystal Energizer",
   "block.lazierae2.etcher": "Circuit Etcher",
   "block.lazierae2.maintainer": "Level Maintainer",
+  "block.lazierae2.controller": "Assembler Controller",
+  "block.lazierae2.wall": "Assembler Wall",
+  "block.lazierae2.frame": "Assembler Frame",
 
   "tooltip.lazierae2.action_hold": "Hold",
   "tooltip.lazierae2.action_click": "Click",

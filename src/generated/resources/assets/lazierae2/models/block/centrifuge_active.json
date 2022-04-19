@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "side": "lazierae2:block/processor",
-    "front": "lazierae2:block/centrifuge_active",
-    "top": "lazierae2:block/processor"
+    "side": "lazierae2:block/machine/side",
+    "front": "lazierae2:block/machine/centrifuge_active",
+    "top": "lazierae2:block/machine/side"
   }
 }

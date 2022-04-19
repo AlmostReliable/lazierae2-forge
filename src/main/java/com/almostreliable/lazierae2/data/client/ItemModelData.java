@@ -12,8 +12,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static com.almostreliable.lazierae2.core.Constants.MAINTAINER_ID;
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.core.Constants.*;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class ItemModelData extends ItemModelProvider {
@@ -30,6 +29,9 @@ public class ItemModelData extends ItemModelProvider {
         existingParent(ProcessorType.CENTRIFUGE.getId());
         existingParent(ProcessorType.ENERGIZER.getId());
         existingParent(ProcessorType.ETCHER.getId());
+        existingParent(CONTROLLER_ID);
+        existingParent(WALL_ID);
+        existingParent(FRAME_ID);
         existingParent(MAINTAINER_ID);
 
         builder(Items.CARB_FLUIX_DUST);

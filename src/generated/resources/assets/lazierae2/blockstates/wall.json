@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "lazierae2:block/wall"
+    },
+    "active=true": {
+      "model": "lazierae2:block/wall_active"
+    }
+  }
+}

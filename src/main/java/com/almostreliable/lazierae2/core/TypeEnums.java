@@ -32,4 +32,11 @@ public final class TypeEnums {
     public enum EXTRACT_SETTING {
         OFF, ON
     }
+
+    /**
+     * Enum to represent the different types of hull for the multi-block assembler.
+     */
+    public enum HULL_TYPE {
+        WALL, FRAME
+    }
 }

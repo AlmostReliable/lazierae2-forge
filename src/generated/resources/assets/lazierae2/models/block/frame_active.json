@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "lazierae2:block/valid_edge_block"
+    "all": "lazierae2:block/assembler/frame_active"
   }
 }

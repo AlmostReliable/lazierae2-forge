@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "top": "lazierae2:block/controller_block",
-    "front": "lazierae2:block/controller_block_front",
-    "side": "lazierae2:block/controller_block"
-  }
-}

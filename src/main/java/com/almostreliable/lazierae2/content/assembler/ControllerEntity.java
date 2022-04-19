@@ -1,20 +1,24 @@
 package com.almostreliable.lazierae2.content.assembler;
 
+import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.Data;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
-public class ControllerEntity extends BlockEntity {
+public class ControllerEntity extends GenericEntity {
 
     private Data data;
 
     public ControllerEntity(BlockPos pos, BlockState state) {
-        super(Entities.CONTROLLER.get(), pos, state);
+        super(Entities.ASSEMBLER_CONTROLLER.get(), pos, state);
     }
 
     @Override
@@ -33,8 +37,14 @@ public class ControllerEntity extends BlockEntity {
         }
     }
 
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
+        return null;
+    }
+
     public boolean isValid() {
-        return getBlockState().getValue(ControllerBlock.CONTROLLER_VALID);
+        return getBlockState().getValue(ControllerBlock.VALID);
     }
 
     @Nullable
@@ -44,5 +54,10 @@ public class ControllerEntity extends BlockEntity {
 
     public void setMultiBlockData(@Nullable Data data) {
         this.data = data;
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return null;
     }
 }

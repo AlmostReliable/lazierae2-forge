@@ -2,7 +2,8 @@ package com.almostreliable.lazierae2.content.assembler;
 
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.Data;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirections;
-import com.almostreliable.lazierae2.core.Setup;
+import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
+import com.almostreliable.lazierae2.core.TypeEnums.HULL_TYPE;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +18,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.slf4j.Logger;
@@ -26,36 +26,31 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ControllerBlock extends Block implements EntityBlock {
+public class ControllerBlock extends AssemblerBlock implements EntityBlock {
 
-    public static final int MIN_SIZE = 5;
-    public static final int MAX_SIZE = 13;
-    public static final BooleanProperty CONTROLLER_VALID = BooleanProperty.create("valid");
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
+    static final int MAX_SIZE = 13;
+    private static final int MIN_SIZE = 5;
     private static final Logger LOG = LogUtils.getLogger();
-
-    public ControllerBlock(Properties props) {
-        super(props);
-    }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState()
-            .setValue(FACING, context.getNearestLookingDirection().getOpposite())
-            .setValue(CONTROLLER_VALID, false);
+        var superState = super.getStateForPlacement(context);
+        var state = superState == null ? defaultBlockState() : superState;
+        return state.setValue(FACING, context.getNearestLookingDirection().getOpposite());
     }
 
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
-        builder.add(CONTROLLER_VALID, FACING);
+        super.createBlockStateDefinition(builder);
+        builder.add(FACING);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if ((newState.isAir() ||
-            (newState.getBlock() instanceof ControllerBlock && !newState.getValue(CONTROLLER_VALID))) &&
+        if ((newState.isAir() || (newState.getBlock() instanceof ControllerBlock && !newState.getValue(VALID))) &&
             level.getBlockEntity(pos) instanceof ControllerEntity blockEntity) {
             destroyMultiBlock(level, blockEntity);
         }
@@ -84,11 +79,11 @@ public class ControllerBlock extends Block implements EntityBlock {
     }
 
     public boolean isValidForWall(BlockState state) {
-        return state.getBlock() instanceof AssemblerWallBlock wall && wall.isValid(state);
+        return state.getBlock() instanceof HullBlock hull && hull.isValid(state) && hull.type == HULL_TYPE.WALL;
     }
 
-    public boolean isValidForEdge(BlockState state) {
-        return state.getBlock() instanceof AssemblerFrameBlock wall && wall.isValid(state);
+    public boolean isValidForFrame(BlockState state) {
+        return state.getBlock() instanceof HullBlock hull && hull.isValid(state) && hull.type == HULL_TYPE.FRAME;
     }
 
     @Nullable
@@ -98,8 +93,8 @@ public class ControllerBlock extends Block implements EntityBlock {
     }
 
     public void invalidate(Level level, BlockState state, BlockPos pos) {
-        if (state.getBlock() instanceof ControllerBlock && state.getValue(CONTROLLER_VALID).equals(true)) {
-            level.setBlock(pos, state.setValue(CONTROLLER_VALID, false), 3);
+        if (state.getBlock() instanceof ControllerBlock && state.getValue(VALID).equals(true)) {
+            level.setBlock(pos, state.setValue(VALID, false), 3);
         }
 
         throw new IllegalStateException("Controller is not valid");
@@ -113,13 +108,13 @@ public class ControllerBlock extends Block implements EntityBlock {
                 case WALL -> {
                     var blockState = level.getBlockState(pos);
                     if (!blockState.isAir()) {
-                        level.setBlock(pos, Setup.Blocks.ASSEMBLER_WALL_BLOCK.get().defaultBlockState(), 2 | 16);
+                        level.setBlock(pos, Assembler.WALL.get().defaultBlockState(), 2 | 16);
                     }
                 }
                 case CORNER, EDGE -> {
                     var blockState = level.getBlockState(pos);
                     if (!blockState.isAir()) {
-                        level.setBlock(pos, Setup.Blocks.ASSEMBLER_FRAME_BLOCK.get().defaultBlockState(), 2 | 16);
+                        level.setBlock(pos, Assembler.FRAME.get().defaultBlockState(), 2 | 16);
                     }
                 }
                 default -> throw new IllegalStateException("Invalid multi block type");
@@ -127,7 +122,7 @@ public class ControllerBlock extends Block implements EntityBlock {
             return true;
         });
         entity.setMultiBlockData(null);
-        level.setBlock(entity.getBlockPos(), entity.getBlockState().setValue(CONTROLLER_VALID, false), 3);
+        level.setBlock(entity.getBlockPos(), entity.getBlockState().setValue(VALID, false), 3);
     }
 
     private InteractionResult tryCreateMultiBlock(
@@ -138,7 +133,7 @@ public class ControllerBlock extends Block implements EntityBlock {
             itDirs,
             MIN_SIZE,
             MAX_SIZE,
-            potentialEdge -> isValidForEdge(level.getBlockState(potentialEdge))
+            potentialFrame -> isValidForFrame(level.getBlockState(potentialFrame))
         );
 
         if (multiBlockData == null) {
@@ -160,7 +155,7 @@ public class ControllerBlock extends Block implements EntityBlock {
                     }
                     break;
                 case CORNER, EDGE:
-                    if (isValidForEdge(currentBlockState)) {
+                    if (isValidForFrame(currentBlockState)) {
                         edges.add(currentPos);
                         return true;
                     }
@@ -177,20 +172,14 @@ public class ControllerBlock extends Block implements EntityBlock {
         }
 
         for (var wallPos : walls) {
-            level.setBlock(wallPos,
-                Setup.Blocks.ASSEMBLER_WALL_BLOCK.get().createValidBlockState(wallPos, pos),
-                2 | 16
-            );
+            level.setBlock(wallPos, Assembler.WALL.get().createValidBlockState(wallPos, pos), 2 | 16);
         }
 
         for (var edgePos : edges) {
-            level.setBlock(edgePos,
-                Setup.Blocks.ASSEMBLER_FRAME_BLOCK.get().createValidBlockState(edgePos, pos),
-                2 | 16
-            );
+            level.setBlock(edgePos, Assembler.FRAME.get().createValidBlockState(edgePos, pos), 2 | 16);
         }
 
-        level.setBlock(pos, state.setValue(CONTROLLER_VALID, true), 3);
+        level.setBlock(pos, state.setValue(VALID, true), 3);
         entity.setMultiBlockData(multiBlockData);
         return InteractionResult.SUCCESS;
     }
