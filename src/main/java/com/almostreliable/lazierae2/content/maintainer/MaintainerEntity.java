@@ -47,8 +47,6 @@ import static com.almostreliable.lazierae2.core.Constants.*;
 
 public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, IStorageWatcherNode, ICraftingRequester {
 
-    // TODO: fix duping (maybe duplicate jobs), could be fixed through state checking
-
     private static final int SLOTS = 6;
     public final long[] knownStorageAmounts;
     public final RequestInventory craftRequests;
@@ -297,8 +295,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
         var slot = craftTracker.getSlot(link);
         if (slot == -1) return amount;
-        var inserted = craftResults.insert(what, amount, mode, actionSource);
-        return amount - inserted;
+        return craftResults.insert(what, amount, mode, actionSource);
     }
 
     @Override
