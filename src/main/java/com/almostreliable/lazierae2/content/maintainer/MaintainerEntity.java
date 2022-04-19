@@ -45,13 +45,11 @@ import net.minecraftforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Objects;
 
 import static com.almostreliable.lazierae2.core.Constants.*;
 
 public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, IStorageWatcherNode, ICraftingRequester {
-
-    // TODO: fix duping (maybe duplicate jobs), could be fixed through state checking
-
     private static final int SLOTS = 6;
     public final long[] knownStorageAmounts;
     public final RequestInventory craftRequests;
@@ -76,6 +74,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         craftResults = new GenericStackInv(this::setChanged, SLOTS);
         knownStorageAmounts = new long[SLOTS];
         progressions = new ProgressionState[SLOTS];
+        Arrays.fill(progressions, new IdleState());
         Arrays.fill(knownStorageAmounts, -1);
     }
 
@@ -165,7 +164,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (!mainNode.isActive()) return TickRateModulation.IDLE;
         if (level == null || level.isClientSide) return TickRateModulation.IDLE;
-        if (handleProgression()) {
+        if (handleProgressions()) {
             setChanged();
         }
         updateActivityState();
@@ -194,19 +193,19 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         }
     }
 
-    private boolean handleProgression() {
+    private boolean handleProgressions() {
         boolean changed = false;
 
+        TickRateModulation tickRateModulation = TickRateModulation.IDLE;
         for (int slot = 0; slot < progressions.length; slot++) {
-            ProgressionState state = getOrCreateProgression(slot);
-            ProgressionState result = progressions[slot].handle();
-
+            ProgressionState state = progressions[slot];
+            ProgressionState result = state.handle(this, slot);
             if (state != result) {
                 changed = true;
             }
-
-            if (result != null) {
-                updateTickRateModulation(result.getTickRateModulation());
+            TickRateModulation resultTickRateModulation = result.getTickRateModulation();
+            if (resultTickRateModulation.ordinal() > tickRateModulation.ordinal()) {
+                currentTickRateModulation = resultTickRateModulation;
             }
 
             progressions[slot] = result;
@@ -214,14 +213,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
         return changed;
     }
-
-    private ProgressionState getOrCreateProgression(int slot) {
-        if (progressions[slot] == null) {
-            progressions[slot] = new IdleState(this, slot);
-        }
-        return progressions[slot];
-    }
-
+    
     private void updateActivityState() {
         for (ProgressionState progression : progressions) {
             if (!(progression instanceof IdleState)) {
@@ -231,12 +223,6 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         }
 
         changeActivityState(false);
-    }
-
-    private void updateTickRateModulation(TickRateModulation modulation) {
-        if (modulation.ordinal() > currentTickRateModulation.ordinal()) {
-            currentTickRateModulation = modulation;
-        }
     }
 
     private boolean handleCraft(MEStorage storage, ICraftingService crafting) {
@@ -337,20 +323,20 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         return craftTracker.getRequestedJobs();
     }
 
-    @Override
-    public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
-        CraftingLinkState state = getCraftingLinkState(link);
-        var slot = state.getSlot();
-        return craftResults.insert(slot, what, amount, mode);
+    public IGrid getMainNodeGrid() {
+        IGrid grid = getMainNode().getGrid();
+        Objects.requireNonNull(grid, "MaintainerEntity was not fully initialized - Grid is null");
+        return grid;
     }
 
-    private CraftingLinkState getCraftingLinkState(ICraftingLink link) {
-        for (ProgressionState progression : progressions) {
-            if (progression instanceof CraftingLinkState cls && cls.getLink() == link) {
-                return cls;
+    @Override
+    public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
+        for (int slot = 0; slot < progressions.length; slot++) {
+            ProgressionState state = progressions[slot];
+            if (state instanceof CraftingLinkState cls && cls.getLink() == link) {
+                return craftResults.insert(slot, what, amount, mode);
             }
         }
-
         throw new IllegalStateException("No CraftingLinkState found");
     }
 

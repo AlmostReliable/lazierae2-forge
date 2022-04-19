@@ -5,24 +5,23 @@ import appeng.api.networking.ticking.TickRateModulation;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class CraftingLinkState extends MaintainerProgressionState {
+public class CraftingLinkState implements ProgressionState {
     private final ICraftingLink link;
     private boolean finished = false;
 
-    public CraftingLinkState(MaintainerEntity owner, int slot, ICraftingLink link) {
-        super(owner, slot);
+    public CraftingLinkState(ICraftingLink link) {
         this.link = link;
     }
 
     @Nullable
     @Override
-    public ProgressionState handle() {
+    public ProgressionState handle(MaintainerEntity owner, int slot) {
         if (link.isDone()) {
-            return new ExportSlotState(owner, slot);
+            return ProgressionState.EXPORT_SLOT_STATE;
         }
 
         if (link.isCanceled()) {
-            return null;
+            return ProgressionState.IDLE_STATE;
         }
 
         return this;
@@ -30,10 +29,9 @@ public class CraftingLinkState extends MaintainerProgressionState {
 
     @Override
     public TickRateModulation getTickRateModulation() {
-        return finished ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
+        return finished ? TickRateModulation.URGENT : TickRateModulation.SAME;
     }
 
-    @Override
     public void interrupt() {
         finished = true;
     }

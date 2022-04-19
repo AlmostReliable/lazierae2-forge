@@ -9,45 +9,43 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class CraftingPlanState extends MaintainerProgressionState {
+public class CraftingPlanState implements ProgressionState {
     private final Future<ICraftingPlan> future;
 
-    public CraftingPlanState(
-        MaintainerEntity owner, int slot, Future<ICraftingPlan> future
-    ) {
-        super(owner, slot);
+    public CraftingPlanState(Future<ICraftingPlan> future) {
         this.future = future;
     }
 
     @Nullable
     @Override
-    public ProgressionState handle() {
+    public ProgressionState handle(MaintainerEntity owner, int slot) {
         if (!future.isDone()) {
             return this;
         }
 
         if (future.isCancelled()) {
-            return null;
+            return ProgressionState.IDLE_STATE;
         }
 
         try {
             ICraftingPlan plan = future.get();
-            ICraftingLink link = grid
+            ICraftingLink link = owner
+                .getMainNodeGrid()
                 .getCraftingService()
                 .submitJob(plan, owner, null, false, owner.getActionSource());
 
-            if(link == null) {
-                return null;
+            if (link == null) {
+                return ProgressionState.IDLE_STATE;
             }
 
-            return new CraftingLinkState(owner, slot, link);
+            return new CraftingLinkState(link);
         } catch (InterruptedException | ExecutionException e) {
-            return null;
+            return ProgressionState.IDLE_STATE;
         }
     }
 
     @Override
     public TickRateModulation getTickRateModulation() {
-        return TickRateModulation.URGENT; //TODO
+        return TickRateModulation.URGENT;
     }
 }

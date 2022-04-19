@@ -2,22 +2,17 @@ package com.almostreliable.lazierae2.progression;
 
 import appeng.api.networking.ticking.TickRateModulation;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
-import org.jetbrains.annotations.Nullable;
 
-public class IdleState extends MaintainerProgressionState {
-    public IdleState(MaintainerEntity owner, int slot) {
-        super(owner, slot);
-    }
+public class IdleState implements ProgressionState {
 
-    @Nullable
     @Override
-    public ProgressionState handle() {
+    public ProgressionState handle(MaintainerEntity owner, int slot) {
         if (owner.getCraftResults().getAmount(slot) > 0) {
-            return new ExportSlotState(owner, slot);
+            return ProgressionState.EXPORT_SLOT_STATE;
         }
 
         if (owner.getCraftRequests().get(slot).state()) {
-            return new RequestCraftState(owner, slot);
+            return ProgressionState.REQUEST_CRAFT_STATE;
         }
 
         return this;
@@ -25,6 +20,6 @@ public class IdleState extends MaintainerProgressionState {
 
     @Override
     public TickRateModulation getTickRateModulation() {
-        return TickRateModulation.IDLE; //TODO
+        return TickRateModulation.IDLE;
     }
 }

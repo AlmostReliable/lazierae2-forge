@@ -7,25 +7,21 @@ import appeng.api.stacks.GenericStack;
 import com.almostreliable.lazierae2.component.InventoryHandler;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.Future;
 
-public class RequestCraftState extends MaintainerProgressionState {
-    public RequestCraftState(MaintainerEntity owner, int slot) {
-        super(owner, slot);
-    }
+public class RequestCraftState implements ProgressionState {
 
-    @Nullable
     @Override
-    public ProgressionState handle() {
+    public ProgressionState handle(MaintainerEntity owner, int slot) {
         if (owner.knownStorageAmounts[slot] == -1) {
             // todo: throw out into owner
             ItemStack stack = owner.craftRequests.get(slot).stack();
             if (stack.isEmpty()) return this;
             GenericStack genericStack = GenericStack.fromItemStack(stack);
             if (genericStack == null) return this;
-            owner.knownStorageAmounts[slot] = grid
+            owner.knownStorageAmounts[slot] = owner
+                .getMainNodeGrid()
                 .getStorageService()
                 .getInventory()
                 .getAvailableStacks()
@@ -36,11 +32,12 @@ public class RequestCraftState extends MaintainerProgressionState {
 
         long toCraft = craftRequests.computeDelta(slot, owner.knownStorageAmounts[slot]);
         if (toCraft <= 0) {
-            return null;
+            return ProgressionState.IDLE_STATE;
         }
 
         GenericStack stack = craftRequests.request(slot, (int) toCraft);
-        Future<ICraftingPlan> future = grid
+        Future<ICraftingPlan> future = owner
+            .getMainNodeGrid()
             .getCraftingService()
             .beginCraftingCalculation(owner.getLevel(),
                 owner::getActionSource,
@@ -49,11 +46,11 @@ public class RequestCraftState extends MaintainerProgressionState {
                 CalculationStrategy.CRAFT_LESS
             );
 
-        return new CraftingPlanState(owner, slot, future);
+        return new CraftingPlanState(future);
     }
 
     @Override
     public TickRateModulation getTickRateModulation() {
-        return TickRateModulation.URGENT; //TODO
+        return TickRateModulation.URGENT;
     }
 }

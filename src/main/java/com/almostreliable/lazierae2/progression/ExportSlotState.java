@@ -6,25 +6,20 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageHelper;
 import appeng.helpers.externalstorage.GenericStackInv;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
-import org.jetbrains.annotations.Nullable;
 
-public class ExportSlotState extends MaintainerProgressionState {
-    public ExportSlotState(MaintainerEntity owner, int slot) {
-        super(owner, slot);
-    }
+public class ExportSlotState implements ProgressionState {
 
-    @Nullable
     @Override
-    public ProgressionState handle() {
+    public ProgressionState handle(MaintainerEntity owner, int slot) {
         GenericStackInv craftResults = owner.getCraftResults();
         GenericStack stack = craftResults.getStack(slot);
         if (stack == null) {
-            return null;
+            return ProgressionState.IDLE_STATE;
         }
 
         long inserted = StorageHelper.poweredInsert(
-            grid.getEnergyService(),
-            grid.getStorageService().getInventory(),
+            owner.getMainNodeGrid().getEnergyService(),
+            owner.getMainNodeGrid().getStorageService().getInventory(),
             stack.what(),
             stack.amount(),
             owner.getActionSource(),
@@ -41,11 +36,11 @@ public class ExportSlotState extends MaintainerProgressionState {
             craftResults.setStack(slot, null);
         }
 
-        return null;
+        return ProgressionState.IDLE_STATE;
     }
 
     @Override
     public TickRateModulation getTickRateModulation() {
-        return TickRateModulation.FASTER;
+        return TickRateModulation.URGENT;
     }
 }
