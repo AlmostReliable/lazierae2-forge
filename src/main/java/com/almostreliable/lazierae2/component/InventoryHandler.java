@@ -7,8 +7,8 @@ import appeng.api.stacks.GenericStack;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.machine.MachineEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
-import com.almostreliable.lazierae2.util.MathUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -223,7 +223,7 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
 
         public long computeDelta(int slot, long existing) {
             return requests[slot].stack.isEmpty() ? 0 :
-                MathUtil.clamp(requests[slot].count - existing, 0, requests[slot].batch);
+                Mth.clamp(requests[slot].count - existing, 0, requests[slot].batch);
         }
 
         public GenericStack request(int slot, int count) {
