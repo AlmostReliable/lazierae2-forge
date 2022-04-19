@@ -125,6 +125,14 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             Arrays.fill(requests, new Request(true, ItemStack.EMPTY, 0, 1));
         }
 
+        public int firstAvailableSlot() {
+            for (var slot = 0; slot < requests.length; slot++) {
+                var request = requests[slot];
+                if (request.stack.isEmpty()) return slot;
+            }
+            return -1;
+        }
+
         public void updateCount(int slot, long count) {
             validateSlot(slot);
             var oldRequest = requests[slot];
