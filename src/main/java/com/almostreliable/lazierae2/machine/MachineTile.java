@@ -283,7 +283,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
             AtomicBoolean outputEmpty = new AtomicBoolean(false);
             target.ifPresent(targetInv -> {
                 ItemStack stack = inventory.getStackInOutput();
-                ItemStack remainder = ItemHandlerHelper.insertItem(targetInv, stack, false);
+                ItemStack remainder = ItemHandlerHelper.insertItemStacked(targetInv, stack, false);
 
                 if (remainder.getCount() != stack.getCount() || !remainder.sameItem(stack)) {
                     inventory.setStackInOutput(remainder);

@@ -9,6 +9,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
+import javax.annotation.Nonnull;
+
 public class InventoryHandler extends ItemStackHandler {
 
     public static final int NON_INPUT_SLOTS = 2;
@@ -53,18 +55,25 @@ public class InventoryHandler extends ItemStackHandler {
         }
     }
 
-    public IInventory toVanilla() {
-        if (vanillaInventory == null || changed) {
-            vanillaInventory = new RecipeWrapper(this);
-            changed = false;
-        }
-        return vanillaInventory;
+    @Nonnull
+    @Override
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        if (slot < NON_INPUT_SLOTS) return stack;
+        return super.insertItem(slot, stack, simulate);
     }
 
     @Override
     protected void onContentsChanged(int slot) {
         changed = true;
         tile.setChanged();
+    }
+
+    public IInventory toVanilla() {
+        if (vanillaInventory == null || changed) {
+            vanillaInventory = new RecipeWrapper(this);
+            changed = false;
+        }
+        return vanillaInventory;
     }
 
     public int getInputSlots() {
