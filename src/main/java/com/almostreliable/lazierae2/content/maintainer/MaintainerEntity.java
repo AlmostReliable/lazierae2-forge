@@ -22,6 +22,7 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.helpers.MachineSource;
 import com.almostreliable.lazierae2.component.InventoryHandler.RequestInventory;
 import com.almostreliable.lazierae2.content.GenericEntity;
+import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
@@ -256,7 +257,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
             .setVisualRepresentation(Blocks.MAINTAINER.get())
             .setInWorldNode(true)
             .setTagName("proxy")
-            .setIdlePowerUsage(10)
+            .setIdlePowerUsage(Config.COMMON.maintainerIdleEnergy.get())
             .setExposedOnSides(EnumSet.allOf(Direction.class));
     }
 
