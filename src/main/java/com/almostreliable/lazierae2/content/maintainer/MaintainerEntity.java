@@ -62,6 +62,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     private final ProgressionState[] progressions;
     @Nullable
     private IStackWatcher stackWatcher;
+    private TickRateModulation currentTickRateModulation = TickRateModulation.IDLE;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     public MaintainerEntity(
@@ -163,10 +164,12 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         if (!mainNode.isActive()) return TickRateModulation.IDLE;
-        return doWork();
-        // var didWork = doWork();
-        // if (didWork) return hasWork() ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
-        // return TickRateModulation.IDLE;
+        if (level == null || level.isClientSide) return TickRateModulation.IDLE;
+        if (handleProgression()) {
+            setChanged();
+        }
+        updateActivityState();
+        return currentTickRateModulation;
     }
 
     @Override
@@ -179,7 +182,6 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public void onStackChange(AEKey what, long amount) {
         for (var i = 0; i < SLOTS; i++) {
             if (craftRequests.matches(i, what)) {
-                System.out.println("onStackChange -> with amount " + amount + ": " + what + " changed, updating slot " + i);
                 knownStorageAmounts[i] = amount;
             }
         }
@@ -192,51 +194,49 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         }
     }
 
-    private boolean hasWork() {
-        var hasWork = craftRequests.isRequesting() || !craftResults.isEmpty();
-        return hasWork;
+    private boolean handleProgression() {
+        boolean changed = false;
+
+        for (int slot = 0; slot < progressions.length; slot++) {
+            ProgressionState state = getOrCreateProgression(slot);
+            ProgressionState result = progressions[slot].handle();
+
+            if (state != result) {
+                changed = true;
+            }
+
+            if (result != null) {
+                updateTickRateModulation(result.getTickRateModulation());
+            }
+
+            progressions[slot] = result;
+        }
+
+        return changed;
     }
 
-    private TickRateModulation doWork() {
-        if (level == null || level.isClientSide) return TickRateModulation.IDLE;
-        // var grid = mainNode.getGrid();
-        // if (grid == null) return false;
+    private ProgressionState getOrCreateProgression(int slot) {
+        if (progressions[slot] == null) {
+            progressions[slot] = new IdleState(this, slot);
+        }
+        return progressions[slot];
+    }
 
-        // var storage = grid.getStorageService().getInventory();
-        // var energy = grid.getEnergyService();
-        // var crafting = grid.getCraftingService();
-        // var exported = handleExport(storage, energy);
-        // var crafted = handleCraft(storage, crafting);
-
-        boolean changed = false;
-        for (int slot = 0; slot < progressions.length; slot++) {
-            ProgressionState state = progressions[slot];
-            if (state == null) {
-                progressions[slot] = new IdleState(this, slot);
+    private void updateActivityState() {
+        for (ProgressionState progression : progressions) {
+            if (!(progression instanceof IdleState)) {
+                changeActivityState(true);
+                return;
             }
-            progressions[slot] = progressions[slot].handle();
-            if (state != progressions[slot]) {
-
-                changed = true;
-                if(progressions[slot] != null) {
-                    System.out.println(progressions[slot].getClass().getSimpleName());
-                }
-            }
-
         }
 
+        changeActivityState(false);
+    }
 
-        changeActivityState(true); // TODO idle -> false, other -> true
-
-        if (changed) {
-            setChanged();
+    private void updateTickRateModulation(TickRateModulation modulation) {
+        if (modulation.ordinal() > currentTickRateModulation.ordinal()) {
+            currentTickRateModulation = modulation;
         }
-
-        return TickRateModulation.URGENT; // TODO determine by state requirements
-        //
-        // var workDone = exported || crafted;
-        // if (workDone) setChanged();
-        // return workDone;
     }
 
     private boolean handleCraft(MEStorage storage, ICraftingService crafting) {
@@ -341,13 +341,12 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
         CraftingLinkState state = getCraftingLinkState(link);
         var slot = state.getSlot();
-        System.out.println("insertCraftedItems -> Inserting crafted items into slot " + slot);
         return craftResults.insert(slot, what, amount, mode);
     }
 
     private CraftingLinkState getCraftingLinkState(ICraftingLink link) {
         for (ProgressionState progression : progressions) {
-            if(progression instanceof CraftingLinkState cls && cls.getLink() == link) {
+            if (progression instanceof CraftingLinkState cls && cls.getLink() == link) {
                 return cls;
             }
         }
