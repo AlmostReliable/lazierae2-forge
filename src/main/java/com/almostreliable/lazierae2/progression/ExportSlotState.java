@@ -34,6 +34,7 @@ public class ExportSlotState implements ProgressionState {
             }
 
             craftResults.setStack(slot, null);
+            return ProgressionState.REQUEST_CRAFT_STATE;
         }
 
         return ProgressionState.IDLE_STATE;

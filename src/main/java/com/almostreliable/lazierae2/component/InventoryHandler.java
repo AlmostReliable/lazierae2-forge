@@ -313,7 +313,7 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             }
 
             public boolean isRequesting() {
-                return !stack.isEmpty();
+                return state && !stack.isEmpty();
             }
         }
     }

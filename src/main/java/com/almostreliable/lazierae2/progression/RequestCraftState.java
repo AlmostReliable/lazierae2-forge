@@ -17,9 +17,9 @@ public class RequestCraftState implements ProgressionState {
         if (owner.knownStorageAmounts[slot] == -1) {
             // todo: throw out into owner
             ItemStack stack = owner.craftRequests.get(slot).stack();
-            if (stack.isEmpty()) return this;
+            if (stack.isEmpty()) return ProgressionState.IDLE_STATE;
             GenericStack genericStack = GenericStack.fromItemStack(stack);
-            if (genericStack == null) return this;
+            if (genericStack == null) return ProgressionState.IDLE_STATE;
             owner.knownStorageAmounts[slot] = owner
                 .getMainNodeGrid()
                 .getStorageService()
@@ -51,6 +51,6 @@ public class RequestCraftState implements ProgressionState {
 
     @Override
     public TickRateModulation getTickRateModulation() {
-        return TickRateModulation.URGENT;
+        return TickRateModulation.SLOWER;
     }
 }

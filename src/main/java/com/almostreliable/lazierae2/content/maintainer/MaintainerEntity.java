@@ -205,15 +205,16 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
             }
             TickRateModulation resultTickRateModulation = result.getTickRateModulation();
             if (resultTickRateModulation.ordinal() > tickRateModulation.ordinal()) {
-                currentTickRateModulation = resultTickRateModulation;
+                tickRateModulation = resultTickRateModulation;
             }
 
             progressions[slot] = result;
         }
 
+        currentTickRateModulation = tickRateModulation;
         return changed;
     }
-    
+
     private void updateActivityState() {
         for (ProgressionState progression : progressions) {
             if (!(progression instanceof IdleState)) {
