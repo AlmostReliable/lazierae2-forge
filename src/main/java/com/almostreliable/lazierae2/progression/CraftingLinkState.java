@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class CraftingLinkState implements ProgressionState {
     private final ICraftingLink link;
-    private boolean finished = false;
 
     public CraftingLinkState(ICraftingLink link) {
         this.link = link;
@@ -29,11 +28,7 @@ public class CraftingLinkState implements ProgressionState {
 
     @Override
     public TickRateModulation getTickRateModulation() {
-        return finished ? TickRateModulation.URGENT : TickRateModulation.SAME;
-    }
-
-    public void interrupt() {
-        finished = true;
+        return TickRateModulation.SAME;
     }
 
     public ICraftingLink getLink() {

@@ -10,7 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 
 public class StorageManager implements IStorageWatcherNode, INBTSerializable<CompoundTag> {
 
@@ -123,30 +122,31 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
         private long knownAmount = -1;
 
         public void update(AEKey key, long buffer) {
-            if(this.key != null && !key.fuzzyEquals(this.key, FuzzyMode.IGNORE_ALL)) {
+            if (this.key != null && !key.fuzzyEquals(this.key, FuzzyMode.IGNORE_ALL)) {
                 throw new IllegalArgumentException("Key mismatch");
             }
 
             this.key = key;
             this.buffer += buffer;
+            System.out.printf("%s: %d\n", this.key, this.buffer);
         }
 
         @Override
         public CompoundTag serializeNBT() {
             CompoundTag tag = new CompoundTag();
             if (key != null) tag.put("key", key.toTagGeneric());
-            tag.putLong("amount", buffer);
-            tag.putLong("pending", pendingAmount);
-            tag.putLong("known", knownAmount);
+            tag.putLong("buffer", buffer);
+            tag.putLong("pendingAmount", pendingAmount);
+            tag.putLong("knownAmount", knownAmount);
             return tag;
         }
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
             if (tag.contains("key")) key = AEKey.fromTagGeneric(tag.getCompound("key"));
-            if (tag.contains("buffer")) buffer = tag.getLong("amount");
-            if (tag.contains("pending")) pendingAmount = tag.getLong("pending");
-            if (tag.contains("known")) knownAmount = tag.getLong("known");
+            if (tag.contains("buffer")) buffer = tag.getLong("buffer");
+            if (tag.contains("pendingAmount")) pendingAmount = tag.getLong("pendingAmount");
+            if (tag.contains("knownAmount")) knownAmount = tag.getLong("knownAmount");
         }
 
         @Nullable
@@ -166,6 +166,7 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
             pendingAmount = inserted;
             buffer = getBuffer() - inserted;
             if (buffer == 0) {
+                System.out.print("BUFFER CLEARED");
                 key = null;
             }
             return buffer > 0;
