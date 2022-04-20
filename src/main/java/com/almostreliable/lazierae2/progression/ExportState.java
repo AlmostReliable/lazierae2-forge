@@ -3,23 +3,22 @@ package com.almostreliable.lazierae2.progression;
 import appeng.api.config.Actionable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.StorageHelper;
-import com.almostreliable.lazierae2.component.StorageManager;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 
-public class ExportSlotState implements ProgressionState {
+public class ExportState implements IProgressionState {
 
     @Override
-    public ProgressionState handle(MaintainerEntity owner, int slot) {
-        StorageManager.Storage storage = owner.getStorageManager().get(0);
-        if (storage.getKey() == null) {
-            return ProgressionState.IDLE_STATE;
+    public IProgressionState handle(MaintainerEntity owner, int slot) {
+        var storage = owner.getStorageManager().get(0);
+        if (storage.getItemType() == null) {
+            return IProgressionState.IDLE_STATE;
         }
 
-        long inserted = StorageHelper.poweredInsert(
+        var inserted = StorageHelper.poweredInsert(
             owner.getMainNodeGrid().getEnergyService(),
             owner.getMainNodeGrid().getStorageService().getInventory(),
-            storage.getKey(),
-            storage.getBuffer(),
+            storage.getItemType(),
+            storage.getBufferAmount(),
             owner.getActionSource(),
             Actionable.MODULATE
         );
@@ -27,12 +26,11 @@ public class ExportSlotState implements ProgressionState {
         if (inserted > 0) {
             if (storage.compute(inserted)) {
                 return this;
-            } else {
-                return ProgressionState.REQUEST_CRAFT_STATE;
             }
+            return IProgressionState.REQUEST_CRAFT_STATE;
         }
 
-        return ProgressionState.IDLE_STATE;
+        return IProgressionState.IDLE_STATE;
     }
 
     @Override

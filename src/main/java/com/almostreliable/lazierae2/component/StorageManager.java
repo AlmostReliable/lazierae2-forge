@@ -12,6 +12,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 
+import static com.almostreliable.lazierae2.core.Constants.*;
+
 public class StorageManager implements IStorageWatcherNode, INBTSerializable<CompoundTag> {
 
     private final Storage[] storages;
@@ -39,26 +41,12 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
 
     @Override
     public void onStackChange(AEKey what, long amount) {
-        for (int slot = 0; slot < storages.length; slot++) {
+        for (var slot = 0; slot < storages.length; slot++) {
             if (owner.craftRequests.matches(slot, what)) {
                 get(slot).knownAmount = amount;
                 get(slot).pendingAmount = 0;
             }
         }
-    }
-
-    public void populateWatcher(IStackWatcher watcher) {
-        for (var slot = 0; slot < storages.length; slot++) {
-            if (!owner.craftRequests.get(slot).stack().isEmpty()) {
-                watcher.add(AEItemKey.of(owner.craftRequests.get(slot).stack()));
-            }
-        }
-    }
-
-    public void clear(int slot) {
-        get(slot).knownAmount = -1;
-        calcSlotAmount(slot);
-        resetWatcher();
     }
 
     public long computeDelta(int slot) {
@@ -67,8 +55,8 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
             return 0;
         }
 
-        long delta = get(slot).knownAmount + get(slot).pendingAmount;
-        if (delta < request.count()) {
+        var storedAmount = get(slot).knownAmount + get(slot).pendingAmount;
+        if (storedAmount < request.count()) {
             return request.batch();
         }
         return 0;
@@ -76,8 +64,8 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        for (int slot = 0; slot < storages.length; slot++) {
+        var tag = new CompoundTag();
+        for (var slot = 0; slot < storages.length; slot++) {
             tag.put(String.valueOf(slot), get(slot).serializeNBT());
         }
         return tag;
@@ -85,8 +73,22 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        for (int slot = 0; slot < storages.length; slot++) {
+        for (var slot = 0; slot < storages.length; slot++) {
             get(slot).deserializeNBT(tag.getCompound(String.valueOf(slot)));
+        }
+    }
+
+    void clear(int slot) {
+        get(slot).knownAmount = -1;
+        calcSlotAmount(slot);
+        resetWatcher();
+    }
+
+    private void populateWatcher(IStackWatcher watcher) {
+        for (var slot = 0; slot < storages.length; slot++) {
+            if (!owner.craftRequests.get(slot).stack().isEmpty()) {
+                watcher.add(AEItemKey.of(owner.craftRequests.get(slot).stack()));
+            }
         }
     }
 
@@ -98,12 +100,11 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
     }
 
     private void calcSlotAmount(int slot) {
-        // TODO CHECK
         var request = owner.craftRequests.get(slot);
         if (request.stack().isEmpty()) {
             return;
         }
-        GenericStack genericStack = GenericStack.fromItemStack(request.stack());
+        var genericStack = GenericStack.fromItemStack(request.stack());
         if (genericStack == null) {
             return;
         }
@@ -115,62 +116,60 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
             .get(genericStack.what());
     }
 
-    public class Storage implements INBTSerializable<CompoundTag> {
+    public static class Storage implements INBTSerializable<CompoundTag> {
+
         @Nullable
-        private AEKey key;
-        private long buffer;
+        private AEKey itemType;
+        private long bufferAmount;
         private long pendingAmount;
         private long knownAmount = -1;
 
-        public void update(AEKey key, long buffer) {
-            if (this.key != null && !key.fuzzyEquals(this.key, FuzzyMode.IGNORE_ALL)) {
-                throw new IllegalArgumentException("Key mismatch");
+        public void update(AEKey itemType, long bufferAmount) {
+            if (this.itemType != null && !itemType.fuzzyEquals(this.itemType, FuzzyMode.IGNORE_ALL)) {
+                throw new IllegalArgumentException("itemType mismatch");
             }
-
-            this.key = key;
-            this.buffer += buffer;
-            System.out.printf("%s: %d\n", this.key, this.buffer);
+            this.itemType = itemType;
+            this.bufferAmount += bufferAmount;
         }
 
         @Override
         public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
-            if (key != null) tag.put("key", key.toTagGeneric());
-            tag.putLong("buffer", buffer);
-            tag.putLong("pendingAmount", pendingAmount);
-            tag.putLong("knownAmount", knownAmount);
+            var tag = new CompoundTag();
+            if (itemType != null) tag.put(ITEM_TYPE_ID, itemType.toTagGeneric());
+            tag.putLong(BUFFER_AMOUNT_ID, bufferAmount);
+            tag.putLong(PENDING_AMOUNT_ID, pendingAmount);
+            tag.putLong(KNOWN_AMOUNT_ID, knownAmount);
             return tag;
         }
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
-            if (tag.contains("key")) key = AEKey.fromTagGeneric(tag.getCompound("key"));
-            if (tag.contains("buffer")) buffer = tag.getLong("buffer");
-            if (tag.contains("pendingAmount")) pendingAmount = tag.getLong("pendingAmount");
-            if (tag.contains("knownAmount")) knownAmount = tag.getLong("knownAmount");
+            if (tag.contains(ITEM_TYPE_ID)) itemType = AEKey.fromTagGeneric(tag.getCompound(ITEM_TYPE_ID));
+            bufferAmount = tag.getLong(BUFFER_AMOUNT_ID);
+            pendingAmount = tag.getLong(PENDING_AMOUNT_ID);
+            knownAmount = tag.getLong(KNOWN_AMOUNT_ID);
         }
 
         /**
-         * @param inserted - amount of items inserted into the system
+         * @param inserted amount of items inserted into the system
          * @return true if the buffer is not empty
          */
         public boolean compute(long inserted) {
             pendingAmount = inserted;
-            buffer = getBuffer() - inserted;
-            if (buffer == 0) {
-                System.out.print("BUFFER CLEARED");
-                key = null;
+            bufferAmount = getBufferAmount() - inserted;
+            if (bufferAmount == 0) {
+                itemType = null;
             }
-            return buffer > 0;
+            return bufferAmount > 0;
         }
 
         @Nullable
-        public AEKey getKey() {
-            return key;
+        public AEKey getItemType() {
+            return itemType;
         }
 
-        public long getBuffer() {
-            return getKey() == null ? 0 : buffer;
+        public long getBufferAmount() {
+            return itemType == null ? 0 : bufferAmount;
         }
 
         public long getKnownAmount() {

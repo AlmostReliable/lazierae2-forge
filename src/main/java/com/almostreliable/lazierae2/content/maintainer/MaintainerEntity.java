@@ -25,8 +25,8 @@ import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket;
 import com.almostreliable.lazierae2.progression.CraftingLinkState;
-import com.almostreliable.lazierae2.progression.ExportSlotState;
-import com.almostreliable.lazierae2.progression.ProgressionState;
+import com.almostreliable.lazierae2.progression.ExportState;
+import com.almostreliable.lazierae2.progression.IProgressionState;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -52,7 +52,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public final RequestInventory craftRequests;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
-    private final ProgressionState[] progressions;
+    private final IProgressionState[] progressions;
     private final StorageManager storageManager;
     private TickRateModulation currentTickRateModulation = TickRateModulation.IDLE;
 
@@ -63,11 +63,9 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         super(Entities.MAINTAINER.get(), pos, state);
         actionSource = new MachineSource(this);
         craftRequests = new RequestInventory(this, SLOTS);
-        // craftResults = new GenericStackInv(this::setChanged, SLOTS);
-        // knownStorageAmounts = new long[SLOTS];
         storageManager = new StorageManager(this, SLOTS);
-        progressions = new ProgressionState[SLOTS];
-        Arrays.fill(progressions, ProgressionState.IDLE_STATE);
+        progressions = new IProgressionState[SLOTS];
+        Arrays.fill(progressions, IProgressionState.IDLE_STATE);
         mainNode = createMainNode();
     }
 
@@ -96,7 +94,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         super.load(tag);
         if (tag.contains(CRAFT_REQUESTS_ID)) craftRequests.deserializeNBT(tag.getCompound(CRAFT_REQUESTS_ID));
         if (tag.contains(STORAGE_MANAGER_ID)) storageManager.deserializeNBT(tag.getCompound(STORAGE_MANAGER_ID));
-        if (tag.contains(PROGRESSION_STATES)) loadStates(tag.getCompound(PROGRESSION_STATES));
+        if (tag.contains(PROGRESSION_STATES_ID)) loadStates(tag.getCompound(PROGRESSION_STATES_ID));
     }
 
     @Override
@@ -104,7 +102,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         super.saveAdditional(tag);
         tag.put(CRAFT_REQUESTS_ID, craftRequests.serializeNBT());
         tag.put(STORAGE_MANAGER_ID, storageManager.serializeNBT());
-        tag.put(PROGRESSION_STATES, saveStates());
+        tag.put(PROGRESSION_STATES_ID, saveStates());
     }
 
     @Override
@@ -153,22 +151,22 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     private void loadStates(CompoundTag tag) {
-        for (int slot = 0; slot < progressions.length; slot++) {
+        for (var slot = 0; slot < progressions.length; slot++) {
             if (tag.contains(String.valueOf(slot))) {
                 var stateTag = tag.getCompound(String.valueOf(slot));
-                ICraftingLink link = StorageHelper.loadCraftingLink(stateTag, this);
+                var link = StorageHelper.loadCraftingLink(stateTag, this);
                 progressions[slot] = new CraftingLinkState(link);
             }
         }
     }
 
     private CompoundTag saveStates() {
-        CompoundTag tag = new CompoundTag();
-        for (int slot = 0; slot < progressions.length; slot++) {
+        var tag = new CompoundTag();
+        for (var slot = 0; slot < progressions.length; slot++) {
             var state = progressions[slot];
             if (state instanceof CraftingLinkState cls) {
-                CompoundTag stateTag = new CompoundTag();
-                cls.getLink().writeToNBT(stateTag);
+                var stateTag = new CompoundTag();
+                cls.link().writeToNBT(stateTag);
                 tag.put(String.valueOf(slot), stateTag);
             }
         }
@@ -176,16 +174,16 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     private boolean handleProgressions() {
-        boolean changed = false;
+        var changed = false;
 
-        TickRateModulation tickRateModulation = TickRateModulation.IDLE;
-        for (int slot = 0; slot < progressions.length; slot++) {
-            ProgressionState state = progressions[slot];
-            ProgressionState result = handleProgression(slot);
-            if (state != result) {
+        var tickRateModulation = TickRateModulation.IDLE;
+        for (var slot = 0; slot < progressions.length; slot++) {
+            var state = progressions[slot];
+            var result = handleProgression(slot);
+            if (!Objects.equals(state, result)) {
                 changed = true;
             }
-            TickRateModulation resultTickRateModulation = result.getTickRateModulation();
+            var resultTickRateModulation = result.getTickRateModulation();
             if (resultTickRateModulation.ordinal() > tickRateModulation.ordinal()) {
                 tickRateModulation = resultTickRateModulation;
             }
@@ -196,10 +194,11 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         return changed;
     }
 
-    private ProgressionState handleProgression(int slot) {
-        ProgressionState state = progressions[slot];
+    private IProgressionState handleProgression(int slot) {
+        var state = progressions[slot];
         progressions[slot] = state.handle(this, slot);
-        if (progressions[slot] != ProgressionState.IDLE_STATE && progressions[slot] != state) {
+        if (!Objects.equals(progressions[slot], IProgressionState.IDLE_STATE) &&
+            !Objects.equals(progressions[slot], state)) {
             return handleProgression(slot);
         }
 
@@ -207,8 +206,8 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     private void updateActivityState() {
-        for (ProgressionState progression : progressions) {
-            if (progression instanceof ExportSlotState || progression instanceof CraftingLinkState) {
+        for (var progression : progressions) {
+            if (progression instanceof ExportState || progression instanceof CraftingLinkState) {
                 changeActivityState(true);
                 return;
             }
@@ -272,17 +271,17 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public ImmutableSet<ICraftingLink> getRequestedJobs() {
         return Arrays
             .stream(progressions)
-            .filter(state -> state instanceof CraftingLinkState)
-            .map(state -> ((CraftingLinkState) state).getLink())
+            .filter(CraftingLinkState.class::isInstance)
+            .map(state -> ((CraftingLinkState) state).link())
             .collect(ImmutableSet.toImmutableSet());
     }
 
     @Override
     public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
-        for (int slot = 0; slot < progressions.length; slot++) {
-            ProgressionState state = progressions[slot];
-            if (state instanceof CraftingLinkState cls && cls.getLink() == link) {
-                getStorageManager().get(slot).update(what, amount);
+        for (var slot = 0; slot < progressions.length; slot++) {
+            var state = progressions[slot];
+            if (state instanceof CraftingLinkState cls && cls.link().equals(link)) {
+                storageManager.get(slot).update(what, amount);
                 return amount;
             }
         }
@@ -290,10 +289,12 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     @Override
-    public void jobStateChange(ICraftingLink link) {}
+    public void jobStateChange(ICraftingLink link) {
+        // state change is handled by state pattern
+    }
 
     public IGrid getMainNodeGrid() {
-        IGrid grid = getMainNode().getGrid();
+        var grid = mainNode.getGrid();
         Objects.requireNonNull(grid, "MaintainerEntity was not fully initialized - Grid is null");
         return grid;
     }

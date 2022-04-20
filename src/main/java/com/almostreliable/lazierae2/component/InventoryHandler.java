@@ -245,10 +245,6 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             return requests[slot];
         }
 
-        public boolean matches(int slot, AEKey what) {
-            return what.matches(GenericStack.fromItemStack(requests[slot].stack));
-        }
-
         public GenericStack request(int slot, int count) {
             var stack = requests[slot].stack.copy();
             stack.setCount(count);
@@ -267,12 +263,17 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             return requests[slot].state;
         }
 
+        boolean matches(int slot, AEKey what) {
+            return what.matches(GenericStack.fromItemStack(requests[slot].stack));
+        }
+
         private void validateSlot(int slot) {
             if (slot < 0 || slot >= slots) {
                 throw new IllegalArgumentException("Slot " + slot + " is out of range");
             }
         }
 
+        @SuppressWarnings("EqualsAndHashcode")
         public record Request(boolean state, ItemStack stack, long count, long batch) {
 
             private static Request deserializeNBT(CompoundTag tag) {

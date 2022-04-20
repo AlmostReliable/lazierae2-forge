@@ -1,46 +1,39 @@
 package com.almostreliable.lazierae2.progression;
 
-import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.ticking.TickRateModulation;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class CraftingPlanState implements ProgressionState {
-    private final Future<ICraftingPlan> future;
+public record CraftingPlanState(Future<? extends ICraftingPlan> future) implements IProgressionState {
 
-    public CraftingPlanState(Future<ICraftingPlan> future) {
-        this.future = future;
-    }
-
-    @Nullable
+    @SuppressWarnings("java:S2142")
     @Override
-    public ProgressionState handle(MaintainerEntity owner, int slot) {
+    public IProgressionState handle(MaintainerEntity owner, int slot) {
         if (!future.isDone()) {
             return this;
         }
 
         if (future.isCancelled()) {
-            return ProgressionState.IDLE_STATE;
+            return IProgressionState.IDLE_STATE;
         }
 
         try {
-            ICraftingPlan plan = future.get();
-            ICraftingLink link = owner
+            var plan = future.get();
+            var link = owner
                 .getMainNodeGrid()
                 .getCraftingService()
                 .submitJob(plan, owner, null, false, owner.getActionSource());
 
             if (link == null) {
-                return ProgressionState.IDLE_STATE;
+                return IProgressionState.IDLE_STATE;
             }
 
             return new CraftingLinkState(link);
         } catch (InterruptedException | ExecutionException e) {
-            return ProgressionState.IDLE_STATE;
+            return IProgressionState.IDLE_STATE;
         }
     }
 
