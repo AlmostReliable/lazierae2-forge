@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.content.maintainer;
+package com.almostreliable.lazierae2.component;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.IStackWatcher;
@@ -6,6 +6,7 @@ import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -36,10 +37,13 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
         resetWatcher();
     }
 
-    private void resetWatcher() {
-        if (stackWatcher != null) {
-            stackWatcher.reset();
-            populateWatcher(stackWatcher);
+    @Override
+    public void onStackChange(AEKey what, long amount) {
+        for (int slot = 0; slot < storages.length; slot++) {
+            if (owner.craftRequests.matches(slot, what)) {
+                get(slot).knownAmount = amount;
+                get(slot).pendingAmount = 0;
+            }
         }
     }
 
@@ -47,16 +51,6 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
         for (var slot = 0; slot < storages.length; slot++) {
             if (!owner.craftRequests.get(slot).stack().isEmpty()) {
                 watcher.add(AEItemKey.of(owner.craftRequests.get(slot).stack()));
-            }
-        }
-    }
-
-    @Override
-    public void onStackChange(AEKey what, long amount) {
-        for (int slot = 0; slot < storages.length; slot++) {
-            if (owner.craftRequests.matches(slot, what)) {
-                get(slot).knownAmount = amount;
-                get(slot).pendingAmount = 0;
             }
         }
     }
@@ -80,6 +74,29 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
         return 0;
     }
 
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        for (int slot = 0; slot < storages.length; slot++) {
+            tag.put(String.valueOf(slot), get(slot).serializeNBT());
+        }
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag tag) {
+        for (int slot = 0; slot < storages.length; slot++) {
+            get(slot).deserializeNBT(tag.getCompound(String.valueOf(slot)));
+        }
+    }
+
+    private void resetWatcher() {
+        if (stackWatcher != null) {
+            stackWatcher.reset();
+            populateWatcher(stackWatcher);
+        }
+    }
+
     private void calcSlotAmount(int slot) {
         // TODO CHECK
         var request = owner.craftRequests.get(slot);
@@ -96,22 +113,6 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
             .getInventory()
             .getAvailableStacks()
             .get(genericStack.what());
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        for (int slot = 0; slot < storages.length; slot++) {
-            tag.put(String.valueOf(slot), get(slot).serializeNBT());
-        }
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag tag) {
-        for (int slot = 0; slot < storages.length; slot++) {
-            get(slot).deserializeNBT(tag.getCompound(String.valueOf(slot)));
-        }
     }
 
     public class Storage implements INBTSerializable<CompoundTag> {
@@ -149,15 +150,6 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
             if (tag.contains("knownAmount")) knownAmount = tag.getLong("knownAmount");
         }
 
-        @Nullable
-        public AEKey getKey() {
-            return key;
-        }
-
-        public long getBuffer() {
-            return getKey() == null ? 0 : buffer;
-        }
-
         /**
          * @param inserted - amount of items inserted into the system
          * @return true if the buffer is not empty
@@ -170,6 +162,15 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
                 key = null;
             }
             return buffer > 0;
+        }
+
+        @Nullable
+        public AEKey getKey() {
+            return key;
+        }
+
+        public long getBuffer() {
+            return getKey() == null ? 0 : buffer;
         }
 
         public long getKnownAmount() {

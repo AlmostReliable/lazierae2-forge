@@ -3,8 +3,8 @@ package com.almostreliable.lazierae2.progression;
 import appeng.api.config.Actionable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.StorageHelper;
+import com.almostreliable.lazierae2.component.StorageManager;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
-import com.almostreliable.lazierae2.content.maintainer.StorageManager;
 
 public class ExportSlotState implements ProgressionState {
 
