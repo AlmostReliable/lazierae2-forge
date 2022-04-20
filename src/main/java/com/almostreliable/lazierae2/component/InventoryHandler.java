@@ -64,6 +64,13 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             }
         }
 
+        @NotNull
+        @Override
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            if (slot < NON_INPUT_SLOTS) return stack;
+            return super.insertItem(slot, stack, simulate);
+        }
+
         public CompoundTag serializeUpgrades() {
             return getStackInSlot(UPGRADE_SLOT).save(new CompoundTag());
         }
@@ -113,6 +120,14 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             this.slots = slots;
             requests = new Request[slots];
             Arrays.fill(requests, new Request(true, ItemStack.EMPTY, 0, 1));
+        }
+
+        public int firstAvailableSlot() {
+            for (var slot = 0; slot < requests.length; slot++) {
+                var request = requests[slot];
+                if (request.stack.isEmpty()) return slot;
+            }
+            return -1;
         }
 
         public void updateCount(int slot, long count) {

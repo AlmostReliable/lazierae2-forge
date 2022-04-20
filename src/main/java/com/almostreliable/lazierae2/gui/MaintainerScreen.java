@@ -11,9 +11,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class MaintainerScreen extends GenericScreen<MaintainerMenu> {
 
-    // TODO: refresh values on sync
-    // TODO: render count on item stack
-
     private static final int TEXTURE_WIDTH = 176;
     private static final int TEXTURE_HEIGHT = 211;
     private static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/maintainer.png");

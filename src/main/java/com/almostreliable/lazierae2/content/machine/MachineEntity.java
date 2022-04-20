@@ -262,7 +262,7 @@ public class MachineEntity extends GenericEntity {
             var outputEmpty = new AtomicBoolean(false);
             target.ifPresent(targetInv -> {
                 var stack = inventory.getStackInOutput();
-                var remainder = ItemHandlerHelper.insertItem(targetInv, stack, false);
+                var remainder = ItemHandlerHelper.insertItemStacked(targetInv, stack, false);
 
                 if (remainder.getCount() != stack.getCount() || !remainder.sameItem(stack)) {
                     inventory.setStackInOutput(remainder);

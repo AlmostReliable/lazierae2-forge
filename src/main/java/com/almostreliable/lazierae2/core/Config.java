@@ -106,8 +106,10 @@ public final class Config {
         public final MachineConfig centrifuge;
         public final MachineConfig energizer;
         public final MachineConfig etcher;
+        public final DoubleValue maintainerIdleEnergy;
 
         private CommonConfig(Builder builder) {
+            builder.push(MACHINE_ID);
             builder.comment(
                 "##################################################################################",
                 " This section lets you configure the various values of the mod machines.         #",
@@ -119,6 +121,14 @@ public final class Config {
             centrifuge = new MachineConfig(builder, CENTRIFUGE_ID);
             energizer = new MachineConfig(builder, ENERGIZER_ID);
             etcher = new MachineConfig(builder, ETCHER_ID);
+            builder.pop();
+
+            builder.push(MAINTAINER_ID);
+            maintainerIdleEnergy = builder
+                .comment(f(" The energy the {} drains from the ME network when idle.", MAINTAINER_ID))
+                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", MAINTAINER_ID, IDLE_ENERGY)))
+                .defineInRange("idleEnergy", 5.0, 0.0, Double.MAX_VALUE);
+            builder.pop();
         }
     }
 }
