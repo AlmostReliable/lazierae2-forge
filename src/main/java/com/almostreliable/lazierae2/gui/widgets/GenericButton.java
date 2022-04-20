@@ -15,7 +15,7 @@ public abstract class GenericButton extends Button {
     final ResourceLocation texture;
     final GenericScreen<?> screen;
 
-    GenericButton(
+    protected GenericButton(
         GenericScreen<?> screen, int pX, int pY, int width, int height, String textureID
     ) {
         super(

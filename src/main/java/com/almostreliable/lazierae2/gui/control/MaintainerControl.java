@@ -1,6 +1,8 @@
-package com.almostreliable.lazierae2.gui.widgets;
+package com.almostreliable.lazierae2.gui.control;
 
 import com.almostreliable.lazierae2.gui.MaintainerScreen;
+import com.almostreliable.lazierae2.gui.widgets.GenericButton;
+import com.almostreliable.lazierae2.gui.widgets.ToggleButton;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.RequestBatchPacket;
 import com.almostreliable.lazierae2.network.packets.RequestCountPacket;
@@ -17,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 public final class MaintainerControl {
 
     // TODO: add tooltips for everything
+    // TODO: make text boxes tab switchable and submit value
 
     private static final int POS_Y = 9;
     private static final int GAP = 10;
