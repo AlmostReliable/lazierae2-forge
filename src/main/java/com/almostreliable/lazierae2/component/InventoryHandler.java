@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.component;
 
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import com.almostreliable.lazierae2.content.GenericEntity;
@@ -245,12 +246,6 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             return requests[slot];
         }
 
-        public GenericStack request(int slot, int count) {
-            var stack = requests[slot].stack.copy();
-            stack.setCount(count);
-            return Objects.requireNonNull(GenericStack.fromItemStack(stack));
-        }
-
         public long getCount(int slot) {
             return requests[slot].count;
         }
@@ -273,7 +268,6 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             }
         }
 
-        @SuppressWarnings("EqualsAndHashcode")
         public record Request(boolean state, ItemStack stack, long count, long batch) {
 
             private static Request deserializeNBT(CompoundTag tag) {
@@ -285,10 +279,9 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
                 );
             }
 
-            @Override
-            public boolean equals(Object obj) {
-                return obj instanceof Request other && state == other.state && ItemStack.isSame(stack, other.stack) &&
-                    count == other.count && batch == other.batch;
+            public GenericStack toGenericStack(long count) {
+                var stackCopy = stack.copy();
+                return new GenericStack(Objects.requireNonNull(AEItemKey.of(stackCopy)), count);
             }
 
             private CompoundTag serializeNBT() {

@@ -16,7 +16,7 @@ public class RequestState implements IProgressionState {
             return IProgressionState.IDLE_STATE;
         }
 
-        var stack = craftRequests.request(slot, (int) toCraft);
+        var stack = craftRequests.get(slot).toGenericStack(toCraft);
         var future = owner
             .getMainNodeGrid()
             .getCraftingService()
