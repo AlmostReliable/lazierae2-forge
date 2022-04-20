@@ -6,7 +6,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.stacks.GenericStack;
 import com.almostreliable.lazierae2.component.InventoryHandler;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.concurrent.Future;
 
@@ -14,23 +13,10 @@ public class RequestCraftState implements ProgressionState {
 
     @Override
     public ProgressionState handle(MaintainerEntity owner, int slot) {
-        if (owner.knownStorageAmounts[slot] == -1) {
-            // todo: throw out into owner
-            ItemStack stack = owner.craftRequests.get(slot).stack();
-            if (stack.isEmpty()) return ProgressionState.IDLE_STATE;
-            GenericStack genericStack = GenericStack.fromItemStack(stack);
-            if (genericStack == null) return ProgressionState.IDLE_STATE;
-            owner.knownStorageAmounts[slot] = owner
-                .getMainNodeGrid()
-                .getStorageService()
-                .getInventory()
-                .getAvailableStacks()
-                .get(genericStack.what());
-        }
 
         InventoryHandler.RequestInventory craftRequests = owner.getCraftRequests();
 
-        long toCraft = craftRequests.computeDelta(slot, owner.knownStorageAmounts[slot]);
+        long toCraft = owner.getStorageManager().computeDelta(slot);
         if (toCraft <= 0) {
             return ProgressionState.IDLE_STATE;
         }

@@ -8,12 +8,12 @@ public class IdleState implements ProgressionState {
 
     @Override
     public ProgressionState handle(MaintainerEntity owner, int slot) {
-        if (owner.getCraftResults().getAmount(slot) > 0) {
+        if (owner.getStorageManager().get(slot).getBuffer() > 0) {
             return ProgressionState.EXPORT_SLOT_STATE;
         }
 
         InventoryHandler.RequestInventory.Request request = owner.getCraftRequests().get(slot);
-        if (request.isRequesting() && request.count() > owner.knownStorageAmounts[slot]) {
+        if (request.isRequesting() && request.count() > owner.getStorageManager().get(slot).getKnownAmount()) {
             return ProgressionState.REQUEST_CRAFT_STATE;
         }
 

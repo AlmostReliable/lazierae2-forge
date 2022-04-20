@@ -7,6 +7,7 @@ public interface ProgressionState {
     ProgressionState IDLE_STATE = new IdleState();
     ProgressionState EXPORT_SLOT_STATE = new ExportSlotState();
     ProgressionState REQUEST_CRAFT_STATE = new RequestCraftState();
+
     /**
      * @param owner the entity that is maintaining the progression.
      * @param slot  the slot of the progression.

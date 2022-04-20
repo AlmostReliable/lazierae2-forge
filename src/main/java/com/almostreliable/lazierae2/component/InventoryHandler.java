@@ -1,7 +1,5 @@
 package com.almostreliable.lazierae2.component;
 
-import appeng.api.networking.IStackWatcher;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import com.almostreliable.lazierae2.content.GenericEntity;
@@ -9,7 +7,6 @@ import com.almostreliable.lazierae2.content.machine.MachineEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket.SYNC_FLAGS;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -172,7 +169,7 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
                 flags |= SYNC_FLAGS.STACK | SYNC_FLAGS.COUNT;
             }
             if (!ItemStack.isSame(oldRequest.stack, requests[slot].stack)) {
-                clearSlot(slot);
+                entity.getStorageManager().clear(slot);
             }
             if (!oldRequest.equals(requests[slot])) {
                 entity.syncData(slot, flags);
@@ -237,23 +234,10 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             return what.matches(GenericStack.fromItemStack(requests[slot].stack));
         }
 
-        public long computeDelta(int slot, long existing) {
-            return requests[slot].stack.isEmpty() ? 0 :
-                Mth.clamp(requests[slot].count - existing, 0, requests[slot].batch);
-        }
-
         public GenericStack request(int slot, int count) {
             var stack = requests[slot].stack.copy();
             stack.setCount(count);
             return Objects.requireNonNull(GenericStack.fromItemStack(stack));
-        }
-
-        public void populateWatcher(IStackWatcher watcher) {
-            for (var i = 0; i < slots; i++) {
-                if (!requests[i].stack.isEmpty()) {
-                    watcher.add(AEItemKey.of(requests[i].stack));
-                }
-            }
         }
 
         public long getCount(int slot) {
@@ -272,18 +256,6 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             if (slot < 0 || slot >= slots) {
                 throw new IllegalArgumentException("Slot " + slot + " is out of range");
             }
-        }
-
-        private void clearSlot(int slot) {
-            entity.knownStorageAmounts[slot] = -1;
-            entity.resetWatcher();
-        }
-
-        public boolean isRequesting() {
-            for (Request request : requests) {
-                if (request.isRequesting()) return true;
-            }
-            return false;
         }
 
         public record Request(boolean state, ItemStack stack, long count, long batch) {

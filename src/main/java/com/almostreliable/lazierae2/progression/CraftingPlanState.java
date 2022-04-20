@@ -46,6 +46,6 @@ public class CraftingPlanState implements ProgressionState {
 
     @Override
     public TickRateModulation getTickRateModulation() {
-        return TickRateModulation.URGENT;
+        return future.isDone() && !future.isCancelled() ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
     }
 }

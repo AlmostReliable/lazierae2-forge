@@ -49,7 +49,7 @@ public enum Constants {
     public static final String UPGRADES_ID = "upgrades";
     public static final String CRAFT_TRACKER_ID = "craft_tracker";
     public static final String CRAFT_REQUESTS_ID = "craft_requests";
-    public static final String CRAFT_RESULTS_ID = "craft_results";
+    public static final String STORAGE_MANAGER_ID = "storage_manager";
     // recipe json keys
     public static final String RECIPE_INPUT = "input";
     public static final String RECIPE_OUTPUT = "output";

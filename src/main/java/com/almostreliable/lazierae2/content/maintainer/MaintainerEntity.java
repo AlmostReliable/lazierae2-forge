@@ -4,19 +4,13 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.*;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import appeng.api.storage.StorageHelper;
 import appeng.api.util.AECableType;
-import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.helpers.MachineSource;
@@ -27,9 +21,7 @@ import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket;
-import com.almostreliable.lazierae2.progression.CraftingLinkState;
-import com.almostreliable.lazierae2.progression.IdleState;
-import com.almostreliable.lazierae2.progression.ProgressionState;
+import com.almostreliable.lazierae2.progression.*;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -49,17 +41,14 @@ import java.util.Objects;
 
 import static com.almostreliable.lazierae2.core.Constants.*;
 
-public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, IStorageWatcherNode, ICraftingRequester {
+public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, ICraftingRequester {
     private static final int SLOTS = 6;
-    public final long[] knownStorageAmounts;
     public final RequestInventory craftRequests;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
     private final MaintainerCraftTracker craftTracker;
-    private final GenericStackInv craftResults;
     private final ProgressionState[] progressions;
-    @Nullable
-    private IStackWatcher stackWatcher;
+    private final StorageManager storageManager;
     private TickRateModulation currentTickRateModulation = TickRateModulation.IDLE;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
@@ -67,27 +56,27 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         BlockPos pos, BlockState state
     ) {
         super(Entities.MAINTAINER.get(), pos, state);
-        mainNode = createMainNode();
         actionSource = new MachineSource(this);
         craftTracker = new MaintainerCraftTracker(this, SLOTS);
         craftRequests = new RequestInventory(this, SLOTS);
-        craftResults = new GenericStackInv(this::setChanged, SLOTS);
-        knownStorageAmounts = new long[SLOTS];
+        // craftResults = new GenericStackInv(this::setChanged, SLOTS);
+        // knownStorageAmounts = new long[SLOTS];
+        storageManager = new StorageManager(this, SLOTS);
         progressions = new ProgressionState[SLOTS];
         Arrays.fill(progressions, new IdleState());
-        Arrays.fill(knownStorageAmounts, -1);
+        mainNode = createMainNode();
     }
 
     public RequestInventory getCraftRequests() {
         return craftRequests;
     }
 
-    public GenericStackInv getCraftResults() {
-        return craftResults;
-    }
-
     public IActionSource getActionSource() {
         return actionSource;
+    }
+
+    public StorageManager getStorageManager() {
+        return storageManager;
     }
 
     @Override
@@ -115,7 +104,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         super.load(tag);
         if (tag.contains(CRAFT_TRACKER_ID)) craftTracker.deserializeNBT(tag.getCompound(CRAFT_TRACKER_ID));
         if (tag.contains(CRAFT_REQUESTS_ID)) craftRequests.deserializeNBT(tag.getCompound(CRAFT_REQUESTS_ID));
-        if (tag.contains(CRAFT_RESULTS_ID)) craftResults.readFromChildTag(tag, CRAFT_RESULTS_ID);
+        if (tag.contains(STORAGE_MANAGER_ID)) storageManager.deserializeNBT(tag.getCompound(STORAGE_MANAGER_ID));
     }
 
     @Override
@@ -123,7 +112,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         super.saveAdditional(tag);
         tag.put(CRAFT_TRACKER_ID, craftTracker.serializeNBT());
         tag.put(CRAFT_REQUESTS_ID, craftRequests.serializeNBT());
-        craftResults.writeToChildTag(tag, CRAFT_RESULTS_ID);
+        tag.put(STORAGE_MANAGER_ID, storageManager.serializeNBT());
     }
 
     @Override
@@ -171,35 +160,13 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         return currentTickRateModulation;
     }
 
-    @Override
-    public void updateWatcher(IStackWatcher newWatcher) {
-        stackWatcher = newWatcher;
-        resetWatcher();
-    }
-
-    @Override
-    public void onStackChange(AEKey what, long amount) {
-        for (var i = 0; i < SLOTS; i++) {
-            if (craftRequests.matches(i, what)) {
-                knownStorageAmounts[i] = amount;
-            }
-        }
-    }
-
-    public void resetWatcher() {
-        if (stackWatcher != null) {
-            stackWatcher.reset();
-            craftRequests.populateWatcher(stackWatcher);
-        }
-    }
-
     private boolean handleProgressions() {
         boolean changed = false;
 
         TickRateModulation tickRateModulation = TickRateModulation.IDLE;
         for (int slot = 0; slot < progressions.length; slot++) {
             ProgressionState state = progressions[slot];
-            ProgressionState result = state.handle(this, slot);
+            ProgressionState result = handleProgression(slot);
             if (state != result) {
                 changed = true;
             }
@@ -210,14 +177,23 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
             progressions[slot] = result;
         }
-
         currentTickRateModulation = tickRateModulation;
         return changed;
     }
 
+    private ProgressionState handleProgression(int slot) {
+        ProgressionState state = progressions[slot];
+        progressions[slot] = state.handle(this, slot);
+        if (progressions[slot] != ProgressionState.IDLE_STATE && progressions[slot] != state) {
+            return handleProgression(slot);
+        }
+
+        return progressions[slot];
+    }
+
     private void updateActivityState() {
         for (ProgressionState progression : progressions) {
-            if (!(progression instanceof IdleState)) {
+            if (progression instanceof ExportSlotState || progression instanceof CraftingLinkState) {
                 changeActivityState(true);
                 return;
             }
@@ -226,64 +202,10 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         changeActivityState(false);
     }
 
-    private boolean handleCraft(MEStorage storage, ICraftingService crafting) {
-        assert level != null;
-        var workDone = false;
-        for (var i = 0; i < SLOTS; i++) {
-            if (craftRequests.get(i).isRequesting()) {
-                if (knownStorageAmounts[i] == -1) {
-                    var stack = craftRequests.getStackInSlot(i);
-                    if (stack.isEmpty()) continue;
-                    var aeStack = GenericStack.fromItemStack(stack);
-                    if (aeStack == null) continue;
-                    knownStorageAmounts[i] = storage.getAvailableStacks().get(aeStack.what());
-                    workDone = true;
-                }
-                if (craftRequests.getState(i) && craftResults.getAmount(i) == 0 && !craftTracker.isBusy(i)) {
-                    var toCraft = craftRequests.computeDelta(i, knownStorageAmounts[i]);
-                    if (toCraft > 0) {
-                        var aeStack = craftRequests.request(i, (int) toCraft);
-                        if (craftTracker.requestCraft(i,
-                            aeStack.what(),
-                            aeStack.amount(),
-                            level,
-                            crafting,
-                            actionSource
-                        )) {
-                            workDone = true;
-                        }
-                    }
-                }
-            }
-        }
-        return workDone;
-    }
-
-    private boolean handleExport(MEStorage storage, IEnergyService energy) {
-        var workDone = false;
-        for (var i = 0; i < SLOTS; i++) {
-            var stack = craftResults.getStack(i);
-            if (stack == null) continue;
-            var inserted = StorageHelper.poweredInsert(energy,
-                storage,
-                stack.what(),
-                stack.amount(),
-                actionSource,
-                Actionable.MODULATE
-            );
-            if (inserted > 0) {
-                workDone = true;
-                var remaining = stack.amount() - inserted;
-                craftResults.setStack(i, remaining == 0 ? null : new GenericStack(stack.what(), remaining));
-            }
-        }
-        return workDone;
-    }
-
     private IManagedGridNode createMainNode() {
         return GridHelper
             .createManagedNode(this, BlockEntityNodeListener.INSTANCE)
-            .addService(IStorageWatcherNode.class, this)
+            .addService(IStorageWatcherNode.class, storageManager)
             .addService(ICraftingRequester.class, this)
             .addService(IGridTickable.class, this)
             .setVisualRepresentation(Blocks.MAINTAINER.get())
@@ -335,7 +257,8 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         for (int slot = 0; slot < progressions.length; slot++) {
             ProgressionState state = progressions[slot];
             if (state instanceof CraftingLinkState cls && cls.getLink() == link) {
-                return craftResults.insert(slot, what, amount, mode);
+                getStorageManager().get(slot).update(what, amount);
+                return amount;
             }
         }
         throw new IllegalStateException("No CraftingLinkState found");
