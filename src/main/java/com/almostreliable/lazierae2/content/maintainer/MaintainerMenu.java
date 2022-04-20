@@ -35,8 +35,8 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         var targetSlotIndex = requestInventory.firstAvailableSlot();
         if (targetSlotIndex == -1) return ItemStack.EMPTY;
         var targetSlot = getSlot(targetSlotIndex);
-        if (!(targetSlot instanceof FakeSlot)) return ItemStack.EMPTY;
-        targetSlot.set(stack);
+        if (!(targetSlot instanceof FakeSlot fakeSlot) || fakeSlot.isLocked()) return ItemStack.EMPTY;
+        fakeSlot.set(stack);
         return ItemStack.EMPTY;
     }
 
@@ -44,7 +44,7 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
         if (slotId >= 0 && slotId < requestInventory.getSlots()) {
             var slot = getSlot(slotId);
-            if (slot instanceof FakeSlot) {
+            if (slot instanceof FakeSlot fakeSlot && !fakeSlot.isLocked()) {
                 handleClick(dragType, clickType, slot);
                 return;
             }
@@ -67,7 +67,7 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     @Override
     protected void setupContainerInventory() {
         for (var i = 0; i < requestInventory.getSlots(); i++) {
-            addSlot(new FakeSlot(requestInventory, i, 26, 7 + (i * SLOT_SIZE) + (i * SLOT_GAP)));
+            addSlot(new FakeSlot(this, requestInventory, i, 26, 7 + (i * SLOT_SIZE) + (i * SLOT_GAP)));
         }
     }
 

@@ -24,9 +24,7 @@ import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket;
-import com.almostreliable.lazierae2.progression.CraftingLinkState;
-import com.almostreliable.lazierae2.progression.ExportState;
-import com.almostreliable.lazierae2.progression.IProgressionState;
+import com.almostreliable.lazierae2.progression.*;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -148,6 +146,10 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         }
         updateActivityState();
         return currentTickRateModulation;
+    }
+
+    public boolean isRequestSlotLocked(int slot) {
+        return !(progressions[slot] instanceof IdleState || progressions[slot] instanceof RequestState);
     }
 
     private void loadStates(CompoundTag tag) {
