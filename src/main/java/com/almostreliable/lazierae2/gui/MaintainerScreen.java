@@ -1,7 +1,7 @@
 package com.almostreliable.lazierae2.gui;
 
 import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
-import com.almostreliable.lazierae2.gui.widgets.MaintainerControl;
+import com.almostreliable.lazierae2.gui.control.MaintainerControl;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

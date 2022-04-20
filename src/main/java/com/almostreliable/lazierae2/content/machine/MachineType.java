@@ -59,6 +59,7 @@ public enum MachineType implements RecipeType<MachineRecipe> {
     private final BiFunction<ResourceLocation, MachineType, MachineRecipe> recipeFactory;
     private final Supplier<? extends Supplier<RecipeSerializer<MachineRecipe>>> recipeSerializer;
 
+    @SuppressWarnings("ThisEscapedInObjectConstruction")
     MachineType(
         String id, int inputSlots, Supplier<MachineConfig> machineConfig,
         Supplier<? extends Supplier<MachineBlock>> itemProvider,

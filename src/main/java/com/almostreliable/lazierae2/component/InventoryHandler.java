@@ -1,6 +1,5 @@
 package com.almostreliable.lazierae2.component;
 
-import appeng.api.networking.IStackWatcher;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -9,7 +8,6 @@ import com.almostreliable.lazierae2.content.machine.MachineEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket.SYNC_FLAGS;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -187,7 +185,7 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
                 flags |= SYNC_FLAGS.STACK | SYNC_FLAGS.COUNT;
             }
             if (!ItemStack.isSame(oldRequest.stack, requests[slot].stack)) {
-                clearSlot(slot);
+                entity.getStorageManager().clear(slot);
             }
             if (!oldRequest.equals(requests[slot])) {
                 entity.syncData(slot, flags);
@@ -244,31 +242,8 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             }
         }
 
-        public boolean matches(int slot, AEKey what) {
-            return what.matches(GenericStack.fromItemStack(requests[slot].stack));
-        }
-
-        public long computeDelta(int slot, long existing) {
-            return requests[slot].stack.isEmpty() ? 0 :
-                Mth.clamp(requests[slot].count - existing, 0, requests[slot].batch);
-        }
-
-        public GenericStack request(int slot, int count) {
-            var stack = requests[slot].stack.copy();
-            stack.setCount(count);
-            return Objects.requireNonNull(GenericStack.fromItemStack(stack));
-        }
-
-        public boolean isRequesting(int slot) {
-            return !requests[slot].stack.isEmpty();
-        }
-
-        public void populateWatcher(IStackWatcher watcher) {
-            for (var i = 0; i < slots; i++) {
-                if (!requests[i].stack.isEmpty()) {
-                    watcher.add(AEItemKey.of(requests[i].stack));
-                }
-            }
+        public Request get(int slot) {
+            return requests[slot];
         }
 
         public long getCount(int slot) {
@@ -283,38 +258,17 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             return requests[slot].state;
         }
 
+        boolean matches(int slot, AEKey what) {
+            return what.matches(GenericStack.fromItemStack(requests[slot].stack));
+        }
+
         private void validateSlot(int slot) {
             if (slot < 0 || slot >= slots) {
                 throw new IllegalArgumentException("Slot " + slot + " is out of range");
             }
         }
 
-        private void clearSlot(int slot) {
-            entity.knownStorageAmounts[slot] = -1;
-            entity.resetWatcher();
-        }
-
-        public boolean isRequesting() {
-            for (var i = 0; i < slots; i++) {
-                if (isRequesting(i)) return true;
-            }
-            return false;
-        }
-
-        @SuppressWarnings({"ClassCanBeRecord", "EqualsAndHashcode"})
-        private static final class Request {
-
-            private final boolean state;
-            private final ItemStack stack;
-            private final long count;
-            private final long batch;
-
-            private Request(boolean state, ItemStack stack, long count, long batch) {
-                this.state = state;
-                this.stack = stack;
-                this.count = count;
-                this.batch = batch;
-            }
+        public record Request(boolean state, ItemStack stack, long count, long batch) {
 
             private static Request deserializeNBT(CompoundTag tag) {
                 return new Request(
@@ -325,10 +279,9 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
                 );
             }
 
-            @Override
-            public boolean equals(Object obj) {
-                return obj instanceof Request other && state == other.state && ItemStack.isSame(stack, other.stack) &&
-                    count == other.count && batch == other.batch;
+            public GenericStack toGenericStack(long count) {
+                var stackCopy = stack.copy();
+                return new GenericStack(Objects.requireNonNull(AEItemKey.of(stackCopy)), count);
             }
 
             private CompoundTag serializeNBT() {
@@ -338,6 +291,10 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
                 tag.putInt("count", (int) count);
                 tag.putInt("batch", (int) batch);
                 return tag;
+            }
+
+            public boolean isRequesting() {
+                return state && !stack.isEmpty();
             }
         }
     }

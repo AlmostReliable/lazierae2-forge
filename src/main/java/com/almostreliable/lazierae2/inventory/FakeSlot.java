@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.inventory;
 
+import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -8,8 +9,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class FakeSlot extends SlotItemHandler {
 
-    public FakeSlot(IItemHandler itemHandler, int index, int x, int y) {
+    private final MaintainerMenu owner;
+
+    public FakeSlot(MaintainerMenu owner, IItemHandler itemHandler, int index, int x, int y) {
         super(itemHandler, index, x, y);
+        this.owner = owner;
     }
 
     @Override
@@ -35,5 +39,9 @@ public class FakeSlot extends SlotItemHandler {
     @Override
     public ItemStack remove(int amount) {
         return ItemStack.EMPTY;
+    }
+
+    public boolean isLocked() {
+        return owner.entity.isRequestSlotLocked(getSlotIndex());
     }
 }
