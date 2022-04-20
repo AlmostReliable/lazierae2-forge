@@ -42,21 +42,20 @@ public final class IOControl {
 
     private static final class IOButton extends GenericButton {
 
-        private final MachineEntity tile;
         private final BLOCK_SIDE side;
+        private final MachineEntity entity;
         private final Tooltip tooltip;
 
         private IOButton(MachineScreen screen, BLOCK_SIDE side, int pX, int pY) {
             super(screen, pX, pY, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID);
-            tile = screen.getMenu().entity;
             this.side = side;
-
+            entity = screen.getMenu().entity;
             tooltip = Tooltip
                 .builder()
                 .title("io.title")
                 .blank()
                 .keyEnum("io.side", TRANSLATE_TYPE.BLOCK_SIDE, () -> side)
-                .keyEnum("io.current", TRANSLATE_TYPE.IO_SETTING, () -> tile.sideConfig.get(side))
+                .keyEnum("io.current", TRANSLATE_TYPE.IO_SETTING, () -> entity.sideConfig.get(side))
                 .blank()
                 .line("io.description")
                 .blank()
@@ -74,7 +73,7 @@ public final class IOControl {
                 stack,
                 x + 1,
                 y + 1,
-                BUTTON_SIZE + INNER_SIZE * (float) tile.sideConfig.get(side).ordinal(),
+                BUTTON_SIZE + INNER_SIZE * (float) entity.sideConfig.get(side).ordinal(),
                 0,
                 INNER_SIZE,
                 INNER_SIZE,
@@ -86,7 +85,7 @@ public final class IOControl {
         @Override
         protected void clickHandler() {
             changeMode();
-            PacketHandler.CHANNEL.sendToServer(new SideConfigPacket(tile.sideConfig));
+            PacketHandler.CHANNEL.sendToServer(new SideConfigPacket(entity.sideConfig));
         }
 
         @Override
@@ -111,7 +110,7 @@ public final class IOControl {
         }
 
         private void changeMode() {
-            var config = tile.sideConfig;
+            var config = entity.sideConfig;
             var setting = config.get(side);
 
             if (Screen.hasShiftDown()) {
