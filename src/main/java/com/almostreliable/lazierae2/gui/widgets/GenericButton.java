@@ -12,8 +12,8 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public abstract class GenericButton extends Button {
 
-    final ResourceLocation texture;
-    final GenericScreen<?> screen;
+    protected final ResourceLocation texture;
+    protected final GenericScreen<?> screen;
 
     protected GenericButton(
         GenericScreen<?> screen, int pX, int pY, int width, int height, String textureID
