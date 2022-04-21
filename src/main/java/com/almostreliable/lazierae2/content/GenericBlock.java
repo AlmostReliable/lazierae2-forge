@@ -1,12 +1,20 @@
 package com.almostreliable.lazierae2.content;
 
+import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
+import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
+import com.almostreliable.lazierae2.util.TextUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -21,6 +29,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.List;
+
+import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public abstract class GenericBlock extends Block implements EntityBlock {
 
@@ -46,6 +57,17 @@ public abstract class GenericBlock extends Block implements EntityBlock {
         builder.add(ACTIVE);
     }
 
+    @Override
+    public void appendHoverText(
+        ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag
+    ) {
+        var description = TextUtil.translateAsString(TRANSLATE_TYPE.TOOLTIP, f("{}.description", getId()));
+        if (!description.isEmpty()) {
+            tooltip.addAll(Tooltip.builder().line(f("{}.description", getId()), ChatFormatting.AQUA).build());
+        }
+        super.appendHoverText(stack, level, tooltip, flag);
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(
@@ -57,5 +79,11 @@ public abstract class GenericBlock extends Block implements EntityBlock {
             NetworkHooks.openGui(invoker, menuProvider, pos);
         }
         return InteractionResult.CONSUME;
+    }
+
+    public String getId() {
+        var registryName = getRegistryName();
+        assert registryName != null;
+        return registryName.getPath();
     }
 }

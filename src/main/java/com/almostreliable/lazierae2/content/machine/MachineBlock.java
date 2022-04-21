@@ -99,12 +99,6 @@ public class MachineBlock extends GenericBlock {
         };
     }
 
-    public String getId() {
-        var registryName = getRegistryName();
-        assert registryName != null;
-        return registryName.getPath();
-    }
-
     MachineType getMachineType() {
         return machineType;
     }
