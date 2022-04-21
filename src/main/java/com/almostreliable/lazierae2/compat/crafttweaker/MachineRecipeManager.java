@@ -14,13 +14,13 @@ import org.openzen.zencode.java.ZenCodeType.Name;
 
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
+@SuppressWarnings({"unused", "WeakerAccess", "java:S1610"})
 @ZenRegister
 @Name("mods." + MOD_ID + ".MachineRecipeManager")
-public interface MachineRecipeManager extends IRecipeManager<MachineRecipe> {
+public abstract class MachineRecipeManager implements IRecipeManager<MachineRecipe> {
 
     @Method
-    default void addRecipe(
+    public void addRecipe(
         String name, IItemStack output, int processTime, int energyCost, IItemStack... inputs
     ) {
         var id = new ResourceLocation("crafttweaker", fixRecipeName(name));
@@ -32,7 +32,15 @@ public interface MachineRecipeManager extends IRecipeManager<MachineRecipe> {
         CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, ""));
     }
 
-    MachineRecipe createRecipe(
+    @Method
+    public RecipeBuilderWrapper builder(String name, IItemStack output) {
+        var id = new ResourceLocation("crafttweaker", fixRecipeName(name));
+        return createRecipeBuilder(id, output);
+    }
+
+    abstract RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output);
+
+    abstract MachineRecipe createRecipe(
         ResourceLocation id, ItemStack output, int amount, Ingredient[] ingredients, int processTime, int energyCost
     );
 }
