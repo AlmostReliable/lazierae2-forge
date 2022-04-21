@@ -175,8 +175,6 @@ public final class MaintainerControl {
 
     private final class StateButton extends ToggleButton {
 
-        // TODO: make this a checkbox instead
-
         private static final String TEXTURE_ID = "state";
         private static final int POS_X = 9;
         private static final int BUTTON_SIZE = 13;
