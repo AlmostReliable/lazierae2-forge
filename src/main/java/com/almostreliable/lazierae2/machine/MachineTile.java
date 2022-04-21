@@ -246,7 +246,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     private int calculateProcessTime(MachineRecipe recipe) {
         int baseTime = recipe.getProcessTime();
         double multiplier = calculateMultiplier(getMachineType().getProcessTimeMultiplier());
-        return (int) (baseTime * multiplier);
+        return (int) Math.max(1.0, baseTime * multiplier);
     }
 
     private double calculateMultiplier(double upgradeMultiplier) {
