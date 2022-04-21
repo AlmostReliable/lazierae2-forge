@@ -3,17 +3,25 @@ package com.almostreliable.lazierae2.progression;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.ticking.TickRateModulation;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 
-public record CraftingLinkState(ICraftingLink link) implements IProgressionState {
+public final class CraftingLinkState extends ProgressionState {
+
+    private final ICraftingLink link;
+
+    public CraftingLinkState(ICraftingLink link) {
+        super(PROGRESSION_TYPE.LINK);
+        this.link = link;
+    }
 
     @Override
-    public IProgressionState handle(MaintainerEntity owner, int slot) {
+    public ProgressionState handle(MaintainerEntity owner, int slot) {
         if (link.isDone()) {
-            return IProgressionState.EXPORT_SLOT_STATE;
+            return new ExportState();
         }
 
         if (link.isCanceled()) {
-            return IProgressionState.IDLE_STATE;
+            return new IdleState();
         }
 
         return this;
@@ -22,5 +30,9 @@ public record CraftingLinkState(ICraftingLink link) implements IProgressionState
     @Override
     public TickRateModulation getTickRateModulation() {
         return TickRateModulation.SAME;
+    }
+
+    public ICraftingLink getLink() {
+        return link;
     }
 }

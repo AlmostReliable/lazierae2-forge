@@ -21,10 +21,14 @@ import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Entities;
+import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket;
-import com.almostreliable.lazierae2.progression.*;
+import com.almostreliable.lazierae2.progression.CraftingLinkState;
+import com.almostreliable.lazierae2.progression.IdleState;
+import com.almostreliable.lazierae2.progression.ProgressionState;
+import com.almostreliable.lazierae2.util.ArrayUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -48,9 +52,9 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
     private static final int SLOTS = 6;
     public final RequestInventory craftRequests;
+    public final ProgressionState[] progressions;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
-    private final IProgressionState[] progressions;
     private final StorageManager storageManager;
     private TickRateModulation currentTickRateModulation = TickRateModulation.IDLE;
 
@@ -62,8 +66,8 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         actionSource = new MachineSource(this);
         craftRequests = new RequestInventory(this, SLOTS);
         storageManager = new StorageManager(this, SLOTS);
-        progressions = new IProgressionState[SLOTS];
-        Arrays.fill(progressions, IProgressionState.IDLE_STATE);
+        progressions = new ProgressionState[SLOTS];
+        ArrayUtil.fillUnique(progressions, IdleState::new);
         mainNode = createMainNode();
     }
 
@@ -77,6 +81,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         if (level == null || level.isClientSide) return;
         var packet = new MaintainerSyncPacket(slot,
             flags,
+            worldPosition,
             craftRequests.getState(slot),
             craftRequests.getStackInSlot(slot),
             craftRequests.getCount(slot),
@@ -149,7 +154,8 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     public boolean isRequestSlotLocked(int slot) {
-        return !(progressions[slot] instanceof IdleState || progressions[slot] instanceof RequestState);
+        return !(progressions[slot].getType() == PROGRESSION_TYPE.IDLE ||
+            progressions[slot].getType() == PROGRESSION_TYPE.REQUEST);
     }
 
     private void loadStates(CompoundTag tag) {
@@ -168,7 +174,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
             var state = progressions[slot];
             if (state instanceof CraftingLinkState cls) {
                 var stateTag = new CompoundTag();
-                cls.link().writeToNBT(stateTag);
+                cls.getLink().writeToNBT(stateTag);
                 tag.put(String.valueOf(slot), stateTag);
             }
         }
@@ -196,11 +202,10 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         return changed;
     }
 
-    private IProgressionState handleProgression(int slot) {
+    private ProgressionState handleProgression(int slot) {
         var state = progressions[slot];
         progressions[slot] = state.handle(this, slot);
-        if (!Objects.equals(progressions[slot], IProgressionState.IDLE_STATE) &&
-            !Objects.equals(progressions[slot], state)) {
+        if (progressions[slot].getType() != PROGRESSION_TYPE.IDLE && !Objects.equals(progressions[slot], state)) {
             return handleProgression(slot);
         }
 
@@ -209,7 +214,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
     private void updateActivityState() {
         for (var progression : progressions) {
-            if (progression instanceof ExportState || progression instanceof CraftingLinkState) {
+            if (progression.getType() == PROGRESSION_TYPE.EXPORT || progression.getType() == PROGRESSION_TYPE.LINK) {
                 changeActivityState(true);
                 return;
             }
@@ -274,7 +279,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         return Arrays
             .stream(progressions)
             .filter(CraftingLinkState.class::isInstance)
-            .map(state -> ((CraftingLinkState) state).link())
+            .map(state -> ((CraftingLinkState) state).getLink())
             .collect(ImmutableSet.toImmutableSet());
     }
 
@@ -282,7 +287,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode) {
         for (var slot = 0; slot < progressions.length; slot++) {
             var state = progressions[slot];
-            if (state instanceof CraftingLinkState cls && cls.link().equals(link)) {
+            if (state instanceof CraftingLinkState cls && cls.getLink().equals(link)) {
                 storageManager.get(slot).update(what, amount);
                 return amount;
             }

@@ -3,17 +3,22 @@ package com.almostreliable.lazierae2.progression;
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.ticking.TickRateModulation;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 
-public class RequestState implements IProgressionState {
+public class RequestState extends ProgressionState {
+
+    RequestState() {
+        super(PROGRESSION_TYPE.REQUEST);
+    }
 
     @Override
-    public IProgressionState handle(MaintainerEntity owner, int slot) {
+    public ProgressionState handle(MaintainerEntity owner, int slot) {
 
         var craftRequests = owner.getCraftRequests();
 
         var toCraft = owner.getStorageManager().computeDelta(slot);
         if (toCraft <= 0) {
-            return IProgressionState.IDLE_STATE;
+            return new IdleState();
         }
 
         var stack = craftRequests.get(slot).toGenericStack(toCraft);

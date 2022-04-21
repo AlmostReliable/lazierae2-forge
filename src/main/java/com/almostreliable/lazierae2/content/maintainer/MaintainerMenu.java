@@ -3,7 +3,9 @@ package com.almostreliable.lazierae2.content.maintainer;
 import com.almostreliable.lazierae2.component.InventoryHandler.RequestInventory;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
+import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 import com.almostreliable.lazierae2.inventory.FakeSlot;
+import com.almostreliable.lazierae2.util.DataSlotUtil;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -22,6 +24,7 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         requestInventory = entity.craftRequests;
         setupContainerInventory();
         setupPlayerInventory();
+        syncData();
     }
 
     @Override
@@ -64,6 +67,12 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         return entity.craftRequests.getBatch(slot);
     }
 
+    public PROGRESSION_TYPE getProgressionType(int slot) {
+        var type = entity.progressions[slot].getType();
+        if (type == PROGRESSION_TYPE.REQUEST || type == PROGRESSION_TYPE.PLAN) return PROGRESSION_TYPE.IDLE;
+        return type;
+    }
+
     @Override
     protected void setupContainerInventory() {
         for (var i = 0; i < requestInventory.getSlots(); i++) {
@@ -74,6 +83,18 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     @Override
     protected int getSlotY() {
         return 129;
+    }
+
+    private void syncData() {
+        // current progression type for all slots
+        for (var slot = 0; slot < entity.progressions.length; slot++) {
+            var finalSlot = slot;
+            addDataSlot(DataSlotUtil.forInteger(
+                entity,
+                () -> entity.progressions[finalSlot].getType().ordinal(),
+                value -> entity.progressions[finalSlot].setType(PROGRESSION_TYPE.values()[value])
+            ));
+        }
     }
 
     private void handleClick(int dragType, ClickType clickType, Slot slot) {

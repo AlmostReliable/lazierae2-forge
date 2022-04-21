@@ -3,21 +3,29 @@ package com.almostreliable.lazierae2.progression;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.ticking.TickRateModulation;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public record CraftingPlanState(Future<? extends ICraftingPlan> future) implements IProgressionState {
+public final class CraftingPlanState extends ProgressionState {
+
+    private final Future<? extends ICraftingPlan> future;
+
+    CraftingPlanState(Future<? extends ICraftingPlan> future) {
+        super(PROGRESSION_TYPE.PLAN);
+        this.future = future;
+    }
 
     @SuppressWarnings("java:S2142")
     @Override
-    public IProgressionState handle(MaintainerEntity owner, int slot) {
+    public ProgressionState handle(MaintainerEntity owner, int slot) {
         if (!future.isDone()) {
             return this;
         }
 
         if (future.isCancelled()) {
-            return IProgressionState.IDLE_STATE;
+            return new IdleState();
         }
 
         try {
@@ -28,12 +36,12 @@ public record CraftingPlanState(Future<? extends ICraftingPlan> future) implemen
                 .submitJob(plan, owner, null, false, owner.getActionSource());
 
             if (link == null) {
-                return IProgressionState.IDLE_STATE;
+                return new IdleState();
             }
 
             return new CraftingLinkState(link);
         } catch (InterruptedException | ExecutionException e) {
-            return IProgressionState.IDLE_STATE;
+            return new IdleState();
         }
     }
 
