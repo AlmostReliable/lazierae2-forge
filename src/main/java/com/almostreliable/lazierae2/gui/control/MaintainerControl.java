@@ -8,6 +8,8 @@ import com.almostreliable.lazierae2.network.packets.RequestBatchPacket;
 import com.almostreliable.lazierae2.network.packets.RequestCountPacket;
 import com.almostreliable.lazierae2.network.packets.RequestStatePacket;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.TextComponent;
@@ -134,13 +136,23 @@ public final class MaintainerControl {
 
         private final class SubmitButton extends GenericButton {
 
-            // TODO: make a hover effect with another texture
-
             private static final String TEXTURE_ID = "submit";
             private static final int BUTTON_SIZE = 13;
 
             private SubmitButton(MaintainerScreen screen, int slot, int x) {
                 super(screen, x, slot * 2 * GAP + POS_Y, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID);
+            }
+
+            @Override
+            public void renderButton(
+                PoseStack stack, int mX, int mY, float partial
+            ) {
+                if (isHovered) {
+                    RenderSystem.setShaderTexture(0, texture);
+                    blit(stack, x, y, 0, BUTTON_SIZE, width, height, BUTTON_SIZE, BUTTON_SIZE * 2);
+                } else {
+                    super.renderButton(stack, mX, mY, partial);
+                }
             }
 
             @Override
