@@ -43,7 +43,7 @@ public class RequestCountPacket extends ClientToServerPacket<RequestCountPacket>
             if (!(entity instanceof MaintainerEntity maintainer)) return;
             var level = maintainer.getLevel();
             if (level == null || !level.isLoaded(maintainer.getBlockPos())) return;
-            maintainer.craftRequests.updateCount(packet.slot, packet.value);
+            maintainer.getCraftRequests().updateCount(packet.slot, packet.value);
             maintainer.syncData(packet.slot, SYNC_FLAGS.COUNT);
         }
     }

@@ -32,4 +32,11 @@ public final class TypeEnums {
     public enum EXTRACT_SETTING {
         OFF, ON
     }
+
+    /**
+     * Enum to represent the different progression types for the maintainer.
+     */
+    public enum PROGRESSION_TYPE {
+        LINK, PLAN, EXPORT, IDLE, REQUEST
+    }
 }

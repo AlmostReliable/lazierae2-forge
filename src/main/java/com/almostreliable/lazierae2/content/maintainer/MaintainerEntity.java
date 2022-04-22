@@ -21,10 +21,13 @@ import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Entities;
+import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket;
-import com.almostreliable.lazierae2.progression.*;
+import com.almostreliable.lazierae2.progression.ClientState;
+import com.almostreliable.lazierae2.progression.CraftingLinkState;
+import com.almostreliable.lazierae2.progression.IProgressionState;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -47,10 +50,10 @@ import static com.almostreliable.lazierae2.core.Constants.*;
 public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, ICraftingRequester {
 
     private static final int SLOTS = 6;
-    public final RequestInventory craftRequests;
+    private final RequestInventory craftRequests;
+    private final IProgressionState[] progressions;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
-    private final IProgressionState[] progressions;
     private final StorageManager storageManager;
     private TickRateModulation currentTickRateModulation = TickRateModulation.IDLE;
 
@@ -63,7 +66,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         craftRequests = new RequestInventory(this, SLOTS);
         storageManager = new StorageManager(this, SLOTS);
         progressions = new IProgressionState[SLOTS];
-        Arrays.fill(progressions, IProgressionState.IDLE_STATE);
+        Arrays.fill(progressions, IProgressionState.IDLE);
         mainNode = createMainNode();
     }
 
@@ -77,6 +80,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         if (level == null || level.isClientSide) return;
         var packet = new MaintainerSyncPacket(slot,
             flags,
+            worldPosition,
             craftRequests.getState(slot),
             craftRequests.getStackInSlot(slot),
             craftRequests.getCount(slot),
@@ -149,7 +153,16 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     public boolean isRequestSlotLocked(int slot) {
-        return !(progressions[slot] instanceof IdleState || progressions[slot] instanceof RequestState);
+        return !(progressions[slot].type() == PROGRESSION_TYPE.IDLE ||
+            progressions[slot].type() == PROGRESSION_TYPE.REQUEST);
+    }
+
+    public IProgressionState getProgressions(int slot) {
+        return progressions[slot];
+    }
+
+    public void setClientProgression(int slot, PROGRESSION_TYPE type) {
+        progressions[slot] = new ClientState(type);
     }
 
     private void loadStates(CompoundTag tag) {
@@ -199,8 +212,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     private IProgressionState handleProgression(int slot) {
         var state = progressions[slot];
         progressions[slot] = state.handle(this, slot);
-        if (!Objects.equals(progressions[slot], IProgressionState.IDLE_STATE) &&
-            !Objects.equals(progressions[slot], state)) {
+        if (progressions[slot].type() != PROGRESSION_TYPE.IDLE && !Objects.equals(progressions[slot], state)) {
             return handleProgression(slot);
         }
 
@@ -209,7 +221,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
     private void updateActivityState() {
         for (var progression : progressions) {
-            if (progression instanceof ExportState || progression instanceof CraftingLinkState) {
+            if (progression.type() == PROGRESSION_TYPE.EXPORT || progression.type() == PROGRESSION_TYPE.LINK) {
                 changeActivityState(true);
                 return;
             }

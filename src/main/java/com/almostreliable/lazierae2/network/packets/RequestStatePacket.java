@@ -43,7 +43,7 @@ public class RequestStatePacket extends ClientToServerPacket<RequestStatePacket>
             if (!(entity instanceof MaintainerEntity maintainer)) return;
             var level = maintainer.getLevel();
             if (level == null || !level.isLoaded(maintainer.getBlockPos())) return;
-            maintainer.craftRequests.updateState(packet.slot, packet.value);
+            maintainer.getCraftRequests().updateState(packet.slot, packet.value);
             maintainer.syncData(packet.slot, SYNC_FLAGS.STATE);
         }
     }

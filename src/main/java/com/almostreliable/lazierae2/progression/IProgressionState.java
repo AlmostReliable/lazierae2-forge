@@ -2,12 +2,13 @@ package com.almostreliable.lazierae2.progression;
 
 import appeng.api.networking.ticking.TickRateModulation;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 
 public interface IProgressionState {
 
-    IProgressionState IDLE_STATE = new IdleState();
-    IProgressionState EXPORT_SLOT_STATE = new ExportState();
-    IProgressionState REQUEST_CRAFT_STATE = new RequestState();
+    IProgressionState IDLE = new IdleState();
+    IProgressionState REQUEST = new RequestState();
+    IProgressionState EXPORT = new ExportState();
 
     /**
      * @param owner the entity that is maintaining the progression.
@@ -15,6 +16,8 @@ public interface IProgressionState {
      * @return the next state, self, or idle if the progression is complete.
      */
     IProgressionState handle(MaintainerEntity owner, int slot);
+
+    PROGRESSION_TYPE type();
 
     TickRateModulation getTickRateModulation();
 }
