@@ -8,24 +8,23 @@ import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public final class CraftingPlanState extends ProgressionState {
+public final class CraftingPlanState implements IProgressionState {
 
     private final Future<? extends ICraftingPlan> future;
 
     CraftingPlanState(Future<? extends ICraftingPlan> future) {
-        super(PROGRESSION_TYPE.PLAN);
         this.future = future;
     }
 
     @SuppressWarnings("java:S2142")
     @Override
-    public ProgressionState handle(MaintainerEntity owner, int slot) {
+    public IProgressionState handle(MaintainerEntity owner, int slot) {
         if (!future.isDone()) {
             return this;
         }
 
         if (future.isCancelled()) {
-            return new IdleState();
+            return IProgressionState.IDLE;
         }
 
         try {
@@ -36,13 +35,18 @@ public final class CraftingPlanState extends ProgressionState {
                 .submitJob(plan, owner, null, false, owner.getActionSource());
 
             if (link == null) {
-                return new IdleState();
+                return IProgressionState.IDLE;
             }
 
             return new CraftingLinkState(link);
         } catch (InterruptedException | ExecutionException e) {
-            return new IdleState();
+            return IProgressionState.IDLE;
         }
+    }
+
+    @Override
+    public PROGRESSION_TYPE type() {
+        return PROGRESSION_TYPE.PLAN;
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 import com.almostreliable.lazierae2.inventory.FakeSlot;
+import com.almostreliable.lazierae2.progression.ClientState;
 import com.almostreliable.lazierae2.util.DataSlotUtil;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -68,7 +69,10 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     public PROGRESSION_TYPE getProgressionType(int slot) {
-        var type = entity.progressions[slot].getType();
+        if (!(entity.progressions[slot] instanceof ClientState)) {
+            throw new IllegalStateException("Progression " + slot + " is not a ClientState");
+        }
+        var type = entity.progressions[slot].type();
         if (type == PROGRESSION_TYPE.REQUEST || type == PROGRESSION_TYPE.PLAN) return PROGRESSION_TYPE.IDLE;
         return type;
     }
@@ -91,8 +95,8 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
             var finalSlot = slot;
             addDataSlot(DataSlotUtil.forInteger(
                 entity,
-                () -> entity.progressions[finalSlot].getType().ordinal(),
-                value -> entity.progressions[finalSlot].setType(PROGRESSION_TYPE.values()[value])
+                () -> entity.progressions[finalSlot].type().ordinal(),
+                value -> entity.progressions[finalSlot] = new ClientState(PROGRESSION_TYPE.values()[value])
             ));
         }
     }

@@ -6,17 +6,15 @@ import appeng.api.storage.StorageHelper;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 
-public class ExportState extends ProgressionState {
+public class ExportState implements IProgressionState {
 
-    ExportState() {
-        super(PROGRESSION_TYPE.EXPORT);
-    }
+    ExportState() {}
 
     @Override
-    public ProgressionState handle(MaintainerEntity owner, int slot) {
+    public IProgressionState handle(MaintainerEntity owner, int slot) {
         var storage = owner.getStorageManager().get(0);
         if (storage.getItemType() == null) {
-            return new IdleState();
+            return IProgressionState.IDLE;
         }
 
         var inserted = StorageHelper.poweredInsert(
@@ -32,9 +30,14 @@ public class ExportState extends ProgressionState {
             return this;
         }
         if (inserted > 0) {
-            return new RequestState();
+            return IProgressionState.REQUEST;
         }
-        return new IdleState();
+        return IProgressionState.IDLE;
+    }
+
+    @Override
+    public PROGRESSION_TYPE type() {
+        return PROGRESSION_TYPE.EXPORT;
     }
 
     @Override
