@@ -81,10 +81,10 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         var packet = new MaintainerSyncPacket(slot,
             flags,
             worldPosition,
-            craftRequests.getState(slot),
+            craftRequests.get(slot).state(),
             craftRequests.getStackInSlot(slot),
-            craftRequests.getCount(slot),
-            craftRequests.getBatch(slot)
+            craftRequests.get(slot).count(),
+            craftRequests.get(slot).batch()
         );
         PacketHandler.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)),
             packet

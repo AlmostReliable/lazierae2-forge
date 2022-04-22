@@ -246,18 +246,6 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             return requests[slot];
         }
 
-        public long getCount(int slot) {
-            return requests[slot].count;
-        }
-
-        public long getBatch(int slot) {
-            return requests[slot].batch;
-        }
-
-        public boolean getState(int slot) {
-            return requests[slot].state;
-        }
-
         boolean matches(int slot, AEKey what) {
             return what.matches(GenericStack.fromItemStack(requests[slot].stack));
         }

@@ -57,15 +57,15 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     public boolean getRequestState(int slot) {
-        return entity.getCraftRequests().getState(slot);
+        return entity.getCraftRequests().get(slot).state();
     }
 
     public long getRequestCount(int slot) {
-        return entity.getCraftRequests().getCount(slot);
+        return entity.getCraftRequests().get(slot).count();
     }
 
     public long getRequestBatch(int slot) {
-        return entity.getCraftRequests().getBatch(slot);
+        return entity.getCraftRequests().get(slot).batch();
     }
 
     public PROGRESSION_TYPE getProgressionType(int slot) {
