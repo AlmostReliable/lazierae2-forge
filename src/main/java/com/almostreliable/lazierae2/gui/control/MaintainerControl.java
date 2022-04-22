@@ -302,7 +302,7 @@ public final class MaintainerControl {
 
             @Override
             protected void switchFocus() {
-                var nextBox = controls[slot == controls.length ? 0 : slot + 1].countBox;
+                var nextBox = controls[slot == controls.length - 1 ? 0 : slot + 1].countBox;
                 if (nextBox == null) return;
                 setFocus(false);
                 nextBox.setFocus(true);
