@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.compat.jei.category;
 
-import com.almostreliable.lazierae2.gui.MachineScreen;
+import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
 import com.almostreliable.lazierae2.util.GuiUtil;
 import com.almostreliable.lazierae2.util.GuiUtil.ANCHOR;
@@ -16,16 +16,16 @@ import net.minecraft.world.level.ItemLike;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-public abstract class SingleInputCategory extends MachineCategory<SingleInputRecipe> {
+public abstract class SingleInputCategory extends ProcessorCategory<SingleInputRecipe> {
 
     private final IDrawable background;
 
     SingleInputCategory(IGuiHelper guiHelper, String id, ItemLike iconProvider) {
         super(guiHelper, id, iconProvider);
-        var backgroundTexture = MachineScreen.TEXTURE;
+        var backgroundTexture = ProcessorScreen.TEXTURE;
         background = guiHelper
             .drawableBuilder(backgroundTexture, 42, 22, 92, 34)
-            .setTextureSize(MachineScreen.TEXTURE_WIDTH, MachineScreen.TEXTURE_HEIGHT)
+            .setTextureSize(ProcessorScreen.TEXTURE_WIDTH, ProcessorScreen.TEXTURE_HEIGHT)
             .build();
     }
 

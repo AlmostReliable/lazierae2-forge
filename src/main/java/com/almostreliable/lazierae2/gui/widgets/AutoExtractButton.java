@@ -2,7 +2,7 @@ package com.almostreliable.lazierae2.gui.widgets;
 
 import com.almostreliable.lazierae2.core.TypeEnums.EXTRACT_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
-import com.almostreliable.lazierae2.gui.MachineScreen;
+import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.AutoExtractPacket;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
@@ -19,7 +19,7 @@ public class AutoExtractButton extends ToggleButton {
     private final Tooltip tooltip = setupTooltip();
 
     public AutoExtractButton(
-        MachineScreen screen, BooleanSupplier pressed
+        ProcessorScreen screen, BooleanSupplier pressed
     ) {
         super(screen, POS_X, POS_Y, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID, pressed);
     }

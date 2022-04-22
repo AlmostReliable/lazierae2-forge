@@ -1,8 +1,8 @@
 package com.almostreliable.lazierae2.compat.crafttweaker;
 
-import com.almostreliable.lazierae2.content.machine.MachineType;
-import com.almostreliable.lazierae2.recipe.builder.MachineRecipeBuilder;
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.recipe.builder.ProcessorRecipeBuilder;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import net.minecraft.resources.ResourceLocation;
@@ -16,20 +16,20 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 @SuppressWarnings("unused")
 @ZenRegister
 @Name("mods." + MOD_ID + ".Energizer")
-public class EnergizerManager extends MachineRecipeManager {
+public class EnergizerManager implements ProcessorRecipeManager {
 
     public static final EnergizerManager INSTANCE = new EnergizerManager();
 
     @Override
-    RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
-        return new RecipeBuilderWrapper(this, MachineType.ENERGIZER, id, output);
+    public RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
+        return new RecipeBuilderWrapper(this, ProcessorType.ENERGIZER, id, output);
     }
 
     @Override
-    public MachineRecipe createRecipe(
+    public ProcessorRecipe createRecipe(
         ResourceLocation id, ItemStack output, int amount, Ingredient[] ingredients, int processTime, int energyCost
     ) {
-        return MachineRecipeBuilder
+        return ProcessorRecipeBuilder
             .energizer(output.getItem(), amount)
             .input(ingredients)
             .processingTime(processTime)
@@ -38,7 +38,7 @@ public class EnergizerManager extends MachineRecipeManager {
     }
 
     @Override
-    public RecipeType<MachineRecipe> getRecipeType() {
-        return MachineType.ENERGIZER;
+    public RecipeType<ProcessorRecipe> getRecipeType() {
+        return ProcessorType.ENERGIZER;
     }
 }

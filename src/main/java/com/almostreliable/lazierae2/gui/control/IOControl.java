@@ -1,10 +1,10 @@
 package com.almostreliable.lazierae2.gui.control;
 
-import com.almostreliable.lazierae2.content.machine.MachineEntity;
+import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
-import com.almostreliable.lazierae2.gui.MachineScreen;
+import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.gui.widgets.GenericButton;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.SideConfigPacket;
@@ -26,7 +26,7 @@ public final class IOControl {
     private IOControl() {}
 
     @SuppressWarnings("SameParameterValue")
-    public static IOButton[] setup(MachineScreen screen, int x, int y) {
+    public static IOButton[] setup(ProcessorScreen screen, int x, int y) {
         Collection<IOButton> buttons = new ArrayList<>();
         buttons.add(new IOButton(screen, BLOCK_SIDE.TOP, x + getPosition(1), y + getPosition(0)));
         buttons.add(new IOButton(screen, BLOCK_SIDE.LEFT, x + getPosition(0), y + getPosition(1)));
@@ -44,10 +44,10 @@ public final class IOControl {
     private static final class IOButton extends GenericButton {
 
         private final BLOCK_SIDE side;
-        private final MachineEntity entity;
+        private final ProcessorEntity entity;
         private final Tooltip tooltip;
 
-        private IOButton(MachineScreen screen, BLOCK_SIDE side, int pX, int pY) {
+        private IOButton(ProcessorScreen screen, BLOCK_SIDE side, int pX, int pY) {
             super(screen, pX, pY, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID);
             this.side = side;
             entity = screen.getMenu().entity;

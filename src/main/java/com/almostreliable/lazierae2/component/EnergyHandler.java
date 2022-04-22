@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.component;
 
-import com.almostreliable.lazierae2.content.machine.MachineEntity;
+import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -9,15 +9,15 @@ import static com.almostreliable.lazierae2.core.Constants.*;
 
 public class EnergyHandler implements IEnergyStorage, INBTSerializable<CompoundTag> {
 
-    private final MachineEntity entity;
+    private final ProcessorEntity entity;
     protected int energy;
     private int capacity;
     private int maxReceive;
     private int maxExtract;
 
-    public EnergyHandler(MachineEntity entity) {
+    public EnergyHandler(ProcessorEntity entity) {
         this.entity = entity;
-        var baseEnergyBuffer = entity.getMachineType().getBaseEnergyBuffer();
+        var baseEnergyBuffer = entity.getProcessorType().getBaseEnergyBuffer();
         capacity = baseEnergyBuffer;
         maxReceive = baseEnergyBuffer;
         maxExtract = baseEnergyBuffer;

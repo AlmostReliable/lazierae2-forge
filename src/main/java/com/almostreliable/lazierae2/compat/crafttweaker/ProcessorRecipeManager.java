@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.compat.crafttweaker;
 
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
@@ -14,13 +14,13 @@ import org.openzen.zencode.java.ZenCodeType.Name;
 
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
-@SuppressWarnings({"unused", "WeakerAccess", "java:S1610"})
+@SuppressWarnings({"unused", "WeakerAccess"})
 @ZenRegister
-@Name("mods." + MOD_ID + ".MachineRecipeManager")
-public abstract class MachineRecipeManager implements IRecipeManager<MachineRecipe> {
+@Name("mods." + MOD_ID + ".ProcessorRecipeManager")
+public interface ProcessorRecipeManager extends IRecipeManager<ProcessorRecipe> {
 
     @Method
-    public void addRecipe(
+    default void addRecipe(
         String name, IItemStack output, int processTime, int energyCost, IItemStack... inputs
     ) {
         var id = new ResourceLocation("crafttweaker", fixRecipeName(name));
@@ -33,14 +33,14 @@ public abstract class MachineRecipeManager implements IRecipeManager<MachineReci
     }
 
     @Method
-    public RecipeBuilderWrapper builder(String name, IItemStack output) {
+    default RecipeBuilderWrapper builder(String name, IItemStack output) {
         var id = new ResourceLocation("crafttweaker", fixRecipeName(name));
         return createRecipeBuilder(id, output);
     }
 
-    abstract RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output);
+    RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output);
 
-    abstract MachineRecipe createRecipe(
+    ProcessorRecipe createRecipe(
         ResourceLocation id, ItemStack output, int amount, Ingredient[] ingredients, int processTime, int energyCost
     );
 }

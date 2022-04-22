@@ -26,6 +26,9 @@
   "block.lazierae2.energizer": "Crystal Energizer",
   "block.lazierae2.etcher": "Circuit Etcher",
   "block.lazierae2.maintainer": "Level Maintainer",
+  "block.lazierae2.controller": "Assembler Controller",
+  "block.lazierae2.wall": "Assembler Wall",
+  "block.lazierae2.frame": "Assembler Frame",
 
   "tooltip.lazierae2.aggregator.description": "Combines Crystal Growth Accelerators in one spot and is easy to automate.",
   "tooltip.lazierae2.centrifuge.description": "Crushes materials to their dust form for further processing.",
@@ -77,19 +80,19 @@
   "tooltip.lazierae2.io.reset": "to reset this side",
   "tooltip.lazierae2.io.action": "to toggle this side",
 
-  "tooltip.lazierae2.upgrade.title": "Machine Upgrades",
+  "tooltip.lazierae2.upgrade.title": "Processor Upgrades",
   "tooltip.lazierae2.upgrade.current.key": "Installed upgrades",
   "tooltip.lazierae2.upgrade.current.value": "%d / %d",
   "tooltip.lazierae2.upgrade.additional.key": "Additional energy",
   "tooltip.lazierae2.upgrade.additional.value": "%s",
   "tooltip.lazierae2.upgrade.none": "There are no upgrades installed!",
-  "tooltip.lazierae2.upgrade.description": "Allows you to upgrade the machine's speed and energy storage at the cost of a higher energy consumption. To install upgrades, place Acceleration Cards in this slot.",
+  "tooltip.lazierae2.upgrade.description": "Allows you to upgrade the processor's speed and energy storage at the cost of a higher energy consumption. To install upgrades, place Acceleration Cards in this slot.",
 
   "tooltip.lazierae2.item.upgrades.key": "Installed upgrades",
   "tooltip.lazierae2.item.upgrades.value": "%d / %d",
   "tooltip.lazierae2.item.energy.key": "Stored energy",
   "tooltip.lazierae2.item.energy.value": "%s",
-  "tooltip.lazierae2.item.side_config": "> Machine has a side configuration stored",
+  "tooltip.lazierae2.item.side_config": "> Processor has a side configuration stored",
 
   "extract_setting.lazierae2.off": "Disabled",
   "extract_setting.lazierae2.on": "Enabled",

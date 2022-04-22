@@ -3,16 +3,21 @@ package com.almostreliable.lazierae2.core;
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.GenericMenu;
-import com.almostreliable.lazierae2.content.machine.MachineBlock;
-import com.almostreliable.lazierae2.content.machine.MachineEntity;
-import com.almostreliable.lazierae2.content.machine.MachineMenu;
-import com.almostreliable.lazierae2.content.machine.MachineType;
+import com.almostreliable.lazierae2.content.assembler.ControllerBlock;
+import com.almostreliable.lazierae2.content.assembler.ControllerEntity;
+import com.almostreliable.lazierae2.content.assembler.HullBlock;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerBlock;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
+import com.almostreliable.lazierae2.content.processor.ProcessorBlock;
+import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
+import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe.MachineRecipeSerializer;
+import com.almostreliable.lazierae2.core.TypeEnums.HULL_TYPE;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe.ProcessorRecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -74,17 +79,22 @@ public final class Setup {
             );
         }
 
+        public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(PROCESSOR_ID,
+            ProcessorEntity::new,
+            Blocks.AGGREGATOR,
+            Blocks.CENTRIFUGE,
+            Blocks.ENERGIZER,
+            Blocks.ETCHER
+        );
+
         public static final RegistryObject<BlockEntityType<MaintainerEntity>> MAINTAINER = register(MAINTAINER_ID,
             MaintainerEntity::new,
             Blocks.MAINTAINER
         );
 
-        public static final RegistryObject<BlockEntityType<MachineEntity>> MACHINE = register(MACHINE_ID,
-            MachineEntity::new,
-            Blocks.AGGREGATOR,
-            Blocks.CENTRIFUGE,
-            Blocks.ENERGIZER,
-            Blocks.ETCHER
+        public static final RegistryObject<BlockEntityType<ControllerEntity>> ASSEMBLER_CONTROLLER = register(CONTROLLER_ID,
+            ControllerEntity::new,
+            Assembler.CONTROLLER
         );
     }
 
@@ -93,13 +103,13 @@ public final class Setup {
         private static final DeferredRegister<MenuType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
 
-        public static final RegistryObject<MenuType<MachineMenu>> MACHINE = register(MACHINE_ID,
+        public static final RegistryObject<MenuType<ProcessorMenu>> PROCESSOR = register(PROCESSOR_ID,
             (windowId, inventory, data) -> {
                 var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
-                if (!(entity instanceof MachineEntity machine)) {
-                    throw new IllegalStateException("Tile is not a LazierAE2 machine!");
+                if (!(entity instanceof ProcessorEntity processor)) {
+                    throw new IllegalStateException("Tile is not a LazierAE2 processor!");
                 }
-                return new MachineMenu(windowId, machine, inventory);
+                return new ProcessorMenu(windowId, processor, inventory);
             }
         );
 
@@ -138,14 +148,16 @@ public final class Setup {
 
         private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
-        public static final RegistryObject<MachineBlock> AGGREGATOR = register(MachineBlock::new,
-            MachineType.AGGREGATOR
+        public static final RegistryObject<ProcessorBlock> AGGREGATOR = register(ProcessorBlock::new,
+            ProcessorType.AGGREGATOR
         );
-        public static final RegistryObject<MachineBlock> CENTRIFUGE = register(MachineBlock::new,
-            MachineType.CENTRIFUGE
+        public static final RegistryObject<ProcessorBlock> CENTRIFUGE = register(ProcessorBlock::new,
+            ProcessorType.CENTRIFUGE
         );
-        public static final RegistryObject<MachineBlock> ENERGIZER = register(MachineBlock::new, MachineType.ENERGIZER);
-        public static final RegistryObject<MachineBlock> ETCHER = register(MachineBlock::new, MachineType.ETCHER);
+        public static final RegistryObject<ProcessorBlock> ENERGIZER = register(ProcessorBlock::new,
+            ProcessorType.ENERGIZER
+        );
+        public static final RegistryObject<ProcessorBlock> ETCHER = register(ProcessorBlock::new, ProcessorType.ETCHER);
 
         public static final RegistryObject<MaintainerBlock> MAINTAINER = register(MAINTAINER_ID, MaintainerBlock::new);
 
@@ -161,15 +173,34 @@ public final class Setup {
         }
 
         private static <B extends GenericBlock> RegistryObject<B> register(
-            Function<? super MachineType, ? extends B> constructor, MachineType machineType
+            Function<? super ProcessorType, ? extends B> constructor, ProcessorType processorType
         ) {
-            RegistryObject<B> block = REGISTRY.register(machineType.getId(), () -> constructor.apply(machineType));
-            registerBlockItem(machineType.getId(), block);
+            RegistryObject<B> block = REGISTRY.register(processorType.getId(), () -> constructor.apply(processorType));
+            registerBlockItem(processorType.getId(), block);
             return block;
         }
 
         private static <B extends GenericBlock> void registerBlockItem(String id, RegistryObject<B> block) {
             Items.REGISTRY.register(id, () -> new BlockItem(block.get(), new Properties().tab(TAB)));
+        }
+
+        public static final class Assembler {
+
+            public static final RegistryObject<ControllerBlock> CONTROLLER = Blocks.register(CONTROLLER_ID,
+                ControllerBlock::new
+            );
+            public static final RegistryObject<HullBlock> WALL = register(WALL_ID, HULL_TYPE.WALL, HullBlock::new);
+            public static final RegistryObject<HullBlock> FRAME = register(FRAME_ID, HULL_TYPE.FRAME, HullBlock::new);
+
+            private Assembler() {}
+
+            private static <B extends GenericBlock> RegistryObject<B> register(
+                String id, HULL_TYPE type, Function<? super HULL_TYPE, ? extends B> constructor
+            ) {
+                RegistryObject<B> block = REGISTRY.register(id, () -> constructor.apply(type));
+                registerBlockItem(id, block);
+                return block;
+            }
         }
     }
 
@@ -233,11 +264,11 @@ public final class Setup {
 
         public static final class Blocks {
 
-            private static final String MACHINE_ENTRY = "machines/";
-            public static final TagKey<Block> AGGREGATOR = mod(MACHINE_ENTRY + MachineType.AGGREGATOR.getId());
-            public static final TagKey<Block> CENTRIFUGE = mod(MACHINE_ENTRY + MachineType.CENTRIFUGE.getId());
-            public static final TagKey<Block> ENERGIZER = mod(MACHINE_ENTRY + MachineType.ENERGIZER.getId());
-            public static final TagKey<Block> ETCHER = mod(MACHINE_ENTRY + MachineType.ETCHER.getId());
+            private static final String PROCESSOR_ENTRY = "processor/";
+            public static final TagKey<Block> AGGREGATOR = mod(PROCESSOR_ENTRY + ProcessorType.AGGREGATOR.getId());
+            public static final TagKey<Block> CENTRIFUGE = mod(PROCESSOR_ENTRY + ProcessorType.CENTRIFUGE.getId());
+            public static final TagKey<Block> ENERGIZER = mod(PROCESSOR_ENTRY + ProcessorType.ENERGIZER.getId());
+            public static final TagKey<Block> ETCHER = mod(PROCESSOR_ENTRY + ProcessorType.ETCHER.getId());
 
             private Blocks() {}
 
@@ -257,20 +288,21 @@ public final class Setup {
                 MOD_ID
             );
 
-            public static final RegistryObject<RecipeSerializer<MachineRecipe>> AGGREGATOR
-                = register(MachineType.AGGREGATOR);
-            public static final RegistryObject<RecipeSerializer<MachineRecipe>> CENTRIFUGE
-                = register(MachineType.CENTRIFUGE);
-            public static final RegistryObject<RecipeSerializer<MachineRecipe>> ENERGIZER
-                = register(MachineType.ENERGIZER);
-            public static final RegistryObject<RecipeSerializer<MachineRecipe>> ETCHER = register(MachineType.ETCHER);
+            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> AGGREGATOR
+                = register(ProcessorType.AGGREGATOR);
+            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> CENTRIFUGE
+                = register(ProcessorType.CENTRIFUGE);
+            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> ENERGIZER
+                = register(ProcessorType.ENERGIZER);
+            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> ETCHER
+                = register(ProcessorType.ETCHER);
 
             private Serializers() {}
 
-            private static RegistryObject<RecipeSerializer<MachineRecipe>> register(
-                MachineType machineType
+            private static RegistryObject<RecipeSerializer<ProcessorRecipe>> register(
+                ProcessorType processorType
             ) {
-                return REGISTRY.register(machineType.getId(), () -> new MachineRecipeSerializer(machineType));
+                return REGISTRY.register(processorType.getId(), () -> new ProcessorRecipeSerializer(processorType));
             }
         }
     }

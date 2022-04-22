@@ -1,32 +1,32 @@
 {
   "variants": {
-    "facing=north,lit=false": {
+    "active=false,facing=north": {
       "model": "lazierae2:block/etcher"
     },
-    "facing=south,lit=false": {
+    "active=true,facing=north": {
+      "model": "lazierae2:block/etcher_active"
+    },
+    "active=false,facing=south": {
       "model": "lazierae2:block/etcher",
       "y": 180
     },
-    "facing=west,lit=false": {
+    "active=true,facing=south": {
+      "model": "lazierae2:block/etcher_active",
+      "y": 180
+    },
+    "active=false,facing=west": {
       "model": "lazierae2:block/etcher",
       "y": 270
     },
-    "facing=east,lit=false": {
+    "active=true,facing=west": {
+      "model": "lazierae2:block/etcher_active",
+      "y": 270
+    },
+    "active=false,facing=east": {
       "model": "lazierae2:block/etcher",
       "y": 90
     },
-    "facing=north,lit=true": {
-      "model": "lazierae2:block/etcher_active"
-    },
-    "facing=south,lit=true": {
-      "model": "lazierae2:block/etcher_active",
-      "y": 180
-    },
-    "facing=west,lit=true": {
-      "model": "lazierae2:block/etcher_active",
-      "y": 270
-    },
-    "facing=east,lit=true": {
+    "active=true,facing=east": {
       "model": "lazierae2:block/etcher_active",
       "y": 90
     }

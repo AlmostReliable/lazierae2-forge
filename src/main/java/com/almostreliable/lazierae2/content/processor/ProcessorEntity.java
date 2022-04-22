@@ -1,13 +1,13 @@
-package com.almostreliable.lazierae2.content.machine;
+package com.almostreliable.lazierae2.content.processor;
 
 import com.almostreliable.lazierae2.component.EnergyHandler;
-import com.almostreliable.lazierae2.component.InventoryHandler.MachineInventory;
+import com.almostreliable.lazierae2.component.InventoryHandler.ProcessorInventory;
 import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.BlockPos;
@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.almostreliable.lazierae2.core.Constants.*;
 
-public class MachineEntity extends GenericEntity {
+public class ProcessorEntity extends GenericEntity {
 
     /*
         TODO: add logic for processing recipe that take less than a tick
@@ -50,8 +50,8 @@ public class MachineEntity extends GenericEntity {
      */
 
     public final SideConfiguration sideConfig;
-    private final MachineInventory inventory;
-    private final LazyOptional<MachineInventory> inventoryCap;
+    private final ProcessorInventory inventory;
+    private final LazyOptional<ProcessorInventory> inventoryCap;
     private final EnergyHandler energy;
     private final LazyOptional<EnergyHandler> energyCap;
     private final Map<Direction, LazyOptional<IItemHandler>> outputsCache = new EnumMap<>(Direction.class);
@@ -61,12 +61,12 @@ public class MachineEntity extends GenericEntity {
     private int recipeTime;
     private int energyCost;
     private int recipeEnergy;
-    private MachineRecipe lastRecipe;
+    private ProcessorRecipe lastRecipe;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    public MachineEntity(BlockPos pos, BlockState state) {
-        super(Entities.MACHINE.get(), pos, state);
-        inventory = new MachineInventory(this);
+    public ProcessorEntity(BlockPos pos, BlockState state) {
+        super(Entities.PROCESSOR.get(), pos, state);
+        inventory = new ProcessorInventory(this);
         inventoryCap = LazyOptional.of(() -> inventory);
         energy = new EnergyHandler(this);
         energyCap = LazyOptional.of(() -> energy);
@@ -106,13 +106,13 @@ public class MachineEntity extends GenericEntity {
     public AbstractContainerMenu createMenu(
         int menuID, Inventory inventory, Player player
     ) {
-        return new MachineMenu(menuID, this, inventory);
+        return new ProcessorMenu(menuID, this, inventory);
     }
 
     public void recalculateEnergyCapacity() {
         if (level == null || level.isClientSide) return;
-        var baseBuffer = getMachineType().getBaseEnergyBuffer();
-        var upgradeBuffer = getMachineType().getEnergyBufferAdd();
+        var baseBuffer = getProcessorType().getBaseEnergyBuffer();
+        var upgradeBuffer = getProcessorType().getEnergyBufferAdd();
         var newCapacity = baseBuffer + upgradeBuffer * inventory.getUpgradeCount();
         if (newCapacity != energy.getMaxEnergyStored()) energy.setCapacity(newCapacity);
     }
@@ -144,7 +144,7 @@ public class MachineEntity extends GenericEntity {
         if (autoExtract && level.getGameTime() % 10 == 0) autoExtract();
         energy.validateEnergy();
 
-        MachineRecipe recipe;
+        ProcessorRecipe recipe;
         if (lastRecipe != null && lastRecipe.matches(inventory.toVanilla(), level)) {
             recipe = lastRecipe;
         } else {
@@ -175,7 +175,7 @@ public class MachineEntity extends GenericEntity {
         if (energy.getEnergyStored() > 0) tag.put(ENERGY_ID, energy.serializeNBT());
         if (sideConfig.hasChanged()) tag.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
         if (autoExtract) tag.putBoolean(AUTO_EXTRACT_ID, true);
-        var stack = new ItemStack(getMachineType().getItemProvider());
+        var stack = new ItemStack(getProcessorType().getItemProvider());
         if (!tag.isEmpty()) stack.setTag(tag);
         level.addFreshEntity(new ItemEntity(level,
             worldPosition.getX() + 0.5,
@@ -194,7 +194,7 @@ public class MachineEntity extends GenericEntity {
         if (tag.contains(AUTO_EXTRACT_ID)) autoExtract = tag.getBoolean(AUTO_EXTRACT_ID);
     }
 
-    private void doWork(MachineRecipe recipe, int energyCost) {
+    private void doWork(ProcessorRecipe recipe, int energyCost) {
         if (progress < processTime) {
             changeActivityState(true);
             energy.setEnergy(energy.getEnergyStored() - (energyCost / processTime));
@@ -223,15 +223,15 @@ public class MachineEntity extends GenericEntity {
         lastRecipe = null;
     }
 
-    private int calculateEnergyCost(MachineRecipe recipe) {
+    private int calculateEnergyCost(ProcessorRecipe recipe) {
         var baseCost = recipe.getEnergyCost();
-        var multiplier = calculateMultiplier(getMachineType().getEnergyCostMultiplier());
+        var multiplier = calculateMultiplier(getProcessorType().getEnergyCostMultiplier());
         return (int) (baseCost * multiplier);
     }
 
-    private int calculateProcessTime(MachineRecipe recipe) {
+    private int calculateProcessTime(ProcessorRecipe recipe) {
         var baseTime = recipe.getProcessTime();
-        var multiplier = calculateMultiplier(getMachineType().getProcessTimeMultiplier());
+        var multiplier = calculateMultiplier(getProcessorType().getProcessTimeMultiplier());
         return (int) (baseTime * multiplier);
     }
 
@@ -249,7 +249,7 @@ public class MachineEntity extends GenericEntity {
         var finished = recipe.getResultItem();
         var mergeCount = output.getCount() + finished.getCount();
         return output.sameItem(finished) && mergeCount <= finished.getMaxStackSize() &&
-            mergeCount <= inventory.getSlotLimit(MachineInventory.OUTPUT_SLOT);
+            mergeCount <= inventory.getSlotLimit(ProcessorInventory.OUTPUT_SLOT);
     }
 
     private void autoExtract() {
@@ -314,21 +314,21 @@ public class MachineEntity extends GenericEntity {
     }
 
     @Nullable
-    private MachineRecipe getRecipe() {
+    private ProcessorRecipe getRecipe() {
         assert level != null;
         return GameUtil
             .getRecipeManager(level)
-            .getRecipeFor(getMachineType(), inventory.toVanilla(), level)
+            .getRecipeFor(getProcessorType(), inventory.toVanilla(), level)
             .orElse(null);
     }
 
-    public MachineType getMachineType() {
-        return ((MachineBlock) getBlockState().getBlock()).getMachineType();
+    public ProcessorType getProcessorType() {
+        return ((ProcessorBlock) getBlockState().getBlock()).getProcessorType();
     }
 
     @Override
     public Component getDisplayName() {
-        return TextUtil.translate(TRANSLATE_TYPE.BLOCK, getMachineType().getId());
+        return TextUtil.translate(TRANSLATE_TYPE.BLOCK, getProcessorType().getId());
     }
 
     public int getProgress() {

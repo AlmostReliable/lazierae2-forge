@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.recipe.type;
 
-import com.almostreliable.lazierae2.content.machine.MachineType;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.util.RecipeUtil;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
@@ -16,20 +16,20 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
-public abstract class MachineRecipe implements Recipe<Container> {
+public abstract class ProcessorRecipe implements Recipe<Container> {
 
-    private final MachineType machineType;
+    private final ProcessorType processorType;
     private final ResourceLocation id;
     NonNullList<Ingredient> inputs = NonNullList.create();
     private int processTime;
     private int energyCost;
     private ItemStack output;
 
-    MachineRecipe(
-        ResourceLocation id, MachineType machineType
+    ProcessorRecipe(
+        ResourceLocation id, ProcessorType processorType
     ) {
         this.id = id;
-        this.machineType = machineType;
+        this.processorType = processorType;
     }
 
     @Override
@@ -59,12 +59,12 @@ public abstract class MachineRecipe implements Recipe<Container> {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return machineType.getRecipeSerializer().get();
+        return processorType.getRecipeSerializer().get();
     }
 
     @Override
     public RecipeType<?> getType() {
-        return machineType;
+        return processorType;
     }
 
     public int getProcessTime() {
@@ -95,29 +95,29 @@ public abstract class MachineRecipe implements Recipe<Container> {
         this.output = output;
     }
 
-    public static class MachineRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<MachineRecipe> {
+    public static class ProcessorRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ProcessorRecipe> {
 
-        private final MachineType machineType;
+        private final ProcessorType processorType;
 
-        public MachineRecipeSerializer(MachineType machineType) {
-            this.machineType = machineType;
+        public ProcessorRecipeSerializer(ProcessorType processorType) {
+            this.processorType = processorType;
         }
 
         @Override
-        public MachineRecipe fromJson(ResourceLocation id, JsonObject json) {
-            var recipe = machineType.getRecipeFactory().apply(id, machineType);
+        public ProcessorRecipe fromJson(ResourceLocation id, JsonObject json) {
+            var recipe = processorType.getRecipeFactory().apply(id, processorType);
             return RecipeUtil.fromJSON(json, recipe);
         }
 
         @Nullable
         @Override
-        public MachineRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
-            var recipe = machineType.getRecipeFactory().apply(id, machineType);
+        public ProcessorRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
+            var recipe = processorType.getRecipeFactory().apply(id, processorType);
             return RecipeUtil.fromNetwork(buffer, recipe);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, MachineRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buffer, ProcessorRecipe recipe) {
             RecipeUtil.toNetwork(buffer, recipe);
         }
     }

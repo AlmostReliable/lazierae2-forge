@@ -4,9 +4,9 @@ import com.almostreliable.lazierae2.compat.jei.category.AggregatorCategory;
 import com.almostreliable.lazierae2.compat.jei.category.CentrifugeCategory;
 import com.almostreliable.lazierae2.compat.jei.category.EnergizerCategory;
 import com.almostreliable.lazierae2.compat.jei.category.EtcherCategory;
-import com.almostreliable.lazierae2.content.machine.MachineType;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
-import com.almostreliable.lazierae2.gui.MachineScreen;
+import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.IModPlugin;
@@ -36,18 +36,18 @@ public class Plugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration r) {
         var recipeManager = GameUtil.getRecipeManager(null);
-        r.addRecipes(recipeManager.getAllRecipesFor(MachineType.AGGREGATOR), AggregatorCategory.UID);
-        r.addRecipes(recipeManager.getAllRecipesFor(MachineType.CENTRIFUGE), CentrifugeCategory.UID);
-        r.addRecipes(recipeManager.getAllRecipesFor(MachineType.ENERGIZER), EnergizerCategory.UID);
-        r.addRecipes(recipeManager.getAllRecipesFor(MachineType.ETCHER), EtcherCategory.UID);
+        r.addRecipes(recipeManager.getAllRecipesFor(ProcessorType.AGGREGATOR), AggregatorCategory.UID);
+        r.addRecipes(recipeManager.getAllRecipesFor(ProcessorType.CENTRIFUGE), CentrifugeCategory.UID);
+        r.addRecipes(recipeManager.getAllRecipesFor(ProcessorType.ENERGIZER), EnergizerCategory.UID);
+        r.addRecipes(recipeManager.getAllRecipesFor(ProcessorType.ETCHER), EtcherCategory.UID);
     }
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration r) {
-        r.addRecipeTransferHandler(new MachineRecipeInfo(AggregatorCategory.UID, 2, 3, 5, 36));
-        r.addRecipeTransferHandler(new MachineRecipeInfo(CentrifugeCategory.UID, 2, 1, 3, 36));
-        r.addRecipeTransferHandler(new MachineRecipeInfo(EnergizerCategory.UID, 2, 1, 3, 36));
-        r.addRecipeTransferHandler(new MachineRecipeInfo(EtcherCategory.UID, 2, 3, 5, 36));
+        r.addRecipeTransferHandler(new ProcessorRecipeInfo(AggregatorCategory.UID, 2, 3, 5, 36));
+        r.addRecipeTransferHandler(new ProcessorRecipeInfo(CentrifugeCategory.UID, 2, 1, 3, 36));
+        r.addRecipeTransferHandler(new ProcessorRecipeInfo(EnergizerCategory.UID, 2, 1, 3, 36));
+        r.addRecipeTransferHandler(new ProcessorRecipeInfo(EtcherCategory.UID, 2, 3, 5, 36));
     }
 
     @Override
@@ -60,10 +60,10 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration r) {
-        r.addGuiContainerHandler(MachineScreen.class, new MachineGuiContainerHandler(
+        r.addGuiContainerHandler(ProcessorScreen.class, new ProcessorGuiContainerHandler(
             0,
             -12,
-            MachineScreen.TEXTURE_WIDTH - MachineScreen.ENERGY_WIDTH,
+            ProcessorScreen.TEXTURE_WIDTH - ProcessorScreen.ENERGY_WIDTH,
             10,
             AggregatorCategory.UID,
             CentrifugeCategory.UID,

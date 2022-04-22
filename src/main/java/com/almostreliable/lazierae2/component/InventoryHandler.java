@@ -4,8 +4,8 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import com.almostreliable.lazierae2.content.GenericEntity;
-import com.almostreliable.lazierae2.content.machine.MachineEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket.SYNC_FLAGS;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -43,14 +43,14 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
         entity.setChanged();
     }
 
-    public static class MachineInventory extends InventoryHandler<MachineEntity> {
+    public static class ProcessorInventory extends InventoryHandler<ProcessorEntity> {
 
         public static final int NON_INPUT_SLOTS = 2;
         public static final int UPGRADE_SLOT = 0;
         public static final int OUTPUT_SLOT = 1;
 
-        public MachineInventory(MachineEntity entity) {
-            super(entity, entity.getMachineType().getInputSlots() + NON_INPUT_SLOTS);
+        public ProcessorInventory(ProcessorEntity entity) {
+            super(entity, entity.getProcessorType().getInputSlots() + NON_INPUT_SLOTS);
         }
 
         public void dropContents() {
@@ -198,6 +198,7 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             return slots;
         }
 
+        // TODO: remove this and use the getter
         @NotNull
         @Override
         public ItemStack getStackInSlot(int slot) {
