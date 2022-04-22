@@ -25,6 +25,7 @@ import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket;
+import com.almostreliable.lazierae2.progression.ClientState;
 import com.almostreliable.lazierae2.progression.CraftingLinkState;
 import com.almostreliable.lazierae2.progression.IProgressionState;
 import com.almostreliable.lazierae2.util.TextUtil;
@@ -49,8 +50,8 @@ import static com.almostreliable.lazierae2.core.Constants.*;
 public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, ICraftingRequester {
 
     private static final int SLOTS = 6;
-    public final RequestInventory craftRequests;
-    public final IProgressionState[] progressions;
+    private final RequestInventory craftRequests;
+    private final IProgressionState[] progressions;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
     private final StorageManager storageManager;
@@ -154,6 +155,14 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public boolean isRequestSlotLocked(int slot) {
         return !(progressions[slot].type() == PROGRESSION_TYPE.IDLE ||
             progressions[slot].type() == PROGRESSION_TYPE.REQUEST);
+    }
+
+    public IProgressionState getProgressions(int slot) {
+        return progressions[slot];
+    }
+
+    public void setClientProgression(int slot, PROGRESSION_TYPE type) {
+        progressions[slot] = new ClientState(type);
     }
 
     private void loadStates(CompoundTag tag) {

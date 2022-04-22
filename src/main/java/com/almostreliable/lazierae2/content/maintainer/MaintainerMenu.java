@@ -22,7 +22,7 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         int windowId, MaintainerEntity entity, Inventory menuInventory
     ) {
         super(Menus.MAINTAINER.get(), windowId, entity, menuInventory);
-        requestInventory = entity.craftRequests;
+        requestInventory = entity.getCraftRequests();
         setupContainerInventory();
         setupPlayerInventory();
         syncData();
@@ -57,22 +57,22 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     public boolean getRequestState(int slot) {
-        return entity.craftRequests.getState(slot);
+        return entity.getCraftRequests().getState(slot);
     }
 
     public long getRequestCount(int slot) {
-        return entity.craftRequests.getCount(slot);
+        return entity.getCraftRequests().getCount(slot);
     }
 
     public long getRequestBatch(int slot) {
-        return entity.craftRequests.getBatch(slot);
+        return entity.getCraftRequests().getBatch(slot);
     }
 
     public PROGRESSION_TYPE getProgressionType(int slot) {
-        if (!(entity.progressions[slot] instanceof ClientState)) {
+        if (!(entity.getProgressions(slot) instanceof ClientState)) {
             throw new IllegalStateException("Progression " + slot + " is not a ClientState");
         }
-        var type = entity.progressions[slot].type();
+        var type = entity.getProgressions(slot).type();
         if (type == PROGRESSION_TYPE.REQUEST || type == PROGRESSION_TYPE.PLAN) return PROGRESSION_TYPE.IDLE;
         return type;
     }
@@ -91,12 +91,12 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
 
     private void syncData() {
         // current progression type for all slots
-        for (var slot = 0; slot < entity.progressions.length; slot++) {
+        for (var slot = 0; slot < requestInventory.getSlots(); slot++) {
             var finalSlot = slot;
             addDataSlot(DataSlotUtil.forInteger(
                 entity,
-                () -> entity.progressions[finalSlot].type().ordinal(),
-                value -> entity.progressions[finalSlot] = new ClientState(PROGRESSION_TYPE.values()[value])
+                () -> entity.getProgressions(finalSlot).type().ordinal(),
+                value -> entity.setClientProgression(finalSlot, PROGRESSION_TYPE.values()[value])
             ));
         }
     }
@@ -123,6 +123,6 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     public int getRequestSlots() {
-        return entity.craftRequests.getSlots();
+        return entity.getCraftRequests().getSlots();
     }
 }

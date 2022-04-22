@@ -43,7 +43,7 @@ public class RequestBatchPacket extends ClientToServerPacket<RequestBatchPacket>
             if (!(entity instanceof MaintainerEntity maintainer)) return;
             var level = maintainer.getLevel();
             if (level == null || !level.isLoaded(maintainer.getBlockPos())) return;
-            maintainer.craftRequests.updateBatch(packet.slot, packet.value);
+            maintainer.getCraftRequests().updateBatch(packet.slot, packet.value);
             maintainer.syncData(packet.slot, SYNC_FLAGS.BATCH);
         }
     }

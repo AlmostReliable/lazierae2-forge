@@ -21,16 +21,16 @@ final class ClientHandler {
         if (!(entity instanceof MaintainerEntity maintainer)) return;
         // sync data to the entity in the world
         if ((packet.getFlags() & SYNC_FLAGS.STATE) != 0) {
-            maintainer.craftRequests.updateState(packet.getSlot(), packet.getState());
+            maintainer.getCraftRequests().updateState(packet.getSlot(), packet.getState());
         }
         if ((packet.getFlags() & SYNC_FLAGS.STACK) != 0) {
-            maintainer.craftRequests.updateStackClient(packet.getSlot(), packet.getStack());
+            maintainer.getCraftRequests().updateStackClient(packet.getSlot(), packet.getStack());
         }
         if ((packet.getFlags() & SYNC_FLAGS.COUNT) != 0) {
-            maintainer.craftRequests.updateCount(packet.getSlot(), packet.getCount());
+            maintainer.getCraftRequests().updateCount(packet.getSlot(), packet.getCount());
         }
         if ((packet.getFlags() & SYNC_FLAGS.BATCH) != 0) {
-            maintainer.craftRequests.updateBatch(packet.getSlot(), packet.getBatch());
+            maintainer.getCraftRequests().updateBatch(packet.getSlot(), packet.getBatch());
         }
         // refresh data on the screen the player is looking at
         var screen = Minecraft.getInstance().screen;
