@@ -3,9 +3,7 @@ package com.almostreliable.lazierae2.core;
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.GenericMenu;
-import com.almostreliable.lazierae2.content.assembler.ControllerBlock;
-import com.almostreliable.lazierae2.content.assembler.ControllerEntity;
-import com.almostreliable.lazierae2.content.assembler.HullBlock;
+import com.almostreliable.lazierae2.content.assembler.*;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerBlock;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
@@ -13,8 +11,8 @@ import com.almostreliable.lazierae2.content.processor.ProcessorBlock;
 import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
-import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
+import com.almostreliable.lazierae2.core.TypeEnums.CENTER_TYPE;
 import com.almostreliable.lazierae2.core.TypeEnums.HULL_TYPE;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe.ProcessorRecipeSerializer;
@@ -79,6 +77,24 @@ public final class Setup {
             );
         }
 
+        public static final class Assembler {
+
+            private Assembler() {}
+
+            public static final RegistryObject<BlockEntityType<CenterEntity>> CENTER = register(CENTER_ID,
+                CenterEntity::new,
+                Blocks.Assembler.ACCELERATOR,
+                Blocks.Assembler.TIER_1,
+                Blocks.Assembler.TIER_2,
+                Blocks.Assembler.TIER_3
+            );
+
+            public static final RegistryObject<BlockEntityType<ControllerEntity>> ASSEMBLER_CONTROLLER = register(CONTROLLER_ID,
+                ControllerEntity::new,
+                Blocks.Assembler.CONTROLLER
+            );
+        }
+
         public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(PROCESSOR_ID,
             ProcessorEntity::new,
             Blocks.AGGREGATOR,
@@ -90,11 +106,6 @@ public final class Setup {
         public static final RegistryObject<BlockEntityType<MaintainerEntity>> MAINTAINER = register(MAINTAINER_ID,
             MaintainerEntity::new,
             Blocks.MAINTAINER
-        );
-
-        public static final RegistryObject<BlockEntityType<ControllerEntity>> ASSEMBLER_CONTROLLER = register(CONTROLLER_ID,
-            ControllerEntity::new,
-            Assembler.CONTROLLER
         );
     }
 
@@ -191,11 +202,27 @@ public final class Setup {
             );
             public static final RegistryObject<HullBlock> WALL = register(WALL_ID, HULL_TYPE.WALL, HullBlock::new);
             public static final RegistryObject<HullBlock> FRAME = register(FRAME_ID, HULL_TYPE.FRAME, HullBlock::new);
+            public static final RegistryObject<CenterBlock> ACCELERATOR = register(ACCELERATOR_ID,
+                CENTER_TYPE.ACCELERATOR,
+                CenterBlock::new
+            );
+            public static final RegistryObject<CenterBlock> TIER_1 = register(TIER_1_ID,
+                CENTER_TYPE.TIER_1,
+                CenterBlock::new
+            );
+            public static final RegistryObject<CenterBlock> TIER_2 = register(TIER_2_ID,
+                CENTER_TYPE.TIER_2,
+                CenterBlock::new
+            );
+            public static final RegistryObject<CenterBlock> TIER_3 = register(TIER_3_ID,
+                CENTER_TYPE.TIER_3,
+                CenterBlock::new
+            );
 
             private Assembler() {}
 
-            private static <B extends GenericBlock> RegistryObject<B> register(
-                String id, HULL_TYPE type, Function<? super HULL_TYPE, ? extends B> constructor
+            private static <E extends Enum<?>, B extends GenericBlock> RegistryObject<B> register(
+                String id, E type, Function<? super E, ? extends B> constructor
             ) {
                 RegistryObject<B> block = REGISTRY.register(id, () -> constructor.apply(type));
                 registerBlockItem(id, block);

@@ -14,8 +14,13 @@ public enum Constants {
     public static final String ETCHER_ID = "etcher";
     public static final String MAINTAINER_ID = "maintainer";
     public static final String CONTROLLER_ID = "controller";
+    public static final String CENTER_ID = "center";
     public static final String WALL_ID = "wall";
     public static final String FRAME_ID = "frame";
+    public static final String ACCELERATOR_ID = "accelerator";
+    public static final String TIER_1_ID = "tier1";
+    public static final String TIER_2_ID = "tier2";
+    public static final String TIER_3_ID = "tier3";
     // item ids
     public static final String CARB_FLUIX_DUST_ID = "carbonic_fluix_dust";
     public static final String COAL_DUST_ID = "coal_dust";

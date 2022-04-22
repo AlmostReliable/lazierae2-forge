@@ -4,6 +4,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import com.almostreliable.lazierae2.content.GenericEntity;
+import com.almostreliable.lazierae2.content.assembler.CenterEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket.SYNC_FLAGS;
@@ -41,6 +42,21 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
     protected void onContentsChanged(int slot) {
         vanillaNeedsChange = true;
         entity.setChanged();
+    }
+
+    public static class PatternInventory extends InventoryHandler<CenterEntity> {
+        public PatternInventory(CenterEntity entity) {
+            super(entity, calculateSize(entity));
+        }
+
+        private static int calculateSize(CenterEntity entity) {
+            return switch (entity.getProcessorType()) {
+                case ACCELERATOR -> 0;
+                case TIER_1 -> 9;
+                case TIER_2 -> 18;
+                case TIER_3 -> 27;
+            };
+        }
     }
 
     public static class ProcessorInventory extends InventoryHandler<ProcessorEntity> {

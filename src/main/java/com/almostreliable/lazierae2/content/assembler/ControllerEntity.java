@@ -2,7 +2,7 @@ package com.almostreliable.lazierae2.content.assembler;
 
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.Data;
-import com.almostreliable.lazierae2.core.Setup.Entities;
+import com.almostreliable.lazierae2.core.Setup.Entities.Assembler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,7 +17,7 @@ public class ControllerEntity extends GenericEntity {
     private Data data;
 
     public ControllerEntity(BlockPos pos, BlockState state) {
-        super(Entities.ASSEMBLER_CONTROLLER.get(), pos, state);
+        super(Assembler.ASSEMBLER_CONTROLLER.get(), pos, state);
     }
 
     @Override
