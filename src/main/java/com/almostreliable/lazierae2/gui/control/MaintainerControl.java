@@ -105,6 +105,11 @@ public final class MaintainerControl {
             }
 
             @Override
+            protected boolean isValidClickButton(int pButton) {
+                return false;
+            }
+
+            @Override
             public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
                 defaultButtonNarrationText(pNarrationElementOutput);
             }
