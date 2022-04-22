@@ -13,6 +13,10 @@ public abstract class AssemblerBlock extends GenericBlock {
 
     public static final BooleanProperty IS_MULTIBLOCK = BooleanProperty.create("is_multiblock");
 
+    AssemblerBlock() {
+        registerDefaultState(defaultBlockState().setValue(IS_MULTIBLOCK, false));
+    }
+
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {

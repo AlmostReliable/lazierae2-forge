@@ -32,6 +32,14 @@ public interface ProcessorRecipeManager extends IRecipeManager<ProcessorRecipe> 
         CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, ""));
     }
 
+    @Method
+    default RecipeBuilderWrapper builder(String name, IItemStack output) {
+        var id = new ResourceLocation("crafttweaker", fixRecipeName(name));
+        return createRecipeBuilder(id, output);
+    }
+
+    RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output);
+
     ProcessorRecipe createRecipe(
         ResourceLocation id, ItemStack output, int amount, Ingredient[] ingredients, int processTime, int energyCost
     );

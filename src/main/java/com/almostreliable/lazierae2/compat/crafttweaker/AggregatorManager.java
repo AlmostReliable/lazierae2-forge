@@ -21,8 +21,8 @@ public class AggregatorManager implements ProcessorRecipeManager {
     public static final AggregatorManager INSTANCE = new AggregatorManager();
 
     @Override
-    RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
-        return new RecipeBuilderWrapper(this, MachineType.AGGREGATOR, id, output);
+    public RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
+        return new RecipeBuilderWrapper(this, ProcessorType.AGGREGATOR, id, output);
     }
 
     @Override

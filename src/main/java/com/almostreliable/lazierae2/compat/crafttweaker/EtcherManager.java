@@ -21,8 +21,8 @@ public class EtcherManager implements ProcessorRecipeManager {
     public static final EtcherManager INSTANCE = new EtcherManager();
 
     @Override
-    RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
-        return new RecipeBuilderWrapper(this, MachineType.ETCHER, id, output);
+    public RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
+        return new RecipeBuilderWrapper(this, ProcessorType.ETCHER, id, output);
     }
 
     @Override

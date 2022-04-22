@@ -11,16 +11,12 @@ import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.DataSlot;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
-
-import javax.annotation.Nullable;
-import java.util.stream.IntStream;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
@@ -38,22 +34,19 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
         syncData();
     }
 
-    @SuppressWarnings("java:S3776")
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        // TODO: this should be refactored, but I'm too lazy to do that for 1.16
         var stack = ItemStack.EMPTY;
         var slot = slots.get(index);
 
-        // check if the slot exists and has an item inside
+        // check if the slot has an item inside
         if (!slot.hasItem()) return stack;
 
         var slotStack = slot.getItem();
         stack = slotStack.copy();
 
-        // decide where to put the item
         if (index < processorInventory.getSlots()) {
-            // transfer item from processor to inventory
+            // from machine to inventory
             if (!moveItemStackTo(slotStack,
                 processorInventory.getSlots(),
                 processorInventory.getSlots() + PLAYER_INV_SIZE,
@@ -62,18 +55,22 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
                 return ItemStack.EMPTY;
             }
         } else if (GameUtil.isValidUpgrade(slotStack)) {
-            // transfer item from inventory to upgrade slot
-            if (!moveItemStackTo(slotStack, 0, 1, false)) return ItemStack.EMPTY;
+            // from inventory to upgrade slot
+            if (!moveItemStackTo(slotStack,
+                ProcessorInventory.UPGRADE_SLOT,
+                ProcessorInventory.UPGRADE_SLOT + 1,
+                false
+            )) {
+                return ItemStack.EMPTY;
+            }
         } else {
-            // transfer item from inventory to processor input slots
-            var inputSlot = inputsContainItem(stack);
-            if (slotStack.isStackable() && inputSlot != null && (inputSlot.getItem().getCount() <
-                Math.min(inputSlot.getMaxStackSize(), inputSlot.getItem().getMaxStackSize()))) {
-                // merge item stack if one input slot has the same item already
-                mergeItemStackTo(stack, inputSlot);
-            } else {
-                // transfer item stack if there are empty inventory slots
-                if (!moveItemStackTo(slotStack, 2, processorInventory.getSlots(), false)) return ItemStack.EMPTY;
+            // from inventory to machine inputs
+            if (!moveItemStackTo(slotStack,
+                ProcessorInventory.NON_INPUT_SLOTS,
+                ProcessorInventory.NON_INPUT_SLOTS + processorInventory.getSlots(),
+                false
+            )) {
+                return ItemStack.EMPTY;
             }
         }
 
@@ -81,7 +78,6 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
         if (slotStack.isEmpty()) {
             slot.set(ItemStack.EMPTY);
         } else {
-            // call this so the tile entity is marked as changed and saved
             slot.setChanged();
         }
 
@@ -131,48 +127,6 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
     private void addMultipleDataSlots(DataSlot... holders) {
         for (var holder : holders) {
             addDataSlot(holder);
-        }
-    }
-
-    /**
-     * Checks if the input slots of the inventory contain the given item.
-     *
-     * @param stack the item to check for
-     * @return the slot containing the item, or null if not found
-     */
-    @Nullable
-    private Slot inputsContainItem(ItemStack stack) {
-        return IntStream
-            .range(ProcessorInventory.NON_INPUT_SLOTS,
-                processorInventory.getInputSlots() + ProcessorInventory.NON_INPUT_SLOTS
-            )
-            .mapToObj(slots::get)
-            .filter(slot -> ItemStack.isSameItemSameTags(slot.getItem(), stack))
-            .findFirst()
-            .orElse(null);
-    }
-
-    /**
-     * Tries to merge the given item stack to the given slot.
-     * <p>
-     * If the slot changed data, the slot is marked as changed and the tile entity is saved.
-     *
-     * @param stack the item stack to merge
-     * @param slot  the slot to merge the item stack to
-     */
-    private void mergeItemStackTo(ItemStack stack, Slot slot) {
-        var slotStack = slot.getItem();
-
-        var mergedAmount = slotStack.getCount() + stack.getCount();
-        var maxSize = Math.min(slot.getMaxStackSize(), stack.getMaxStackSize());
-        if (mergedAmount <= maxSize) {
-            stack.setCount(0);
-            slotStack.setCount(mergedAmount);
-            slot.setChanged();
-        } else if (slotStack.getCount() < maxSize) {
-            stack.shrink(maxSize - slotStack.getCount());
-            slotStack.setCount(maxSize);
-            slot.setChanged();
         }
     }
 

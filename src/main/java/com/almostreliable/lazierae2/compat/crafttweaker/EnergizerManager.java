@@ -21,8 +21,8 @@ public class EnergizerManager implements ProcessorRecipeManager {
     public static final EnergizerManager INSTANCE = new EnergizerManager();
 
     @Override
-    RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
-        return new RecipeBuilderWrapper(this, MachineType.ENERGIZER, id, output);
+    public RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
+        return new RecipeBuilderWrapper(this, ProcessorType.ENERGIZER, id, output);
     }
 
     @Override

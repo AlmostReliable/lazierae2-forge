@@ -23,13 +23,9 @@ public class HullBlock extends AssemblerBlock {
 
     public HullBlock(HULL_TYPE type) {
         this.type = type;
-        this.registerDefaultState(this
-            .getStateDefinition()
-            .any()
+        registerDefaultState(defaultBlockState()
             .setValue(HORIZONTAL, OptionalDirection.NONE)
-            .setValue(VERTICAL, OptionalDirection.NONE)
-            .setValue(IS_MULTIBLOCK, false)
-            .setValue(ACTIVE, false));
+            .setValue(VERTICAL, OptionalDirection.NONE));
     }
 
     @Nullable

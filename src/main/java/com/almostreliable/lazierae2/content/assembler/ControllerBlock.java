@@ -1,12 +1,12 @@
 package com.almostreliable.lazierae2.content.assembler;
 
-import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.Data;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirections;
 import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.almostreliable.lazierae2.core.TypeEnums.HULL_TYPE;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,12 +35,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     private static final Logger LOG = LogUtils.getLogger();
 
     public ControllerBlock() {
-        super();
-        this.registerDefaultState(this
-            .getStateDefinition()
-            .any()
-            .setValue(AssemblerBlock.IS_MULTIBLOCK, false)
-            .setValue(GenericBlock.ACTIVE, false));
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
     }
 
     @Nullable
@@ -60,7 +55,8 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if ((newState.isAir() || (newState.getBlock() instanceof ControllerBlock && !newState.getValue(IS_MULTIBLOCK))) &&
+        if ((newState.isAir() ||
+            (newState.getBlock() instanceof ControllerBlock && !newState.getValue(IS_MULTIBLOCK))) &&
             level.getBlockEntity(pos) instanceof ControllerEntity blockEntity) {
             destroyMultiBlock(level, blockEntity);
         }
@@ -89,11 +85,13 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     }
 
     public boolean isUsableForWall(BlockState state) {
-        return state.getBlock() instanceof HullBlock hull && hull.isUsableForMultiBlock(state) && hull.type == HULL_TYPE.WALL;
+        return state.getBlock() instanceof HullBlock hull && hull.isUsableForMultiBlock(state) &&
+            hull.type == HULL_TYPE.WALL;
     }
 
     public boolean isUsableForFrame(BlockState state) {
-        return state.getBlock() instanceof HullBlock hull && hull.isUsableForMultiBlock(state) && hull.type == HULL_TYPE.FRAME;
+        return state.getBlock() instanceof HullBlock hull && hull.isUsableForMultiBlock(state) &&
+            hull.type == HULL_TYPE.FRAME;
     }
 
     @Nullable

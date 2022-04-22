@@ -3,7 +3,6 @@ package com.almostreliable.lazierae2.gui.widgets;
 import com.almostreliable.lazierae2.core.TypeEnums.EXTRACT_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.gui.ProcessorScreen;
-import com.almostreliable.lazierae2.network.AutoExtractPacket;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.AutoExtractPacket;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;

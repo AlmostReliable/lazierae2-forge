@@ -21,8 +21,8 @@ public class CentrifugeManager implements ProcessorRecipeManager {
     public static final CentrifugeManager INSTANCE = new CentrifugeManager();
 
     @Override
-    RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
-        return new RecipeBuilderWrapper(this, MachineType.CENTRIFUGE, id, output);
+    public RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
+        return new RecipeBuilderWrapper(this, ProcessorType.CENTRIFUGE, id, output);
     }
 
     @Override

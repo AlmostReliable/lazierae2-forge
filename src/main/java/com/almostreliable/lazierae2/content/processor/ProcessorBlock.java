@@ -51,10 +51,13 @@ public class ProcessorBlock extends MachineBlock {
         super.playerWillDestroy(level, pos, state, player);
     }
 
+    @SuppressWarnings("BoundedWildcard")
     @Override
     public void appendHoverText(
         ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag
     ) {
+        super.appendHoverText(stack, level, tooltip, flag);
+
         var tag = stack.getTag();
         var upgrades = 0;
         var energy = 0;
@@ -76,8 +79,6 @@ public class ProcessorBlock extends MachineBlock {
                 .line(() -> finalSideConfig, "item.side_config", ChatFormatting.YELLOW)
                 .build());
         }
-
-        super.appendHoverText(stack, level, tooltip, flag);
     }
 
     @Nullable
@@ -97,12 +98,6 @@ public class ProcessorBlock extends MachineBlock {
                 processor.tick();
             }
         };
-    }
-
-    public String getId() {
-        var registryName = getRegistryName();
-        assert registryName != null;
-        return registryName.getPath();
     }
 
     ProcessorType getProcessorType() {

@@ -2,9 +2,9 @@ package com.almostreliable.lazierae2.gui;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
+import com.almostreliable.lazierae2.gui.control.IOControl;
 import com.almostreliable.lazierae2.gui.widgets.AutoExtractButton;
 import com.almostreliable.lazierae2.gui.widgets.EnergyDumpButton;
-import com.almostreliable.lazierae2.gui.widgets.IOControl;
 import com.almostreliable.lazierae2.inventory.UpgradeSlot;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.almostreliable.lazierae2.util.TextUtil;

@@ -6,7 +6,6 @@ import appeng.api.stacks.GenericStack;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
-import com.almostreliable.lazierae2.util.MathUtil;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket.SYNC_FLAGS;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -199,6 +198,7 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             return slots;
         }
 
+        // TODO: remove this and use the getter
         @NotNull
         @Override
         public ItemStack getStackInSlot(int slot) {

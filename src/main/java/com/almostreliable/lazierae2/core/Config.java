@@ -109,14 +109,13 @@ public final class Config {
         public final DoubleValue maintainerIdleEnergy;
 
         private CommonConfig(Builder builder) {
-            builder.push(MACHINE_ID);
+            builder.push(PROCESSOR_ID);
             builder.comment(
                 "##################################################################################",
                 " This section lets you configure the various values of the mod processors.       #",
                 " If there is an option mentioning 'upgrades', AE2 Acceleration Cards are meant.  #",
                 "##################################################################################"
             );
-
             aggregator = new ProcessorConfig(builder, AGGREGATOR_ID);
             centrifuge = new ProcessorConfig(builder, CENTRIFUGE_ID);
             energizer = new ProcessorConfig(builder, ENERGIZER_ID);

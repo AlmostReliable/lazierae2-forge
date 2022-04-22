@@ -1,8 +1,8 @@
 package com.almostreliable.lazierae2.compat.crafttweaker;
 
-import com.almostreliable.lazierae2.content.machine.MachineType;
-import com.almostreliable.lazierae2.recipe.builder.MachineRecipeBuilder;
-import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.recipe.builder.ProcessorRecipeBuilder;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
@@ -20,20 +20,20 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 @Name("mods." + MOD_ID + ".RecipeBuilderWrapper")
 public class RecipeBuilderWrapper {
 
-    private final IRecipeManager<? super MachineRecipe> manager;
+    private final IRecipeManager<? super ProcessorRecipe> manager;
     private final ResourceLocation id;
-    private final MachineRecipeBuilder builder;
+    private final ProcessorRecipeBuilder builder;
 
     RecipeBuilderWrapper(
-        IRecipeManager<? super MachineRecipe> manager, MachineType type, ResourceLocation id, IItemStack output
+        IRecipeManager<? super ProcessorRecipe> manager, ProcessorType type, ResourceLocation id, IItemStack output
     ) {
         this.manager = manager;
         this.id = id;
         builder = switch (type) {
-            case AGGREGATOR -> MachineRecipeBuilder.aggregator(output.getInternal().getItem(), output.getAmount());
-            case CENTRIFUGE -> MachineRecipeBuilder.centrifuge(output.getInternal().getItem(), output.getAmount());
-            case ENERGIZER -> MachineRecipeBuilder.energizer(output.getInternal().getItem(), output.getAmount());
-            case ETCHER -> MachineRecipeBuilder.etcher(output.getInternal().getItem(), output.getAmount());
+            case AGGREGATOR -> ProcessorRecipeBuilder.aggregator(output.getInternal().getItem(), output.getAmount());
+            case CENTRIFUGE -> ProcessorRecipeBuilder.centrifuge(output.getInternal().getItem(), output.getAmount());
+            case ENERGIZER -> ProcessorRecipeBuilder.energizer(output.getInternal().getItem(), output.getAmount());
+            case ETCHER -> ProcessorRecipeBuilder.etcher(output.getInternal().getItem(), output.getAmount());
         };
     }
 

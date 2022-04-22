@@ -1,7 +1,6 @@
 package com.almostreliable.lazierae2.gui.widgets;
 
 import com.almostreliable.lazierae2.gui.ProcessorScreen;
-import com.almostreliable.lazierae2.network.EnergyDumpPacket;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.EnergyDumpPacket;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;

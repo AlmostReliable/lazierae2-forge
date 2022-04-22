@@ -1,6 +1,7 @@
 package com.almostreliable.lazierae2.content;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,6 +23,10 @@ import javax.annotation.Nullable;
 public abstract class MachineBlock extends GenericBlock implements EntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
+    protected MachineBlock() {
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));
+    }
 
     @Nullable
     @Override
