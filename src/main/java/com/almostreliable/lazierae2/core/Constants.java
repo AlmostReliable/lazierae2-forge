@@ -50,9 +50,13 @@ public enum Constants {
     public static final String ENERGY_COST_ID = "energy_cost";
     public static final String RECIPE_ENERGY_ID = "recipe_energy";
     public static final String UPGRADES_ID = "upgrades";
-    public static final String CRAFT_TRACKER_ID = "craft_tracker";
+    public static final String PROGRESSION_STATES_ID = "progression_states";
     public static final String CRAFT_REQUESTS_ID = "craft_requests";
-    public static final String CRAFT_RESULTS_ID = "craft_results";
+    public static final String STORAGE_MANAGER_ID = "storage_manager";
+    public static final String ITEM_TYPE_ID = "item_type";
+    public static final String BUFFER_AMOUNT_ID = "buffer_amount";
+    public static final String PENDING_AMOUNT_ID = "pending_amount";
+    public static final String KNOWN_AMOUNT_ID = "known_amount";
     // recipe json keys
     public static final String RECIPE_INPUT = "input";
     public static final String RECIPE_OUTPUT = "output";
@@ -70,4 +74,5 @@ public enum Constants {
     public static final String ENERGY_USAGE_UPGRADE = "energy_usage_multi";
     public static final String PROCESS_TIME = "process_time_base";
     public static final String PROCESS_TIME_UPGRADE = "process_time_multi";
+    public static final String IDLE_ENERGY = "idle_energy";
 }

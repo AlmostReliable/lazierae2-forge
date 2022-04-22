@@ -42,6 +42,13 @@ import static com.almostreliable.lazierae2.core.Constants.*;
 
 public class ProcessorEntity extends GenericEntity {
 
+    /*
+        TODO: add logic for processing recipe that take less than a tick
+        > the output amount needs to be recalculated and multiple outputs are inserted during a single tick
+        > the auto extract rate needs to be adjusted if this is the case
+        > if the output rate exceeds the output slot limit per tick, we need to clamp it (machine slows down to avoid failure)
+     */
+
     public final SideConfiguration sideConfig;
     private final ProcessorInventory inventory;
     private final LazyOptional<ProcessorInventory> inventoryCap;
@@ -262,7 +269,7 @@ public class ProcessorEntity extends GenericEntity {
             var outputEmpty = new AtomicBoolean(false);
             target.ifPresent(targetInv -> {
                 var stack = inventory.getStackInOutput();
-                var remainder = ItemHandlerHelper.insertItem(targetInv, stack, false);
+                var remainder = ItemHandlerHelper.insertItemStacked(targetInv, stack, false);
 
                 if (remainder.getCount() != stack.getCount() || !remainder.sameItem(stack)) {
                     inventory.setStackInOutput(remainder);

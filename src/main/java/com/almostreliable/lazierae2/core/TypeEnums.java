@@ -34,6 +34,13 @@ public final class TypeEnums {
     }
 
     /**
+     * Enum to represent the different progression types for the maintainer.
+     */
+    public enum PROGRESSION_TYPE {
+        LINK, PLAN, EXPORT, IDLE, REQUEST
+    }
+
+    /**
      * Enum to represent the different types of hull for the multi-block assembler.
      */
     public enum HULL_TYPE {

@@ -1,6 +1,5 @@
 package com.almostreliable.lazierae2.component;
 
-import appeng.api.networking.IStackWatcher;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -8,6 +7,7 @@ import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.util.MathUtil;
+import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket.SYNC_FLAGS;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -66,6 +66,13 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             }
         }
 
+        @NotNull
+        @Override
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            if (slot < NON_INPUT_SLOTS) return stack;
+            return super.insertItem(slot, stack, simulate);
+        }
+
         public CompoundTag serializeUpgrades() {
             return getStackInSlot(UPGRADE_SLOT).save(new CompoundTag());
         }
@@ -117,55 +124,74 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             Arrays.fill(requests, new Request(true, ItemStack.EMPTY, 0, 1));
         }
 
-        public void updateCount(int slot, long count) {
-            if (slot >= 0 && slot < slots) {
-                if (count > 0) {
-                    if (!requests[slot].stack.isEmpty()) {
-                        requests[slot] = new Request(requests[slot].state,
-                            requests[slot].stack,
-                            count,
-                            requests[slot].batch
-                        );
-                        clearSlot(slot);
-                        entity.setChanged();
-                    }
-                } else if (!requests[slot].stack.isEmpty()) {
-                    requests[slot] = new Request(requests[slot].state, ItemStack.EMPTY, 0, requests[slot].batch);
-                    clearSlot(slot);
-                    entity.setChanged();
-                }
+        public int firstAvailableSlot() {
+            for (var slot = 0; slot < requests.length; slot++) {
+                var request = requests[slot];
+                if (request.stack.isEmpty()) return slot;
             }
+            return -1;
+        }
+
+        public void updateCount(int slot, long count) {
+            validateSlot(slot);
+            var oldRequest = requests[slot];
+            if (requests[slot].stack.isEmpty()) {
+                requests[slot] = new Request(requests[slot].state, ItemStack.EMPTY, 0, 1);
+            } else if (count <= 0) {
+                setStackInSlot(slot, ItemStack.EMPTY);
+            } else {
+                requests[slot] = new Request(requests[slot].state, requests[slot].stack, count, requests[slot].batch);
+            }
+            if (!oldRequest.equals(requests[slot])) entity.setChanged();
         }
 
         public void updateBatch(int slot, long batch) {
-            if (slot >= 0 && slot < slots && batch >= 0) {
+            validateSlot(slot);
+            var oldRequest = requests[slot];
+            if (batch <= 0) {
+                requests[slot] = new Request(requests[slot].state, requests[slot].stack, requests[slot].count, 1);
+            } else {
                 requests[slot] = new Request(requests[slot].state, requests[slot].stack, requests[slot].count, batch);
+            }
+            if (!oldRequest.equals(requests[slot])) entity.setChanged();
+        }
+
+        public void updateState(int slot, boolean enabled) {
+            validateSlot(slot);
+            var oldState = requests[slot].state;
+            if (oldState != enabled) {
+                requests[slot] = new Request(enabled, requests[slot].stack, requests[slot].count, requests[slot].batch);
                 entity.setChanged();
             }
         }
 
-        public void updateState(int slot, boolean enabled) {
-            if (slot >= 0 && slot < slots) {
-                var oldState = requests[slot].state;
-                requests[slot] = new Request(enabled, requests[slot].stack, requests[slot].count, requests[slot].batch);
-                if (oldState != enabled) {
-                    entity.setChanged();
-                }
-            }
+        public void updateStackClient(int slot, ItemStack stack) {
+            if (entity.getLevel() == null || !entity.getLevel().isClientSide) return;
+            requests[slot] = new Request(requests[slot].state, stack, requests[slot].count, requests[slot].batch);
         }
 
         @Override
         public void setStackInSlot(int slot, @NotNull ItemStack stack) {
             if (entity.getLevel() == null || entity.getLevel().isClientSide) return;
+            validateSlot(slot);
+            var oldRequest = requests[slot];
+            var flags = 0;
             if (stack.isEmpty()) {
-                requests[slot] = new Request(requests[slot].state, ItemStack.EMPTY, 0, requests[slot].batch);
+                requests[slot] = new Request(requests[slot].state, ItemStack.EMPTY, 0, 1);
+                flags |= SYNC_FLAGS.STACK | SYNC_FLAGS.COUNT | SYNC_FLAGS.BATCH;
             } else {
-                requests[slot] = new Request(requests[slot].state, stack, 1, requests[slot].batch);
+                var count = stack.getCount();
                 stack.setCount(1);
+                requests[slot] = new Request(requests[slot].state, stack, count, requests[slot].batch);
+                flags |= SYNC_FLAGS.STACK | SYNC_FLAGS.COUNT;
             }
-            clearSlot(slot);
-            entity.syncClient();
-            entity.setChanged();
+            if (!ItemStack.isSame(oldRequest.stack, requests[slot].stack)) {
+                entity.getStorageManager().clear(slot);
+            }
+            if (!oldRequest.equals(requests[slot])) {
+                entity.syncData(slot, flags);
+                entity.setChanged();
+            }
         }
 
         @Override
@@ -217,78 +243,34 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
             }
         }
 
-        public boolean matches(int slot, AEKey what) {
+        public Request get(int slot) {
+            return requests[slot];
+        }
+
+        boolean matches(int slot, AEKey what) {
             return what.matches(GenericStack.fromItemStack(requests[slot].stack));
         }
 
-        public long computeDelta(int slot, long existing) {
-            return requests[slot].stack.isEmpty() ? 0 :
-                MathUtil.clamp(requests[slot].count - existing, 0, requests[slot].batch);
-        }
-
-        public GenericStack request(int slot, int count) {
-            var stack = requests[slot].stack.copy();
-            stack.setCount(count);
-            return Objects.requireNonNull(GenericStack.fromItemStack(stack));
-        }
-
-        public boolean isRequesting(int slot) {
-            return !requests[slot].stack.isEmpty();
-        }
-
-        public void populateWatcher(IStackWatcher watcher) {
-            for (var i = 0; i < slots; i++) {
-                if (!requests[i].stack.isEmpty()) {
-                    watcher.add(AEItemKey.of(requests[i].stack));
-                }
+        private void validateSlot(int slot) {
+            if (slot < 0 || slot >= slots) {
+                throw new IllegalArgumentException("Slot " + slot + " is out of range");
             }
         }
 
-        public long getCount(int slot) {
-            return requests[slot].count;
-        }
-
-        public long getBatch(int slot) {
-            return requests[slot].batch;
-        }
-
-        public boolean getState(int slot) {
-            return requests[slot].state;
-        }
-
-        private void clearSlot(int slot) {
-            entity.knownStorageAmounts[slot] = -1;
-            entity.resetWatcher();
-        }
-
-        public boolean isRequesting() {
-            for (var i = 0; i < slots; i++) {
-                if (isRequesting(i)) return true;
-            }
-            return false;
-        }
-
-        @SuppressWarnings("ClassCanBeRecord")
-        private static final class Request {
-
-            private final boolean state;
-            private final ItemStack stack;
-            private final long count;
-            private final long batch;
-
-            private Request(boolean state, ItemStack stack, long count, long batch) {
-                this.state = state;
-                this.stack = stack;
-                this.count = count;
-                this.batch = batch;
-            }
+        public record Request(boolean state, ItemStack stack, long count, long batch) {
 
             private static Request deserializeNBT(CompoundTag tag) {
-                return new Request(tag.getBoolean("state"),
+                return new Request(
+                    tag.getBoolean("state"),
                     ItemStack.of(tag.getCompound("item")),
                     tag.getInt("count"),
                     tag.getInt("batch")
                 );
+            }
+
+            public GenericStack toGenericStack(long count) {
+                var stackCopy = stack.copy();
+                return new GenericStack(Objects.requireNonNull(AEItemKey.of(stackCopy)), count);
             }
 
             private CompoundTag serializeNBT() {
@@ -298,6 +280,10 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
                 tag.putInt("count", (int) count);
                 tag.putInt("batch", (int) batch);
                 return tag;
+            }
+
+            public boolean isRequesting() {
+                return state && !stack.isEmpty();
             }
         }
     }

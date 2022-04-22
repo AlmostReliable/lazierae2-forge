@@ -30,6 +30,12 @@
   "block.lazierae2.wall": "Assembler Wall",
   "block.lazierae2.frame": "Assembler Frame",
 
+  "tooltip.lazierae2.aggregator.description": "Combines Crystal Growth Accelerators in one spot and is easy to automate.",
+  "tooltip.lazierae2.centrifuge.description": "Crushes materials to their dust form for further processing.",
+  "tooltip.lazierae2.energizer.description": "An upgradable and easy to automate Charger.",
+  "tooltip.lazierae2.etcher.description": "Essentially an advanced Inscriber but faster, upgradable and makes use of raw materials.",
+  "tooltip.lazierae2.maintainer.description": "Will automatically keep up to 6 items in stock and request new crafts when needed.",
+
   "tooltip.lazierae2.action_hold": "Hold",
   "tooltip.lazierae2.action_click": "Click",
   "tooltip.lazierae2.extended_info": "for more information",

@@ -8,9 +8,9 @@ import java.util.function.BooleanSupplier;
 
 public abstract class ToggleButton extends GenericButton {
 
-    final BooleanSupplier pressed;
+    protected final BooleanSupplier pressed;
 
-    ToggleButton(
+    protected ToggleButton(
         GenericScreen<?> screen, int pX, int pY, int width, int height, String textureID, BooleanSupplier pressed
     ) {
         super(screen, pX, pY, width, height, textureID);

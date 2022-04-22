@@ -4,6 +4,7 @@ import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.recipe.builder.ProcessorRecipeBuilder;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.item.IItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -18,6 +19,11 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 public class CentrifugeManager implements ProcessorRecipeManager {
 
     public static final CentrifugeManager INSTANCE = new CentrifugeManager();
+
+    @Override
+    RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
+        return new RecipeBuilderWrapper(this, MachineType.CENTRIFUGE, id, output);
+    }
 
     @Override
     public ProcessorRecipe createRecipe(
