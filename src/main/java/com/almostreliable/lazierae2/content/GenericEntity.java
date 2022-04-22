@@ -1,7 +1,10 @@
 package com.almostreliable.lazierae2.content;
 
+import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
+import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,5 +36,18 @@ public abstract class GenericEntity extends BlockEntity implements MenuProvider 
         var tag = super.getUpdateTag();
         saveAdditional(tag);
         return tag;
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return TextUtil.translate(TRANSLATE_TYPE.BLOCK, getId());
+    }
+
+    private String getId() {
+        return getBlock().getId();
+    }
+
+    private GenericBlock getBlock() {
+        return (GenericBlock) getBlockState().getBlock();
     }
 }

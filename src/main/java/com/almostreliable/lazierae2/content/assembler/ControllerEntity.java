@@ -5,7 +5,6 @@ import com.almostreliable.lazierae2.content.assembler.MultiBlock.Data;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -54,10 +53,5 @@ public class ControllerEntity extends GenericEntity {
 
     public void setMultiBlockData(@Nullable Data data) {
         this.data = data;
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return null;
     }
 }

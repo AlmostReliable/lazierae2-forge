@@ -22,18 +22,15 @@ import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
-import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket;
 import com.almostreliable.lazierae2.progression.ClientState;
 import com.almostreliable.lazierae2.progression.CraftingLinkState;
 import com.almostreliable.lazierae2.progression.IProgressionState;
-import com.almostreliable.lazierae2.util.TextUtil;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -274,11 +271,6 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         } else {
             level.blockEntityChanged(worldPosition);
         }
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return TextUtil.translate(TRANSLATE_TYPE.BLOCK, MAINTAINER_ID);
     }
 
     @Override

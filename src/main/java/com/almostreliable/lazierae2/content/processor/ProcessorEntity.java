@@ -6,14 +6,11 @@ import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
-import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.almostreliable.lazierae2.util.GameUtil;
-import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -324,11 +321,6 @@ public class ProcessorEntity extends GenericEntity {
 
     public ProcessorType getProcessorType() {
         return ((ProcessorBlock) getBlockState().getBlock()).getProcessorType();
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return TextUtil.translate(TRANSLATE_TYPE.BLOCK, getProcessorType().getId());
     }
 
     public int getProgress() {
