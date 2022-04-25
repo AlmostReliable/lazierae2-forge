@@ -85,24 +85,24 @@ public class InventoryHandler implements IItemHandlerModifiable, INBTSerializabl
         for (int slot = 0; slot < stacks.size(); slot++) {
             if (!stacks.get(slot).isEmpty()) {
                 CompoundNBT itemTag = new CompoundNBT();
-                itemTag.putInt("slot", slot);
+                itemTag.putInt("Slot", slot);
                 stacks.get(slot).save(itemTag);
                 tagList.add(itemTag);
             }
         }
         CompoundNBT tag = new CompoundNBT();
-        tag.putInt("size", stacks.size());
-        tag.put("items", tagList);
+        tag.putInt("Size", stacks.size());
+        tag.put("Items", tagList);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT tag) {
-        setSize(tag.contains("size") ? tag.getInt("size") : stacks.size());
-        ListNBT tagList = tag.getList("items", NBT.TAG_COMPOUND);
+        setSize(tag.contains("Size") ? tag.getInt("Size") : stacks.size());
+        ListNBT tagList = tag.getList("Items", NBT.TAG_COMPOUND);
         for (int i = 0; i < tagList.size(); i++) {
             CompoundNBT itemTags = tagList.getCompound(i);
-            int slot = itemTags.getInt("slot");
+            int slot = itemTags.getInt("Slot");
             if (slot >= 0 && slot < stacks.size()) {
                 stacks.set(slot, ItemStack.of(itemTags));
             }
