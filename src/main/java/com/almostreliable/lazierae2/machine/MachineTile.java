@@ -4,7 +4,6 @@ import com.almostreliable.lazierae2.component.EnergyHandler;
 import com.almostreliable.lazierae2.component.InventoryHandler;
 import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.core.Setup.Tiles;
-import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.util.GameUtil;
@@ -162,6 +161,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     @Override
     protected void invalidateCaps() {
         super.invalidateCaps();
+        inventory.invalidate();
         inventoryCap.invalidate();
         energyCap.invalidate();
     }
@@ -173,7 +173,18 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
     ) {
         if (!remove) {
             if (cap.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
-                if (direction == null || sideConfig.get(direction) != IO_SETTING.OFF) return inventoryCap.cast();
+                if (direction == null) return inventoryCap.cast();
+                switch (sideConfig.get(direction)) {
+                    case INPUT:
+                        return inventory.getInputInventoryCap().cast();
+                    case OUTPUT:
+                        return inventory.getOutputInventoryCap().cast();
+                    case IO:
+                        return inventory.getIoInventoryCap().cast();
+                    default:
+                        // ignore since side is turned off
+                        break;
+                }
             } else if (cap.equals(CapabilityEnergy.ENERGY)) {
                 return energyCap.cast();
             }
