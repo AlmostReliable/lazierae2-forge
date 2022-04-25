@@ -31,7 +31,7 @@ public class FinishedMachineRecipe implements IFinishedRecipe {
             builder.getOutput().getItem().getRegistryName(),
             () -> f("Output in {}-recipe was not defined!", builder.getMachineId())
         ).toString());
-        if (builder.getOutput().getCount() > 1) output.addProperty(RECIPE_AMOUNT, builder.getOutput().getCount());
+        if (builder.getOutput().getCount() > 1) output.addProperty(RECIPE_COUNT, builder.getOutput().getCount());
         json.add(RECIPE_OUTPUT, output);
         JsonArray inputs = new JsonArray();
         builder.inputs.forEach(input -> inputs.add(input.toJson()));

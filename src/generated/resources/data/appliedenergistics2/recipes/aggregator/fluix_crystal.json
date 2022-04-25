@@ -4,7 +4,7 @@
   "energy_cost": 250,
   "output": {
     "item": "appliedenergistics2:fluix_crystal",
-    "amount": 2
+    "count": 2
   },
   "input": [
     {
