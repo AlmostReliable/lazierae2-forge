@@ -187,6 +187,7 @@ public class InventoryHandler implements IItemHandlerModifiable, INBTSerializabl
         return stacks.get(slot);
     }
 
+    @SuppressWarnings("java:S3776")
     @Nonnull
     @Override
     public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
@@ -250,6 +251,12 @@ public class InventoryHandler implements IItemHandlerModifiable, INBTSerializabl
 
     @Override
     public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        if (slot != OUTPUT_SLOT && slot != UPGRADE_SLOT && getInputSlots() > 1) {
+            for (int inputSlot = NON_INPUT_SLOTS; inputSlot < getInputSlots() + NON_INPUT_SLOTS; inputSlot++) {
+                if (inputSlot == slot) continue;
+                if (stacks.get(inputSlot).sameItem(stack)) return false;
+            }
+        }
         return true;
     }
 
