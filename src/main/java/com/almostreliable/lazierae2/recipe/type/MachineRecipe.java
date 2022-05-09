@@ -16,11 +16,13 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
+import static com.almostreliable.lazierae2.util.TextUtil.f;
+
 public abstract class MachineRecipe implements IRecipe<IInventory> {
 
+    final NonNullList<Ingredient> inputs = NonNullList.create();
     private final MachineType machineType;
     private final ResourceLocation id;
-    NonNullList<Ingredient> inputs = NonNullList.create();
     private int processTime;
     private int energyCost;
     private ItemStack output;
@@ -67,6 +69,23 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
         return machineType;
     }
 
+    public void validate() {
+        if (inputs.isEmpty()) {
+            throw new IllegalArgumentException(f("No inputs for recipe type '{}' with output '{}'!",
+                machineType.getId(),
+                output.toString()
+            ));
+        }
+        if (inputs.size() > machineType.getInputSlots()) {
+            throw new IllegalArgumentException(f("Too many inputs for recipe type '{}' with output '{}'!",
+                machineType.getId(),
+                output.toString()
+            ));
+        }
+        if (processTime == 0) processTime = machineType.getBaseProcessTime();
+        if (energyCost == 0) energyCost = machineType.getBaseEnergyCost();
+    }
+
     public int getProcessTime() {
         return processTime;
     }
@@ -87,10 +106,6 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
         return inputs;
     }
 
-    public void setInputs(NonNullList<Ingredient> inputs) {
-        this.inputs = inputs;
-    }
-
     public void setOutput(ItemStack output) {
         this.output = output;
     }
@@ -106,14 +121,17 @@ public abstract class MachineRecipe implements IRecipe<IInventory> {
         @Override
         public MachineRecipe fromJson(ResourceLocation id, JsonObject json) {
             MachineRecipe recipe = machineType.getRecipeFactory().apply(id, machineType);
-            return RecipeUtil.fromJSON(json, recipe);
+            RecipeUtil.fromJSON(json, recipe);
+            recipe.validate();
+            return recipe;
         }
 
         @Nullable
         @Override
         public MachineRecipe fromNetwork(ResourceLocation id, PacketBuffer buffer) {
             MachineRecipe recipe = machineType.getRecipeFactory().apply(id, machineType);
-            return RecipeUtil.fromNetwork(buffer, recipe);
+            RecipeUtil.fromNetwork(buffer, recipe);
+            return recipe;
         }
 
         @Override

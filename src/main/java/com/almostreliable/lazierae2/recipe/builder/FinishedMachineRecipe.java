@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.recipe.builder;
 
+import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.IFinishedRecipe;
@@ -14,38 +15,36 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class FinishedMachineRecipe implements IFinishedRecipe {
 
-    private final MachineRecipeBuilder builder;
-    private final ResourceLocation id;
+    private final MachineRecipe recipe;
 
-    FinishedMachineRecipe(MachineRecipeBuilder builder, ResourceLocation id) {
-        this.builder = builder;
-        this.id = id;
+    FinishedMachineRecipe(MachineRecipe recipe) {
+        this.recipe = recipe;
     }
 
     @Override
     public void serializeRecipeData(JsonObject json) {
-        json.addProperty(RECIPE_PROCESS_TIME, builder.processingTime);
-        json.addProperty(RECIPE_ENERGY_COST, builder.energyCost);
+        json.addProperty(RECIPE_PROCESS_TIME, recipe.getProcessTime());
+        json.addProperty(RECIPE_ENERGY_COST, recipe.getEnergyCost());
         JsonObject output = new JsonObject();
         output.addProperty(RECIPE_ITEM, Objects.requireNonNull(
-            builder.getOutput().getItem().getRegistryName(),
-            () -> f("Output in {}-recipe was not defined!", builder.getMachineId())
+            recipe.getResultItem().getItem().getRegistryName(),
+            () -> f("Output in {}-recipe was not defined!", recipe.getType())
         ).toString());
-        if (builder.getOutput().getCount() > 1) output.addProperty(RECIPE_COUNT, builder.getOutput().getCount());
+        if (recipe.getResultItem().getCount() > 1) output.addProperty(RECIPE_COUNT, recipe.getResultItem().getCount());
         json.add(RECIPE_OUTPUT, output);
         JsonArray inputs = new JsonArray();
-        builder.inputs.forEach(input -> inputs.add(input.toJson()));
+        recipe.getInputs().forEach(input -> inputs.add(input.toJson()));
         json.add(RECIPE_INPUT, inputs);
     }
 
     @Override
     public ResourceLocation getId() {
-        return id;
+        return recipe.getId();
     }
 
     @Override
     public IRecipeSerializer<?> getType() {
-        return builder.getRecipeType().getRecipeSerializer().get();
+        return recipe.getSerializer();
     }
 
     @Nullable

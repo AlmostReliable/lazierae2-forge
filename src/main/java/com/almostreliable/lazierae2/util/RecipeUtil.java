@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.util;
 
+import com.almostreliable.lazierae2.machine.MachineType;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,18 +20,16 @@ public final class RecipeUtil {
      *
      * @param json   the json to read
      * @param recipe the recipe to apply the information to
-     * @return the recipe with the deserialized information
      */
-    public static MachineRecipe fromJSON(JsonObject json, MachineRecipe recipe) {
-        recipe.setProcessTime(JSONUtils.getAsInt(json, RECIPE_PROCESS_TIME, 200));
-        recipe.setEnergyCost(JSONUtils.getAsInt(json, RECIPE_ENERGY_COST, 1_000));
+    public static void fromJSON(JsonObject json, MachineRecipe recipe) {
+        MachineType machineType = (MachineType) recipe.getType();
+        recipe.setProcessTime(JSONUtils.getAsInt(json, RECIPE_PROCESS_TIME, machineType.getBaseProcessTime()));
+        recipe.setEnergyCost(JSONUtils.getAsInt(json, RECIPE_ENERGY_COST, machineType.getBaseEnergyCost()));
         recipe.setOutput(ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, RECIPE_OUTPUT)));
         JSONUtils.getAsJsonArray(json, RECIPE_INPUT).forEach(jsonInput -> {
             Ingredient input = deserializeIngredient(jsonInput);
             recipe.getInputs().add(input);
         });
-
-        return recipe;
     }
 
     /**
@@ -38,9 +37,8 @@ public final class RecipeUtil {
      *
      * @param buffer the packet buffer to read
      * @param recipe the recipe to apply the information to
-     * @return the recipe with the deserialized information
      */
-    public static MachineRecipe fromNetwork(PacketBuffer buffer, MachineRecipe recipe) {
+    public static void fromNetwork(PacketBuffer buffer, MachineRecipe recipe) {
         recipe.setProcessTime(buffer.readInt());
         recipe.setEnergyCost(buffer.readInt());
         recipe.setOutput(buffer.readItem());
@@ -49,8 +47,6 @@ public final class RecipeUtil {
         for (int i = 0; i < size; i++) {
             recipe.getInputs().add(Ingredient.fromNetwork(buffer));
         }
-
-        return recipe;
     }
 
     /**
