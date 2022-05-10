@@ -187,7 +187,7 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
 
     void playerDestroy(boolean creative) {
         assert level != null;
-        inventory.dropContents();
+        inventory.dropContents(creative);
         if (creative) return;
         CompoundNBT nbt = new CompoundNBT();
         if (inventory.getUpgradeCount() > 0) nbt.put(UPGRADES_ID, inventory.serializeUpgrades());

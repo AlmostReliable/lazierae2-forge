@@ -85,10 +85,10 @@ public class InventoryHandler implements IItemHandlerModifiable, INBTSerializabl
         return vanillaInventory;
     }
 
-    public void dropContents() {
+    public void dropContents(boolean creative) {
         if (tile.getLevel() == null) return;
         BlockPos pos = tile.getBlockPos();
-        for (int i = OUTPUT_SLOT; i < getSlots(); i++) {
+        for (int i = creative ? 0 : OUTPUT_SLOT; i < getSlots(); i++) {
             ItemStack stack = getStackInSlot(i);
             if (stack.isEmpty()) continue;
             tile.getLevel().addFreshEntity(new ItemEntity(tile.getLevel(), pos.getX(), pos.getY(), pos.getZ(), stack));
