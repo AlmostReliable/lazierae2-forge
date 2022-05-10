@@ -183,9 +183,10 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         return super.getCapability(cap, direction);
     }
 
-    void playerDestroy() {
+    void playerDestroy(boolean creative) {
         assert level != null;
         inventory.dropContents();
+        if (creative) return;
         CompoundNBT nbt = new CompoundNBT();
         if (inventory.getUpgradeCount() > 0) nbt.put(UPGRADES_ID, inventory.serializeUpgrades());
         if (energy.getEnergyStored() > 0) nbt.put(ENERGY_ID, energy.serializeNBT());
