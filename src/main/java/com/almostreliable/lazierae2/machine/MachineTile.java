@@ -174,18 +174,9 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (!remove) {
             if (cap.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
                 if (direction == null) return inventoryCap.cast();
-                switch (sideConfig.get(direction)) {
-                    case INPUT:
-                        return inventory.getInputInventoryCap().cast();
-                    case OUTPUT:
-                        return inventory.getOutputInventoryCap().cast();
-                    case IO:
-                        return inventory.getIoInventoryCap().cast();
-                    default:
-                        // ignore since side is turned off
-                        break;
-                }
-            } else if (cap.equals(CapabilityEnergy.ENERGY)) {
+                return inventory.getInventoryCap(sideConfig.get(direction)).cast();
+            }
+            if (cap.equals(CapabilityEnergy.ENERGY)) {
                 return energyCap.cast();
             }
         }

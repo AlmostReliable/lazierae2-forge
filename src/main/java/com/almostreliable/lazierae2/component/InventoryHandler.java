@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.component;
 
+import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.machine.MachineTile;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.IInventory;
@@ -39,6 +40,41 @@ public class InventoryHandler implements IItemHandlerModifiable, INBTSerializabl
         this.tile = tile;
         stacks = NonNullList.withSize(inputSlots + NON_INPUT_SLOTS, ItemStack.EMPTY);
         setupSubInventories(inputSlots);
+    }
+
+    public ItemStack insertWithinRange(ItemStack stack, int start, int end) {
+        if (stack.isEmpty()) return stack;
+
+        // move non stackables to the first available slot
+        if (!stack.isStackable()) {
+            for (int i = start; i < Math.min(getSlots(), end); i++) {
+                stack = insertItem(i, stack, false);
+                if (stack.isEmpty()) return ItemStack.EMPTY;
+            }
+            return stack;
+        }
+
+        // fill up existing stacks
+        for (int i = start; i < Math.min(getSlots(), end); i++) {
+            ItemStack slot = getStackInSlot(i);
+            if (ItemHandlerHelper.canItemStacksStackRelaxed(slot, stack)) {
+                int oldCount = stack.getCount();
+                stack = insertItem(i, stack, false);
+                if (stack.isEmpty() || oldCount != stack.getCount()) return stack;
+            }
+        }
+
+        // insert remainder into empty slot
+        if (!stack.isEmpty()) {
+            for (int i = start; i < Math.min(getSlots(), end); i++) {
+                if (getStackInSlot(i).isEmpty()) {
+                    stack = insertItem(i, stack, false);
+                    if (stack.isEmpty()) return stack;
+                }
+            }
+        }
+
+        return stack;
     }
 
     public IInventory toVanilla() {
@@ -123,13 +159,23 @@ public class InventoryHandler implements IItemHandlerModifiable, INBTSerializabl
         ioInventoryCap.invalidate();
     }
 
+    public LazyOptional<IItemHandler> getInventoryCap(IO_SETTING type) {
+        switch (type) {
+            case INPUT:
+                return inputInventoryCap;
+            case OUTPUT:
+                return outputInventoryCap;
+            case IO:
+                return ioInventoryCap;
+            default:
+                throw new IllegalArgumentException(f("Unknown inventory type: {}", type));
+        }
+    }
+
     private void setupSubInventories(int inputSlots) {
-        InputInventory inputInventory = new InputInventory(this, inputSlots);
-        inputInventoryCap = LazyOptional.of(() -> inputInventory);
-        OutputInventory outputInventory = new OutputInventory(this);
-        outputInventoryCap = LazyOptional.of(() -> outputInventory);
-        IOInventory ioInventory = new IOInventory(this, inputSlots + 1);
-        ioInventoryCap = LazyOptional.of(() -> ioInventory);
+        inputInventoryCap = LazyOptional.of(() -> new InputInventory(this, inputSlots));
+        outputInventoryCap = LazyOptional.of(() -> new OutputInventory(this));
+        ioInventoryCap = LazyOptional.of(() -> new IOInventory(this, inputSlots + 1));
     }
 
     private void onContentsChanged() {
@@ -145,18 +191,6 @@ public class InventoryHandler implements IItemHandlerModifiable, INBTSerializabl
 
     private int getStackLimit(int slot, ItemStack stack) {
         return Math.min(getSlotLimit(slot), stack.getMaxStackSize());
-    }
-
-    public LazyOptional<IItemHandler> getInputInventoryCap() {
-        return inputInventoryCap;
-    }
-
-    public LazyOptional<IItemHandler> getOutputInventoryCap() {
-        return outputInventoryCap;
-    }
-
-    public LazyOptional<IItemHandler> getIoInventoryCap() {
-        return ioInventoryCap;
     }
 
     public int getInputSlots() {
