@@ -4,6 +4,7 @@ import com.almostreliable.lazierae2.component.EnergyHandler;
 import com.almostreliable.lazierae2.component.InventoryHandler;
 import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.core.Setup.Tiles;
+import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.util.GameUtil;
@@ -174,27 +175,20 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (!remove) {
             if (cap.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
                 if (direction == null) return inventoryCap.cast();
-                switch (sideConfig.get(direction)) {
-                    case INPUT:
-                        return inventory.getInputInventoryCap().cast();
-                    case OUTPUT:
-                        return inventory.getOutputInventoryCap().cast();
-                    case IO:
-                        return inventory.getIoInventoryCap().cast();
-                    default:
-                        // ignore since side is turned off
-                        break;
-                }
-            } else if (cap.equals(CapabilityEnergy.ENERGY)) {
+                IO_SETTING setting = sideConfig.get(direction);
+                if (setting != IO_SETTING.OFF) return inventory.getInventoryCap(setting).cast();
+            }
+            if (cap.equals(CapabilityEnergy.ENERGY)) {
                 return energyCap.cast();
             }
         }
         return super.getCapability(cap, direction);
     }
 
-    void playerDestroy() {
+    void playerDestroy(boolean creative) {
         assert level != null;
-        inventory.dropContents();
+        inventory.dropContents(creative);
+        if (creative) return;
         CompoundNBT nbt = new CompoundNBT();
         if (inventory.getUpgradeCount() > 0) nbt.put(UPGRADES_ID, inventory.serializeUpgrades());
         if (energy.getEnergyStored() > 0) nbt.put(ENERGY_ID, energy.serializeNBT());

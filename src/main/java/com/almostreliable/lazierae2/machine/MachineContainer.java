@@ -59,24 +59,23 @@ public class MachineContainer extends Container {
             }
         } else if (GameUtil.isValidUpgrade(slotStack)) {
             // from inventory to upgrade slot
-            if (!moveItemStackTo(slotStack, InventoryHandler.UPGRADE_SLOT, InventoryHandler.UPGRADE_SLOT + 1, false)) {
-                return ItemStack.EMPTY;
-            }
+            slotStack = inventory.insertWithinRange(slotStack,
+                InventoryHandler.UPGRADE_SLOT,
+                InventoryHandler.UPGRADE_SLOT + 1
+            );
         } else {
             // from inventory to machine inputs
-            if (!moveItemStackTo(slotStack,
+            slotStack = inventory.insertWithinRange(slotStack,
                 InventoryHandler.NON_INPUT_SLOTS,
-                InventoryHandler.NON_INPUT_SLOTS + inventory.getSlots(),
-                false
-            )) {
-                return ItemStack.EMPTY;
-            }
+                InventoryHandler.NON_INPUT_SLOTS + inventory.getInputSlots()
+            );
         }
 
         // check if something changed
         if (slotStack.isEmpty()) {
             slot.set(ItemStack.EMPTY);
         } else {
+            slot.set(slotStack);
             slot.setChanged();
         }
 

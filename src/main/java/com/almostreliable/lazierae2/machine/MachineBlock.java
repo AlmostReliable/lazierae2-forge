@@ -73,7 +73,7 @@ public class MachineBlock extends Block {
         TileEntity tile = level.getBlockEntity(pos);
         if (!level.isClientSide && tile instanceof MachineTile) {
             MachineTile machine = (MachineTile) tile;
-            if (!player.isCreative()) machine.playerDestroy();
+            machine.playerDestroy(player.isCreative());
         }
         super.playerWillDestroy(level, pos, state, player);
     }

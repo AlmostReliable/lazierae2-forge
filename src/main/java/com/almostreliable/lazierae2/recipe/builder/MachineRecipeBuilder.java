@@ -11,6 +11,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -21,9 +22,9 @@ public final class MachineRecipeBuilder {
 
     private final ItemStack output;
     private final MachineType recipeType;
-    NonNullList<Ingredient> inputs = NonNullList.create();
-    int processingTime;
-    int energyCost;
+    private final NonNullList<Ingredient> inputs = NonNullList.create();
+    private int processTime;
+    private int energyCost;
 
     private MachineRecipeBuilder(MachineType recipeType, IItemProvider output, int outputCount) {
         this.recipeType = recipeType;
@@ -62,15 +63,8 @@ public final class MachineRecipeBuilder {
         return etcher(output, 1);
     }
 
-    public MachineRecipeBuilder input(Ingredient input) {
-        if (inputs.size() < 3) inputs.add(input);
-        return this;
-    }
-
     public MachineRecipeBuilder input(Ingredient... inputs) {
-        for (Ingredient input : inputs) {
-            input(input);
-        }
+        Collections.addAll(this.inputs, inputs);
         return this;
     }
 
@@ -91,7 +85,7 @@ public final class MachineRecipeBuilder {
      * @return The builder instance.
      */
     public MachineRecipeBuilder processingTime(int ticks) {
-        processingTime = ticks;
+        processTime = ticks;
         return this;
     }
 
@@ -114,40 +108,21 @@ public final class MachineRecipeBuilder {
         ResourceLocation outputId = output.getItem().getRegistryName();
         String modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
             outputId.getNamespace();
-        ResourceLocation recipeId = new ResourceLocation(modID, f("{}/{}", getMachineId(), outputId.getPath()));
-        validateProcessingTime();
-        validateEnergyCost();
-        consumer.accept(new FinishedMachineRecipe(this, recipeId));
+        ResourceLocation recipeId = new ResourceLocation(modID, f("{}/{}", recipeType.getId(), outputId.getPath()));
+        consumer.accept(new FinishedMachineRecipe(build(recipeId)));
     }
 
-    public MachineRecipe build(ResourceLocation id) {
-        validateProcessingTime();
-        validateEnergyCost();
-        MachineRecipe recipe = recipeType.getRecipeFactory().apply(id, recipeType);
-        recipe.setInputs(inputs);
+    public MachineRecipe build(ResourceLocation recipeId) {
+        MachineRecipe recipe = recipeType.getRecipeFactory().apply(recipeId, recipeType);
+        recipe.getInputs().addAll(inputs);
         recipe.setOutput(output);
-        recipe.setProcessTime(processingTime);
+        recipe.setProcessTime(processTime);
         recipe.setEnergyCost(energyCost);
+        recipe.validate();
         return recipe;
-    }
-
-    private void validateProcessingTime() {
-        if (processingTime == 0) processingTime = recipeType.getBaseProcessTime();
-    }
-
-    private void validateEnergyCost() {
-        if (energyCost == 0) energyCost = recipeType.getBaseEnergyCost();
-    }
-
-    String getMachineId() {
-        return recipeType.getId();
     }
 
     public ItemStack getOutput() {
         return output;
-    }
-
-    MachineType getRecipeType() {
-        return recipeType;
     }
 }
