@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning].
 ## [Unreleased]
 - /
 
+## [2.0.4] - 2022-05-10
+
+### Changed
+- recipes do no longer accept duplicate inputs
+  - this is a breaking change if your modpack has custom recipes with duplicate inputs
+  - the change ensures easier automation with feeding mechanisms like hoppers and prevents slot overflow
+- recipes now validate themselves before they are added to the game
+
+### Fixed
+- fix speculation core 1 recipe using an item stack instead of a tag
+- fix rare shift clicking items to input slots dupe bug
+- fix machines not dropping inputs and upgrades when broken in creative mode
+- fix progress arrow overlapping when inserting upgrades while processing
+
 ## [2.0.3] - 2022-04-25
 
 ### Fixed
@@ -55,7 +69,8 @@ All worlds where 1.x.x versions were used will have the block removed.
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.16-2.0.3...HEAD
+[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.16-2.0.4...HEAD
+[2.0.4]: https://github.com/AlmostReliable/energymeter-forge/releases/tag/v1.16-2.0.3-beta..v1.16-2.0.4
 [2.0.3]: https://github.com/AlmostReliable/energymeter-forge/releases/tag/v1.16-2.0.2-beta..v1.16-2.0.3
 [2.0.2]: https://github.com/AlmostReliable/energymeter-forge/releases/tag/v1.16-2.0.1-beta..v1.16-2.0.2-beta
 [2.0.1]: https://github.com/AlmostReliable/energymeter-forge/releases/tag/v1.16-2.0.0-beta..v1.16-2.0.1-beta
