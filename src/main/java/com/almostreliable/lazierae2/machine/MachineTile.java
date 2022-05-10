@@ -4,6 +4,7 @@ import com.almostreliable.lazierae2.component.EnergyHandler;
 import com.almostreliable.lazierae2.component.InventoryHandler;
 import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.core.Setup.Tiles;
+import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.recipe.type.MachineRecipe;
 import com.almostreliable.lazierae2.util.GameUtil;
@@ -174,7 +175,8 @@ public class MachineTile extends TileEntity implements ITickableTileEntity, INam
         if (!remove) {
             if (cap.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
                 if (direction == null) return inventoryCap.cast();
-                return inventory.getInventoryCap(sideConfig.get(direction)).cast();
+                IO_SETTING setting = sideConfig.get(direction);
+                if (setting != IO_SETTING.OFF) return inventory.getInventoryCap(setting).cast();
             }
             if (cap.equals(CapabilityEnergy.ENERGY)) {
                 return energyCap.cast();
