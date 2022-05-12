@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.util;
 
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,18 +20,16 @@ public final class RecipeUtil {
      *
      * @param json   the json to read
      * @param recipe the recipe to apply the information to
-     * @return the recipe with the deserialized information
      */
-    public static ProcessorRecipe fromJSON(JsonObject json, ProcessorRecipe recipe) {
-        recipe.setProcessTime(GsonHelper.getAsInt(json, PROCESS_TIME, 200));
-        recipe.setEnergyCost(GsonHelper.getAsInt(json, ENERGY_COST, 1_000));
+    public static void fromJSON(JsonObject json, ProcessorRecipe recipe) {
+        var processorType = (ProcessorType) recipe.getType();
+        recipe.setProcessTime(GsonHelper.getAsInt(json, PROCESS_TIME, processorType.getBaseProcessTime()));
+        recipe.setEnergyCost(GsonHelper.getAsInt(json, ENERGY_COST, processorType.getBaseEnergyCost()));
         recipe.setOutput(ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, OUTPUT)));
         GsonHelper.getAsJsonArray(json, INPUT).forEach(jsonInput -> {
             var input = deserializeIngredient(jsonInput);
             recipe.getInputs().add(input);
         });
-
-        return recipe;
     }
 
     /**
@@ -38,9 +37,8 @@ public final class RecipeUtil {
      *
      * @param buffer the packet buffer to read
      * @param recipe the recipe to apply the information to
-     * @return the recipe with the deserialized information
      */
-    public static ProcessorRecipe fromNetwork(FriendlyByteBuf buffer, ProcessorRecipe recipe) {
+    public static void fromNetwork(FriendlyByteBuf buffer, ProcessorRecipe recipe) {
         recipe.setProcessTime(buffer.readInt());
         recipe.setEnergyCost(buffer.readInt());
         recipe.setOutput(buffer.readItem());
@@ -49,8 +47,6 @@ public final class RecipeUtil {
         for (var i = 0; i < size; i++) {
             recipe.getInputs().add(Ingredient.fromNetwork(buffer));
         }
-
-        return recipe;
     }
 
     /**

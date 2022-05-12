@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.recipe.builder;
 
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -14,38 +15,36 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class FinishedProcessorRecipe implements FinishedRecipe {
 
-    private final ProcessorRecipeBuilder builder;
-    private final ResourceLocation id;
+    private final ProcessorRecipe recipe;
 
-    FinishedProcessorRecipe(ProcessorRecipeBuilder builder, ResourceLocation id) {
-        this.builder = builder;
-        this.id = id;
+    FinishedProcessorRecipe(ProcessorRecipe recipe) {
+        this.recipe = recipe;
     }
 
     @Override
     public void serializeRecipeData(JsonObject json) {
-        json.addProperty(PROCESS_TIME, builder.processingTime);
-        json.addProperty(ENERGY_COST, builder.energyCost);
+        json.addProperty(PROCESS_TIME, recipe.getProcessTime());
+        json.addProperty(ENERGY_COST, recipe.getEnergyCost());
         var output = new JsonObject();
         output.addProperty(ITEM, Objects.requireNonNull(
-            builder.getOutput().getItem().getRegistryName(),
-            () -> f("Output in {}-recipe was not defined!", builder.getProcessorId())
+            recipe.getResultItem().getItem().getRegistryName(),
+            () -> f("Output in {}-recipe was not defined!", recipe.getType())
         ).toString());
-        if (builder.getOutput().getCount() > 1) output.addProperty(COUNT, builder.getOutput().getCount());
+        if (recipe.getResultItem().getCount() > 1) output.addProperty(COUNT, recipe.getResultItem().getCount());
         json.add(OUTPUT, output);
         var inputs = new JsonArray();
-        builder.inputs.forEach(input -> inputs.add(input.toJson()));
+        recipe.getInputs().forEach(input -> inputs.add(input.toJson()));
         json.add(INPUT, inputs);
     }
 
     @Override
     public ResourceLocation getId() {
-        return id;
+        return recipe.getId();
     }
 
     @Override
     public RecipeSerializer<?> getType() {
-        return builder.getRecipeType().getRecipeSerializer().get();
+        return recipe.getSerializer();
     }
 
     @Nullable

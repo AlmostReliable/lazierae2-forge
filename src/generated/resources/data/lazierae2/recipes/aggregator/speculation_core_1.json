@@ -13,7 +13,7 @@
       "item": "ae2:matter_ball"
     },
     {
-      "item": "lazierae2:carbonic_fluix_dust"
+      "tag": "forge:dusts/carbonic_fluix"
     }
   ]
 }
