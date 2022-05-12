@@ -6,11 +6,9 @@ import appeng.api.stacks.GenericStack;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.assembler.CenterEntity;
 import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
-import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket.SYNC_FLAGS;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
@@ -56,72 +54,6 @@ public class InventoryHandler<E extends GenericEntity> extends ItemStackHandler 
                 case TIER_2 -> 18;
                 case TIER_3 -> 27;
             };
-        }
-    }
-
-    public static class ProcessorInventory extends InventoryHandler<ProcessorEntity> {
-
-        public static final int NON_INPUT_SLOTS = 2;
-        public static final int UPGRADE_SLOT = 0;
-        public static final int OUTPUT_SLOT = 1;
-
-        public ProcessorInventory(ProcessorEntity entity) {
-            super(entity, entity.getProcessorType().getInputSlots() + NON_INPUT_SLOTS);
-        }
-
-        public void dropContents() {
-            if (entity.getLevel() == null) return;
-            var pos = entity.getBlockPos();
-            for (var i = OUTPUT_SLOT; i < getSlots(); i++) {
-                var stack = getStackInSlot(i);
-                if (stack.isEmpty()) continue;
-                entity
-                    .getLevel()
-                    .addFreshEntity(new ItemEntity(entity.getLevel(), pos.getX(), pos.getY(), pos.getZ(), stack));
-            }
-        }
-
-        @NotNull
-        @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if (slot < NON_INPUT_SLOTS) return stack;
-            return super.insertItem(slot, stack, simulate);
-        }
-
-        public CompoundTag serializeUpgrades() {
-            return getStackInSlot(UPGRADE_SLOT).save(new CompoundTag());
-        }
-
-        public void deserializeUpgrades(CompoundTag tag) {
-            setStackInSlot(UPGRADE_SLOT, ItemStack.of(tag));
-        }
-
-        public void shrinkInputSlots() {
-            for (var i = NON_INPUT_SLOTS; i < getSlots(); i++) {
-                if (getStackInSlot(i).isEmpty()) continue;
-                if (getStackInSlot(i).getCount() == 1) {
-                    setStackInSlot(i, ItemStack.EMPTY);
-                } else {
-                    getStackInSlot(i).shrink(1);
-                    entity.setChanged();
-                }
-            }
-        }
-
-        public int getInputSlots() {
-            return getSlots() - NON_INPUT_SLOTS;
-        }
-
-        public ItemStack getStackInOutput() {
-            return getStackInSlot(OUTPUT_SLOT);
-        }
-
-        public void setStackInOutput(ItemStack stack) {
-            setStackInSlot(OUTPUT_SLOT, stack);
-        }
-
-        public int getUpgradeCount() {
-            return getStackInSlot(UPGRADE_SLOT).getCount();
         }
     }
 

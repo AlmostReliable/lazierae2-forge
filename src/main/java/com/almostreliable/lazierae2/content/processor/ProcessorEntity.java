@@ -1,7 +1,6 @@
 package com.almostreliable.lazierae2.content.processor;
 
 import com.almostreliable.lazierae2.component.EnergyHandler;
-import com.almostreliable.lazierae2.component.InventoryHandler.ProcessorInventory;
 import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Entities;
@@ -117,6 +116,7 @@ public class ProcessorEntity extends GenericEntity {
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
+        inventory.invalidate();
         inventoryCap.invalidate();
         energyCap.invalidate();
     }
@@ -128,7 +128,9 @@ public class ProcessorEntity extends GenericEntity {
     ) {
         if (!remove) {
             if (cap.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
-                if (direction == null || sideConfig.get(direction) != IO_SETTING.OFF) return inventoryCap.cast();
+                if (direction == null) return inventoryCap.cast();
+                var setting = sideConfig.get(direction);
+                if (setting != IO_SETTING.OFF) return inventory.getInventoryCap(setting).cast();
             } else if (cap.equals(CapabilityEnergy.ENERGY)) {
                 return energyCap.cast();
             }

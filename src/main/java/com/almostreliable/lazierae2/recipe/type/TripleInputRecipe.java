@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.recipe.type;
 
-import com.almostreliable.lazierae2.component.InventoryHandler.ProcessorInventory;
+import com.almostreliable.lazierae2.content.processor.ProcessorInventory;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;

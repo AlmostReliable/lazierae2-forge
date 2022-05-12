@@ -71,6 +71,9 @@ public final class Constants {
         public static final String BUFFER_AMOUNT_ID = "buffer_amount";
         public static final String PENDING_AMOUNT_ID = "pending_amount";
         public static final String KNOWN_AMOUNT_ID = "known_amount";
+        public static final String SLOT_ID = "slot";
+        public static final String SIZE_ID = "size";
+        public static final String ITEMS_ID = "items";
     }
 
     public enum Recipe {

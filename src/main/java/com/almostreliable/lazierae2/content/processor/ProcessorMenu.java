@@ -1,7 +1,6 @@
 package com.almostreliable.lazierae2.content.processor;
 
 import com.almostreliable.lazierae2.component.EnergyHandler;
-import com.almostreliable.lazierae2.component.InventoryHandler.ProcessorInventory;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.inventory.OutputSlot;
@@ -56,28 +55,23 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
             }
         } else if (GameUtil.isValidUpgrade(slotStack)) {
             // from inventory to upgrade slot
-            if (!moveItemStackTo(slotStack,
+            slotStack = processorInventory.insertWithinRange(slotStack,
                 ProcessorInventory.UPGRADE_SLOT,
-                ProcessorInventory.UPGRADE_SLOT + 1,
-                false
-            )) {
-                return ItemStack.EMPTY;
-            }
+                ProcessorInventory.UPGRADE_SLOT + 1
+            );
         } else {
             // from inventory to machine inputs
-            if (!moveItemStackTo(slotStack,
+            slotStack = processorInventory.insertWithinRange(slotStack,
                 ProcessorInventory.NON_INPUT_SLOTS,
-                ProcessorInventory.NON_INPUT_SLOTS + processorInventory.getSlots(),
-                false
-            )) {
-                return ItemStack.EMPTY;
-            }
+                ProcessorInventory.NON_INPUT_SLOTS + processorInventory.getInputSlots()
+            );
         }
 
         // check if something changed
         if (slotStack.isEmpty()) {
             slot.set(ItemStack.EMPTY);
         } else {
+            slot.set(slotStack);
             slot.setChanged();
         }
 
