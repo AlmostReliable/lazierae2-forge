@@ -31,7 +31,7 @@ public class FinishedProcessorRecipe implements FinishedRecipe {
             builder.getOutput().getItem().getRegistryName(),
             () -> f("Output in {}-recipe was not defined!", builder.getProcessorId())
         ).toString());
-        if (builder.getOutput().getCount() > 1) output.addProperty(AMOUNT, builder.getOutput().getCount());
+        if (builder.getOutput().getCount() > 1) output.addProperty(COUNT, builder.getOutput().getCount());
         json.add(OUTPUT, output);
         var inputs = new JsonArray();
         builder.inputs.forEach(input -> inputs.add(input.toJson()));

@@ -83,7 +83,7 @@ public final class Constants {
         public static final String PROCESS_TIME = "process_time";
         public static final String ENERGY_COST = "energy_cost";
         public static final String ITEM = "item";
-        public static final String AMOUNT = "amount";
+        public static final String COUNT = "count";
     }
 
     public enum Config {
