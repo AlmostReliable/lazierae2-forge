@@ -65,6 +65,10 @@ public final class Setup {
         private static final DeferredRegister<BlockEntityType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
 
+        static {
+            Assembler.init();
+        }
+
         private Entities() {}
 
         @SafeVarargs
@@ -82,6 +86,10 @@ public final class Setup {
         public static final class Assembler {
 
             private Assembler() {}
+
+            private static void init() {
+                // fake init
+            }
 
             public static final RegistryObject<BlockEntityType<CenterEntity>> CENTER = register(CENTER_ID,
                 CenterEntity::new,
@@ -174,6 +182,10 @@ public final class Setup {
 
         public static final RegistryObject<MaintainerBlock> MAINTAINER = register(MAINTAINER_ID, MaintainerBlock::new);
 
+        static {
+            Assembler.init();
+        }
+
         private Blocks() {}
 
         @SuppressWarnings("SameParameterValue")
@@ -229,6 +241,10 @@ public final class Setup {
                 RegistryObject<B> block = REGISTRY.register(id, () -> constructor.apply(type));
                 registerBlockItem(id, block);
                 return block;
+            }
+
+            private static void init() {
+                // fake init
             }
         }
     }
