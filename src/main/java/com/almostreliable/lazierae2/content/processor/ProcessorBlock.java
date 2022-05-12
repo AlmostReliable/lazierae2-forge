@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static com.almostreliable.lazierae2.core.Constants.*;
+import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public class ProcessorBlock extends MachineBlock {
 
@@ -45,8 +45,8 @@ public class ProcessorBlock extends MachineBlock {
     @Override
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         var entity = level.getBlockEntity(pos);
-        if (!level.isClientSide && entity instanceof ProcessorEntity processor && !player.isCreative()) {
-            processor.playerDestroy();
+        if (!level.isClientSide && entity instanceof ProcessorEntity processor) {
+            processor.playerDestroy(player.isCreative());
         }
         super.playerWillDestroy(level, pos, state, player);
     }

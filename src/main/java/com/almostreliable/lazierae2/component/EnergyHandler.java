@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import static com.almostreliable.lazierae2.core.Constants.*;
+import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public class EnergyHandler implements IEnergyStorage, INBTSerializable<CompoundTag> {
 

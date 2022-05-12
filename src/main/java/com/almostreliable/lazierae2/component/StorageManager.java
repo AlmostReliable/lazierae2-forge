@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 
-import static com.almostreliable.lazierae2.core.Constants.*;
+import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public class StorageManager implements IStorageWatcherNode, INBTSerializable<CompoundTag> {
 

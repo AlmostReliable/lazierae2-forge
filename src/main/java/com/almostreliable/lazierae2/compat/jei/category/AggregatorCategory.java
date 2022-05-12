@@ -5,7 +5,7 @@ import com.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.almostreliable.lazierae2.core.Constants.AGGREGATOR_ID;
+import static com.almostreliable.lazierae2.core.Constants.Blocks.AGGREGATOR_ID;
 
 public class AggregatorCategory extends TripleInputCategory {
 

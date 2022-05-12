@@ -16,11 +16,13 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
+import static com.almostreliable.lazierae2.util.TextUtil.f;
+
 public abstract class ProcessorRecipe implements Recipe<Container> {
 
+    final NonNullList<Ingredient> inputs = NonNullList.create();
     private final ProcessorType processorType;
     private final ResourceLocation id;
-    NonNullList<Ingredient> inputs = NonNullList.create();
     private int processTime;
     private int energyCost;
     private ItemStack output;
@@ -30,6 +32,23 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
     ) {
         this.id = id;
         this.processorType = processorType;
+    }
+
+    public void validate() {
+        if (inputs.isEmpty()) {
+            throw new IllegalArgumentException(f("No inputs for recipe type '{}' with output '{}'!",
+                processorType.getId(),
+                output.toString()
+            ));
+        }
+        if (inputs.size() > processorType.getInputSlots()) {
+            throw new IllegalArgumentException(f("Too many inputs for recipe type '{}' with output '{}'!",
+                processorType.getId(),
+                output.toString()
+            ));
+        }
+        if (processTime == 0) processTime = processorType.getBaseProcessTime();
+        if (energyCost == 0) energyCost = processorType.getBaseEnergyCost();
     }
 
     @Override
@@ -87,10 +106,6 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
         return inputs;
     }
 
-    public void setInputs(NonNullList<Ingredient> inputs) {
-        this.inputs = inputs;
-    }
-
     public void setOutput(ItemStack output) {
         this.output = output;
     }
@@ -106,14 +121,17 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
         @Override
         public ProcessorRecipe fromJson(ResourceLocation id, JsonObject json) {
             var recipe = processorType.getRecipeFactory().apply(id, processorType);
-            return RecipeUtil.fromJSON(json, recipe);
+            RecipeUtil.fromJSON(json, recipe);
+            recipe.validate();
+            return recipe;
         }
 
         @Nullable
         @Override
         public ProcessorRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
             var recipe = processorType.getRecipeFactory().apply(id, processorType);
-            return RecipeUtil.fromNetwork(buffer, recipe);
+            RecipeUtil.fromNetwork(buffer, recipe);
+            return recipe;
         }
 
         @Override

@@ -42,7 +42,9 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.almostreliable.lazierae2.core.Constants.*;
+import static com.almostreliable.lazierae2.core.Constants.Blocks.*;
+import static com.almostreliable.lazierae2.core.Constants.Items.*;
+import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 public final class Setup {
 
@@ -63,6 +65,10 @@ public final class Setup {
         private static final DeferredRegister<BlockEntityType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
 
+        static {
+            Assembler.init();
+        }
+
         private Entities() {}
 
         @SafeVarargs
@@ -80,6 +86,10 @@ public final class Setup {
         public static final class Assembler {
 
             private Assembler() {}
+
+            private static void init() {
+                // fake init
+            }
 
             public static final RegistryObject<BlockEntityType<CenterEntity>> CENTER = register(CENTER_ID,
                 CenterEntity::new,
@@ -172,6 +182,10 @@ public final class Setup {
 
         public static final RegistryObject<MaintainerBlock> MAINTAINER = register(MAINTAINER_ID, MaintainerBlock::new);
 
+        static {
+            Assembler.init();
+        }
+
         private Blocks() {}
 
         @SuppressWarnings("SameParameterValue")
@@ -227,6 +241,10 @@ public final class Setup {
                 RegistryObject<B> block = REGISTRY.register(id, () -> constructor.apply(type));
                 registerBlockItem(id, block);
                 return block;
+            }
+
+            private static void init() {
+                // fake init
             }
         }
     }

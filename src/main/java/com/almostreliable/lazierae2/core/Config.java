@@ -7,7 +7,8 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
-import static com.almostreliable.lazierae2.core.Constants.*;
+import static com.almostreliable.lazierae2.core.Constants.Blocks.*;
+import static com.almostreliable.lazierae2.core.Constants.Config.*;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public final class Config {

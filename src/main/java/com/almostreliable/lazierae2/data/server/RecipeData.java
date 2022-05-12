@@ -216,7 +216,6 @@ public class RecipeData extends RecipeProvider {
             .aggregator(Setup.Items.SPEC_CORE_1.get())
             .input(AEItems.SKY_DUST.asItem())
             .input(AEItems.MATTER_BALL.asItem())
-            .input(Setup.Items.CARB_FLUIX_DUST.get())
             .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
             .processingTime(60)
             .energyCost(600)

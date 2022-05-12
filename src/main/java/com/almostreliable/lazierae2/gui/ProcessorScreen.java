@@ -106,7 +106,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
             topPos + 24,
             PROGRESS_WIDTH / 2f,
             0,
-            barWidth,
+            Math.min(barWidth, PROGRESS_WIDTH / 2),
             PROGRESS_HEIGHT,
             PROGRESS_WIDTH,
             PROGRESS_HEIGHT
