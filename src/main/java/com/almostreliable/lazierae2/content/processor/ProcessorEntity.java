@@ -166,9 +166,10 @@ public class ProcessorEntity extends GenericEntity {
         }
     }
 
-    void playerDestroy() {
+    void playerDestroy(boolean creative) {
         assert level != null;
-        inventory.dropContents();
+        inventory.dropContents(creative);
+        if (creative) return;
         var tag = new CompoundTag();
         if (inventory.getUpgradeCount() > 0) tag.put(UPGRADES_ID, inventory.serializeUpgrades());
         if (energy.getEnergyStored() > 0) tag.put(ENERGY_ID, energy.serializeNBT());

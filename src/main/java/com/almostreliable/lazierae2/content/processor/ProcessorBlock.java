@@ -45,8 +45,8 @@ public class ProcessorBlock extends MachineBlock {
     @Override
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         var entity = level.getBlockEntity(pos);
-        if (!level.isClientSide && entity instanceof ProcessorEntity processor && !player.isCreative()) {
-            processor.playerDestroy();
+        if (!level.isClientSide && entity instanceof ProcessorEntity processor) {
+            processor.playerDestroy(player.isCreative());
         }
         super.playerWillDestroy(level, pos, state, player);
     }
