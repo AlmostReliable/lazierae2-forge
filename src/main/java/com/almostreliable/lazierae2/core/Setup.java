@@ -42,7 +42,9 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.almostreliable.lazierae2.core.Constants.*;
+import static com.almostreliable.lazierae2.core.Constants.Blocks.*;
+import static com.almostreliable.lazierae2.core.Constants.Items.*;
+import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 public final class Setup {
 

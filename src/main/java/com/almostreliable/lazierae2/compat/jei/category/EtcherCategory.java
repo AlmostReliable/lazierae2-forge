@@ -5,7 +5,7 @@ import com.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.almostreliable.lazierae2.core.Constants.ETCHER_ID;
+import static com.almostreliable.lazierae2.core.Constants.Blocks.ETCHER_ID;
 
 public class EtcherCategory extends TripleInputCategory {
 

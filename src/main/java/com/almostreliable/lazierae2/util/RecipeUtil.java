@@ -8,7 +8,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
-import static com.almostreliable.lazierae2.core.Constants.*;
+import static com.almostreliable.lazierae2.core.Constants.Recipe.*;
 
 public final class RecipeUtil {
 
@@ -22,10 +22,10 @@ public final class RecipeUtil {
      * @return the recipe with the deserialized information
      */
     public static ProcessorRecipe fromJSON(JsonObject json, ProcessorRecipe recipe) {
-        recipe.setProcessTime(GsonHelper.getAsInt(json, RECIPE_PROCESS_TIME, 200));
-        recipe.setEnergyCost(GsonHelper.getAsInt(json, RECIPE_ENERGY_COST, 1_000));
-        recipe.setOutput(ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, RECIPE_OUTPUT)));
-        GsonHelper.getAsJsonArray(json, RECIPE_INPUT).forEach(jsonInput -> {
+        recipe.setProcessTime(GsonHelper.getAsInt(json, PROCESS_TIME, 200));
+        recipe.setEnergyCost(GsonHelper.getAsInt(json, ENERGY_COST, 1_000));
+        recipe.setOutput(ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, OUTPUT)));
+        GsonHelper.getAsJsonArray(json, INPUT).forEach(jsonInput -> {
             var input = deserializeIngredient(jsonInput);
             recipe.getInputs().add(input);
         });
@@ -77,7 +77,7 @@ public final class RecipeUtil {
     private static Ingredient deserializeIngredient(JsonElement element) {
         if (element.isJsonObject()) {
             var json = element.getAsJsonObject();
-            if (json.has(RECIPE_INPUT)) return Ingredient.fromJson(json.get(RECIPE_INPUT));
+            if (json.has(INPUT)) return Ingredient.fromJson(json.get(INPUT));
         }
         return Ingredient.fromJson(element);
     }

@@ -42,7 +42,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Objects;
 
-import static com.almostreliable.lazierae2.core.Constants.*;
+import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, ICraftingRequester {
 

@@ -5,7 +5,7 @@ import com.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.almostreliable.lazierae2.core.Constants.CENTRIFUGE_ID;
+import static com.almostreliable.lazierae2.core.Constants.Blocks.CENTRIFUGE_ID;
 
 public class CentrifugeCategory extends SingleInputCategory {
 
