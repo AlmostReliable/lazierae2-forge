@@ -1,7 +1,5 @@
 package com.almostreliable.lazierae2.content.processor;
 
-import com.almostreliable.lazierae2.component.EnergyHandler;
-import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
@@ -173,7 +171,7 @@ public class ProcessorEntity extends GenericEntity {
         var tag = new CompoundTag();
         if (inventory.getUpgradeCount() > 0) tag.put(UPGRADES_ID, inventory.serializeUpgrades());
         if (energy.getEnergyStored() > 0) tag.put(ENERGY_ID, energy.serializeNBT());
-        if (sideConfig.hasChanged()) tag.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
+        if (sideConfig.isConfigured()) tag.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
         if (autoExtract) tag.putBoolean(AUTO_EXTRACT_ID, true);
         var stack = new ItemStack(getProcessorType().getItemProvider());
         if (!tag.isEmpty()) stack.setTag(tag);

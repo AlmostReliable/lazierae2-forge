@@ -1,6 +1,5 @@
 package com.almostreliable.lazierae2.content.maintainer;
 
-import com.almostreliable.lazierae2.component.InventoryHandler.RequestInventory;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;

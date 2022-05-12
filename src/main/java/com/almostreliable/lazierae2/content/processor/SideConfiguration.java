@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.component;
+package com.almostreliable.lazierae2.content.processor;
 
 import com.almostreliable.lazierae2.content.MachineBlock;
 import com.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
@@ -18,7 +18,7 @@ public class SideConfiguration implements INBTSerializable<CompoundTag> {
     private final BlockEntity entity;
     private final EnumMap<Direction, IO_SETTING> config = new EnumMap<>(Direction.class);
 
-    public SideConfiguration(BlockEntity entity) {
+    SideConfiguration(BlockEntity entity) {
         this.entity = entity;
         for (var direction : Direction.values()) {
             config.put(direction, IO_SETTING.OFF);
@@ -44,11 +44,23 @@ public class SideConfiguration implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public boolean hasChanged() {
-        return Arrays.stream(Direction.values()).anyMatch(direction -> config.get(direction) != IO_SETTING.OFF);
+    @Override
+    public CompoundTag serializeNBT() {
+        var nbt = new CompoundTag();
+        for (var side : BLOCK_SIDE.values()) {
+            nbt.putInt(side.toString(), get(side).ordinal());
+        }
+        return nbt;
     }
 
-    public void forEachOutput(Consumer<? super Direction> consumer) {
+    @Override
+    public void deserializeNBT(CompoundTag tag) {
+        for (var side : BLOCK_SIDE.values()) {
+            set(side, IO_SETTING.values()[tag.getInt(side.toString())]);
+        }
+    }
+
+    void forEachOutput(Consumer<? super Direction> consumer) {
         for (var direction : Direction.values()) {
             if (config.get(direction) == IO_SETTING.OUTPUT || config.get(direction) == IO_SETTING.IO) {
                 consumer.accept(direction);
@@ -56,7 +68,7 @@ public class SideConfiguration implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public ContainerData toContainerData() {
+    ContainerData toContainerData() {
         return new ContainerData() {
             @Override
             public int get(int index) {
@@ -76,22 +88,6 @@ public class SideConfiguration implements INBTSerializable<CompoundTag> {
         };
     }
 
-    @Override
-    public CompoundTag serializeNBT() {
-        var nbt = new CompoundTag();
-        for (var side : BLOCK_SIDE.values()) {
-            nbt.putInt(side.toString(), get(side).ordinal());
-        }
-        return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag tag) {
-        for (var side : BLOCK_SIDE.values()) {
-            set(side, IO_SETTING.values()[tag.getInt(side.toString())]);
-        }
-    }
-
     private Direction getDirectionFromSide(BLOCK_SIDE side) {
         var facing = entity.getBlockState().getValue(MachineBlock.FACING);
         return switch (side) {
@@ -102,5 +98,9 @@ public class SideConfiguration implements INBTSerializable<CompoundTag> {
             case BACK -> facing.getOpposite();
             default -> facing;
         };
+    }
+
+    boolean isConfigured() {
+        return Arrays.stream(Direction.values()).anyMatch(direction -> config.get(direction) != IO_SETTING.OFF);
     }
 }

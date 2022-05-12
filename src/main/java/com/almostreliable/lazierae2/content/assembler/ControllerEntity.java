@@ -43,7 +43,7 @@ public class ControllerEntity extends GenericEntity {
     }
 
     public boolean isMultiBlockMaster() {
-        return getBlockState().getValue(ControllerBlock.IS_MULTIBLOCK);
+        return getBlockState().getValue(AssemblerBlock.IS_MULTIBLOCK);
     }
 
     @Nullable

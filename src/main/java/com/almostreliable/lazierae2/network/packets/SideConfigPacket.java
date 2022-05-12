@@ -1,9 +1,9 @@
 package com.almostreliable.lazierae2.network.packets;
 
-import com.almostreliable.lazierae2.component.SideConfiguration;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
+import com.almostreliable.lazierae2.content.processor.SideConfiguration;
 import com.almostreliable.lazierae2.network.ClientToServerPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

@@ -15,8 +15,6 @@ import appeng.api.util.AECableType;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.helpers.MachineSource;
-import com.almostreliable.lazierae2.component.InventoryHandler.RequestInventory;
-import com.almostreliable.lazierae2.component.StorageManager;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;

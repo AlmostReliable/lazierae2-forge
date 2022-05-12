@@ -1,6 +1,5 @@
 package com.almostreliable.lazierae2.content.processor;
 
-import com.almostreliable.lazierae2.component.EnergyHandler;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.inventory.OutputSlot;

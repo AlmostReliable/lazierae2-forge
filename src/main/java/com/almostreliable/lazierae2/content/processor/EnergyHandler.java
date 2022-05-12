@@ -1,6 +1,5 @@
-package com.almostreliable.lazierae2.component;
+package com.almostreliable.lazierae2.content.processor;
 
-import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -15,7 +14,7 @@ public class EnergyHandler implements IEnergyStorage, INBTSerializable<CompoundT
     private int maxReceive;
     private int maxExtract;
 
-    public EnergyHandler(ProcessorEntity entity) {
+    EnergyHandler(ProcessorEntity entity) {
         this.entity = entity;
         var baseEnergyBuffer = entity.getProcessorType().getBaseEnergyBuffer();
         capacity = baseEnergyBuffer;
@@ -78,7 +77,7 @@ public class EnergyHandler implements IEnergyStorage, INBTSerializable<CompoundT
         maxExtract = tag.getInt(MAX_EXTRACT);
     }
 
-    public void validateEnergy() {
+    void validateEnergy() {
         if (energy > capacity) setEnergy(capacity);
     }
 
@@ -87,7 +86,7 @@ public class EnergyHandler implements IEnergyStorage, INBTSerializable<CompoundT
         entity.setChanged();
     }
 
-    public void setCapacity(int capacity) {
+    void setCapacity(int capacity) {
         this.capacity = capacity;
         maxReceive = capacity;
         maxExtract = capacity;

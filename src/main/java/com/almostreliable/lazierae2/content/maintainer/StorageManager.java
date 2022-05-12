@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.component;
+package com.almostreliable.lazierae2.content.maintainer;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.IStackWatcher;
@@ -6,7 +6,6 @@ import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -21,7 +20,7 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
     @Nullable
     private IStackWatcher stackWatcher;
 
-    public StorageManager(MaintainerEntity owner, int slots) {
+    StorageManager(MaintainerEntity owner, int slots) {
         this.owner = owner;
         storages = new Storage[slots];
     }
@@ -124,14 +123,6 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
         private long pendingAmount;
         private long knownAmount = -1;
 
-        public void update(AEKey itemType, long bufferAmount) {
-            if (this.itemType != null && !itemType.fuzzyEquals(this.itemType, FuzzyMode.IGNORE_ALL)) {
-                throw new IllegalArgumentException("itemType mismatch");
-            }
-            this.itemType = itemType;
-            this.bufferAmount += bufferAmount;
-        }
-
         @Override
         public CompoundTag serializeNBT() {
             var tag = new CompoundTag();
@@ -161,6 +152,14 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
                 itemType = null;
             }
             return bufferAmount > 0;
+        }
+
+        void update(AEKey itemType, long bufferAmount) {
+            if (this.itemType != null && !itemType.fuzzyEquals(this.itemType, FuzzyMode.IGNORE_ALL)) {
+                throw new IllegalArgumentException("itemType mismatch");
+            }
+            this.itemType = itemType;
+            this.bufferAmount += bufferAmount;
         }
 
         @Nullable

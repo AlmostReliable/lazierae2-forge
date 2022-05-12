@@ -1,6 +1,5 @@
 package com.almostreliable.lazierae2.content.assembler;
 
-import com.almostreliable.lazierae2.component.InventoryHandler.PatternInventory;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Entities.Assembler;
 import com.almostreliable.lazierae2.core.TypeEnums.CENTER_TYPE;

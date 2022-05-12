@@ -4,6 +4,7 @@ import com.almostreliable.lazierae2.core.TypeEnums.HULL_TYPE;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Tuple;
@@ -198,7 +199,7 @@ public class HullBlock extends AssemblerBlock {
             return pos.relative(direction);
         }
 
-        public void relative(BlockPos.MutableBlockPos pos) {
+        public void relative(MutableBlockPos pos) {
             if (direction != null) {
                 pos.move(direction.getNormal());
             }
