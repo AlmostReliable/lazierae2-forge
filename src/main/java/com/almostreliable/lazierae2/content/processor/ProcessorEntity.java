@@ -4,17 +4,16 @@ import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
+import com.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
 import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -23,37 +22,35 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public class ProcessorEntity extends GenericEntity {
 
-    /*
-        TODO: add logic for processing recipe that take less than a tick
-        > the output amount needs to be recalculated and multiple outputs are inserted during a single tick
-        > the auto extract rate needs to be adjusted if this is the case
-        > if the output rate exceeds the output slot limit per tick, we need to clamp it (machine slows down to avoid failure)
-     */
-
+    private static final int AUTO_EXTRACT_RATE = 10;
     public final SideConfiguration sideConfig;
     private final ProcessorInventory inventory;
     private final LazyOptional<ProcessorInventory> inventoryCap;
     private final EnergyHandler energy;
     private final LazyOptional<EnergyHandler> energyCap;
     private final Map<Direction, LazyOptional<IItemHandler>> autoExtractCache = new EnumMap<>(Direction.class);
+    private ProcessorRecipe recipeCache;
     private boolean autoExtract;
     private int progress;
+    private int energyCost;
     private int processTime;
     private int recipeTime;
-    private int energyCost;
     private int recipeEnergy;
-    private ProcessorRecipe lastRecipe;
+    private int recipeMultiplier;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     public ProcessorEntity(BlockPos pos, BlockState state) {
@@ -136,30 +133,27 @@ public class ProcessorEntity extends GenericEntity {
 
     void tick() {
         if (level == null || level.isClientSide) return;
-        if (autoExtract && level.getGameTime() % 10 == 0) autoExtract();
+        if (autoExtract && level.getGameTime() % AUTO_EXTRACT_RATE == 0) autoExtract();
         energy.validateEnergy();
 
-        ProcessorRecipe recipe;
-        if (lastRecipe != null && lastRecipe.matches(inventory.toVanilla(), level)) {
-            recipe = lastRecipe;
-        } else {
-            recipe = getRecipe();
-            if (recipe == null) {
-                stopWork();
-                return;
-            }
-            lastRecipe = recipe;
-        }
-
-        energyCost = calculateEnergyCost(recipe);
+        var recipe = getRecipe();
+        if (recipe == null) return;
         recipeEnergy = recipe.getEnergyCost();
         recipeTime = recipe.getProcessTime();
-        processTime = calculateProcessTime(recipe);
-        if (canWork(recipe, energyCost)) {
-            doWork(recipe, energyCost);
+        var recipeInputSlots = getInputSlotsForRecipe(recipe);
+
+        var energyCostExact = calculateEnergyCost(recipe);
+        energyCost = (int) energyCostExact;
+        var processTimeExact = calculateProcessTime(recipe);
+        processTime = processTimeExact < 1 ? 1 : (int) Math.ceil(processTimeExact);
+        recipeMultiplier = processTimeExact <= 0.5 ? (int) (1 / processTimeExact) : 1;
+
+        if (canWork(recipe, energyCostExact, recipeInputSlots)) {
+            doWork(energyCostExact);
         } else {
             changeActivityState(false);
         }
+        if (progress >= processTime) finishWork(recipe, recipeInputSlots);
     }
 
     void playerDestroy(boolean creative) {
@@ -190,62 +184,120 @@ public class ProcessorEntity extends GenericEntity {
         if (tag.contains(AUTO_EXTRACT_ID)) autoExtract = tag.getBoolean(AUTO_EXTRACT_ID);
     }
 
-    private void doWork(ProcessorRecipe recipe, int energyCost) {
-        if (progress < processTime) {
-            changeActivityState(true);
-            energy.setEnergy(energy.getEnergyStored() - (energyCost / processTime));
-            progress++;
-            setChanged();
+    private void finishWork(ProcessorRecipe recipe, Set<Integer> recipeInputSlots) {
+        if (inventory.getStackInOutput().isEmpty()) {
+            var outputStack = recipe.assemble(inventory.toVanilla());
+            outputStack.setCount(outputStack.getCount() * recipeMultiplier);
+            inventory.setStackInOutput(outputStack);
         } else {
-            finishWork(recipe);
+            inventory.getStackInOutput().grow(recipe.getResultItem().getCount() * recipeMultiplier);
+        }
+
+        inventory.shrinkInputSlots(recipeInputSlots, recipeMultiplier);
+        progress = 0;
+        setChanged();
+
+        if (processTime < AUTO_EXTRACT_RATE) {
+            var produced = recipe.getResultItem().getCount() * recipeMultiplier;
+            if (produced + inventory.getStackInOutput().getCount() >
+                inventory.getStackLimit(ProcessorInventory.OUTPUT_SLOT, recipe.getResultItem())) {
+                autoExtract();
+            }
         }
     }
 
-    private void finishWork(Recipe<? super Container> recipe) {
-        if (inventory.getStackInOutput().isEmpty()) {
-            inventory.setStackInOutput(recipe.assemble(inventory.toVanilla()));
-        } else {
-            inventory.getStackInOutput().grow(recipe.getResultItem().getCount());
-        }
-
-        inventory.shrinkInputSlots();
-        progress = 0;
+    private void doWork(double energyCostExact) {
+        changeActivityState(true);
+        energy.setEnergy((int) (energy.getEnergyStored() -
+            Math.round(energyCostExact * recipeMultiplier / processTime)));
+        progress++;
         setChanged();
+    }
+
+    private boolean canWork(ProcessorRecipe recipe, double energyCostExact, Set<Integer> recipeInputSlots) {
+        recipeMultiplierByEnergy(energyCostExact);
+        if (recipeMultiplier == 0) return false;
+
+        var outputStack = inventory.getStackInOutput();
+        var recipeResult = recipe.getResultItem();
+        if (!outputStack.isEmpty() && !outputStack.sameItem(recipeResult)) return false;
+
+        var maxOutputSpace = outputStack.isEmpty() ? inventory.getSlotLimit(ProcessorInventory.OUTPUT_SLOT) :
+            inventory.getStackLimit(ProcessorInventory.OUTPUT_SLOT, recipeResult) - outputStack.getCount();
+        recipeMultiplierByOutput(maxOutputSpace, recipeResult.getCount());
+        if (recipeMultiplier == 0) return false;
+
+        var smallestInputCount = -1;
+        for (var slot : recipeInputSlots) {
+            var count = inventory.getStackInSlot(slot).getCount();
+            if (smallestInputCount == -1 || count < smallestInputCount) {
+                smallestInputCount = count;
+            }
+        }
+        if (smallestInputCount == -1) throw new IllegalStateException("No slots to shrink");
+        recipeMultiplier = Math.min(recipeMultiplier, smallestInputCount);
+
+        return true;
+    }
+
+    @NotNull
+    private Set<Integer> getInputSlotsForRecipe(ProcessorRecipe recipe) {
+        Set<Integer> slotsToShrink = new HashSet<>();
+        if (recipe instanceof SingleInputRecipe) {
+            slotsToShrink.add(ProcessorInventory.NON_INPUT_SLOTS);
+        } else if (recipe.getInputs().size() == 3) {
+            for (var slot = ProcessorInventory.NON_INPUT_SLOTS; slot < inventory.getSlots(); slot++) {
+                slotsToShrink.add(slot);
+            }
+        } else {
+            for (var input : recipe.getInputs()) {
+                for (var slot = ProcessorInventory.NON_INPUT_SLOTS; slot < inventory.getSlots(); slot++) {
+                    if (input.test(inventory.getStackInSlot(slot))) {
+                        slotsToShrink.add(slot);
+                        break;
+                    }
+                }
+            }
+        }
+        return slotsToShrink;
+    }
+
+    private void recipeMultiplierByEnergy(double energyCostExact) {
+        if (recipeMultiplier == 0) return;
+        if (energyCostExact * recipeMultiplier / processTime <= energy.getEnergyStored()) return;
+        recipeMultiplier--;
+        recipeMultiplierByEnergy(energyCostExact);
+    }
+
+    private void recipeMultiplierByOutput(int maxOutputSpace, int resultCount) {
+        if (recipeMultiplier == 0) return;
+        var outputCount = resultCount * recipeMultiplier;
+        if (outputCount <= maxOutputSpace) return;
+        recipeMultiplier--;
+        recipeMultiplierByOutput(maxOutputSpace, resultCount);
     }
 
     private void stopWork() {
         changeActivityState(false);
         progress = 0;
-        lastRecipe = null;
+        recipeCache = null;
     }
 
-    private int calculateEnergyCost(ProcessorRecipe recipe) {
+    private double calculateEnergyCost(ProcessorRecipe recipe) {
         var baseCost = recipe.getEnergyCost();
         var multiplier = calculateMultiplier(getProcessorType().getEnergyCostMultiplier());
-        return (int) (baseCost * multiplier);
+        return baseCost * multiplier;
     }
 
-    private int calculateProcessTime(ProcessorRecipe recipe) {
+    private double calculateProcessTime(ProcessorRecipe recipe) {
         var baseTime = recipe.getProcessTime();
         var multiplier = calculateMultiplier(getProcessorType().getProcessTimeMultiplier());
-        return (int) (baseTime * multiplier);
+        return baseTime * multiplier;
     }
 
     private double calculateMultiplier(double upgradeMultiplier) {
         var upgradeCount = inventory.getUpgradeCount();
         return Math.pow(upgradeMultiplier, upgradeCount);
-    }
-
-    private boolean canWork(Recipe<Container> recipe, int energyCost) {
-        if (energyCost / processTime > energy.getEnergyStored()) return false;
-
-        var output = inventory.getStackInOutput();
-        if (output.isEmpty()) return true;
-
-        var finished = recipe.getResultItem();
-        var mergeCount = output.getCount() + finished.getCount();
-        return output.sameItem(finished) && mergeCount <= finished.getMaxStackSize() &&
-            mergeCount <= inventory.getSlotLimit(ProcessorInventory.OUTPUT_SLOT);
     }
 
     private void autoExtract() {
@@ -284,6 +336,30 @@ public class ProcessorEntity extends GenericEntity {
         });
     }
 
+    @Nullable
+    private ProcessorRecipe detectRecipeFromInventory() {
+        assert level != null && !level.isClientSide;
+        return GameUtil
+            .getRecipeManager(level)
+            .getRecipeFor(getProcessorType(), inventory.toVanilla(), level)
+            .orElse(null);
+    }
+
+    @Nullable
+    private ProcessorRecipe getRecipe() {
+        assert level != null && !level.isClientSide;
+        if (recipeCache != null && recipeCache.matches(inventory.toVanilla(), level)) {
+            return recipeCache;
+        }
+        var recipe = detectRecipeFromInventory();
+        if (recipe == null) {
+            stopWork();
+            return null;
+        }
+        recipeCache = recipe;
+        return recipe;
+    }
+
     public int getEnergyCost() {
         return energyCost;
     }
@@ -298,15 +374,6 @@ public class ProcessorEntity extends GenericEntity {
 
     void setRecipeEnergy(int recipeEnergy) {
         this.recipeEnergy = recipeEnergy;
-    }
-
-    @Nullable
-    private ProcessorRecipe getRecipe() {
-        assert level != null;
-        return GameUtil
-            .getRecipeManager(level)
-            .getRecipeFor(getProcessorType(), inventory.toVanilla(), level)
-            .orElse(null);
     }
 
     public ProcessorType getProcessorType() {

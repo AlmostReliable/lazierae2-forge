@@ -17,6 +17,7 @@ import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Set;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
@@ -118,13 +119,12 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
         setStackInSlot(UPGRADE_SLOT, ItemStack.of(nbt));
     }
 
-    void shrinkInputSlots() {
-        for (var slot = NON_INPUT_SLOTS; slot < getSlots(); slot++) {
-            if (getStackInSlot(slot).isEmpty()) continue;
-            if (getStackInSlot(slot).getCount() == 1) {
+    void shrinkInputSlots(Set<Integer> slotsToShrink, int outputMultiplier) {
+        for (var slot : slotsToShrink) {
+            if (getStackInSlot(slot).getCount() == outputMultiplier) {
                 setStackInSlot(slot, ItemStack.EMPTY);
             } else {
-                getStackInSlot(slot).shrink(1);
+                getStackInSlot(slot).shrink(outputMultiplier);
                 entity.setChanged();
             }
         }
@@ -171,6 +171,10 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
         return stack;
     }
 
+    int getStackLimit(int slot, ItemStack stack) {
+        return Math.min(getSlotLimit(slot), stack.getMaxStackSize());
+    }
+
     private void setupSubInventories() {
         inputInventoryCap = LazyOptional.of(() -> new InputInventory(this, inputSlots));
         outputInventoryCap = LazyOptional.of(() -> new OutputInventory(this));
@@ -186,10 +190,6 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
         if (slot < 0 || slot >= stacks.size()) {
             throw new IllegalStateException(f("Slot {} is not in range [0,{})", slot, stacks.size()));
         }
-    }
-
-    private int getStackLimit(int slot, ItemStack stack) {
-        return Math.min(getSlotLimit(slot), stack.getMaxStackSize());
     }
 
     int getInputSlots() {
