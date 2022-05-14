@@ -1,11 +1,11 @@
 buildscript {
     repositories {
-        maven {url = 'https://maven.minecraftforge.net'}
-        maven {url = 'https://maven.parchmentmc.org'}
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.parchmentmc.org' }
         mavenCentral()
     }
     dependencies {
-        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true) {exclude group: 'org.apache.logging.log4j'}
+        classpath(group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true) { exclude group: 'org.apache.logging.log4j' }
         classpath 'org.apache.logging.log4j:log4j-api:2.11.2'
         classpath 'org.apache.logging.log4j:log4j-core:2.11.2'
         classpath 'org.parchmentmc:librarian:1.+'
@@ -30,8 +30,8 @@ apply plugin: 'maven-publish'
 //    }
 //}
 
-version = "${minecraft_version}-${mod_version}"
-group = "${mod_base_package}.${mod_id}"
+version = "${mc_version}-${mod_version}"
+group = "${mod_base}.${mod_id}"
 archivesBaseName = mod_id
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -98,7 +98,7 @@ minecraft {
 }
 
 // resources from data generation
-sourceSets.main.resources {srcDir 'src/generated/resources'}
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
@@ -126,57 +126,45 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
     // required dependencies
     implementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
-    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crt_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${crt_version}")
 
     // runtime dependencies
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}") // JEI - in sync with API version
+    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // JEI - in sync with API version
     runtimeOnly fg.deobf("curse.maven:top-245211:3671753") // TOP - 5.1.0
     runtimeOnly fg.deobf("curse.maven:ding-231275:3548400") // Ding - 1.3.0
     runtimeOnly fg.deobf("curse.maven:solar-336538:3770535") // Solar Generation - 4.1.1
     // runtimeOnly fg.deobf("curse.maven:solar-381462:3569092") // Solar Energy - 0.4.0.3
 }
 
-// This block of code expands all the gradle properties in the specified resource targets.
-// It copies them into the targets and expands all the defined properties.
-def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
-def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/bin/main/"]
-def replaceProperties = [mod_id                 : mod_id,
-                         mod_name               : mod_name,
-                         mod_version            : mod_version,
-                         mod_authors            : mod_authors,
-                         mod_description        : mod_description,
-                         mod_credits            : mod_credits,
-                         minecraft_version_range: minecraft_version_range,
-                         forge_version_range    : forge_version_range,
-                         loader_version_range   : loader_version_range,
-                         github_user            : github_user,
-                         github_repo            : github_repo,
-                         ae2_version_range      : ae2_version_range,
-                         jei_version_range      : jei_version_range,
-                         crt_version_range      : crt_version_range]
 processResources {
+    def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
+    def replaceProperties = [
+        mod_id           : mod_id,
+        mod_name         : mod_name,
+        mod_version      : mod_version,
+        mod_authors      : mod_authors,
+        mod_description  : mod_description,
+        mod_credits      : mod_credits,
+        mc_version_range : mc_version_range,
+        forge_min_version: forge_min_version,
+        license          : license,
+        github_user      : github_user,
+        github_repo      : github_repo,
+        ae2_version_range: ae2_version_range,
+        jei_version_range: jei_version_range,
+        crt_version_range: crt_version_range
+    ]
+
     inputs.properties replaceProperties
     replaceProperties.put 'project', project
 
     filesMatching(resourceTargets) {
         expand replaceProperties
-    }
-
-    intoTargets.each {target ->
-        if (file(target).exists()) {
-            copy {
-                from(sourceSets.main.resources) {
-                    include resourceTargets
-                    expand replaceProperties
-                }
-                into target
-            }
-        }
     }
 }
 
@@ -211,13 +199,13 @@ curseforge {
         changelogType = 'markdown'
         changelog = "The whole changelog can be found [here](https://github.com/${github_user}/${github_repo}/blob/${github_branch}/CHANGELOG.md)."
         releaseType = RELEASE_TYPE
-        addGameVersion minecraft_version
+        addGameVersion mc_version
 
         mainArtifact(jar) {
             if (RELEASE_TYPE == 'release') {
-                displayName = "${mod_name}-${minecraft_version}-${mod_version}"
+                displayName = "${mod_name}-${mc_version}-${mod_version}"
             } else {
-                displayName = "${mod_name}-${minecraft_version}-${mod_version}-${RELEASE_TYPE}"
+                displayName = "${mod_name}-${mc_version}-${mod_version}-${RELEASE_TYPE}"
             }
         }
     }
