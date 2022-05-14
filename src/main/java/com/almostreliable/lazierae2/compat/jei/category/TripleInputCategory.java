@@ -12,6 +12,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
@@ -48,8 +49,12 @@ public abstract class TripleInputCategory extends ProcessorCategory<TripleInputR
     public void setRecipe(IRecipeLayoutBuilder builder, TripleInputRecipe recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 23).addItemStack(recipe.getResultItem());
         builder.addSlot(RecipeIngredientRole.INPUT, 2, 2).addIngredients(recipe.getInputs().get(0));
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 23).addIngredients(recipe.getInputs().get(1));
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 44).addIngredients(recipe.getInputs().get(2));
+        builder
+            .addSlot(RecipeIngredientRole.INPUT, 2, 23)
+            .addIngredients(recipe.getInputs().size() >= 2 ? recipe.getInputs().get(1) : Ingredient.EMPTY);
+        builder
+            .addSlot(RecipeIngredientRole.INPUT, 2, 44)
+            .addIngredients(recipe.getInputs().size() >= 3 ? recipe.getInputs().get(2) : Ingredient.EMPTY);
         builder.setShapeless();
         super.setRecipe(builder, recipe, focuses);
     }
