@@ -18,7 +18,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -29,7 +28,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
@@ -48,7 +46,7 @@ public class ProcessorEntity extends GenericEntity {
     private final LazyOptional<ProcessorInventory> inventoryCap;
     private final EnergyHandler energy;
     private final LazyOptional<EnergyHandler> energyCap;
-    private final Map<Direction, LazyOptional<IItemHandler>> outputsCache = new EnumMap<>(Direction.class);
+    private final Map<Direction, LazyOptional<IItemHandler>> autoExtractCache = new EnumMap<>(Direction.class);
     private boolean autoExtract;
     private int progress;
     private int processTime;
@@ -252,47 +250,38 @@ public class ProcessorEntity extends GenericEntity {
 
     private void autoExtract() {
         assert level != null;
-
         if (inventory.getStackInOutput().isEmpty()) return;
 
-        var possibleOutputs = new EnumMap<Direction, BlockEntity>(Direction.class);
-        sideConfig.forEachOutput(direction -> possibleOutputs.put(direction,
-            level.getBlockEntity(worldPosition.relative(direction, 1))
-        ));
+        sideConfig.forEachOutput(direction -> {
+            var extractEntity = level.getBlockEntity(worldPosition.relative(direction, 1));
+            if (extractEntity == null) return;
+            updateAutoExtractCache(direction, extractEntity);
+        });
 
-        for (var entry : possibleOutputs.entrySet()) {
-            var target = getOrUpdateOutputCache(entry);
-            if (target == null) continue;
-
+        for (var target : autoExtractCache.entrySet()) {
             var outputEmpty = new AtomicBoolean(false);
-            target.ifPresent(targetInv -> {
+            target.getValue().ifPresent(targetInv -> {
                 var stack = inventory.getStackInOutput();
                 var remainder = ItemHandlerHelper.insertItemStacked(targetInv, stack, false);
-
-                if (remainder.getCount() != stack.getCount() || !remainder.sameItem(stack)) {
-                    inventory.setStackInOutput(remainder);
+                if (remainder.isEmpty()) {
+                    inventory.setStackInOutput(ItemStack.EMPTY);
+                    outputEmpty.set(true);
+                } else if (remainder.getCount() < stack.getCount()) {
+                    inventory.getStackInOutput().setCount(remainder.getCount());
                 }
-                if (remainder.isEmpty()) outputEmpty.set(true);
             });
 
             if (outputEmpty.get()) return;
         }
     }
 
-    @Nullable
-    private LazyOptional<IItemHandler> getOrUpdateOutputCache(Entry<Direction, ? extends BlockEntity> entry) {
-        var target = outputsCache.get(entry.getKey());
-
-        if (target == null) {
-            ICapabilityProvider provider = entry.getValue();
-            if (provider == null) return null;
-            target = provider.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                entry.getKey().getOpposite()
-            );
-            outputsCache.put(entry.getKey(), target);
-            target.addListener(self -> outputsCache.put(entry.getKey(), null));
-        }
-        return target;
+    private void updateAutoExtractCache(Direction direction, BlockEntity provider) {
+        autoExtractCache.computeIfAbsent(direction, d -> {
+            var target = provider.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d.getOpposite());
+            autoExtractCache.put(d, target);
+            target.addListener(self -> autoExtractCache.put(d, null));
+            return target;
+        });
     }
 
     public int getEnergyCost() {
