@@ -4,11 +4,9 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.inventory.OutputSlot;
 import com.almostreliable.lazierae2.inventory.UpgradeSlot;
-import com.almostreliable.lazierae2.util.DataSlotUtil;
 import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -106,21 +104,15 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
     }
 
     private void syncData() {
-        addDataSlot(DataSlotUtil.forBoolean(entity, entity::isAutoExtracting, entity::setAutoExtract));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getProgress, entity::setProgress));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getProcessTime, entity::setProcessTime));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getRecipeTime, entity::setRecipeTime));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getEnergyCost, entity::setEnergyCost));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getRecipeEnergy, entity::setRecipeEnergy));
-        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(entity, this::getEnergyStored, this::setEnergyStored));
-        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(entity, this::getEnergyCapacity, this::setEnergyCapacity));
-        addDataSlots(entity.sideConfig.toContainerData());
-    }
-
-    private void addMultipleDataSlots(DataSlot... holders) {
-        for (var holder : holders) {
-            addDataSlot(holder);
-        }
+        synchronization.addDataHandler(Boolean.class, entity::isAutoExtracting, entity::setAutoExtract);
+        synchronization.addDataHandler(Integer.class, entity::getProgress, entity::setProgress);
+        synchronization.addDataHandler(Integer.class, entity::getProcessTime, entity::setProcessTime);
+        synchronization.addDataHandler(Integer.class, entity::getRecipeTime, entity::setRecipeTime);
+        synchronization.addDataHandler(Integer.class, entity::getEnergyCost, entity::setEnergyCost);
+        synchronization.addDataHandler(Integer.class, entity::getRecipeEnergy, entity::setRecipeEnergy);
+        synchronization.addDataHandler(Integer.class, this::getEnergyStored, this::setEnergyStored);
+        synchronization.addDataHandler(Integer.class, this::getEnergyCapacity, this::setEnergyCapacity);
+        synchronization.addDataHandler(int[].class, entity.sideConfig::toIntArray, entity.sideConfig::fromIntArray);
     }
 
     public int getUpgradeCount() {
