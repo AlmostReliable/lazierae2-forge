@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class MenuSynchronizer {
 
-    private final Map<Short, DataHandler<?>> dataHandlers = new HashMap<>();
+    private final Map<Short, IDataHandler> dataHandlers = new HashMap<>();
 
     public void encode(FriendlyByteBuf buffer) {
         handleEncode(buffer, false);
@@ -40,7 +40,7 @@ public class MenuSynchronizer {
         return false;
     }
 
-    public <T> void addDataHandler(DataHandler<T> dataHandler) {
+    public void addDataHandler(IDataHandler dataHandler) {
         dataHandlers.put((short) dataHandlers.size(), dataHandler);
     }
 

@@ -4,8 +4,8 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.inventory.OutputSlot;
 import com.almostreliable.lazierae2.inventory.UpgradeSlot;
+import com.almostreliable.lazierae2.network.sync.MenuSynchronizer;
 import com.almostreliable.lazierae2.network.sync.handler.BooleanDataHandler;
-import com.almostreliable.lazierae2.network.sync.handler.CustomDataHandler;
 import com.almostreliable.lazierae2.network.sync.handler.IntegerDataHandler;
 import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,7 +30,6 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
             setupContainerInventory();
         });
         setupPlayerInventory();
-        syncData();
     }
 
     @Override
@@ -86,6 +85,19 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
     }
 
     @Override
+    protected void syncData(MenuSynchronizer sync) {
+        sync.addDataHandler(new BooleanDataHandler(entity::isAutoExtracting, entity::setAutoExtract));
+        sync.addDataHandler(new IntegerDataHandler(entity::getProgress, entity::setProgress));
+        sync.addDataHandler(new IntegerDataHandler(entity::getProcessTime, entity::setProcessTime));
+        sync.addDataHandler(new IntegerDataHandler(entity::getRecipeTime, entity::setRecipeTime));
+        sync.addDataHandler(new IntegerDataHandler(entity::getEnergyCost, entity::setEnergyCost));
+        sync.addDataHandler(new IntegerDataHandler(entity::getRecipeEnergy, entity::setRecipeEnergy));
+        sync.addDataHandler(new IntegerDataHandler(this::getEnergyStored, this::setEnergyStored));
+        sync.addDataHandler(new IntegerDataHandler(this::getEnergyCapacity, this::setEnergyCapacity));
+        sync.addDataHandler(entity.sideConfig);
+    }
+
+    @Override
     protected void setupContainerInventory() {
         var inputSlots = processorInventory.getInputSlots();
         addSlot(new UpgradeSlot(this, processorInventory, ProcessorInventory.UPGRADE_SLOT, 8, 50));
@@ -97,25 +109,13 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
             addSlot(new SlotItemHandler(processorInventory, 3, 44, 29));
             addSlot(new SlotItemHandler(processorInventory, 4, 44, 50));
         } else {
-            throw new IllegalArgumentException(f("Invalid input slot count: {}", inputSlots));
+            throw new IllegalArgumentException(f("Invalid input slot getCount: {}", inputSlots));
         }
     }
 
     @Override
     protected int getSlotY() {
         return 72;
-    }
-
-    private void syncData() {
-        synchronization.addDataHandler(new BooleanDataHandler(entity::isAutoExtracting, entity::setAutoExtract));
-        synchronization.addDataHandler(new IntegerDataHandler(entity::getProgress, entity::setProgress));
-        synchronization.addDataHandler(new IntegerDataHandler(entity::getProcessTime, entity::setProcessTime));
-        synchronization.addDataHandler(new IntegerDataHandler(entity::getRecipeTime, entity::setRecipeTime));
-        synchronization.addDataHandler(new IntegerDataHandler(entity::getEnergyCost, entity::setEnergyCost));
-        synchronization.addDataHandler(new IntegerDataHandler(entity::getRecipeEnergy, entity::setRecipeEnergy));
-        synchronization.addDataHandler(new IntegerDataHandler(this::getEnergyStored, this::setEnergyStored));
-        synchronization.addDataHandler(new IntegerDataHandler(this::getEnergyCapacity, this::setEnergyCapacity));
-        synchronization.addDataHandler(new CustomDataHandler(() -> entity.sideConfig));
     }
 
     public int getUpgradeCount() {

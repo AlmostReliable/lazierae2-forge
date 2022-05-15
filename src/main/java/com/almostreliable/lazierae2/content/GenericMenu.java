@@ -20,7 +20,7 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
     protected static final int SLOT_SIZE = 18;
     protected static final int PLAYER_INV_SIZE = 36;
     public final E entity;
-    protected final MenuSynchronizer synchronization = new MenuSynchronizer();
+    private final MenuSynchronizer synchronization = new MenuSynchronizer();
     private final IItemHandler menuInventory;
     private final Inventory playerInventory;
 
@@ -31,6 +31,7 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
         this.entity = entity;
         this.menuInventory = new InvWrapper(menuInventory);
         playerInventory = menuInventory;
+        syncData(synchronization);
     }
 
     @Override
@@ -64,6 +65,17 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
 
     public void receiveServerData(FriendlyByteBuf data) {
         synchronization.decode(data);
+        onServerDataReceived();
+    }
+
+    @SuppressWarnings("NoopMethodInAbstractClass")
+    protected void syncData(MenuSynchronizer synchronization) {
+        // to overwrite for other menus
+    }
+
+    @SuppressWarnings("NoopMethodInAbstractClass")
+    protected void onServerDataReceived() {
+        // to overwrite for other menus
     }
 
     protected void setupPlayerInventory() {

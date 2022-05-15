@@ -3,7 +3,7 @@ package com.almostreliable.lazierae2.content.processor;
 import com.almostreliable.lazierae2.content.MachineBlock;
 import com.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
-import com.almostreliable.lazierae2.network.sync.IMenuSyncable;
+import com.almostreliable.lazierae2.network.sync.IDataHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,10 +14,11 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.function.Consumer;
 
-public class SideConfiguration implements INBTSerializable<CompoundTag>, IMenuSyncable {
+public class SideConfiguration implements INBTSerializable<CompoundTag>, IDataHandler {
 
     private final BlockEntity entity;
     private final EnumMap<Direction, IO_SETTING> config = new EnumMap<>(Direction.class);
+    private boolean changed;
 
     SideConfiguration(BlockEntity entity) {
         this.entity = entity;
@@ -37,6 +38,7 @@ public class SideConfiguration implements INBTSerializable<CompoundTag>, IMenuSy
     public void set(BLOCK_SIDE side, IO_SETTING setting) {
         config.put(getDirectionFromSide(side), setting);
         entity.setChanged();
+        changed = true;
     }
 
     public void reset() {
@@ -76,11 +78,12 @@ public class SideConfiguration implements INBTSerializable<CompoundTag>, IMenuSy
     }
 
     @Override
-    public boolean hasChanged(Object oldValue) {
-        if (!(oldValue instanceof SideConfiguration oldConfig)) {
-            throw new IllegalArgumentException("oldValue must be a SideConfiguration");
+    public boolean hasChanged() {
+        if (changed) {
+            changed = false;
+            return true;
         }
-        return !oldConfig.config.equals(config);
+        return false;
     }
 
     void forEachOutput(Consumer<? super Direction> consumer) {
