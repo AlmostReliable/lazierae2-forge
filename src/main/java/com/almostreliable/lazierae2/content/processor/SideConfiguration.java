@@ -77,7 +77,10 @@ public class SideConfiguration implements INBTSerializable<CompoundTag>, IMenuSy
 
     @Override
     public boolean hasChanged(Object oldValue) {
-        return oldValue instanceof SideConfiguration oldConfig && !oldConfig.config.equals(config);
+        if (!(oldValue instanceof SideConfiguration oldConfig)) {
+            throw new IllegalArgumentException("oldValue must be a SideConfiguration");
+        }
+        return !oldConfig.config.equals(config);
     }
 
     void forEachOutput(Consumer<? super Direction> consumer) {
