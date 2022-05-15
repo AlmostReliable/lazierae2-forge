@@ -14,8 +14,8 @@ public class IdleState implements IProgressionState {
             return IProgressionState.EXPORT;
         }
 
-        var request = owner.getCraftRequests().get(slot);
-        if (request.isRequesting() && request.count() > owner.getStorageManager().get(slot).getKnownAmount()) {
+        var request = owner.craftRequests.get(slot);
+        if (request.isRequesting() && request.getCount() > owner.getStorageManager().get(slot).getKnownAmount()) {
             return IProgressionState.REQUEST;
         }
 

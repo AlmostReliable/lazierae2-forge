@@ -41,7 +41,7 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
     @Override
     public void onStackChange(AEKey what, long amount) {
         for (var slot = 0; slot < storages.length; slot++) {
-            if (owner.getCraftRequests().matches(slot, what)) {
+            if (owner.craftRequests.matches(slot, what)) {
                 get(slot).knownAmount = amount;
                 get(slot).pendingAmount = 0;
             }
@@ -49,14 +49,14 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
     }
 
     public long computeDelta(int slot) {
-        var request = owner.getCraftRequests().get(slot);
-        if (request.stack().isEmpty()) {
+        var request = owner.craftRequests.get(slot);
+        if (request.getStack().isEmpty()) {
             return 0;
         }
 
         var storedAmount = get(slot).knownAmount + get(slot).pendingAmount;
-        if (storedAmount < request.count()) {
-            return request.batch();
+        if (storedAmount < request.getCount()) {
+            return request.getBatch();
         }
         return 0;
     }
@@ -85,8 +85,8 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
 
     private void populateWatcher(IStackWatcher watcher) {
         for (var slot = 0; slot < storages.length; slot++) {
-            if (!owner.getCraftRequests().get(slot).stack().isEmpty()) {
-                watcher.add(AEItemKey.of(owner.getCraftRequests().get(slot).stack()));
+            if (!owner.craftRequests.get(slot).getStack().isEmpty()) {
+                watcher.add(AEItemKey.of(owner.craftRequests.get(slot).getStack()));
             }
         }
     }
@@ -99,11 +99,11 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
     }
 
     private void calcSlotAmount(int slot) {
-        var request = owner.getCraftRequests().get(slot);
-        if (request.stack().isEmpty()) {
+        var request = owner.craftRequests.get(slot);
+        if (request.getStack().isEmpty()) {
             return;
         }
-        var genericStack = GenericStack.fromItemStack(request.stack());
+        var genericStack = GenericStack.fromItemStack(request.getStack());
         if (genericStack == null) {
             return;
         }

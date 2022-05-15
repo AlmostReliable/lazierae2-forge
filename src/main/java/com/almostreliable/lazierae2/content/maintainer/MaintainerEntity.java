@@ -20,8 +20,6 @@ import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
-import com.almostreliable.lazierae2.network.PacketHandler;
-import com.almostreliable.lazierae2.network.packets.MaintainerSyncPacket;
 import com.almostreliable.lazierae2.progression.ClientState;
 import com.almostreliable.lazierae2.progression.CraftingLinkState;
 import com.almostreliable.lazierae2.progression.IProgressionState;
@@ -33,7 +31,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -45,7 +42,7 @@ import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, ICraftingRequester {
 
     private static final int SLOTS = 6;
-    private final RequestInventory craftRequests;
+    public final RequestInventory craftRequests;
     private final IProgressionState[] progressions;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
@@ -69,21 +66,6 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     public void onLoad() {
         super.onLoad();
         mainNode.create(level, worldPosition);
-    }
-
-    public void syncData(int slot, int flags) {
-        if (level == null || level.isClientSide) return;
-        var packet = new MaintainerSyncPacket(slot,
-            flags,
-            worldPosition,
-            craftRequests.get(slot).state(),
-            craftRequests.getStackInSlot(slot),
-            craftRequests.get(slot).count(),
-            craftRequests.get(slot).batch()
-        );
-        PacketHandler.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)),
-            packet
-        );
     }
 
     @Override
@@ -238,10 +220,6 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
             .setExposedOnSides(EnumSet.allOf(Direction.class));
     }
 
-    public RequestInventory getCraftRequests() {
-        return craftRequests;
-    }
-
     public IActionSource getActionSource() {
         return actionSource;
     }
@@ -294,7 +272,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
     @Override
     public void jobStateChange(ICraftingLink link) {
-        // state change is handled by state pattern
+        // getState change is handled by getState pattern
     }
 
     public IGrid getMainNodeGrid() {

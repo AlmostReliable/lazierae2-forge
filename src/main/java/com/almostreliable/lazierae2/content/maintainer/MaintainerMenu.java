@@ -3,9 +3,15 @@ package com.almostreliable.lazierae2.content.maintainer;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
+import com.almostreliable.lazierae2.gui.MaintainerScreen;
 import com.almostreliable.lazierae2.inventory.FakeSlot;
+import com.almostreliable.lazierae2.network.sync.MenuSynchronizer;
+import com.almostreliable.lazierae2.network.sync.handler.BooleanDataHandler;
+import com.almostreliable.lazierae2.network.sync.handler.EnumDataHandler;
+import com.almostreliable.lazierae2.network.sync.handler.ItemStackDataHandler;
+import com.almostreliable.lazierae2.network.sync.handler.LongDataHandler;
 import com.almostreliable.lazierae2.progression.ClientState;
-import com.almostreliable.lazierae2.util.DataSlotUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -21,15 +27,14 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         int windowId, MaintainerEntity entity, Inventory menuInventory
     ) {
         super(Menus.MAINTAINER.get(), windowId, entity, menuInventory);
-        requestInventory = entity.getCraftRequests();
+        requestInventory = entity.craftRequests;
         setupContainerInventory();
         setupPlayerInventory();
-        syncData();
     }
 
     @Override
     public ItemStack quickMoveStack(Player player, int slot) {
-        // transfer stack to first empty request slot
+        // transfer getStack to first empty request slot
         if (slot < requestInventory.getSlots() || slot > requestInventory.getSlots() + GenericMenu.PLAYER_INV_SIZE) {
             return ItemStack.EMPTY;
         }
@@ -56,15 +61,15 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     public boolean getRequestState(int slot) {
-        return entity.getCraftRequests().get(slot).state();
+        return entity.craftRequests.get(slot).getState();
     }
 
     public long getRequestCount(int slot) {
-        return entity.getCraftRequests().get(slot).count();
+        return entity.craftRequests.get(slot).getCount();
     }
 
     public long getRequestBatch(int slot) {
-        return entity.getCraftRequests().get(slot).batch();
+        return entity.craftRequests.get(slot).getBatch();
     }
 
     public PROGRESSION_TYPE getProgressionType(int slot) {
@@ -77,6 +82,32 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     @Override
+    protected void syncData(MenuSynchronizer sync) {
+        for (var slot = 0; slot < requestInventory.getSlots(); slot++) {
+            var finalSlot = slot;
+            var requestInv = entity.craftRequests;
+            var request = requestInv.get(finalSlot);
+            sync.addDataHandler(new BooleanDataHandler(request::getState, request::updateState));
+            sync.addDataHandler(new ItemStackDataHandler(request::getStack, request::updateStackClient));
+            sync.addDataHandler(new LongDataHandler(request::getCount, request::updateCount));
+            sync.addDataHandler(new LongDataHandler(request::getBatch, request::updateBatch));
+            sync.addDataHandler(new EnumDataHandler<>(
+                () -> entity.getProgressions(finalSlot).type(),
+                value -> entity.setClientProgression(finalSlot, value),
+                PROGRESSION_TYPE.values()
+            ));
+        }
+    }
+
+    @Override
+    protected void onServerDataReceived() {
+        if (entity.getLevel() == null || !entity.getLevel().isClientSide) return;
+        var screen = Minecraft.getInstance().screen;
+        if (!(screen instanceof MaintainerScreen maintainerScreen)) return;
+        maintainerScreen.maintainerControl.refreshBoxes();
+    }
+
+    @Override
     protected void setupContainerInventory() {
         for (var i = 0; i < requestInventory.getSlots(); i++) {
             addSlot(new FakeSlot(this, requestInventory, i, 26, 7 + (i * SLOT_SIZE) + (i * SLOT_GAP)));
@@ -86,18 +117,6 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     @Override
     protected int getSlotY() {
         return 129;
-    }
-
-    private void syncData() {
-        // current progression type for all slots
-        for (var slot = 0; slot < requestInventory.getSlots(); slot++) {
-            var finalSlot = slot;
-            addDataSlot(DataSlotUtil.forInteger(
-                entity,
-                () -> entity.getProgressions(finalSlot).type().ordinal(),
-                value -> entity.setClientProgression(finalSlot, PROGRESSION_TYPE.values()[value])
-            ));
-        }
     }
 
     private void handleClick(int dragType, ClickType clickType, Slot slot) {
@@ -119,9 +138,5 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         } else if (clickType == ClickType.QUICK_MOVE) {
             slot.set(ItemStack.EMPTY);
         }
-    }
-
-    public int getRequestSlots() {
-        return entity.getCraftRequests().getSlots();
     }
 }

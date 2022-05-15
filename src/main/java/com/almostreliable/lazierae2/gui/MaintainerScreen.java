@@ -24,7 +24,7 @@ public class MaintainerScreen extends GenericScreen<MaintainerMenu> {
         super(menu, inventory);
         imageWidth = TEXTURE_WIDTH;
         imageHeight = TEXTURE_HEIGHT;
-        maintainerControl = new MaintainerControl(this, menu.getRequestSlots());
+        maintainerControl = new MaintainerControl(this, menu.entity.craftRequests.getSlots());
     }
 
     @Override

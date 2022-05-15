@@ -12,7 +12,7 @@ public class RequestState implements IProgressionState {
     @Override
     public IProgressionState handle(MaintainerEntity owner, int slot) {
 
-        var craftRequests = owner.getCraftRequests();
+        var craftRequests = owner.craftRequests;
 
         var toCraft = owner.getStorageManager().computeDelta(slot);
         if (toCraft <= 0) {

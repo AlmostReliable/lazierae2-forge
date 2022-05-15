@@ -46,16 +46,12 @@ public final class MaintainerControl {
         return widgets;
     }
 
-    public void updateCountBox(int slot, long count) {
-        var countBox = controls[slot].countBox;
-        if (countBox == null) return;
-        countBox.setValueFromLong(count);
-    }
-
-    public void updateBatchBox(int slot, long batch) {
-        var batchBox = controls[slot].batchBox;
-        if (batchBox == null) return;
-        batchBox.setValueFromLong(batch);
+    public void refreshBoxes() {
+        for (var control : controls) {
+            assert control.countBox != null && control.batchBox != null;
+            control.countBox.initValue();
+            control.batchBox.initValue();
+        }
     }
 
     private final class Control {
@@ -136,7 +132,6 @@ public final class MaintainerControl {
             private static final int GAP = 9;
             final SubmitButton submitButton;
 
-            @SuppressWarnings("AbstractMethodCallInConstructor")
             private TextBox(
                 int x
             ) {
@@ -153,7 +148,7 @@ public final class MaintainerControl {
                 setTextColor(0xFF_FFFF);
                 setFilter(text -> StringUtils.isNumeric(text) || text.isEmpty());
                 setMaxLength(6);
-                setValue(String.valueOf(getServerValue()));
+                initValue();
             }
 
             @Override
@@ -178,6 +173,10 @@ public final class MaintainerControl {
 
             protected abstract void syncValue();
 
+            void initValue() {
+                setValue(String.valueOf(getServerValue()));
+            }
+
             private void validateAndSubmit() {
                 setValueFromLong(getValueAsLong());
             }
@@ -198,7 +197,7 @@ public final class MaintainerControl {
                 return isHovered;
             }
 
-            void setValueFromLong(long value) {
+            private void setValueFromLong(long value) {
                 var oldValue = getServerValue();
                 setValue(String.valueOf(value));
                 if (value != oldValue) {
