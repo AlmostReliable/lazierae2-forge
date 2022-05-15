@@ -28,7 +28,7 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
 
     @Override
     public ItemStack quickMoveStack(Player player, int slot) {
-        // transfer getStack to first empty request slot
+        // transfer stack to first empty request slot
         if (slot < requestInventory.getSlots() || slot > requestInventory.getSlots() + GenericMenu.PLAYER_INV_SIZE) {
             return ItemStack.EMPTY;
         }

@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
+
 public final class RequestInventory implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
     private final MaintainerEntity entity;
@@ -132,19 +134,19 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
         @Override
         public CompoundTag serializeNBT() {
             var tag = new CompoundTag();
-            tag.putBoolean("getState", state);
-            tag.put("getStack", stack.serializeNBT());
-            tag.putLong("getCount", count);
-            tag.putLong("getBatch", batch);
+            tag.putBoolean(STATE_ID, state);
+            tag.put(STACK_ID, stack.serializeNBT());
+            tag.putLong(COUNT_ID, count);
+            tag.putLong(BATCH_ID, batch);
             return tag;
         }
 
         @Override
         public void deserializeNBT(CompoundTag nbt) {
-            state = nbt.getBoolean("getState");
-            stack = ItemStack.of(nbt.getCompound("getStack"));
-            count = nbt.getLong("getCount");
-            batch = nbt.getLong("getBatch");
+            state = nbt.getBoolean(STATE_ID);
+            stack = ItemStack.of(nbt.getCompound(STACK_ID));
+            count = nbt.getLong(COUNT_ID);
+            batch = nbt.getLong(BATCH_ID);
         }
 
         public void updateState(boolean state) {

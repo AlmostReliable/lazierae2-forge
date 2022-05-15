@@ -74,6 +74,10 @@ public final class Constants {
         public static final String SLOT_ID = "slot";
         public static final String SIZE_ID = "size";
         public static final String ITEMS_ID = "items";
+        public static final String STATE_ID = "state";
+        public static final String STACK_ID = "stack";
+        public static final String COUNT_ID = "count";
+        public static final String BATCH_ID = "batch";
     }
 
     public enum Recipe {

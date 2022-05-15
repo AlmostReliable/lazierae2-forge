@@ -267,7 +267,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
     @Override
     public void jobStateChange(ICraftingLink link) {
-        // getState change is handled by getState pattern
+        // state change is handled by state pattern
     }
 
     public IGrid getMainNodeGrid() {
