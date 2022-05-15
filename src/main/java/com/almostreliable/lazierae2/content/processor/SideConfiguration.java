@@ -68,6 +68,7 @@ public class SideConfiguration implements INBTSerializable<CompoundTag>, IDataHa
         for (var i = 0; i < BLOCK_SIDE.values().length; i++) {
             buffer.writeInt(get(BLOCK_SIDE.values()[i]).ordinal());
         }
+        changed = false;
     }
 
     @Override
@@ -79,11 +80,7 @@ public class SideConfiguration implements INBTSerializable<CompoundTag>, IDataHa
 
     @Override
     public boolean hasChanged() {
-        if (changed) {
-            changed = false;
-            return true;
-        }
-        return false;
+        return changed;
     }
 
     void forEachOutput(Consumer<? super Direction> consumer) {
