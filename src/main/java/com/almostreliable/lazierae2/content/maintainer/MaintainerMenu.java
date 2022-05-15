@@ -5,7 +5,6 @@ import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 import com.almostreliable.lazierae2.gui.MaintainerScreen;
 import com.almostreliable.lazierae2.inventory.FakeSlot;
-import com.almostreliable.lazierae2.network.sync.MenuSynchronizer;
 import com.almostreliable.lazierae2.network.sync.handler.BooleanDataHandler;
 import com.almostreliable.lazierae2.network.sync.handler.EnumDataHandler;
 import com.almostreliable.lazierae2.network.sync.handler.ItemStackDataHandler;
@@ -30,6 +29,7 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         requestInventory = entity.craftRequests;
         setupContainerInventory();
         setupPlayerInventory();
+        syncData();
     }
 
     @Override
@@ -82,24 +82,6 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     @Override
-    protected void syncData(MenuSynchronizer sync) {
-        for (var slot = 0; slot < requestInventory.getSlots(); slot++) {
-            var finalSlot = slot;
-            var requestInv = entity.craftRequests;
-            var request = requestInv.get(finalSlot);
-            sync.addDataHandler(new BooleanDataHandler(request::getState, request::updateState));
-            sync.addDataHandler(new ItemStackDataHandler(request::getStack, request::updateStackClient));
-            sync.addDataHandler(new LongDataHandler(request::getCount, request::updateCount));
-            sync.addDataHandler(new LongDataHandler(request::getBatch, request::updateBatch));
-            sync.addDataHandler(new EnumDataHandler<>(
-                () -> entity.getProgressions(finalSlot).type(),
-                value -> entity.setClientProgression(finalSlot, value),
-                PROGRESSION_TYPE.values()
-            ));
-        }
-    }
-
-    @Override
     protected void onServerDataReceived() {
         if (entity.getLevel() == null || !entity.getLevel().isClientSide) return;
         var screen = Minecraft.getInstance().screen;
@@ -117,6 +99,23 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     @Override
     protected int getSlotY() {
         return 129;
+    }
+
+    private void syncData() {
+        for (var slot = 0; slot < requestInventory.getSlots(); slot++) {
+            var finalSlot = slot;
+            var requestInv = entity.craftRequests;
+            var request = requestInv.get(finalSlot);
+            sync.addDataHandler(new BooleanDataHandler(request::getState, request::updateState));
+            sync.addDataHandler(new ItemStackDataHandler(request::getStack, request::updateStackClient));
+            sync.addDataHandler(new LongDataHandler(request::getCount, request::updateCount));
+            sync.addDataHandler(new LongDataHandler(request::getBatch, request::updateBatch));
+            sync.addDataHandler(new EnumDataHandler<>(
+                () -> entity.getProgressions(finalSlot).type(),
+                value -> entity.setClientProgression(finalSlot, value),
+                PROGRESSION_TYPE.values()
+            ));
+        }
     }
 
     private void handleClick(int dragType, ClickType clickType, Slot slot) {

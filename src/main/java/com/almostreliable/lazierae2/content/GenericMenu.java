@@ -20,7 +20,7 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
     protected static final int SLOT_SIZE = 18;
     protected static final int PLAYER_INV_SIZE = 36;
     public final E entity;
-    private final MenuSynchronizer synchronization = new MenuSynchronizer();
+    protected final MenuSynchronizer sync = new MenuSynchronizer();
     private final IItemHandler menuInventory;
     private final Inventory playerInventory;
 
@@ -31,24 +31,23 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
         this.entity = entity;
         this.menuInventory = new InvWrapper(menuInventory);
         playerInventory = menuInventory;
-        syncData(synchronization);
     }
 
     @Override
     public void sendAllDataToRemote() {
         super.sendAllDataToRemote();
-        if (synchronization.hasDataHandlers()) {
+        if (sync.hasDataHandlers()) {
             PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) playerInventory.player),
-                new MenuSyncPacket(containerId, synchronization::encodeAll)
+                new MenuSyncPacket(containerId, sync::encodeAll)
             );
         }
     }
 
     @Override
     public void broadcastChanges() {
-        if (!playerInventory.player.level.isClientSide && synchronization.hasChanged()) {
+        if (!playerInventory.player.level.isClientSide && sync.hasChanged()) {
             PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) playerInventory.player),
-                new MenuSyncPacket(containerId, synchronization::encode)
+                new MenuSyncPacket(containerId, sync::encode)
             );
         }
         super.broadcastChanges();
@@ -64,13 +63,8 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
     }
 
     public void receiveServerData(FriendlyByteBuf data) {
-        synchronization.decode(data);
+        sync.decode(data);
         onServerDataReceived();
-    }
-
-    @SuppressWarnings("NoopMethodInAbstractClass")
-    protected void syncData(MenuSynchronizer synchronization) {
-        // to overwrite for other menus
     }
 
     @SuppressWarnings("NoopMethodInAbstractClass")
