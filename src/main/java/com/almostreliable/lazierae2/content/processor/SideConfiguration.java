@@ -3,8 +3,10 @@ package com.almostreliable.lazierae2.content.processor;
 import com.almostreliable.lazierae2.content.MachineBlock;
 import com.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
+import com.almostreliable.lazierae2.network.sync.IMenuSyncable;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -12,7 +14,7 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.function.Consumer;
 
-public class SideConfiguration implements INBTSerializable<CompoundTag> {
+public class SideConfiguration implements INBTSerializable<CompoundTag>, IMenuSyncable {
 
     private final BlockEntity entity;
     private final EnumMap<Direction, IO_SETTING> config = new EnumMap<>(Direction.class);
@@ -59,25 +61,30 @@ public class SideConfiguration implements INBTSerializable<CompoundTag> {
         }
     }
 
+    @Override
+    public void encode(FriendlyByteBuf buffer) {
+        for (var i = 0; i < BLOCK_SIDE.values().length; i++) {
+            buffer.writeInt(get(BLOCK_SIDE.values()[i]).ordinal());
+        }
+    }
+
+    @Override
+    public void decode(FriendlyByteBuf buffer) {
+        for (var i = 0; i < BLOCK_SIDE.values().length; i++) {
+            set(BLOCK_SIDE.values()[i], IO_SETTING.values()[buffer.readInt()]);
+        }
+    }
+
+    @Override
+    public boolean hasChanged(Object oldValue) {
+        return oldValue instanceof SideConfiguration oldConfig && oldConfig.config.equals(config);
+    }
+
     void forEachOutput(Consumer<? super Direction> consumer) {
         for (var direction : Direction.values()) {
             if (config.get(direction) == IO_SETTING.OUTPUT || config.get(direction) == IO_SETTING.IO) {
                 consumer.accept(direction);
             }
-        }
-    }
-
-    int[] toIntArray() {
-        var array = new int[BLOCK_SIDE.values().length];
-        for (var i = 0; i < BLOCK_SIDE.values().length; i++) {
-            array[i] = get(BLOCK_SIDE.values()[i]).ordinal();
-        }
-        return array;
-    }
-
-    void fromIntArray(int... array) {
-        for (var i = 0; i < BLOCK_SIDE.values().length; i++) {
-            set(BLOCK_SIDE.values()[i], IO_SETTING.values()[array[i]]);
         }
     }
 

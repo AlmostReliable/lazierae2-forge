@@ -5,6 +5,7 @@ import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.inventory.OutputSlot;
 import com.almostreliable.lazierae2.inventory.UpgradeSlot;
 import com.almostreliable.lazierae2.network.sync.handler.BooleanDataHandler;
+import com.almostreliable.lazierae2.network.sync.handler.CustomDataHandler;
 import com.almostreliable.lazierae2.network.sync.handler.IntegerDataHandler;
 import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.world.entity.player.Inventory;
@@ -114,7 +115,7 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
         synchronization.addDataHandler(new IntegerDataHandler(entity::getRecipeEnergy, entity::setRecipeEnergy));
         synchronization.addDataHandler(new IntegerDataHandler(this::getEnergyStored, this::setEnergyStored));
         synchronization.addDataHandler(new IntegerDataHandler(this::getEnergyCapacity, this::setEnergyCapacity));
-        synchronization.addDataHandler(int[].class, entity.sideConfig::toIntArray, entity.sideConfig::fromIntArray);
+        synchronization.addDataHandler(new CustomDataHandler(() -> entity.sideConfig));
     }
 
     public int getUpgradeCount() {
