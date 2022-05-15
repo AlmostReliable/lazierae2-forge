@@ -32,7 +32,7 @@ public final class PacketHandler {
         register(++packetId, RequestStatePacket.class, new RequestStatePacket());
         register(++packetId, SideConfigPacket.class, new SideConfigPacket());
         // server to client
-        register(++packetId, MaintainerSyncPacket.class, new MaintainerSyncPacket());
+        register(++packetId, MenuSyncPacket.class, new MenuSyncPacket());
     }
 
     private static <T> void register(int packetId, Class<T> clazz, IPacket<T> packet) {

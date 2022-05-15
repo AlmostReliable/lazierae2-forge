@@ -46,16 +46,11 @@ public final class MaintainerControl {
         return widgets;
     }
 
-    public void updateCountBox(int slot, long count) {
-        var countBox = controls[slot].countBox;
-        if (countBox == null) return;
-        countBox.setValueFromLong(count);
-    }
-
-    public void updateBatchBox(int slot, long batch) {
-        var batchBox = controls[slot].batchBox;
-        if (batchBox == null) return;
-        batchBox.setValueFromLong(batch);
+    public void refreshRequest(int slot) {
+        var control = controls[slot];
+        assert control.countBox != null && control.batchBox != null;
+        control.countBox.initValue();
+        control.batchBox.initValue();
     }
 
     private final class Control {
@@ -118,7 +113,7 @@ public final class MaintainerControl {
                 if (!screen.getMenu().getRequestState(slot) || screen.getMenu().getRequestCount(slot) == 0) {
                     return 0xFF66_6666; // gray
                 }
-                var status = screen.getMenu().getProgressionType(slot);
+                var status = screen.getMenu().getRequestStatus(slot);
                 return switch (status) {
                     case IDLE -> 0xFF05_DA00; // green
                     case LINK -> 0xFFDA_8A00; // orange
@@ -136,7 +131,6 @@ public final class MaintainerControl {
             private static final int GAP = 9;
             final SubmitButton submitButton;
 
-            @SuppressWarnings("AbstractMethodCallInConstructor")
             private TextBox(
                 int x
             ) {
@@ -153,7 +147,7 @@ public final class MaintainerControl {
                 setTextColor(0xFF_FFFF);
                 setFilter(text -> StringUtils.isNumeric(text) || text.isEmpty());
                 setMaxLength(6);
-                setValue(String.valueOf(getServerValue()));
+                initValue();
             }
 
             @Override
@@ -178,6 +172,10 @@ public final class MaintainerControl {
 
             protected abstract void syncValue();
 
+            void initValue() {
+                setValue(String.valueOf(getServerValue()));
+            }
+
             private void validateAndSubmit() {
                 setValueFromLong(getValueAsLong());
             }
@@ -198,7 +196,7 @@ public final class MaintainerControl {
                 return isHovered;
             }
 
-            void setValueFromLong(long value) {
+            private void setValueFromLong(long value) {
                 var oldValue = getServerValue();
                 setValue(String.valueOf(value));
                 if (value != oldValue) {

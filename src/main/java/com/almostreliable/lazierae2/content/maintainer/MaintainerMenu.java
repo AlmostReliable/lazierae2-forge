@@ -4,8 +4,7 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 import com.almostreliable.lazierae2.inventory.FakeSlot;
-import com.almostreliable.lazierae2.progression.ClientState;
-import com.almostreliable.lazierae2.util.DataSlotUtil;
+import com.almostreliable.lazierae2.network.sync.handler.EnumDataHandler;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -21,7 +20,7 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         int windowId, MaintainerEntity entity, Inventory menuInventory
     ) {
         super(Menus.MAINTAINER.get(), windowId, entity, menuInventory);
-        requestInventory = entity.getCraftRequests();
+        requestInventory = entity.craftRequests;
         setupContainerInventory();
         setupPlayerInventory();
         syncData();
@@ -56,24 +55,19 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     public boolean getRequestState(int slot) {
-        return entity.getCraftRequests().get(slot).state();
+        return entity.craftRequests.get(slot).getState();
     }
 
     public long getRequestCount(int slot) {
-        return entity.getCraftRequests().get(slot).count();
+        return entity.craftRequests.get(slot).getCount();
     }
 
     public long getRequestBatch(int slot) {
-        return entity.getCraftRequests().get(slot).batch();
+        return entity.craftRequests.get(slot).getBatch();
     }
 
-    public PROGRESSION_TYPE getProgressionType(int slot) {
-        if (!(entity.getProgressions(slot) instanceof ClientState)) {
-            throw new IllegalStateException("Progression " + slot + " is not a ClientState");
-        }
-        var type = entity.getProgressions(slot).type();
-        if (type == PROGRESSION_TYPE.REQUEST || type == PROGRESSION_TYPE.PLAN) return PROGRESSION_TYPE.IDLE;
-        return type;
+    public PROGRESSION_TYPE getRequestStatus(int slot) {
+        return entity.getProgression(slot).type();
     }
 
     @Override
@@ -89,13 +83,13 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     private void syncData() {
-        // current progression type for all slots
         for (var slot = 0; slot < requestInventory.getSlots(); slot++) {
             var finalSlot = slot;
-            addDataSlot(DataSlotUtil.forInteger(
-                entity,
-                () -> entity.getProgressions(finalSlot).type().ordinal(),
-                value -> entity.setClientProgression(finalSlot, PROGRESSION_TYPE.values()[value])
+            sync.addDataHandler(requestInventory.get(finalSlot));
+            sync.addDataHandler(new EnumDataHandler<>(
+                () -> getRequestStatus(finalSlot).translateToClient(),
+                value -> entity.setClientProgression(finalSlot, value),
+                PROGRESSION_TYPE.values()
             ));
         }
     }
@@ -119,9 +113,5 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         } else if (clickType == ClickType.QUICK_MOVE) {
             slot.set(ItemStack.EMPTY);
         }
-    }
-
-    public int getRequestSlots() {
-        return entity.getCraftRequests().getSlots();
     }
 }

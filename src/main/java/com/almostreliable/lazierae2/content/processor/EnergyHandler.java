@@ -77,10 +77,6 @@ public class EnergyHandler implements IEnergyStorage, INBTSerializable<CompoundT
         maxExtract = tag.getInt(MAX_EXTRACT);
     }
 
-    void validateEnergy() {
-        if (energy > capacity) setEnergy(capacity);
-    }
-
     public void setEnergy(int energy) {
         this.energy = Math.min(energy, capacity);
         entity.setChanged();
@@ -88,6 +84,7 @@ public class EnergyHandler implements IEnergyStorage, INBTSerializable<CompoundT
 
     void setCapacity(int capacity) {
         this.capacity = capacity;
+        energy = Math.min(energy, capacity);
         maxReceive = capacity;
         maxExtract = capacity;
         entity.setChanged();

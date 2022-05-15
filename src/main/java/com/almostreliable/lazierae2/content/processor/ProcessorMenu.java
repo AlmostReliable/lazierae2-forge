@@ -4,11 +4,11 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.inventory.OutputSlot;
 import com.almostreliable.lazierae2.inventory.UpgradeSlot;
-import com.almostreliable.lazierae2.util.DataSlotUtil;
+import com.almostreliable.lazierae2.network.sync.handler.BooleanDataHandler;
+import com.almostreliable.lazierae2.network.sync.handler.IntegerDataHandler;
 import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -96,7 +96,7 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
             addSlot(new SlotItemHandler(processorInventory, 3, 44, 29));
             addSlot(new SlotItemHandler(processorInventory, 4, 44, 50));
         } else {
-            throw new IllegalArgumentException(f("Invalid input slot count: {}", inputSlots));
+            throw new IllegalArgumentException(f("Invalid input slot getCount: {}", inputSlots));
         }
     }
 
@@ -106,21 +106,15 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
     }
 
     private void syncData() {
-        addDataSlot(DataSlotUtil.forBoolean(entity, entity::isAutoExtracting, entity::setAutoExtract));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getProgress, entity::setProgress));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getProcessTime, entity::setProcessTime));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getRecipeTime, entity::setRecipeTime));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getEnergyCost, entity::setEnergyCost));
-        addDataSlot(DataSlotUtil.forInteger(entity, entity::getRecipeEnergy, entity::setRecipeEnergy));
-        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(entity, this::getEnergyStored, this::setEnergyStored));
-        addMultipleDataSlots(DataSlotUtil.forIntegerSplit(entity, this::getEnergyCapacity, this::setEnergyCapacity));
-        addDataSlots(entity.sideConfig.toContainerData());
-    }
-
-    private void addMultipleDataSlots(DataSlot... holders) {
-        for (var holder : holders) {
-            addDataSlot(holder);
-        }
+        sync.addDataHandler(new BooleanDataHandler(entity::isAutoExtracting, entity::setAutoExtract));
+        sync.addDataHandler(new IntegerDataHandler(entity::getProgress, entity::setProgress));
+        sync.addDataHandler(new IntegerDataHandler(entity::getProcessTime, entity::setProcessTime));
+        sync.addDataHandler(new IntegerDataHandler(entity::getRecipeTime, entity::setRecipeTime));
+        sync.addDataHandler(new IntegerDataHandler(entity::getEnergyCost, entity::setEnergyCost));
+        sync.addDataHandler(new IntegerDataHandler(entity::getRecipeEnergy, entity::setRecipeEnergy));
+        sync.addDataHandler(new IntegerDataHandler(this::getEnergyStored, this::setEnergyStored));
+        sync.addDataHandler(new IntegerDataHandler(this::getEnergyCapacity, this::setEnergyCapacity));
+        sync.addDataHandler(entity.sideConfig);
     }
 
     public int getUpgradeCount() {

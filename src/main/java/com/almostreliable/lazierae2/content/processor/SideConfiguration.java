@@ -3,9 +3,10 @@ package com.almostreliable.lazierae2.content.processor;
 import com.almostreliable.lazierae2.content.MachineBlock;
 import com.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
+import com.almostreliable.lazierae2.network.sync.IDataHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -13,10 +14,11 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.function.Consumer;
 
-public class SideConfiguration implements INBTSerializable<CompoundTag> {
+public class SideConfiguration implements INBTSerializable<CompoundTag>, IDataHandler {
 
     private final BlockEntity entity;
     private final EnumMap<Direction, IO_SETTING> config = new EnumMap<>(Direction.class);
+    private boolean changed;
 
     SideConfiguration(BlockEntity entity) {
         this.entity = entity;
@@ -36,6 +38,7 @@ public class SideConfiguration implements INBTSerializable<CompoundTag> {
     public void set(BLOCK_SIDE side, IO_SETTING setting) {
         config.put(getDirectionFromSide(side), setting);
         entity.setChanged();
+        changed = true;
     }
 
     public void reset() {
@@ -60,32 +63,32 @@ public class SideConfiguration implements INBTSerializable<CompoundTag> {
         }
     }
 
+    @Override
+    public void encode(FriendlyByteBuf buffer) {
+        for (var i = 0; i < BLOCK_SIDE.values().length; i++) {
+            buffer.writeInt(get(BLOCK_SIDE.values()[i]).ordinal());
+        }
+        changed = false;
+    }
+
+    @Override
+    public void decode(FriendlyByteBuf buffer) {
+        for (var i = 0; i < BLOCK_SIDE.values().length; i++) {
+            set(BLOCK_SIDE.values()[i], IO_SETTING.values()[buffer.readInt()]);
+        }
+    }
+
+    @Override
+    public boolean hasChanged() {
+        return changed;
+    }
+
     void forEachOutput(Consumer<? super Direction> consumer) {
         for (var direction : Direction.values()) {
             if (config.get(direction) == IO_SETTING.OUTPUT || config.get(direction) == IO_SETTING.IO) {
                 consumer.accept(direction);
             }
         }
-    }
-
-    ContainerData toContainerData() {
-        return new ContainerData() {
-            @Override
-            public int get(int index) {
-                return config.get(Direction.values()[index]).ordinal();
-            }
-
-            @Override
-            public void set(int index, int value) {
-                config.put(Direction.values()[index], IO_SETTING.values()[value]);
-                entity.setChanged();
-            }
-
-            @Override
-            public int getCount() {
-                return config.size();
-            }
-        };
     }
 
     private Direction getDirectionFromSide(BLOCK_SIDE side) {

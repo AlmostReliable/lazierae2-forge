@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning].
 - added level maintainer
 - reworked recipe processing for recipes taking less than a tick
 - reworked auto extraction logic for large output amounts
+- reworked menu syncing
 
 <!-- Links -->
 [keep a changelog]: https://keepachangelog.com/en/1.0.0/

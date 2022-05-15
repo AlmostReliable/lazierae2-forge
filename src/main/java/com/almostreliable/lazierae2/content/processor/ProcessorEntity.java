@@ -134,7 +134,6 @@ public class ProcessorEntity extends GenericEntity {
     void tick() {
         if (level == null || level.isClientSide) return;
         if (autoExtract && level.getGameTime() % AUTO_EXTRACT_RATE == 0) autoExtract();
-        energy.validateEnergy();
 
         var recipe = getRecipe();
         if (recipe == null) return;

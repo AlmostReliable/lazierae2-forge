@@ -42,6 +42,6 @@ public class FakeSlot extends SlotItemHandler {
     }
 
     public boolean isLocked() {
-        return owner.entity.isRequestSlotLocked(getSlotIndex());
+        return owner.entity.getProgression(getSlotIndex()).type().locksSlot();
     }
 }
