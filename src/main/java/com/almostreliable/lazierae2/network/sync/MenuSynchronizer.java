@@ -5,8 +5,6 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class MenuSynchronizer {
 
@@ -42,8 +40,7 @@ public class MenuSynchronizer {
         return false;
     }
 
-    public <T> void addDataHandler(Class<T> clazz, Supplier<T> getter, Consumer<? super T> setter) {
-        var dataHandler = DataHandler.create(clazz, getter, setter);
+    public <T> void addDataHandler(DataHandler<T> dataHandler) {
         dataHandlers.put((short) dataHandlers.size(), dataHandler);
     }
 

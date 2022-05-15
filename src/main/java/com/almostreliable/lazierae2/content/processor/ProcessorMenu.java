@@ -4,6 +4,8 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.inventory.OutputSlot;
 import com.almostreliable.lazierae2.inventory.UpgradeSlot;
+import com.almostreliable.lazierae2.network.sync.handler.BooleanDataHandler;
+import com.almostreliable.lazierae2.network.sync.handler.IntegerDataHandler;
 import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -104,14 +106,14 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
     }
 
     private void syncData() {
-        synchronization.addDataHandler(Boolean.class, entity::isAutoExtracting, entity::setAutoExtract);
-        synchronization.addDataHandler(Integer.class, entity::getProgress, entity::setProgress);
-        synchronization.addDataHandler(Integer.class, entity::getProcessTime, entity::setProcessTime);
-        synchronization.addDataHandler(Integer.class, entity::getRecipeTime, entity::setRecipeTime);
-        synchronization.addDataHandler(Integer.class, entity::getEnergyCost, entity::setEnergyCost);
-        synchronization.addDataHandler(Integer.class, entity::getRecipeEnergy, entity::setRecipeEnergy);
-        synchronization.addDataHandler(Integer.class, this::getEnergyStored, this::setEnergyStored);
-        synchronization.addDataHandler(Integer.class, this::getEnergyCapacity, this::setEnergyCapacity);
+        synchronization.addDataHandler(new BooleanDataHandler(entity::isAutoExtracting, entity::setAutoExtract));
+        synchronization.addDataHandler(new IntegerDataHandler(entity::getProgress, entity::setProgress));
+        synchronization.addDataHandler(new IntegerDataHandler(entity::getProcessTime, entity::setProcessTime));
+        synchronization.addDataHandler(new IntegerDataHandler(entity::getRecipeTime, entity::setRecipeTime));
+        synchronization.addDataHandler(new IntegerDataHandler(entity::getEnergyCost, entity::setEnergyCost));
+        synchronization.addDataHandler(new IntegerDataHandler(entity::getRecipeEnergy, entity::setRecipeEnergy));
+        synchronization.addDataHandler(new IntegerDataHandler(this::getEnergyStored, this::setEnergyStored));
+        synchronization.addDataHandler(new IntegerDataHandler(this::getEnergyCapacity, this::setEnergyCapacity));
         synchronization.addDataHandler(int[].class, entity.sideConfig::toIntArray, entity.sideConfig::fromIntArray);
     }
 
