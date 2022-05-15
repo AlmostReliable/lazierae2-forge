@@ -64,12 +64,6 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
 
     public void receiveServerData(FriendlyByteBuf data) {
         sync.decode(data);
-        onServerDataReceived();
-    }
-
-    @SuppressWarnings("NoopMethodInAbstractClass")
-    protected void onServerDataReceived() {
-        // to overwrite for other menus
     }
 
     protected void setupPlayerInventory() {

@@ -129,12 +129,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         return currentTickRateModulation;
     }
 
-    public boolean isRequestSlotLocked(int slot) {
-        return !(progressions[slot].type() == PROGRESSION_TYPE.IDLE ||
-            progressions[slot].type() == PROGRESSION_TYPE.REQUEST);
-    }
-
-    public IProgressionState getProgressions(int slot) {
+    public IProgressionState getProgression(int slot) {
         return progressions[slot];
     }
 

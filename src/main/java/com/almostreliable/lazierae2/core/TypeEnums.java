@@ -37,7 +37,16 @@ public final class TypeEnums {
      * Enum to represent the different progression types for the maintainer.
      */
     public enum PROGRESSION_TYPE {
-        LINK, PLAN, EXPORT, IDLE, REQUEST
+        LINK, PLAN, EXPORT, IDLE, REQUEST;
+
+        public PROGRESSION_TYPE translateToClient() {
+            if (this == REQUEST || this == PLAN) return IDLE;
+            return this;
+        }
+
+        public boolean locksSlot() {
+            return this == LINK || this == EXPORT;
+        }
     }
 
     /**

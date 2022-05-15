@@ -3,14 +3,8 @@ package com.almostreliable.lazierae2.content.maintainer;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
-import com.almostreliable.lazierae2.gui.MaintainerScreen;
 import com.almostreliable.lazierae2.inventory.FakeSlot;
-import com.almostreliable.lazierae2.network.sync.handler.BooleanDataHandler;
 import com.almostreliable.lazierae2.network.sync.handler.EnumDataHandler;
-import com.almostreliable.lazierae2.network.sync.handler.ItemStackDataHandler;
-import com.almostreliable.lazierae2.network.sync.handler.LongDataHandler;
-import com.almostreliable.lazierae2.progression.ClientState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -72,21 +66,8 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         return entity.craftRequests.get(slot).getBatch();
     }
 
-    public PROGRESSION_TYPE getProgressionType(int slot) {
-        if (!(entity.getProgressions(slot) instanceof ClientState)) {
-            throw new IllegalStateException("Progression " + slot + " is not a ClientState");
-        }
-        var type = entity.getProgressions(slot).type();
-        if (type == PROGRESSION_TYPE.REQUEST || type == PROGRESSION_TYPE.PLAN) return PROGRESSION_TYPE.IDLE;
-        return type;
-    }
-
-    @Override
-    protected void onServerDataReceived() {
-        if (entity.getLevel() == null || !entity.getLevel().isClientSide) return;
-        var screen = Minecraft.getInstance().screen;
-        if (!(screen instanceof MaintainerScreen maintainerScreen)) return;
-        maintainerScreen.maintainerControl.refreshBoxes();
+    public PROGRESSION_TYPE getRequestStatus(int slot) {
+        return entity.getProgression(slot).type();
     }
 
     @Override
@@ -104,14 +85,9 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     private void syncData() {
         for (var slot = 0; slot < requestInventory.getSlots(); slot++) {
             var finalSlot = slot;
-            var requestInv = entity.craftRequests;
-            var request = requestInv.get(finalSlot);
-            sync.addDataHandler(new BooleanDataHandler(request::getState, request::updateState));
-            sync.addDataHandler(new ItemStackDataHandler(request::getStack, request::updateStackClient));
-            sync.addDataHandler(new LongDataHandler(request::getCount, request::updateCount));
-            sync.addDataHandler(new LongDataHandler(request::getBatch, request::updateBatch));
+            sync.addDataHandler(requestInventory.get(finalSlot));
             sync.addDataHandler(new EnumDataHandler<>(
-                () -> entity.getProgressions(finalSlot).type(),
+                () -> getRequestStatus(finalSlot).translateToClient(),
                 value -> entity.setClientProgression(finalSlot, value),
                 PROGRESSION_TYPE.values()
             ));

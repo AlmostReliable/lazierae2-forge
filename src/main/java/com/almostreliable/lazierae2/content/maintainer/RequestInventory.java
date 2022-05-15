@@ -3,7 +3,10 @@ package com.almostreliable.lazierae2.content.maintainer;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import com.almostreliable.lazierae2.network.ClientHandler;
+import com.almostreliable.lazierae2.network.sync.IDataHandler;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -31,9 +34,9 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
         if (entity.getLevel() == null) return;
         validateSlot(slot);
         if (entity.getLevel().isClientSide) {
-            requests[slot].updateStackClient(stack);
+            get(slot).updateStackClient(stack);
         } else {
-            requests[slot].updateStack(stack);
+            get(slot).updateStack(stack);
         }
     }
 
@@ -41,7 +44,7 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         for (var i = 0; i < getSlots(); i++) {
-            tag.put(String.valueOf(i), requests[i].serializeNBT());
+            tag.put(String.valueOf(i), get(i).serializeNBT());
         }
         return tag;
     }
@@ -49,7 +52,7 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
     @Override
     public void deserializeNBT(CompoundTag tag) {
         for (var i = 0; i < getSlots(); i++) {
-            requests[i].deserializeNBT(tag.getCompound(String.valueOf(i)));
+            get(i).deserializeNBT(tag.getCompound(String.valueOf(i)));
         }
     }
 
@@ -59,14 +62,14 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
 
     int firstAvailableSlot() {
         for (var slot = 0; slot < requests.length; slot++) {
-            var request = requests[slot];
+            var request = get(slot);
             if (request.stack.isEmpty()) return slot;
         }
         return -1;
     }
 
     boolean matches(int slot, AEKey what) {
-        return what.matches(GenericStack.fromItemStack(requests[slot].stack));
+        return what.matches(GenericStack.fromItemStack(get(slot).stack));
     }
 
     private void validateSlot(int slot) {
@@ -83,7 +86,7 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
     @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
-        throw new UnsupportedOperationException();
+        return get(slot).stack;
     }
 
     @NotNull
@@ -108,13 +111,14 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
         return true;
     }
 
-    public final class Request implements INBTSerializable<CompoundTag> {
+    public final class Request implements INBTSerializable<CompoundTag>, IDataHandler {
 
         private final int slot;
         private boolean state = true;
         private ItemStack stack = ItemStack.EMPTY;
         private long count;
         private long batch = 1;
+        private boolean changed;
 
         private Request(int slot) {
             this.slot = slot;
@@ -147,6 +151,7 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
             if (this.state != state) {
                 this.state = state;
                 entity.setChanged();
+                changed = true;
             }
         }
 
@@ -159,13 +164,19 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
             } else {
                 this.count = count;
             }
-            if (!oldStack.sameItem(stack) || oldCount != this.count || oldBatch != batch) entity.setChanged();
+            if (!oldStack.sameItem(stack) || oldCount != this.count || oldBatch != batch) {
+                entity.setChanged();
+                changed = true;
+            }
         }
 
         public void updateBatch(long batch) {
             var oldBatch = this.batch;
             this.batch = batch <= 0 ? 1 : batch;
-            if (oldBatch != this.batch) entity.setChanged();
+            if (oldBatch != this.batch) {
+                entity.setChanged();
+                changed = true;
+            }
         }
 
         @Override
@@ -174,26 +185,61 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
                 batch + ']';
         }
 
+        @Override
+        public void encode(FriendlyByteBuf buffer) {
+            buffer.writeInt(slot);
+            buffer.writeBoolean(state);
+            buffer.writeItemStack(stack, true);
+            buffer.writeLong(count);
+            buffer.writeLong(batch);
+            changed = false;
+        }
+
+        @Override
+        public void decode(FriendlyByteBuf buffer) {
+            if (slot != buffer.readInt()) {
+                throw new IllegalStateException("Slot mismatch");
+            }
+            state = buffer.readBoolean();
+            stack = buffer.readItem();
+            count = buffer.readLong();
+            batch = buffer.readLong();
+            ClientHandler.updateRequestGui(slot);
+        }
+
+        @Override
+        public boolean hasChanged() {
+            return changed;
+        }
+
         private void updateStackClient(ItemStack stack) {
-            if (entity.getLevel() == null || !entity.getLevel().isClientSide) return;
             this.stack = stack;
         }
 
         private void updateStack(ItemStack stack) {
+            var oldStack = this.stack;
             if (stack.isEmpty()) {
-                resetSlot();
-            } else {
-                count = stack.getCount();
-                batch = 1;
-                this.stack = stack;
-                stack.setCount(1);
-                stackChanged();
+                if (!oldStack.isEmpty()) resetSlot();
+                return;
             }
+            if (oldStack.sameItem(stack)) {
+                if (count != stack.getCount()) {
+                    count = stack.getCount();
+                    changed = true;
+                }
+                return;
+            }
+            count = stack.getCount();
+            this.stack = stack;
+            stack.setCount(1);
+            batch = 1;
+            stackChanged();
         }
 
         private void stackChanged() {
             entity.getStorageManager().clear(slot);
             entity.setChanged();
+            changed = true;
         }
 
         private void resetSlot() {

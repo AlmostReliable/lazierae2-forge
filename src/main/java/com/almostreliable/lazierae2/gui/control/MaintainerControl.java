@@ -46,12 +46,11 @@ public final class MaintainerControl {
         return widgets;
     }
 
-    public void refreshBoxes() {
-        for (var control : controls) {
-            assert control.countBox != null && control.batchBox != null;
-            control.countBox.initValue();
-            control.batchBox.initValue();
-        }
+    public void refreshRequest(int slot) {
+        var control = controls[slot];
+        assert control.countBox != null && control.batchBox != null;
+        control.countBox.initValue();
+        control.batchBox.initValue();
     }
 
     private final class Control {
@@ -114,7 +113,7 @@ public final class MaintainerControl {
                 if (!screen.getMenu().getRequestState(slot) || screen.getMenu().getRequestCount(slot) == 0) {
                     return 0xFF66_6666; // gray
                 }
-                var status = screen.getMenu().getProgressionType(slot);
+                var status = screen.getMenu().getRequestStatus(slot);
                 return switch (status) {
                     case IDLE -> 0xFF05_DA00; // green
                     case LINK -> 0xFFDA_8A00; // orange
