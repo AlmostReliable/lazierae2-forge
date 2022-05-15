@@ -28,9 +28,13 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
 
     @Override
     public void setStackInSlot(int slot, @NotNull ItemStack stack) {
-        if (entity.getLevel() == null || entity.getLevel().isClientSide) return;
+        if (entity.getLevel() == null) return;
         validateSlot(slot);
-        requests[slot].updateStack(stack);
+        if (entity.getLevel().isClientSide) {
+            requests[slot].updateStackClient(stack);
+        } else {
+            requests[slot].updateStack(stack);
+        }
     }
 
     @Override
@@ -170,7 +174,7 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
                 batch + ']';
         }
 
-        void updateStackClient(ItemStack stack) {
+        private void updateStackClient(ItemStack stack) {
             if (entity.getLevel() == null || !entity.getLevel().isClientSide) return;
             this.stack = stack;
         }
