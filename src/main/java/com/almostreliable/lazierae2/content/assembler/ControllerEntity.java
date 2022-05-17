@@ -42,6 +42,11 @@ public class ControllerEntity extends GenericEntity {
         return null;
     }
 
+    @Override
+    protected void playerDestroy(boolean creative) {
+        // TODO: implement
+    }
+
     public boolean isMultiBlockMaster() {
         return getBlockState().getValue(AssemblerBlock.IS_MULTIBLOCK);
     }

@@ -131,6 +131,26 @@ public class ProcessorEntity extends GenericEntity {
         return super.getCapability(cap, direction);
     }
 
+    @Override
+    protected void playerDestroy(boolean creative) {
+        assert level != null;
+        inventory.dropContents(creative);
+        if (creative) return;
+        var tag = new CompoundTag();
+        if (inventory.getUpgradeCount() > 0) tag.put(UPGRADES_ID, inventory.serializeUpgrades());
+        if (energy.getEnergyStored() > 0) tag.put(ENERGY_ID, energy.serializeNBT());
+        if (sideConfig.isConfigured()) tag.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
+        if (autoExtract) tag.putBoolean(AUTO_EXTRACT_ID, true);
+        var stack = new ItemStack(getProcessorType().getItemProvider());
+        if (!tag.isEmpty()) stack.setTag(tag);
+        level.addFreshEntity(new ItemEntity(level,
+            worldPosition.getX() + 0.5,
+            worldPosition.getY() + 0.5,
+            worldPosition.getZ() + 0.5,
+            stack
+        ));
+    }
+
     void tick() {
         if (level == null || level.isClientSide) return;
         if (autoExtract && level.getGameTime() % AUTO_EXTRACT_RATE == 0) autoExtract();
@@ -153,25 +173,6 @@ public class ProcessorEntity extends GenericEntity {
             changeActivityState(false);
         }
         if (progress >= processTime) finishWork(recipe, recipeInputSlots);
-    }
-
-    void playerDestroy(boolean creative) {
-        assert level != null;
-        inventory.dropContents(creative);
-        if (creative) return;
-        var tag = new CompoundTag();
-        if (inventory.getUpgradeCount() > 0) tag.put(UPGRADES_ID, inventory.serializeUpgrades());
-        if (energy.getEnergyStored() > 0) tag.put(ENERGY_ID, energy.serializeNBT());
-        if (sideConfig.isConfigured()) tag.put(SIDE_CONFIG_ID, sideConfig.serializeNBT());
-        if (autoExtract) tag.putBoolean(AUTO_EXTRACT_ID, true);
-        var stack = new ItemStack(getProcessorType().getItemProvider());
-        if (!tag.isEmpty()) stack.setTag(tag);
-        level.addFreshEntity(new ItemEntity(level,
-            worldPosition.getX() + 0.5,
-            worldPosition.getY() + 0.5,
-            worldPosition.getZ() + 0.5,
-            stack
-        ));
     }
 
     void playerPlace(ItemStack stack) {

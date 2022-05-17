@@ -8,7 +8,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -40,15 +39,6 @@ public class ProcessorBlock extends MachineBlock {
             processor.playerPlace(stack);
         }
         super.setPlacedBy(level, pos, state, placer, stack);
-    }
-
-    @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        var entity = level.getBlockEntity(pos);
-        if (!level.isClientSide && entity instanceof ProcessorEntity processor) {
-            processor.playerDestroy(player.isCreative());
-        }
-        super.playerWillDestroy(level, pos, state, player);
     }
 
     @SuppressWarnings("BoundedWildcard")

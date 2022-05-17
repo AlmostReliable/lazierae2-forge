@@ -31,6 +31,8 @@ public abstract class GenericEntity extends BlockEntity implements MenuProvider 
         }
     }
 
+    protected abstract void playerDestroy(boolean creative);
+
     @Override
     public CompoundTag getUpdateTag() {
         var tag = super.getUpdateTag();

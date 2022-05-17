@@ -39,6 +39,15 @@ public abstract class MachineBlock extends GenericBlock implements EntityBlock {
         builder.add(FACING);
     }
 
+    @Override
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        var be = level.getBlockEntity(pos);
+        if (!level.isClientSide && be instanceof GenericEntity entity) {
+            entity.playerDestroy(player.isCreative());
+        }
+        super.playerWillDestroy(level, pos, state, player);
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(

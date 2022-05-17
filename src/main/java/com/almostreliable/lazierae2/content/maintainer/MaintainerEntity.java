@@ -27,9 +27,11 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
@@ -135,6 +137,20 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
     public void setClientProgression(int slot, PROGRESSION_TYPE type) {
         progressions[slot] = new ClientState(type);
+    }
+
+    @Override
+    protected void playerDestroy(boolean creative) {
+        assert level != null;
+        storageManager.dropContents();
+        if (creative) return;
+        var stack = new ItemStack(Blocks.MAINTAINER.get());
+        level.addFreshEntity(new ItemEntity(level,
+            worldPosition.getX() + 0.5,
+            worldPosition.getY() + 0.5,
+            worldPosition.getZ() + 0.5,
+            stack
+        ));
     }
 
     private void loadStates(CompoundTag tag) {

@@ -7,6 +7,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
@@ -74,6 +75,27 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
     public void deserializeNBT(CompoundTag tag) {
         for (var slot = 0; slot < storages.length; slot++) {
             get(slot).deserializeNBT(tag.getCompound(String.valueOf(slot)));
+        }
+    }
+
+    void dropContents() {
+        assert owner.getLevel() != null;
+        for (var storage : storages) {
+            if (storage == null) continue;
+            var itemType = storage.getItemType();
+            if (!(itemType instanceof AEItemKey aeItem)) continue;
+            var amount = storage.getBufferAmount() + storage.pendingAmount;
+            if (amount <= 0) continue;
+            for (var i = amount; i > 0; i -= 64) {
+                var stack = aeItem.toStack((int) Math.min(i, 64));
+                owner.getLevel().addFreshEntity(new ItemEntity(
+                    owner.getLevel(),
+                    owner.getBlockPos().getX() + 0.5,
+                    owner.getBlockPos().getY() + 0.5,
+                    owner.getBlockPos().getZ() + 0.5,
+                    stack
+                ));
+            }
         }
     }
 

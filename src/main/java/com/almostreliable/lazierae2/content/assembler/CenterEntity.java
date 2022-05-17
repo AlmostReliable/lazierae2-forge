@@ -29,6 +29,11 @@ public class CenterEntity extends GenericEntity {
         return null;
     }
 
+    @Override
+    protected void playerDestroy(boolean creative) {
+        // TODO: implement
+    }
+
     public CENTER_TYPE getProcessorType() {
         return ((CenterBlock) getBlockState().getBlock()).getType();
     }
