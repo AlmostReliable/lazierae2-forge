@@ -38,9 +38,9 @@ public class ProcessorEntity extends GenericEntity {
 
     private static final int AUTO_EXTRACT_RATE = 10;
     public final SideConfiguration sideConfig;
+    public final EnergyHandler energy;
     private final ProcessorInventory inventory;
     private final LazyOptional<ProcessorInventory> inventoryCap;
-    private final EnergyHandler energy;
     private final LazyOptional<EnergyHandler> energyCap;
     private final Map<Direction, LazyOptional<IItemHandler>> autoExtractCache = new EnumMap<>(Direction.class);
     private ProcessorRecipe recipeCache;

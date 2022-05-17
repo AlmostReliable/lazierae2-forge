@@ -10,9 +10,6 @@ import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -112,8 +109,7 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
         sync.addDataHandler(new IntegerDataHandler(entity::getRecipeTime, entity::setRecipeTime));
         sync.addDataHandler(new IntegerDataHandler(entity::getEnergyCost, entity::setEnergyCost));
         sync.addDataHandler(new IntegerDataHandler(entity::getRecipeEnergy, entity::setRecipeEnergy));
-        sync.addDataHandler(new IntegerDataHandler(this::getEnergyStored, this::setEnergyStored));
-        sync.addDataHandler(new IntegerDataHandler(this::getEnergyCapacity, this::setEnergyCapacity));
+        sync.addDataHandler(entity.energy);
         sync.addDataHandler(entity.sideConfig);
     }
 
@@ -122,22 +118,14 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
     }
 
     public int getEnergyStored() {
-        return getEnergyCap().map(IEnergyStorage::getEnergyStored).orElse(0);
+        return entity.energy.getEnergyStored();
     }
 
     public void setEnergyStored(int energy) {
-        getEnergyCap().ifPresent(energyCap -> ((EnergyHandler) energyCap).setEnergy(energy));
+        entity.energy.setEnergy(energy);
     }
 
     public int getEnergyCapacity() {
-        return getEnergyCap().map(IEnergyStorage::getMaxEnergyStored).orElse(1);
-    }
-
-    private void setEnergyCapacity(int capacity) {
-        getEnergyCap().ifPresent(energyCap -> ((EnergyHandler) energyCap).setCapacity(capacity));
-    }
-
-    private LazyOptional<IEnergyStorage> getEnergyCap() {
-        return entity.getCapability(CapabilityEnergy.ENERGY);
+        return entity.energy.getMaxEnergyStored();
     }
 }
