@@ -49,11 +49,11 @@ public class SideConfiguration implements INBTSerializable<CompoundTag>, IDataHa
 
     @Override
     public CompoundTag serializeNBT() {
-        var nbt = new CompoundTag();
+        var tag = new CompoundTag();
         for (var side : BLOCK_SIDE.values()) {
-            nbt.putInt(side.toString(), get(side).ordinal());
+            tag.putInt(side.toString(), get(side).ordinal());
         }
-        return nbt;
+        return tag;
     }
 
     @Override

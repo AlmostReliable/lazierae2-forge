@@ -142,11 +142,11 @@ public final class RequestInventory implements IItemHandlerModifiable, INBTSeria
         }
 
         @Override
-        public void deserializeNBT(CompoundTag nbt) {
-            state = nbt.getBoolean(STATE_ID);
-            stack = ItemStack.of(nbt.getCompound(STACK_ID));
-            count = nbt.getLong(COUNT_ID);
-            batch = nbt.getLong(BATCH_ID);
+        public void deserializeNBT(CompoundTag tag) {
+            state = tag.getBoolean(STATE_ID);
+            stack = ItemStack.of(tag.getCompound(STACK_ID));
+            count = tag.getLong(COUNT_ID);
+            batch = tag.getLong(BATCH_ID);
         }
 
         public void updateState(boolean state) {

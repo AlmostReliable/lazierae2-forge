@@ -14,7 +14,7 @@ public final class DataSlotUtil {
      * Utility method to create a new {@link DataSlot} for integer values without
      * the need to have a clunky anonymous class.
      * <p>
-     * Marks the tile entity automatically for saving when changing values.
+     * Marks the block entity automatically for saving when changing values.
      * <p>
      * This method should only be used for integer values with the maximum value of 2^15-1.
      *

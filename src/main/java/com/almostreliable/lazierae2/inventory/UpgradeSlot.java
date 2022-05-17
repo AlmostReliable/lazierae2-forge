@@ -11,19 +11,19 @@ import javax.annotation.Nonnull;
 
 public class UpgradeSlot extends SlotItemHandler {
 
-    private final ProcessorEntity tile;
+    private final ProcessorEntity entity;
 
     public UpgradeSlot(
         ProcessorMenu parent, IItemHandler itemHandler, int index, int pX, int pY
     ) {
         super(itemHandler, index, pX, pY);
-        tile = parent.entity;
+        entity = parent.entity;
     }
 
     @Override
     public void setChanged() {
         super.setChanged();
-        tile.recalculateEnergyCapacity();
+        entity.recalculateEnergyCapacity();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class UpgradeSlot extends SlotItemHandler {
 
     @Override
     public int getMaxStackSize() {
-        return tile.getProcessorType().getUpgradeSlots();
+        return entity.getProcessorType().getUpgradeSlots();
     }
 
     @Override

@@ -128,7 +128,7 @@ public final class Setup {
             (windowId, inventory, data) -> {
                 var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
                 if (!(entity instanceof ProcessorEntity processor)) {
-                    throw new IllegalStateException("Tile is not a LazierAE2 processor!");
+                    throw new IllegalStateException("Entity is not a LazierAE2 processor!");
                 }
                 return new ProcessorMenu(windowId, processor, inventory);
             }
@@ -138,7 +138,7 @@ public final class Setup {
             (windowId, inventory, data) -> {
                 var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
                 if (!(entity instanceof MaintainerEntity maintainer)) {
-                    throw new IllegalStateException("Tile is not a LazierAE2 maintainer!");
+                    throw new IllegalStateException("Entity is not a LazierAE2 maintainer!");
                 }
                 return new MaintainerMenu(windowId, maintainer, inventory);
             }
@@ -314,6 +314,7 @@ public final class Setup {
 
             private Blocks() {}
 
+            @SuppressWarnings("SameParameterValue")
             private static TagKey<Block> mod(String path) {
                 return BlockTags.create(new ResourceLocation(MOD_ID, path));
             }

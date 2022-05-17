@@ -115,8 +115,8 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
         return getStackInSlot(UPGRADE_SLOT).save(new CompoundTag());
     }
 
-    void deserializeUpgrades(CompoundTag nbt) {
-        setStackInSlot(UPGRADE_SLOT, ItemStack.of(nbt));
+    void deserializeUpgrades(CompoundTag tag) {
+        setStackInSlot(UPGRADE_SLOT, ItemStack.of(tag));
     }
 
     void shrinkInputSlots(Set<Integer> slotsToShrink, int outputMultiplier) {
