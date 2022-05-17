@@ -51,10 +51,13 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
             }
         } else if (GameUtil.isValidUpgrade(slotStack)) {
             // from inventory to upgrade slot
-            slotStack = processorInventory.insertWithinRange(slotStack,
+            if (!moveItemStackTo(slotStack,
                 ProcessorInventory.UPGRADE_SLOT,
-                ProcessorInventory.UPGRADE_SLOT + 1
-            );
+                ProcessorInventory.UPGRADE_SLOT + 1,
+                false
+            )) {
+                return ItemStack.EMPTY;
+            }
         } else {
             // from inventory to machine inputs
             slotStack = processorInventory.insertWithinRange(slotStack,
