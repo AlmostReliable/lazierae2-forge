@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.data.server;
 
+import appeng.core.definitions.AEItems;
 import com.almostreliable.lazierae2.core.Setup;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Items;
@@ -12,6 +13,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import javax.annotation.Nullable;
 
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE;
 
 public final class TagData {
 
@@ -29,17 +31,24 @@ public final class TagData {
         protected void addTags() {
             tag(Setup.Tags.Items.DUSTS_COAL).add(Items.COAL_DUST.get());
             tag(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX).add(Items.CARB_FLUIX_DUST.get());
-            tag(Tags.Items.DUSTS).add(Items.COAL_DUST.get()).add(Items.CARB_FLUIX_DUST.get());
+            tag(Tags.Items.DUSTS).add(Items.COAL_DUST.get(), Items.CARB_FLUIX_DUST.get());
 
             tag(Setup.Tags.Items.GEMS_RESONATING).add(Items.RESONATING_GEM.get());
             tag(Tags.Items.GEMS).add(Items.RESONATING_GEM.get());
 
             tag(Setup.Tags.Items.INGOTS_FLUIX_IRON).add(Items.FLUIX_IRON.get());
             tag(Setup.Tags.Items.INGOTS_FLUIX_STEEL).add(Items.FLUIX_STEEL.get());
-            tag(Tags.Items.INGOTS).add(Items.FLUIX_IRON.get()).add(Items.FLUIX_STEEL.get());
+            tag(Tags.Items.INGOTS).add(Items.FLUIX_IRON.get(), Items.FLUIX_STEEL.get());
 
             tag(Setup.Tags.Items.PROCESSOR_PARALLEL).add(Items.PARALLEL_PROCESSOR.get());
             tag(Setup.Tags.Items.PROCESSOR_SPEC).add(Items.SPEC_PROCESSOR.get());
+            tag(Setup.Tags.Items.PROCESSORS).add(
+                Items.PARALLEL_PROCESSOR.get(),
+                Items.SPEC_PROCESSOR.get(),
+                AEItems.CALCULATION_PROCESSOR.asItem(),
+                AEItems.ENGINEERING_PROCESSOR.asItem(),
+                AEItems.LOGIC_PROCESSOR.asItem()
+            );
         }
     }
 
@@ -53,10 +62,14 @@ public final class TagData {
 
         @Override
         protected void addTags() {
-            tag(Setup.Tags.Blocks.AGGREGATOR).add(Blocks.AGGREGATOR.get());
-            tag(Setup.Tags.Blocks.CENTRIFUGE).add(Blocks.CENTRIFUGE.get());
-            tag(Setup.Tags.Blocks.ENERGIZER).add(Blocks.ENERGIZER.get());
-            tag(Setup.Tags.Blocks.ETCHER).add(Blocks.ETCHER.get());
+            tag(Setup.Tags.Blocks.MACHINES).add(
+                Blocks.AGGREGATOR.get(),
+                Blocks.CENTRIFUGE.get(),
+                Blocks.ENERGIZER.get(),
+                Blocks.ETCHER.get(),
+                Blocks.MAINTAINER.get()
+            );
+            tag(MINEABLE_WITH_PICKAXE).addTag(Setup.Tags.Blocks.MACHINES);
         }
     }
 }

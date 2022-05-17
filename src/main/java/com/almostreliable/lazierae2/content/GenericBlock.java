@@ -33,7 +33,7 @@ public abstract class GenericBlock extends Block {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     protected GenericBlock() {
-        super(Properties.of(Material.METAL).strength(5f).sound(SoundType.METAL));
+        super(Properties.of(Material.METAL).strength(3f).sound(SoundType.METAL));
         registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
     }
 

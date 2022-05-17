@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "lazierae2:aggregator",
+    "lazierae2:centrifuge",
+    "lazierae2:energizer",
+    "lazierae2:etcher",
+    "lazierae2:maintainer"
+  ]
+}

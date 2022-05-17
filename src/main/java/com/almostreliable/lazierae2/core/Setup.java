@@ -290,6 +290,7 @@ public final class Setup {
             public static final TagKey<Item> INGOTS_FLUIX_IRON = forge("ingots/fluix_iron");
             public static final TagKey<Item> INGOTS_FLUIX_STEEL = forge("ingots/fluix_steel");
 
+            public static final TagKey<Item> PROCESSORS = mod("processors");
             public static final TagKey<Item> PROCESSOR_PARALLEL = mod("processors/parallel");
             public static final TagKey<Item> PROCESSOR_SPEC = mod("processors/speculative");
 
@@ -309,11 +310,7 @@ public final class Setup {
 
         public static final class Blocks {
 
-            private static final String PROCESSOR_ENTRY = "processor/";
-            public static final TagKey<Block> AGGREGATOR = mod(PROCESSOR_ENTRY + ProcessorType.AGGREGATOR.getId());
-            public static final TagKey<Block> CENTRIFUGE = mod(PROCESSOR_ENTRY + ProcessorType.CENTRIFUGE.getId());
-            public static final TagKey<Block> ENERGIZER = mod(PROCESSOR_ENTRY + ProcessorType.ENERGIZER.getId());
-            public static final TagKey<Block> ETCHER = mod(PROCESSOR_ENTRY + ProcessorType.ETCHER.getId());
+            public static final TagKey<Block> MACHINES = mod("machines");
 
             private Blocks() {}
 
