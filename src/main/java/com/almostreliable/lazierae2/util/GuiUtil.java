@@ -439,7 +439,7 @@ public final class GuiUtil {
                 var value = component.getSiblings().get(1);
                 value = handleReplacements((TranslatableComponent) value).withStyle(ChatFormatting.WHITE);
                 component.getSiblings().set(1, value);
-                tooltip.add(component);
+                tooltip.add(component.copy());
             }
         }
 
