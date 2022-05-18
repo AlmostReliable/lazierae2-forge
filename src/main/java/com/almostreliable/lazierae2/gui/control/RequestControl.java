@@ -21,14 +21,14 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
-public final class MaintainerControl {
+public final class RequestControl {
 
     private static final int WIDGETS_PER_CONTROL = 6;
     public final MaintainerScreen screen;
     private final int slots;
     private final Control[] controls;
 
-    public MaintainerControl(MaintainerScreen screen, int slots) {
+    public RequestControl(MaintainerScreen screen, int slots) {
         this.screen = screen;
         this.slots = slots;
         controls = new Control[slots];

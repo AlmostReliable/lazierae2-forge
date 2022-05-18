@@ -1,7 +1,7 @@
 package com.almostreliable.lazierae2.gui;
 
 import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
-import com.almostreliable.lazierae2.gui.control.MaintainerControl;
+import com.almostreliable.lazierae2.gui.control.RequestControl;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -15,7 +15,7 @@ public class MaintainerScreen extends GenericScreen<MaintainerMenu> {
     private static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/maintainer.png");
     private static final int TEXTURE_WIDTH = 176;
     private static final int TEXTURE_HEIGHT = 211;
-    public final MaintainerControl maintainerControl;
+    public final RequestControl requestControl;
 
     @SuppressWarnings({"AssignmentToSuperclassField", "ThisEscapedInObjectConstruction"})
     public MaintainerScreen(
@@ -24,13 +24,13 @@ public class MaintainerScreen extends GenericScreen<MaintainerMenu> {
         super(menu, inventory);
         imageWidth = TEXTURE_WIDTH;
         imageHeight = TEXTURE_HEIGHT;
-        maintainerControl = new MaintainerControl(this, menu.entity.craftRequests.getSlots());
+        requestControl = new RequestControl(this, menu.entity.craftRequests.getSlots());
     }
 
     @Override
     protected void init() {
         super.init();
-        addRenderables(maintainerControl.init());
+        addRenderables(requestControl.init());
     }
 
     @Override
