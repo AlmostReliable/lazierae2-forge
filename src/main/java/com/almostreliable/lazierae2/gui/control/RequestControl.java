@@ -46,11 +46,11 @@ public final class RequestControl {
         return widgets;
     }
 
-    public void refreshRequest(int slot) {
+    public void refreshControlBoxes(int slot) {
         var control = controls[slot];
         assert control.countBox != null && control.batchBox != null;
-        control.countBox.initValue();
-        control.batchBox.initValue();
+        control.countBox.setValueFromEntity();
+        control.batchBox.setValueFromEntity();
     }
 
     private final class Control {
@@ -143,11 +143,7 @@ public final class RequestControl {
                     TextComponent.EMPTY
                 );
                 submitButton = new SubmitButton(screen, x + WIDTH + 2, slot * (GAP + HEIGHT) + POS_Y - 1);
-                setBordered(false);
-                setTextColor(0xFF_FFFF);
-                setFilter(text -> StringUtils.isNumeric(text) || text.isEmpty());
-                setMaxLength(6);
-                initValue();
+                applyBoxDefaults();
             }
 
             @Override
@@ -168,39 +164,54 @@ public final class RequestControl {
                 return super.keyPressed(keyCode, scanCode, modifiers);
             }
 
+            /**
+             * Controls which element is focused next after tab is pressed.
+             */
             protected abstract void switchFocus();
 
-            protected abstract void syncValue();
+            protected abstract void sendToServer();
 
-            void initValue() {
-                setValue(String.valueOf(getServerValue()));
+            /**
+             * Sets the box value to the value that is stored in the block entity on
+             * the respective side this method is called on.
+             */
+            void setValueFromEntity() {
+                setValue(String.valueOf(getEntityValue()));
             }
 
             private void validateAndSubmit() {
                 setValueFromLong(getValueAsLong());
             }
 
+            private void applyBoxDefaults() {
+                setBordered(false);
+                setTextColor(0xFF_FFFF);
+                setFilter(text -> StringUtils.isNumeric(text) || text.isEmpty());
+                setMaxLength(6);
+                setValueFromEntity();
+            }
+
             long getValueAsLong() {
                 try {
                     return Long.parseLong(getValue());
                 } catch (NumberFormatException e) {
-                    return getServerValue();
+                    return getEntityValue();
                 }
             }
 
-            protected abstract long getServerValue();
+            protected abstract long getEntityValue();
 
             @Override
             public boolean isHoveredOrFocused() {
-                // don't allow tooltips on focus
+                // override to disable showing tooltips on focus
                 return isHovered;
             }
 
             private void setValueFromLong(long value) {
-                var oldValue = getServerValue();
+                var oldValue = getEntityValue();
                 setValue(String.valueOf(value));
                 if (value != oldValue) {
-                    syncValue();
+                    sendToServer();
                 }
             }
 
@@ -284,13 +295,12 @@ public final class RequestControl {
             }
 
             @Override
-            protected void syncValue() {
+            protected void sendToServer() {
                 PacketHandler.CHANNEL.sendToServer(new RequestCountPacket(slot, getValueAsLong()));
             }
 
-            @SuppressWarnings("AmbiguousFieldAccess")
             @Override
-            protected long getServerValue() {
+            protected long getEntityValue() {
                 return screen.getMenu().getRequestCount(slot);
             }
         }
@@ -313,13 +323,12 @@ public final class RequestControl {
             }
 
             @Override
-            protected void syncValue() {
+            protected void sendToServer() {
                 PacketHandler.CHANNEL.sendToServer(new RequestBatchPacket(slot, getValueAsLong()));
             }
 
-            @SuppressWarnings("AmbiguousFieldAccess")
             @Override
-            protected long getServerValue() {
+            protected long getEntityValue() {
                 return screen.getMenu().getRequestBatch(slot);
             }
         }

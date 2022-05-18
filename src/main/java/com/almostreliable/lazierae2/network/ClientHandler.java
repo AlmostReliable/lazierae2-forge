@@ -13,7 +13,7 @@ public final class ClientHandler {
     public static void updateRequestGui(int slot) {
         var screen = Minecraft.getInstance().screen;
         if (!(screen instanceof MaintainerScreen gui)) return;
-        gui.requestControl.refreshRequest(slot);
+        gui.requestControl.refreshControlBoxes(slot);
     }
 
     static <T> void handlePacket(T packet) {
