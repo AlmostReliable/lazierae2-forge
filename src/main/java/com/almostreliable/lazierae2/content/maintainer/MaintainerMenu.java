@@ -58,6 +58,10 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
         return entity.craftRequests.get(slot).getState();
     }
 
+    public ItemStack getRequestStack(int slot) {
+        return entity.craftRequests.get(slot).getStack();
+    }
+
     public long getRequestCount(int slot) {
         return entity.craftRequests.get(slot).getCount();
     }

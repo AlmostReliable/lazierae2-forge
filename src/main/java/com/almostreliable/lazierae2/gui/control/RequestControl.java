@@ -171,16 +171,20 @@ public final class RequestControl {
 
             protected abstract void sendToServer();
 
+            protected void validateAndSubmit() {
+                if (screen.getMenu().getRequestStack(slot).isEmpty()) {
+                    setValueFromEntity();
+                    return;
+                }
+                setValueFromLong(getValueAsLong());
+            }
+
             /**
              * Sets the box value to the value that is stored in the block entity on
              * the respective side this method is called on.
              */
             void setValueFromEntity() {
                 setValue(String.valueOf(getEntityValue()));
-            }
-
-            private void validateAndSubmit() {
-                setValueFromLong(getValueAsLong());
             }
 
             private void applyBoxDefaults() {
@@ -325,6 +329,12 @@ public final class RequestControl {
             @Override
             protected void sendToServer() {
                 PacketHandler.CHANNEL.sendToServer(new RequestBatchPacket(slot, getValueAsLong()));
+            }
+
+            @Override
+            protected void validateAndSubmit() {
+                if (getValueAsLong() <= 0) return;
+                super.validateAndSubmit();
             }
 
             @Override
