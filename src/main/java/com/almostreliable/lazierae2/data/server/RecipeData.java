@@ -196,20 +196,18 @@ public class RecipeData extends RecipeProvider {
 
     private void aggregatorRecipes(Consumer<? super FinishedRecipe> c) {
         ProcessorRecipeBuilder
-            .aggregator(Setup.Items.FLUIX_STEEL.get())
-            .input(Setup.Tags.Items.DUSTS_COAL)
-            .input(AEItems.FLUIX_DUST.asItem())
-            .input(Tags.Items.INGOTS_IRON)
-            .processingTime(80)
-            .energyCost(1_500)
+            .aggregator(AEItems.CERTUS_QUARTZ_CRYSTAL, 2)
+            .input(Tags.Items.SAND)
+            .input(ConventionTags.CERTUS_QUARTZ_DUST)
+            .processingTime(200)
+            .energyCost(12_000)
             .build(c);
         ProcessorRecipeBuilder
-            .aggregator(Setup.Items.CARB_FLUIX_DUST.get())
-            .input(Setup.Tags.Items.DUSTS_COAL)
-            .input(AEItems.FLUIX_DUST.asItem())
-            .input(Setup.Tags.Items.SILICON)
-            .processingTime(30)
-            .energyCost(300)
+            .aggregator(AEItems.FLUIX_CRYSTAL, 2)
+            .input(Tags.Items.SAND)
+            .input(ConventionTags.FLUIX_DUST)
+            .processingTime(200)
+            .energyCost(12_000)
             .build(c);
         ProcessorRecipeBuilder
             .aggregator(Setup.Items.RESONATING_CRYSTAL.get(), 2)
@@ -225,30 +223,6 @@ public class RecipeData extends RecipeProvider {
             .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
             .processingTime(60)
             .energyCost(600)
-            .build(c);
-    }
-
-    private void grinderRecipes(Consumer<? super FinishedRecipe> c) {
-        ProcessorRecipeBuilder
-            .grinder(AEItems.SKY_DUST.asItem())
-            .input(AEBlocks.SKY_STONE_BLOCK.asItem())
-            .processingTime(80)
-            .energyCost(800)
-            .build(c);
-        ProcessorRecipeBuilder
-            .grinder(AEItems.ENDER_DUST.asItem())
-            .input(Tags.Items.ENDER_PEARLS)
-            .processingTime(80)
-            .energyCost(800)
-            .build(c);
-    }
-
-    private void infuserRecipes(Consumer<? super FinishedRecipe> c) {
-        ProcessorRecipeBuilder
-            .infuser(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
-            .input(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
-            .processingTime(80)
-            .energyCost(1_500)
             .build(c);
     }
 
@@ -300,6 +274,52 @@ public class RecipeData extends RecipeProvider {
             .input(AEItems.SKY_DUST)
             .processingTime(40)
             .energyCost(200)
+            .build(c);
+    }
+
+    private void grinderRecipes(Consumer<? super FinishedRecipe> c) {
+        ProcessorRecipeBuilder
+            .grinder(AEItems.SKY_DUST)
+            .input(AEBlocks.SKY_STONE_BLOCK)
+            .processingTime(80)
+            .energyCost(800)
+            .build(c);
+        ProcessorRecipeBuilder
+            .grinder(AEItems.ENDER_DUST)
+            .input(Tags.Items.ENDER_PEARLS)
+            .processingTime(80)
+            .energyCost(800)
+            .build(c);
+        ProcessorRecipeBuilder
+            .grinder(Setup.Items.COAL_DUST.get())
+            .input(ItemTags.COALS)
+            .processingTime(80)
+            .energyCost(800)
+            .build(c);
+    }
+
+    private void infuserRecipes(Consumer<? super FinishedRecipe> c) {
+        ProcessorRecipeBuilder
+            .infuser(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+            .input(AEItems.CERTUS_QUARTZ_CRYSTAL)
+            .processingTime(80)
+            .energyCost(1_500)
+            .build(c);
+        ProcessorRecipeBuilder
+            .aggregator(Setup.Items.CARB_FLUIX_DUST.get())
+            .input(Setup.Tags.Items.DUSTS_COAL)
+            .input(AEItems.FLUIX_DUST)
+            .input(ConventionTags.SILICON)
+            .processingTime(30)
+            .energyCost(300)
+            .build(c);
+        ProcessorRecipeBuilder
+            .aggregator(Setup.Items.FLUIX_STEEL.get())
+            .input(Setup.Tags.Items.DUSTS_COAL)
+            .input(AEItems.FLUIX_DUST)
+            .input(Tags.Items.INGOTS_IRON)
+            .processingTime(80)
+            .energyCost(1_500)
             .build(c);
     }
 }
