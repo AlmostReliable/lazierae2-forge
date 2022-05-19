@@ -31,7 +31,8 @@ public final class TagData {
         protected void addTags() {
             tag(Setup.Tags.Items.DUSTS_COAL).add(Items.COAL_DUST.get());
             tag(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX).add(Items.CARB_FLUIX_DUST.get());
-            tag(Tags.Items.DUSTS).add(Items.COAL_DUST.get(), Items.CARB_FLUIX_DUST.get());
+            tag(Setup.Tags.Items.DUSTS_RESONATING).add(Items.RESONATING_DUST.get());
+            tag(Tags.Items.DUSTS).add(Items.COAL_DUST.get(), Items.CARB_FLUIX_DUST.get(), Items.RESONATING_DUST.get());
 
             tag(Setup.Tags.Items.GEMS_RESONATING).add(Items.RESONATING_CRYSTAL.get());
             tag(Tags.Items.GEMS).add(Items.RESONATING_CRYSTAL.get());

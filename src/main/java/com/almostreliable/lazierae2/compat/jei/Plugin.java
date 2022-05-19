@@ -1,11 +1,16 @@
 package com.almostreliable.lazierae2.compat.jei;
 
+import appeng.core.AEConfig;
+import appeng.core.definitions.AEItems;
+import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
+import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
 import com.almostreliable.lazierae2.compat.jei.category.AggregatorCategory;
 import com.almostreliable.lazierae2.compat.jei.category.EtcherCategory;
 import com.almostreliable.lazierae2.compat.jei.category.GrinderCategory;
 import com.almostreliable.lazierae2.compat.jei.category.InfuserCategory;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
+import com.almostreliable.lazierae2.core.Setup.Items;
 import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
@@ -14,6 +19,11 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.Tags;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @JeiPlugin
@@ -40,6 +50,23 @@ public class Plugin implements IModPlugin {
         r.addRecipes(recipeManager.getAllRecipesFor(ProcessorType.ETCHER), EtcherCategory.UID);
         r.addRecipes(recipeManager.getAllRecipesFor(ProcessorType.GRINDER), GrinderCategory.UID);
         r.addRecipes(recipeManager.getAllRecipesFor(ProcessorType.INFUSER), InfuserCategory.UID);
+
+        var inWaterRecipes = new ArrayList<>();
+        if (AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
+            inWaterRecipes.add(new ThrowingInWaterDisplay(
+                List.of(Ingredient.of(Items.RESONATING_SEED.get())),
+                new ItemStack(Items.RESONATING_CRYSTAL.get()),
+                true
+            ));
+        }
+        if (AEConfig.instance().isInWorldFluixEnabled()) {
+            inWaterRecipes.add(new ThrowingInWaterDisplay(List.of(
+                Ingredient.of(AEItems.SKY_DUST),
+                Ingredient.of(Tags.Items.GEMS_DIAMOND),
+                Ingredient.of(AEItems.ENDER_DUST)
+            ), new ItemStack(Items.RESONATING_DUST.get(), 2), false));
+        }
+        r.addRecipes(inWaterRecipes, ThrowingInWaterCategory.ID);
     }
 
     @Override

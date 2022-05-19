@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "lazierae2:item/resonating_seed"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "ae2:growth": 0.333
+      },
+      "model": "lazierae2:item/resonating_seed_2"
+    },
+    {
+      "predicate": {
+        "ae2:growth": 0.666
+      },
+      "model": "lazierae2:item/resonating_seed_3"
+    }
+  ]
+}

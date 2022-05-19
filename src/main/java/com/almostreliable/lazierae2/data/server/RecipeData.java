@@ -144,6 +144,12 @@ public class RecipeData extends RecipeProvider {
 
     private void shapelessItems(Consumer<FinishedRecipe> c) {
         ShapelessRecipeBuilder
+            .shapeless(Setup.Items.RESONATING_SEED.get())
+            .requires(Tags.Items.SAND)
+            .requires(Setup.Tags.Items.DUSTS_RESONATING)
+            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.DUSTS_RESONATING))
+            .save(c);
+        ShapelessRecipeBuilder
             .shapeless(Setup.Items.CARB_FLUIX_DUST.get())
             .requires(AEItems.FLUIX_DUST.asItem(), 2)
             .requires(Setup.Tags.Items.DUSTS_COAL)
@@ -207,20 +213,11 @@ public class RecipeData extends RecipeProvider {
             .energyCost(300)
             .build(c);
         ProcessorRecipeBuilder
-            .aggregator(AEItems.FLUIX_CRYSTAL.asItem(), 2)
-            .input(Tags.Items.GEMS_QUARTZ)
-            .input(Tags.Items.DUSTS_REDSTONE)
-            .input(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
-            .processingTime(25)
-            .energyCost(250)
-            .build(c);
-        ProcessorRecipeBuilder
-            .aggregator(Setup.Items.RESONATING_CRYSTAL.get())
-            .input(AEItems.SKY_DUST.asItem())
-            .input(Tags.Items.GEMS_DIAMOND)
-            .input(AEItems.ENDER_DUST.asItem())
-            .processingTime(120)
-            .energyCost(2_000)
+            .aggregator(Setup.Items.RESONATING_CRYSTAL.get(), 2)
+            .input(Tags.Items.SAND)
+            .input(ConventionTags.FLUIX_DUST)
+            .processingTime(200)
+            .energyCost(12_000)
             .build(c);
         ProcessorRecipeBuilder
             .aggregator(Setup.Items.SPEC_CORE_1.get())

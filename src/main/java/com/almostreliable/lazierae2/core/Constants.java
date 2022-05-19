@@ -36,6 +36,8 @@ public final class Constants {
         public static final String PARALLEL_PRINTED_ID = "parallel_printed";
         public static final String PARALLEL_PROCESSOR_ID = "parallel_processor";
         public static final String RESONATING_CRYSTAL_ID = "resonating_crystal";
+        public static final String RESONATING_DUST_ID = "resonating_dust";
+        public static final String RESONATING_SEED_ID = "resonating_seed";
         public static final String SPEC_CORE_1_ID = "speculation_core_1";
         public static final String SPEC_CORE_2_ID = "speculation_core_2";
         public static final String SPEC_CORE_4_ID = "speculation_core_4";
