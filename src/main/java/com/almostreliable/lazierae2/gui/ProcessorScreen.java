@@ -88,7 +88,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
         RenderSystem.setShaderTexture(0, progressTexture);
         var progress = menu.entity.getProgress();
         var processTime = menu.entity.getProcessTime();
-        var barWidth = processTime > 0 ? progress * (PROGRESS_WIDTH / 2) / processTime : 0;
+        var barWidth = processTime > 0 && progress > 0 ? (progress + 1) * (PROGRESS_WIDTH / 2) / processTime : 0;
         blit(
             stack,
             leftPos + 78,
