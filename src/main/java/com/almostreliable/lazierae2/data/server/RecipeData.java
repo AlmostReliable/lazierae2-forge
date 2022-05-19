@@ -9,9 +9,11 @@ import com.almostreliable.lazierae2.core.Setup;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.recipe.builder.ProcessorRecipeBuilder;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.*;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
@@ -29,7 +31,6 @@ public class RecipeData extends RecipeProvider {
         shapedBlocks(c);
         shapedItems(c);
         shapelessItems(c);
-        cookingItems(c);
         aggregatorRecipes(c);
         etcherRecipes(c);
         grinderRecipes(c);
@@ -185,13 +186,6 @@ public class RecipeData extends RecipeProvider {
             .requires(Setup.Items.PARALLEL_PROCESSOR.get())
             .requires(Setup.Items.SPEC_CORE_32.get(), 2)
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_32.get()))
-            .save(c);
-    }
-
-    private void cookingItems(Consumer<FinishedRecipe> c) {
-        SimpleCookingRecipeBuilder
-            .smelting(Ingredient.of(Setup.Tags.Items.INGOTS_FLUIX_STEEL), Setup.Items.FLUIX_STEEL.get(), 0.15F, 120)
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.INGOTS_FLUIX_STEEL))
             .save(c);
     }
 
