@@ -160,10 +160,11 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip title(BooleanSupplier condition, String key, Supplier<?>... replacements) {
-            return component(new IfComponent(condition,
+            components.add(new IfComponent(condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GOLD),
                 replacements
             ));
+            return this;
         }
 
         /**
@@ -200,10 +201,11 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip line(BooleanSupplier condition, String key, Supplier<?>... replacements) {
-            return component(new IfComponent(condition,
+            components.add(new IfComponent(condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.WHITE),
                 replacements
             ));
+            return this;
         }
 
         /**
@@ -218,10 +220,11 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip line(BooleanSupplier condition, String key, ChatFormatting color, Supplier<?>... replacements) {
-            return component(new IfComponent(condition,
+            components.add(new IfComponent(condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, color),
                 replacements
             ));
+            return this;
         }
 
         public Tooltip lineEnum(
