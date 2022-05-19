@@ -309,9 +309,6 @@ public final class Setup {
             public static final TagKey<Item> PROCESSOR_PARALLEL = mod("processors/parallel");
             public static final TagKey<Item> PROCESSOR_SPEC = mod("processors/speculative");
 
-            // Applied Energistics 2
-            public static final TagKey<Item> SILICON = forge("silicon");
-
             private Items() {}
 
             private static TagKey<Item> forge(String path) {

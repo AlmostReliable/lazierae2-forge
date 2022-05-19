@@ -3,7 +3,7 @@
   "pattern": [
     "ama",
     "aba",
-    "afa"
+    "aga"
   ],
   "key": {
     "a": {
@@ -15,8 +15,8 @@
     "b": {
       "item": "minecraft:water_bucket"
     },
-    "f": {
-      "item": "ae2:fluix_glass_cable"
+    "g": {
+      "tag": "ae2:glass_cable"
     }
   },
   "result": {
