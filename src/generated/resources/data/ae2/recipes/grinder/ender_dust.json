@@ -1,5 +1,5 @@
 {
-  "type": "lazierae2:centrifuge",
+  "type": "lazierae2:grinder",
   "process_time": 80,
   "energy_cost": 800,
   "output": {

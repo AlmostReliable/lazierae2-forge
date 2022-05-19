@@ -5,16 +5,16 @@ import com.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.almostreliable.lazierae2.core.Constants.Blocks.CENTRIFUGE_ID;
+import static com.almostreliable.lazierae2.core.Constants.Blocks.GRINDER_ID;
 
-public class CentrifugeCategory extends SingleInputCategory {
+public class GrinderCategory extends SingleInputCategory {
 
-    public static final ResourceLocation UID = TextUtil.getRL(CENTRIFUGE_ID);
+    public static final ResourceLocation UID = TextUtil.getRL(GRINDER_ID);
 
-    public CentrifugeCategory(
+    public GrinderCategory(
         IGuiHelper guiHelper
     ) {
-        super(guiHelper, CENTRIFUGE_ID, Blocks.CENTRIFUGE.get());
+        super(guiHelper, GRINDER_ID, Blocks.GRINDER.get());
     }
 
     @Override

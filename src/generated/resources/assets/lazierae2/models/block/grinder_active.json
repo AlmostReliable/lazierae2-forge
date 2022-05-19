@@ -2,7 +2,7 @@
   "parent": "minecraft:block/orientable",
   "textures": {
     "side": "lazierae2:block/machine/side",
-    "front": "lazierae2:block/machine/centrifuge",
+    "front": "lazierae2:block/machine/grinder_active",
     "top": "lazierae2:block/machine/side"
   }
 }

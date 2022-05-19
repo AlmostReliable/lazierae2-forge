@@ -44,15 +44,15 @@ public class LazierAE2 {
             Blocks.AGGREGATOR.get().asItem(),
             ProcessorType.AGGREGATOR.getUpgradeSlots()
         );
-        Upgrades.add(AEItems.SPEED_CARD.asItem(),
-            Blocks.CENTRIFUGE.get().asItem(),
-            ProcessorType.CENTRIFUGE.getUpgradeSlots()
-        );
-        Upgrades.add(AEItems.SPEED_CARD.asItem(),
-            Blocks.ENERGIZER.get().asItem(),
-            ProcessorType.ENERGIZER.getUpgradeSlots()
-        );
         Upgrades.add(AEItems.SPEED_CARD.asItem(), Blocks.ETCHER.get().asItem(), ProcessorType.ETCHER.getUpgradeSlots());
+        Upgrades.add(AEItems.SPEED_CARD.asItem(),
+            Blocks.GRINDER.get().asItem(),
+            ProcessorType.GRINDER.getUpgradeSlots()
+        );
+        Upgrades.add(AEItems.SPEED_CARD.asItem(),
+            Blocks.INFUSER.get().asItem(),
+            ProcessorType.INFUSER.getUpgradeSlots()
+        );
     }
 
     private static void onClientSetup(FMLClientSetupEvent event) {

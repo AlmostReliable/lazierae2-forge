@@ -27,9 +27,9 @@ public class ItemModelData extends ItemModelProvider {
     @Override
     protected void registerModels() {
         existingParent(ProcessorType.AGGREGATOR.getId());
-        existingParent(ProcessorType.CENTRIFUGE.getId());
-        existingParent(ProcessorType.ENERGIZER.getId());
         existingParent(ProcessorType.ETCHER.getId());
+        existingParent(ProcessorType.GRINDER.getId());
+        existingParent(ProcessorType.INFUSER.getId());
         existingParent(CONTROLLER_ID);
         existingParent(WALL_ID);
         existingParent(FRAME_ID);
@@ -37,13 +37,12 @@ public class ItemModelData extends ItemModelProvider {
 
         builder(Items.CARB_FLUIX_DUST);
         builder(Items.COAL_DUST);
-        builder(Items.FLUIX_IRON);
         builder(Items.FLUIX_STEEL);
-        builder(Items.GROWTH_CHAMBER);
+        builder(Items.GROWTH_CORE);
         builder(Items.LOGIC_UNIT);
         builder(Items.PARALLEL_PRINTED);
         builder(Items.PARALLEL_PROCESSOR);
-        builder(Items.RESONATING_GEM);
+        builder(Items.RESONATING_CRYSTAL);
         builder(Items.SPEC_CORE_1);
         builder(Items.SPEC_CORE_2);
         builder(Items.SPEC_CORE_4);

@@ -104,9 +104,9 @@ public final class Config {
     public static final class CommonConfig {
 
         public final ProcessorConfig aggregator;
-        public final ProcessorConfig centrifuge;
-        public final ProcessorConfig energizer;
         public final ProcessorConfig etcher;
+        public final ProcessorConfig grinder;
+        public final ProcessorConfig infuser;
         public final DoubleValue maintainerIdleEnergy;
 
         private CommonConfig(Builder builder) {
@@ -118,8 +118,8 @@ public final class Config {
                 "##################################################################################"
             );
             aggregator = new ProcessorConfig(builder, AGGREGATOR_ID);
-            centrifuge = new ProcessorConfig(builder, CENTRIFUGE_ID);
-            energizer = new ProcessorConfig(builder, ENERGIZER_ID);
+            grinder = new ProcessorConfig(builder, GRINDER_ID);
+            infuser = new ProcessorConfig(builder, INFUSER_ID);
             etcher = new ProcessorConfig(builder, ETCHER_ID);
             builder.pop();
 

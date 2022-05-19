@@ -2,7 +2,7 @@
   "parent": "minecraft:block/orientable",
   "textures": {
     "side": "lazierae2:block/machine/side",
-    "front": "lazierae2:block/machine/energizer",
+    "front": "lazierae2:block/machine/infuser",
     "top": "lazierae2:block/machine/side"
   }
 }

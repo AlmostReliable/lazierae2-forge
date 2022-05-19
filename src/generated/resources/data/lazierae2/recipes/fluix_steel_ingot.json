@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smelting",
   "ingredient": {
-    "tag": "forge:ingots/fluix_iron"
+    "tag": "forge:ingots/fluix_steel"
   },
   "result": "lazierae2:fluix_steel_ingot",
   "experience": 0.15,

@@ -15,14 +15,14 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 @SuppressWarnings("unused")
 @ZenRegister
-@Name("mods." + MOD_ID + ".Energizer")
-public class EnergizerManager implements ProcessorRecipeManager {
+@Name("mods." + MOD_ID + ".Infuser")
+public class InfuserManager implements ProcessorRecipeManager {
 
-    public static final EnergizerManager INSTANCE = new EnergizerManager();
+    public static final InfuserManager INSTANCE = new InfuserManager();
 
     @Override
     public RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
-        return new RecipeBuilderWrapper(this, ProcessorType.ENERGIZER, id, output);
+        return new RecipeBuilderWrapper(this, ProcessorType.INFUSER, id, output);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class EnergizerManager implements ProcessorRecipeManager {
         ResourceLocation id, ItemStack output, int amount, Ingredient[] ingredients, int processTime, int energyCost
     ) {
         return ProcessorRecipeBuilder
-            .energizer(output.getItem(), amount)
+            .infuser(output.getItem(), amount)
             .input(ingredients)
             .processingTime(processTime)
             .energyCost(energyCost)
@@ -39,6 +39,6 @@ public class EnergizerManager implements ProcessorRecipeManager {
 
     @Override
     public RecipeType<ProcessorRecipe> getRecipeType() {
-        return ProcessorType.ENERGIZER;
+        return ProcessorType.INFUSER;
     }
 }

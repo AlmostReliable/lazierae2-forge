@@ -5,16 +5,16 @@ import com.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.almostreliable.lazierae2.core.Constants.Blocks.ENERGIZER_ID;
+import static com.almostreliable.lazierae2.core.Constants.Blocks.INFUSER_ID;
 
-public class EnergizerCategory extends SingleInputCategory {
+public class InfuserCategory extends TripleInputCategory {
 
-    public static final ResourceLocation UID = TextUtil.getRL(ENERGIZER_ID);
+    public static final ResourceLocation UID = TextUtil.getRL(INFUSER_ID);
 
-    public EnergizerCategory(
+    public InfuserCategory(
         IGuiHelper guiHelper
     ) {
-        super(guiHelper, ENERGIZER_ID, Blocks.ENERGIZER.get());
+        super(guiHelper, INFUSER_ID, Blocks.INFUSER.get());
     }
 
     @Override

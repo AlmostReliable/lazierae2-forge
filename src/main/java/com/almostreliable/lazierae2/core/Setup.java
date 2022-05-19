@@ -108,8 +108,8 @@ public final class Setup {
         public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(PROCESSOR_ID,
             ProcessorEntity::new,
             Blocks.AGGREGATOR,
-            Blocks.CENTRIFUGE,
-            Blocks.ENERGIZER,
+            Blocks.GRINDER,
+            Blocks.INFUSER,
             Blocks.ETCHER
         );
 
@@ -172,13 +172,13 @@ public final class Setup {
         public static final RegistryObject<ProcessorBlock> AGGREGATOR = register(ProcessorBlock::new,
             ProcessorType.AGGREGATOR
         );
-        public static final RegistryObject<ProcessorBlock> CENTRIFUGE = register(ProcessorBlock::new,
-            ProcessorType.CENTRIFUGE
-        );
-        public static final RegistryObject<ProcessorBlock> ENERGIZER = register(ProcessorBlock::new,
-            ProcessorType.ENERGIZER
-        );
         public static final RegistryObject<ProcessorBlock> ETCHER = register(ProcessorBlock::new, ProcessorType.ETCHER);
+        public static final RegistryObject<ProcessorBlock> GRINDER = register(ProcessorBlock::new,
+            ProcessorType.GRINDER
+        );
+        public static final RegistryObject<ProcessorBlock> INFUSER = register(ProcessorBlock::new,
+            ProcessorType.INFUSER
+        );
 
         public static final RegistryObject<MaintainerBlock> MAINTAINER = register(MAINTAINER_ID, MaintainerBlock::new);
 
@@ -254,13 +254,12 @@ public final class Setup {
         private static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
         public static final RegistryObject<Item> CARB_FLUIX_DUST = register(CARB_FLUIX_DUST_ID);
         public static final RegistryObject<Item> COAL_DUST = register(COAL_DUST_ID);
-        public static final RegistryObject<Item> FLUIX_IRON = register(FLUIX_IRON_ID);
         public static final RegistryObject<Item> FLUIX_STEEL = register(FLUIX_STEEL_ID);
-        public static final RegistryObject<Item> GROWTH_CHAMBER = register(GROWTH_CHAMBER_ID);
+        public static final RegistryObject<Item> GROWTH_CORE = register(GROWTH_CORE_ID);
         public static final RegistryObject<Item> LOGIC_UNIT = register(LOGIC_UNIT_ID);
         public static final RegistryObject<Item> PARALLEL_PRINTED = register(PARALLEL_PRINTED_ID);
         public static final RegistryObject<Item> PARALLEL_PROCESSOR = register(PARALLEL_PROCESSOR_ID);
-        public static final RegistryObject<Item> RESONATING_GEM = register(RESONATING_GEM_ID);
+        public static final RegistryObject<Item> RESONATING_CRYSTAL = register(RESONATING_CRYSTAL_ID);
         public static final RegistryObject<Item> SPEC_CORE_1 = register(SPEC_CORE_1_ID);
         public static final RegistryObject<Item> SPEC_CORE_2 = register(SPEC_CORE_2_ID);
         public static final RegistryObject<Item> SPEC_CORE_4 = register(SPEC_CORE_4_ID);
@@ -287,7 +286,6 @@ public final class Setup {
             public static final TagKey<Item> DUSTS_COAL = forge("dusts/coal");
             public static final TagKey<Item> DUSTS_CARBONIC_FLUIX = forge("dusts/carbonic_fluix");
             public static final TagKey<Item> GEMS_RESONATING = forge("gems/resonating");
-            public static final TagKey<Item> INGOTS_FLUIX_IRON = forge("ingots/fluix_iron");
             public static final TagKey<Item> INGOTS_FLUIX_STEEL = forge("ingots/fluix_steel");
 
             public static final TagKey<Item> PROCESSORS = mod("processors");
@@ -333,12 +331,12 @@ public final class Setup {
 
             public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> AGGREGATOR
                 = register(ProcessorType.AGGREGATOR);
-            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> CENTRIFUGE
-                = register(ProcessorType.CENTRIFUGE);
-            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> ENERGIZER
-                = register(ProcessorType.ENERGIZER);
             public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> ETCHER
                 = register(ProcessorType.ETCHER);
+            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> GRINDER
+                = register(ProcessorType.GRINDER);
+            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> INFUSER
+                = register(ProcessorType.INFUSER);
 
             private Serializers() {}
 

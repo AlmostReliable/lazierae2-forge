@@ -19,10 +19,10 @@
       "item": "lazierae2:logic_unit"
     },
     "c": {
-      "item": "lazierae2:growth_chamber"
+      "item": "lazierae2:growth_core"
     }
   },
   "result": {
-    "item": "lazierae2:centrifuge"
+    "item": "lazierae2:grinder"
   }
 }

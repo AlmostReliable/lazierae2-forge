@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "lazierae2:centrifuge"
+      "lazierae2:growth_core"
     ]
   },
   "criteria": {
@@ -12,7 +12,7 @@
         "items": [
           {
             "items": [
-              "lazierae2:logic_unit"
+              "ae2:quartz_growth_accelerator"
             ]
           }
         ]
@@ -21,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "lazierae2:centrifuge"
+        "recipe": "lazierae2:growth_core"
       }
     }
   },

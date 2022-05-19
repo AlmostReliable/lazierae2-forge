@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "lazierae2:item/fluix_iron_ingot"
+    "layer0": "lazierae2:item/resonating_crystal"
   }
 }

@@ -15,14 +15,14 @@ import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 @SuppressWarnings("unused")
 @ZenRegister
-@Name("mods." + MOD_ID + ".Centrifuge")
-public class CentrifugeManager implements ProcessorRecipeManager {
+@Name("mods." + MOD_ID + ".Grinder")
+public class GrinderManager implements ProcessorRecipeManager {
 
-    public static final CentrifugeManager INSTANCE = new CentrifugeManager();
+    public static final GrinderManager INSTANCE = new GrinderManager();
 
     @Override
     public RecipeBuilderWrapper createRecipeBuilder(ResourceLocation id, IItemStack output) {
-        return new RecipeBuilderWrapper(this, ProcessorType.CENTRIFUGE, id, output);
+        return new RecipeBuilderWrapper(this, ProcessorType.GRINDER, id, output);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class CentrifugeManager implements ProcessorRecipeManager {
         ResourceLocation id, ItemStack output, int amount, Ingredient[] ingredients, int processTime, int energyCost
     ) {
         return ProcessorRecipeBuilder
-            .centrifuge(output.getItem(), amount)
+            .grinder(output.getItem(), amount)
             .input(ingredients)
             .processingTime(processTime)
             .energyCost(energyCost)
@@ -39,6 +39,6 @@ public class CentrifugeManager implements ProcessorRecipeManager {
 
     @Override
     public RecipeType<ProcessorRecipe> getRecipeType() {
-        return ProcessorType.CENTRIFUGE;
+        return ProcessorType.GRINDER;
     }
 }

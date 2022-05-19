@@ -50,7 +50,7 @@ public class RecipeData extends RecipeProvider {
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
             .save(c);
         ShapedRecipeBuilder
-            .shaped(Setup.Blocks.CENTRIFUGE.get())
+            .shaped(Setup.Blocks.GRINDER.get())
             .pattern("fsf")
             .pattern("pup")
             .pattern("fcf")
@@ -58,11 +58,11 @@ public class RecipeData extends RecipeProvider {
             .define('s', Setup.Tags.Items.PROCESSOR_SPEC)
             .define('p', Setup.Tags.Items.PROCESSOR_PARALLEL)
             .define('u', Setup.Items.LOGIC_UNIT.get())
-            .define('c', Setup.Items.GROWTH_CHAMBER.get())
+            .define('c', Setup.Items.GROWTH_CORE.get())
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
             .save(c);
         ShapedRecipeBuilder
-            .shaped(Setup.Blocks.ENERGIZER.get())
+            .shaped(Setup.Blocks.INFUSER.get())
             .pattern("fcf")
             .pattern("quq")
             .pattern("fdf")
@@ -100,7 +100,7 @@ public class RecipeData extends RecipeProvider {
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX))
             .save(c);
         ShapedRecipeBuilder
-            .shaped(Setup.Items.GROWTH_CHAMBER.get())
+            .shaped(Setup.Items.GROWTH_CORE.get())
             .pattern("ama")
             .pattern("aba")
             .pattern("afa")
@@ -115,7 +115,7 @@ public class RecipeData extends RecipeProvider {
             .pattern("ipi")
             .pattern("csl")
             .pattern("iei")
-            .define('i', Setup.Tags.Items.INGOTS_FLUIX_IRON)
+            .define('i', Setup.Tags.Items.INGOTS_FLUIX_STEEL)
             .define('p', AEItems.SILICON_PRESS.asItem())
             .define('c', AEItems.CALCULATION_PROCESSOR_PRESS.asItem())
             .define('s', AEItems.SINGULARITY.asItem())
@@ -174,8 +174,8 @@ public class RecipeData extends RecipeProvider {
 
     private void cookingItems(Consumer<FinishedRecipe> c) {
         SimpleCookingRecipeBuilder
-            .smelting(Ingredient.of(Setup.Tags.Items.INGOTS_FLUIX_IRON), Setup.Items.FLUIX_STEEL.get(), 0.15F, 120)
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.INGOTS_FLUIX_IRON))
+            .smelting(Ingredient.of(Setup.Tags.Items.INGOTS_FLUIX_STEEL), Setup.Items.FLUIX_STEEL.get(), 0.15F, 120)
+            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.INGOTS_FLUIX_STEEL))
             .save(c);
     }
 
@@ -205,7 +205,7 @@ public class RecipeData extends RecipeProvider {
             .energyCost(250)
             .build(c);
         ProcessorRecipeBuilder
-            .aggregator(Setup.Items.RESONATING_GEM.get())
+            .aggregator(Setup.Items.RESONATING_CRYSTAL.get())
             .input(AEItems.SKY_DUST.asItem())
             .input(Tags.Items.GEMS_DIAMOND)
             .input(AEItems.ENDER_DUST.asItem())
@@ -224,13 +224,13 @@ public class RecipeData extends RecipeProvider {
 
     private void centrifugeRecipes(Consumer<? super FinishedRecipe> c) {
         ProcessorRecipeBuilder
-            .centrifuge(AEItems.SKY_DUST.asItem())
+            .grinder(AEItems.SKY_DUST.asItem())
             .input(AEBlocks.SKY_STONE_BLOCK.asItem())
             .processingTime(80)
             .energyCost(800)
             .build(c);
         ProcessorRecipeBuilder
-            .centrifuge(AEItems.ENDER_DUST.asItem())
+            .grinder(AEItems.ENDER_DUST.asItem())
             .input(Tags.Items.ENDER_PEARLS)
             .processingTime(80)
             .energyCost(800)
@@ -239,7 +239,7 @@ public class RecipeData extends RecipeProvider {
 
     private void energizerRecipes(Consumer<? super FinishedRecipe> c) {
         ProcessorRecipeBuilder
-            .energizer(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
+            .infuser(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
             .input(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
             .processingTime(80)
             .energyCost(1_500)
@@ -288,7 +288,7 @@ public class RecipeData extends RecipeProvider {
             .energyCost(1_500)
             .build(c);
         ProcessorRecipeBuilder
-            .etcher(Setup.Items.FLUIX_IRON.get())
+            .etcher(Setup.Items.FLUIX_STEEL.get())
             .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
             .input(Tags.Items.INGOTS_IRON)
             .input(AEItems.SKY_DUST.asItem())

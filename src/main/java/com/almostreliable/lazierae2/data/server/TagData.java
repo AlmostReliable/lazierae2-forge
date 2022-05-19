@@ -33,12 +33,11 @@ public final class TagData {
             tag(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX).add(Items.CARB_FLUIX_DUST.get());
             tag(Tags.Items.DUSTS).add(Items.COAL_DUST.get(), Items.CARB_FLUIX_DUST.get());
 
-            tag(Setup.Tags.Items.GEMS_RESONATING).add(Items.RESONATING_GEM.get());
-            tag(Tags.Items.GEMS).add(Items.RESONATING_GEM.get());
+            tag(Setup.Tags.Items.GEMS_RESONATING).add(Items.RESONATING_CRYSTAL.get());
+            tag(Tags.Items.GEMS).add(Items.RESONATING_CRYSTAL.get());
 
-            tag(Setup.Tags.Items.INGOTS_FLUIX_IRON).add(Items.FLUIX_IRON.get());
             tag(Setup.Tags.Items.INGOTS_FLUIX_STEEL).add(Items.FLUIX_STEEL.get());
-            tag(Tags.Items.INGOTS).add(Items.FLUIX_IRON.get(), Items.FLUIX_STEEL.get());
+            tag(Tags.Items.INGOTS).add(Items.FLUIX_STEEL.get());
 
             tag(Setup.Tags.Items.PROCESSOR_PARALLEL).add(Items.PARALLEL_PROCESSOR.get());
             tag(Setup.Tags.Items.PROCESSOR_SPEC).add(Items.SPEC_PROCESSOR.get());
@@ -64,9 +63,9 @@ public final class TagData {
         protected void addTags() {
             tag(Setup.Tags.Blocks.MACHINES).add(
                 Blocks.AGGREGATOR.get(),
-                Blocks.CENTRIFUGE.get(),
-                Blocks.ENERGIZER.get(),
                 Blocks.ETCHER.get(),
+                Blocks.GRINDER.get(),
+                Blocks.INFUSER.get(),
                 Blocks.MAINTAINER.get()
             );
             tag(MINEABLE_WITH_PICKAXE).addTag(Setup.Tags.Blocks.MACHINES);

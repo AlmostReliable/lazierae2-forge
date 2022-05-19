@@ -30,20 +30,6 @@ public enum ProcessorType implements RecipeType<ProcessorRecipe> {
         () -> Blocks.AGGREGATOR,
         TripleInputRecipe::new,
         () -> Serializers.AGGREGATOR
-    ), CENTRIFUGE(
-        CENTRIFUGE_ID,
-        1,
-        () -> Config.COMMON.centrifuge,
-        () -> Blocks.CENTRIFUGE,
-        SingleInputRecipe::new,
-        () -> Serializers.CENTRIFUGE
-    ), ENERGIZER(
-        ENERGIZER_ID,
-        1,
-        () -> Config.COMMON.energizer,
-        () -> Blocks.ENERGIZER,
-        SingleInputRecipe::new,
-        () -> Serializers.ENERGIZER
     ), ETCHER(
         ETCHER_ID,
         3,
@@ -51,6 +37,20 @@ public enum ProcessorType implements RecipeType<ProcessorRecipe> {
         () -> Blocks.ETCHER,
         TripleInputRecipe::new,
         () -> Serializers.ETCHER
+    ), GRINDER(
+        GRINDER_ID,
+        1,
+        () -> Config.COMMON.grinder,
+        () -> Blocks.GRINDER,
+        SingleInputRecipe::new,
+        () -> Serializers.GRINDER
+    ), INFUSER(
+        INFUSER_ID,
+        3,
+        () -> Config.COMMON.infuser,
+        () -> Blocks.INFUSER,
+        TripleInputRecipe::new,
+        () -> Serializers.INFUSER
     );
 
     private final String id;
