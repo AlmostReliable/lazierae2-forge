@@ -24,6 +24,10 @@ public final class GuiUtil {
 
     private GuiUtil() {}
 
+    public static int fillColorAlpha(int color) {
+        return 0xFF << 3 * 8 | color;
+    }
+
     /**
      * Draws a given text at the given position with the given color.
      * <p>
@@ -114,20 +118,6 @@ public final class GuiUtil {
         }
 
         /**
-         * Adds a raw component to the tooltip.
-         * <p>
-         * Can be used if the exact component type is not covered by the builder.
-         *
-         * @param component    the component to add
-         * @param replacements the optional replacements to apply to the component
-         * @return the instance of the tooltip builder
-         */
-        public Tooltip component(Component component, Supplier<?>... replacements) {
-            components.add(new TooltipComponent(component, replacements));
-            return this;
-        }
-
-        /**
          * Adds a blank line to the tooltip.
          * <p>
          * Instead of adding an empty {@link TextComponent}, this method adds a line with a single space
@@ -155,6 +145,25 @@ public final class GuiUtil {
          */
         public Tooltip title(String key, Supplier<?>... replacements) {
             return component(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GOLD), replacements);
+        }
+
+        /**
+         * Adds a conditional title component to the tooltip.
+         * <p>
+         * It uses golden text color.
+         * <p>
+         * If the condition is false, the component will be skipped completely.
+         *
+         * @param condition    the condition to check
+         * @param key          the key for the translation
+         * @param replacements the optional replacements to apply to the title
+         * @return the instance of the tooltip builder
+         */
+        public Tooltip title(BooleanSupplier condition, String key, Supplier<?>... replacements) {
+            return component(new IfComponent(condition,
+                TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GOLD),
+                replacements
+            ));
         }
 
         /**
@@ -191,11 +200,10 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip line(BooleanSupplier condition, String key, Supplier<?>... replacements) {
-            components.add(new IfComponent(condition,
+            return component(new IfComponent(condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.WHITE),
                 replacements
             ));
-            return this;
         }
 
         /**
@@ -210,11 +218,16 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip line(BooleanSupplier condition, String key, ChatFormatting color, Supplier<?>... replacements) {
-            components.add(new IfComponent(condition,
+            return component(new IfComponent(condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, color),
                 replacements
             ));
-            return this;
+        }
+
+        public Tooltip lineEnum(
+            TRANSLATE_TYPE type, ChatFormatting color, Enum<?> e
+        ) {
+            return component(TextUtil.translate(type, e.toString().toLowerCase(), color));
         }
 
         /**
@@ -399,6 +412,20 @@ public final class GuiUtil {
             return this;
         }
 
+        /**
+         * Adds a raw component to the tooltip.
+         * <p>
+         * Can be used if the exact component type is not covered by the builder.
+         *
+         * @param component    the component to add
+         * @param replacements the optional replacements to apply to the component
+         * @return the instance of the tooltip builder
+         */
+        private Tooltip component(Component component, Supplier<?>... replacements) {
+            components.add(new TooltipComponent(component, replacements));
+            return this;
+        }
+
         public static class TooltipComponent extends TextComponent {
 
             @Nullable
@@ -414,7 +441,7 @@ public final class GuiUtil {
             public void resolve(List<? super Component> tooltip) {
                 if (component == null) return;
                 if (replacements.length > 0 && component instanceof TranslatableComponent translation) {
-                    tooltip.add(handleReplacements(translation));
+                    tooltip.add(handleReplacements(translation).copy());
                     return;
                 }
                 tooltip.add(component);

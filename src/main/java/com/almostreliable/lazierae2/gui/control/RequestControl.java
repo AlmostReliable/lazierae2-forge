@@ -1,5 +1,7 @@
 package com.almostreliable.lazierae2.gui.control;
 
+import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
+import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.gui.MaintainerScreen;
 import com.almostreliable.lazierae2.gui.widgets.GenericButton;
 import com.almostreliable.lazierae2.gui.widgets.ToggleButton;
@@ -7,18 +9,24 @@ import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.RequestBatchPacket;
 import com.almostreliable.lazierae2.network.packets.RequestCountPacket;
 import com.almostreliable.lazierae2.network.packets.RequestStatePacket;
+import com.almostreliable.lazierae2.util.GuiUtil;
+import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public final class RequestControl {
@@ -55,8 +63,6 @@ public final class RequestControl {
 
     private final class Control {
 
-        // TODO: add tooltips for everything
-
         private static final int BUTTON_SIZE = 13;
         private final int slot;
         @Nullable
@@ -83,6 +89,7 @@ public final class RequestControl {
             private static final int WIDTH = 123;
             private static final int HEIGHT = 4;
             private static final int GAP = 16;
+            private final Tooltip tooltip;
 
             private ProgressionDisplay() {
                 super(
@@ -92,11 +99,20 @@ public final class RequestControl {
                     HEIGHT,
                     TextComponent.EMPTY
                 );
+                tooltip = setupTooltip();
             }
 
             @Override
             public void renderButton(PoseStack stack, int mX, int mY, float partial) {
-                fill(stack, x + 1, y + 1, x + WIDTH - 2, y + HEIGHT - 2, getProgressionColor());
+                // noinspection ConstantConditions
+                fill(
+                    stack,
+                    x + 1,
+                    y + 1,
+                    x + WIDTH - 2,
+                    y + HEIGHT - 2,
+                    GuiUtil.fillColorAlpha(getProgressionColor().getColor())
+                );
             }
 
             @Override
@@ -105,21 +121,59 @@ public final class RequestControl {
             }
 
             @Override
+            public void renderToolTip(PoseStack stack, int mX, int mY) {
+                screen.renderComponentTooltip(stack, tooltip.build(), mX, mY);
+            }
+
+            @Override
             public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
                 defaultButtonNarrationText(pNarrationElementOutput);
             }
 
-            private int getProgressionColor() {
-                if (!screen.getMenu().getRequestState(slot) || screen.getMenu().getRequestCount(slot) == 0) {
-                    return 0xFF66_6666; // gray
-                }
-                var status = screen.getMenu().getRequestStatus(slot);
+            private Tooltip setupTooltip() {
+                return Tooltip
+                    .builder()
+                    .title("status.title")
+                    .blank()
+                    .conditional(current -> current
+                        .condition(() -> getProgressionColor() != ChatFormatting.DARK_GRAY)
+                        .then(Tooltip.builder().keyEnum(
+                            "status.current",
+                            TRANSLATE_TYPE.REQUEST_STATUS,
+                            () -> screen.getMenu().getRequestStatus(slot)
+                        ))
+                        .otherwise(Tooltip.builder().line("status.none", ChatFormatting.WHITE)))
+                    .blank()
+                    .conditional(advanced -> advanced
+                        .condition(Screen::hasShiftDown)
+                        .then(Tooltip.builder().lineEnum(TRANSLATE_TYPE.REQUEST_STATUS,
+                            getProgressionColor(PROGRESSION_TYPE.IDLE),
+                            PROGRESSION_TYPE.IDLE
+                        ).line("status.idle").blank().lineEnum(TRANSLATE_TYPE.REQUEST_STATUS,
+                            getProgressionColor(PROGRESSION_TYPE.LINK),
+                            PROGRESSION_TYPE.LINK
+                        ).line("status.link").blank().lineEnum(TRANSLATE_TYPE.REQUEST_STATUS,
+                            getProgressionColor(PROGRESSION_TYPE.EXPORT),
+                            PROGRESSION_TYPE.EXPORT
+                        ).line("status.export"))
+                        .otherwise(Tooltip.builder().hotkeyHoldAction("key.keyboard.left.shift", "extended_info")));
+            }
+
+            private ChatFormatting getProgressionColor(PROGRESSION_TYPE status) {
                 return switch (status) {
-                    case IDLE -> 0xFF05_DA00; // green
-                    case LINK -> 0xFFDA_8A00; // orange
-                    case EXPORT -> 0xFF95_00DA; // purple
+                    case IDLE -> ChatFormatting.DARK_GREEN;
+                    case LINK -> ChatFormatting.YELLOW;
+                    case EXPORT -> ChatFormatting.DARK_PURPLE;
                     default -> throw new IllegalStateException("Impossible client state: " + status);
                 };
+            }
+
+            private ChatFormatting getProgressionColor() {
+                if (!screen.getMenu().getRequestState(slot) || screen.getMenu().getRequestCount(slot) == 0) {
+                    return ChatFormatting.DARK_GRAY;
+                }
+                var status = screen.getMenu().getRequestStatus(slot);
+                return getProgressionColor(status);
             }
         }
 
@@ -130,6 +184,7 @@ public final class RequestControl {
             private static final int HEIGHT = 11;
             private static final int GAP = 9;
             final SubmitButton submitButton;
+            final Tooltip tooltip;
 
             private TextBox(
                 int x
@@ -144,6 +199,8 @@ public final class RequestControl {
                 );
                 submitButton = new SubmitButton(screen, x + WIDTH + 2, slot * (GAP + HEIGHT) + POS_Y - 1);
                 applyBoxDefaults();
+                tooltip = Tooltip.builder();
+                setupTooltip();
             }
 
             @Override
@@ -162,6 +219,18 @@ public final class RequestControl {
                     return true;
                 }
                 return super.keyPressed(keyCode, scanCode, modifiers);
+            }
+
+            protected void setupTooltip() {
+                tooltip
+                    .blank()
+                    .conditional(focused -> focused
+                        .condition(this::isFocused)
+                        .then(Tooltip
+                            .builder()
+                            .hotkeyAction("key.keyboard.tab", "focus.switch.action")
+                            .hotkeyAction("key.keyboard.enter", "submit.action"))
+                        .otherwise(Tooltip.builder().clickAction("focus.action")));
             }
 
             /**
@@ -211,6 +280,11 @@ public final class RequestControl {
                 return isHovered;
             }
 
+            @Override
+            public void renderToolTip(PoseStack stack, int mX, int mY) {
+                screen.renderComponentTooltip(stack, tooltip.build(), mX, mY);
+            }
+
             private void setValueFromLong(long value) {
                 var oldValue = getEntityValue();
                 setValue(String.valueOf(value));
@@ -222,9 +296,15 @@ public final class RequestControl {
             private final class SubmitButton extends GenericButton {
 
                 private static final String TEXTURE_ID = "submit";
+                private static final List<Component> TOOLTIP = Tooltip.builder().line(TEXTURE_ID).build();
 
                 private SubmitButton(MaintainerScreen screen, int x, int y) {
                     super(screen, x, y, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID);
+                }
+
+                @Override
+                public void renderToolTip(PoseStack stack, int mX, int mY) {
+                    screen.renderComponentTooltip(stack, TOOLTIP, mX, mY);
                 }
 
                 @Override
@@ -262,6 +342,7 @@ public final class RequestControl {
             private static final int POS_X = 9;
             private static final int POS_Y = 9;
             private static final int GAP = 7;
+            private static final List<Component> TOOLTIP = Tooltip.builder().line(TEXTURE_ID).build();
 
             private StateButton(MaintainerScreen screen) {
                 super(
@@ -276,6 +357,11 @@ public final class RequestControl {
             }
 
             @Override
+            public void renderToolTip(PoseStack stack, int mX, int mY) {
+                screen.renderComponentTooltip(stack, TOOLTIP, mX, mY);
+            }
+
+            @Override
             protected void clickHandler() {
                 PacketHandler.CHANNEL.sendToServer(new RequestStatePacket(slot, !pressed.getAsBoolean()));
             }
@@ -287,6 +373,12 @@ public final class RequestControl {
 
             private CountBox() {
                 super(POS_X);
+            }
+
+            @Override
+            protected void setupTooltip() {
+                tooltip.title("count.title").blank().line("count.description");
+                super.setupTooltip();
             }
 
             @Override
@@ -315,6 +407,12 @@ public final class RequestControl {
 
             private BatchBox() {
                 super(POS_X);
+            }
+
+            @Override
+            protected void setupTooltip() {
+                tooltip.title("batch.title").blank().line("batch.description");
+                super.setupTooltip();
             }
 
             @Override
