@@ -263,7 +263,7 @@ public class RecipeData extends RecipeProvider {
             .build(c);
         ProcessorRecipeBuilder
             .etcher(AEItems.CALCULATION_PROCESSOR)
-            .input(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
+            .input(AEItems.CERTUS_QUARTZ_CRYSTAL)
             .input(Tags.Items.DUSTS_REDSTONE)
             .input(ConventionTags.SILICON)
             .processingTime(100)
