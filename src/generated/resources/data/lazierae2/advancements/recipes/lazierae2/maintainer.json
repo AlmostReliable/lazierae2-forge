@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "lazierae2:infuser"
+      "lazierae2:maintainer"
     ]
   },
   "criteria": {
@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "tag": "lazierae2:processors/parallel"
+            "items": [
+              "lazierae2:logic_unit"
+            ]
           }
         ]
       }
@@ -19,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "lazierae2:infuser"
+        "recipe": "lazierae2:maintainer"
       }
     }
   },

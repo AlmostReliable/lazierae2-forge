@@ -16,7 +16,7 @@
       "item": "lazierae2:logic_unit"
     },
     "p": {
-      "tag": "lazierae2:processors/speculative"
+      "tag": "lazierae2:processors/parallel"
     },
     "u": {
       "item": "lazierae2:universal_press"

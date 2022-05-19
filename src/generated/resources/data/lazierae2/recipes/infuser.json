@@ -1,25 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "fcf",
-    "quq",
-    "fdf"
+    "faf",
+    "opo",
+    "ece"
   ],
   "key": {
     "f": {
-      "tag": "forge:ingots/fluix_steel"
+      "item": "ae2:fluix_pearl"
+    },
+    "a": {
+      "item": "ae2:molecular_assembler"
+    },
+    "o": {
+      "item": "minecraft:observer"
+    },
+    "p": {
+      "tag": "lazierae2:processors/parallel"
+    },
+    "e": {
+      "item": "ae2:engineering_processor"
     },
     "c": {
-      "item": "ae2:charger"
-    },
-    "q": {
-      "item": "ae2:quartz_fiber"
-    },
-    "u": {
-      "item": "lazierae2:logic_unit"
-    },
-    "d": {
-      "item": "ae2:energy_cell"
+      "item": "ae2:condenser"
     }
   },
   "result": {

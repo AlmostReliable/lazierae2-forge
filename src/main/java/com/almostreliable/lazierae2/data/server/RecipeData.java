@@ -4,13 +4,14 @@ import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
+import appeng.datagen.providers.tags.ConventionTags;
 import com.almostreliable.lazierae2.core.Setup;
+import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.recipe.builder.ProcessorRecipeBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
@@ -30,59 +31,74 @@ public class RecipeData extends RecipeProvider {
         shapelessItems(c);
         cookingItems(c);
         aggregatorRecipes(c);
-        centrifugeRecipes(c);
-        energizerRecipes(c);
         etcherRecipes(c);
+        grinderRecipes(c);
+        infuserRecipes(c);
     }
 
     private void shapedBlocks(Consumer<FinishedRecipe> c) {
         ShapedRecipeBuilder
-            .shaped(Setup.Blocks.AGGREGATOR.get())
-            .pattern("fmf")
-            .pattern("ouo")
-            .pattern("lcl")
-            .define('f', AEItems.FLUIX_PEARL.asItem())
-            .define('m', AEBlocks.MOLECULAR_ASSEMBLER.asItem())
-            .define('o', Blocks.OBSERVER)
-            .define('u', Setup.Items.LOGIC_UNIT.get())
-            .define('l', AEItems.LOGIC_PROCESSOR.asItem())
-            .define('c', AEBlocks.CONDENSER.asItem())
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
-            .save(c);
-        ShapedRecipeBuilder
-            .shaped(Setup.Blocks.GRINDER.get())
-            .pattern("fsf")
-            .pattern("pup")
+            .shaped(Blocks.AGGREGATOR.get())
             .pattern("fcf")
+            .pattern("pup")
+            .pattern("ege")
             .define('f', Setup.Tags.Items.INGOTS_FLUIX_STEEL)
-            .define('s', Setup.Tags.Items.PROCESSOR_SPEC)
+            .define('c', AEBlocks.CHARGER)
             .define('p', Setup.Tags.Items.PROCESSOR_PARALLEL)
             .define('u', Setup.Items.LOGIC_UNIT.get())
-            .define('c', Setup.Items.GROWTH_CORE.get())
+            .define('e', AEBlocks.ENERGY_CELL)
+            .define('g', Setup.Items.GROWTH_CORE.get())
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
             .save(c);
         ShapedRecipeBuilder
-            .shaped(Setup.Blocks.INFUSER.get())
-            .pattern("fcf")
-            .pattern("quq")
-            .pattern("fdf")
-            .define('f', Setup.Tags.Items.INGOTS_FLUIX_STEEL)
-            .define('c', AEBlocks.CHARGER.asItem())
-            .define('q', AEParts.QUARTZ_FIBER.asItem())
-            .define('u', Setup.Items.LOGIC_UNIT.get())
-            .define('d', AEBlocks.ENERGY_CELL.asItem())
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
-            .save(c);
-        ShapedRecipeBuilder
-            .shaped(Setup.Blocks.ETCHER.get())
+            .shaped(Blocks.ETCHER.get())
             .pattern("fif")
             .pattern("ili")
             .pattern("pup")
             .define('f', Setup.Tags.Items.INGOTS_FLUIX_STEEL)
-            .define('i', AEBlocks.INSCRIBER.asItem())
+            .define('i', AEBlocks.INSCRIBER)
             .define('l', Setup.Items.LOGIC_UNIT.get())
-            .define('p', Setup.Tags.Items.PROCESSOR_SPEC)
+            .define('p', Setup.Tags.Items.PROCESSOR_PARALLEL)
             .define('u', Setup.Items.UNIVERSAL_PRESS.get())
+            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
+            .save(c);
+        ShapedRecipeBuilder
+            .shaped(Blocks.GRINDER.get())
+            .pattern("vbv")
+            .pattern("aua")
+            .pattern("fif")
+            .define('v', AEBlocks.QUARTZ_VIBRANT_GLASS)
+            .define('b', Items.IRON_BARS)
+            .define('a', Items.AMETHYST_SHARD)
+            .define('u', Setup.Items.LOGIC_UNIT.get())
+            .define('f', Setup.Tags.Items.INGOTS_FLUIX_STEEL)
+            .define('i', Tags.Items.STORAGE_BLOCKS_IRON)
+            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
+            .save(c);
+        ShapedRecipeBuilder
+            .shaped(Blocks.INFUSER.get())
+            .pattern("faf")
+            .pattern("opo")
+            .pattern("ece")
+            .define('f', AEItems.FLUIX_PEARL)
+            .define('a', AEBlocks.MOLECULAR_ASSEMBLER)
+            .define('o', Items.OBSERVER)
+            .define('p', Setup.Tags.Items.PROCESSOR_PARALLEL)
+            .define('e', AEItems.ENGINEERING_PROCESSOR)
+            .define('c', AEBlocks.CONDENSER)
+            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.PROCESSOR_PARALLEL))
+            .save(c);
+        ShapedRecipeBuilder
+            .shaped(Blocks.MAINTAINER.get())
+            .pattern("cic")
+            .pattern("pup")
+            .pattern("fef")
+            .define('c', ConventionTags.MEMORY_CARDS)
+            .define('i', AEBlocks.INTERFACE)
+            .define('p', Setup.Tags.Items.PROCESSOR_PARALLEL)
+            .define('u', Setup.Items.LOGIC_UNIT.get())
+            .define('f', Setup.Tags.Items.INGOTS_FLUIX_STEEL)
+            .define('e', AEBlocks.DENSE_ENERGY_CELL)
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.LOGIC_UNIT.get()))
             .save(c);
     }
@@ -222,7 +238,7 @@ public class RecipeData extends RecipeProvider {
             .build(c);
     }
 
-    private void centrifugeRecipes(Consumer<? super FinishedRecipe> c) {
+    private void grinderRecipes(Consumer<? super FinishedRecipe> c) {
         ProcessorRecipeBuilder
             .grinder(AEItems.SKY_DUST.asItem())
             .input(AEBlocks.SKY_STONE_BLOCK.asItem())
@@ -237,7 +253,7 @@ public class RecipeData extends RecipeProvider {
             .build(c);
     }
 
-    private void energizerRecipes(Consumer<? super FinishedRecipe> c) {
+    private void infuserRecipes(Consumer<? super FinishedRecipe> c) {
         ProcessorRecipeBuilder
             .infuser(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
             .input(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())

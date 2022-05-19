@@ -1,25 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "fsf",
-    "pup",
-    "fcf"
+    "vbv",
+    "aua",
+    "fif"
   ],
   "key": {
-    "f": {
-      "tag": "forge:ingots/fluix_steel"
+    "v": {
+      "item": "ae2:quartz_vibrant_glass"
     },
-    "s": {
-      "tag": "lazierae2:processors/speculative"
+    "b": {
+      "item": "minecraft:iron_bars"
     },
-    "p": {
-      "tag": "lazierae2:processors/parallel"
+    "a": {
+      "item": "minecraft:amethyst_shard"
     },
     "u": {
       "item": "lazierae2:logic_unit"
     },
-    "c": {
-      "item": "lazierae2:growth_core"
+    "f": {
+      "tag": "forge:ingots/fluix_steel"
+    },
+    "i": {
+      "tag": "forge:storage_blocks/iron"
     }
   },
   "result": {
