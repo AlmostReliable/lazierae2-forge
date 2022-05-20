@@ -216,14 +216,6 @@ public class RecipeData extends RecipeProvider {
             .processingTime(200)
             .energyCost(12_000)
             .build(c);
-        ProcessorRecipeBuilder
-            .aggregator(Setup.Items.SPEC_CORE_1.get())
-            .input(AEItems.SKY_DUST)
-            .input(AEItems.MATTER_BALL)
-            .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
-            .processingTime(60)
-            .energyCost(600)
-            .build(c);
     }
 
     private void etcherRecipes(Consumer<? super FinishedRecipe> c) {
@@ -320,6 +312,14 @@ public class RecipeData extends RecipeProvider {
             .input(Tags.Items.INGOTS_IRON)
             .processingTime(80)
             .energyCost(1_500)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser(Setup.Items.SPEC_CORE_1.get())
+            .input(AEItems.SKY_DUST)
+            .input(AEItems.MATTER_BALL)
+            .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
+            .processingTime(60)
+            .energyCost(600)
             .build(c);
     }
 }
