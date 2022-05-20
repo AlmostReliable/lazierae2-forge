@@ -57,6 +57,7 @@ b3e017a23c64b72c8cc8f4d8b7ec936938f67245 assets/lazierae2/models/item/wall.json
 b2e2de72ad7c03c5414afce48a95e10cd08756e2 data/ae2/recipes/etcher/calculation_processor.json
 42983a6a6254552753c8dae9c38104fe156a7364 data/ae2/recipes/etcher/engineering_processor.json
 a32abfb370a42735d167be45ef5d7c416de29738 data/ae2/recipes/etcher/logic_processor.json
+bab450c8baf34735b91e69c33483e408f0d4e0f5 data/ae2/recipes/grinder/certus_quartz_dust.json
 62f01b4d13603232fc12da59924195848d7cb241 data/ae2/recipes/grinder/ender_dust.json
 f31df388c58259b6cb50e1a2a19b2afd949bccb9 data/ae2/recipes/grinder/sky_dust.json
 7cf5c331b17ac61c140e6c6ad51fa39721f9037a data/ae2/recipes/infuser/charged_certus_quartz_crystal.json

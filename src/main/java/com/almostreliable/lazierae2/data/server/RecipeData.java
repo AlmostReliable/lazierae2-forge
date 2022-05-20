@@ -272,6 +272,12 @@ public class RecipeData extends RecipeProvider {
 
     private void grinderRecipes(Consumer<? super FinishedRecipe> c) {
         ProcessorRecipeBuilder
+            .grinder(AEItems.CERTUS_QUARTZ_DUST, 6)
+            .input(ConventionTags.CERTUS_QUARTZ_ORE)
+            .processingTime(80)
+            .energyCost(800)
+            .build(c);
+        ProcessorRecipeBuilder
             .grinder(AEItems.SKY_DUST)
             .input(AEBlocks.SKY_STONE_BLOCK)
             .processingTime(80)
