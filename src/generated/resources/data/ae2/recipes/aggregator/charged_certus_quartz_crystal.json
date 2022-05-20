@@ -1,6 +1,6 @@
 {
-  "type": "lazierae2:infuser",
-  "process_time": 80,
+  "type": "lazierae2:aggregator",
+  "process_time": 30,
   "energy_cost": 1500,
   "output": {
     "item": "ae2:charged_certus_quartz_crystal"

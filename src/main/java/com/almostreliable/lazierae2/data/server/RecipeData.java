@@ -213,9 +213,31 @@ public class RecipeData extends RecipeProvider {
         ProcessorRecipeBuilder
             .aggregator(Setup.Items.RESONATING_CRYSTAL.get(), 2)
             .input(Tags.Items.SAND)
-            .input(ConventionTags.FLUIX_DUST)
+            .input(Setup.Tags.Items.DUSTS_RESONATING)
             .processingTime(200)
             .energyCost(12_000)
+            .build(c);
+        ProcessorRecipeBuilder
+            .aggregator(AEItems.FLUIX_DUST, 2)
+            .input(Tags.Items.DUSTS_REDSTONE)
+            .input(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+            .input(Tags.Items.GEMS_QUARTZ)
+            .processingTime(5)
+            .energyCost(50)
+            .build(c);
+        ProcessorRecipeBuilder
+            .aggregator(Setup.Items.RESONATING_DUST.get(), 2)
+            .input(AEItems.SKY_DUST)
+            .input(Tags.Items.GEMS_DIAMOND)
+            .input(ConventionTags.ENDER_PEARL_DUST)
+            .processingTime(5)
+            .energyCost(50)
+            .build(c);
+        ProcessorRecipeBuilder
+            .aggregator(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
+            .input(AEItems.CERTUS_QUARTZ_CRYSTAL)
+            .processingTime(30)
+            .energyCost(1_500)
             .build(c);
     }
 
@@ -298,12 +320,6 @@ public class RecipeData extends RecipeProvider {
     }
 
     private void infuserRecipes(Consumer<? super FinishedRecipe> c) {
-        ProcessorRecipeBuilder
-            .infuser(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
-            .input(AEItems.CERTUS_QUARTZ_CRYSTAL)
-            .processingTime(80)
-            .energyCost(1_500)
-            .build(c);
         ProcessorRecipeBuilder
             .infuser(Setup.Items.CARB_FLUIX_DUST.get())
             .input(Setup.Tags.Items.DUSTS_COAL)
