@@ -1,5 +1,5 @@
 {
-  "type": "lazierae2:aggregator",
+  "type": "lazierae2:infuser",
   "process_time": 30,
   "energy_cost": 300,
   "output": {

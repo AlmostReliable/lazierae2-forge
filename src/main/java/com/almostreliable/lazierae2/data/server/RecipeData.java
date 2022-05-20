@@ -306,7 +306,7 @@ public class RecipeData extends RecipeProvider {
             .energyCost(1_500)
             .build(c);
         ProcessorRecipeBuilder
-            .aggregator(Setup.Items.CARB_FLUIX_DUST.get())
+            .infuser(Setup.Items.CARB_FLUIX_DUST.get())
             .input(Setup.Tags.Items.DUSTS_COAL)
             .input(AEItems.FLUIX_DUST)
             .input(ConventionTags.SILICON)
@@ -314,7 +314,7 @@ public class RecipeData extends RecipeProvider {
             .energyCost(300)
             .build(c);
         ProcessorRecipeBuilder
-            .aggregator(Setup.Items.FLUIX_STEEL.get())
+            .infuser(Setup.Items.FLUIX_STEEL.get())
             .input(Setup.Tags.Items.DUSTS_COAL)
             .input(AEItems.FLUIX_DUST)
             .input(Tags.Items.INGOTS_IRON)
