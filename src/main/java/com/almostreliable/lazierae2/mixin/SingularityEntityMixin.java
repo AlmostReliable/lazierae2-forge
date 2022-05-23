@@ -6,6 +6,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.entity.AEBaseItemEntity;
 import appeng.entity.SingularityEntity;
+import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Items;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -38,7 +39,7 @@ public class SingularityEntityMixin extends AEBaseItemEntity {
     public void tick() {
         super.tick();
         if (!getItem().is(AEItems.ENDER_DUST.asItem())) return;
-        if (isRemoved() || !AEConfig.instance().isInWorldFluixEnabled()) return;
+        if (isRemoved() || !Config.COMMON.inWorldResonating.get()) return;
 
         if (level.isClientSide() && delay > 30 && AEConfig.instance().isEnableEffects()) {
             AppEng.instance().spawnEffect(EffectType.Lightning, level, getX(), getY(), getZ(), null);

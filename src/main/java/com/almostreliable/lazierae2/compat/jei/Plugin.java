@@ -9,6 +9,7 @@ import com.almostreliable.lazierae2.compat.jei.category.EtcherCategory;
 import com.almostreliable.lazierae2.compat.jei.category.GrinderCategory;
 import com.almostreliable.lazierae2.compat.jei.category.InfuserCategory;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Items;
 import com.almostreliable.lazierae2.gui.ProcessorScreen;
@@ -59,7 +60,7 @@ public class Plugin implements IModPlugin {
                 true
             ));
         }
-        if (AEConfig.instance().isInWorldFluixEnabled()) {
+        if (Config.COMMON.inWorldResonating.get()) {
             inWaterRecipes.add(new ThrowingInWaterDisplay(List.of(
                 Ingredient.of(AEItems.SKY_DUST),
                 Ingredient.of(Tags.Items.GEMS_DIAMOND),

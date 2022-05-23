@@ -3,6 +3,7 @@ package com.almostreliable.lazierae2.core;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
@@ -108,6 +109,7 @@ public final class Config {
         public final ProcessorConfig grinder;
         public final ProcessorConfig infuser;
         public final DoubleValue maintainerIdleEnergy;
+        public final BooleanValue inWorldResonating;
 
         private CommonConfig(Builder builder) {
             builder.push(PROCESSOR_ID);
@@ -128,6 +130,13 @@ public final class Config {
                 .comment(f(" The energy the {} drains from the ME network when idle.", MAINTAINER_ID))
                 .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", MAINTAINER_ID, IDLE_ENERGY)))
                 .defineInRange("idleEnergy", 5.0, 0.0, Double.MAX_VALUE);
+            builder.pop();
+
+            builder.push("misc");
+            inWorldResonating = builder
+                .comment(" Whether the Resonating Dust should be craft-able in the world.")
+                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, "misc.inWorldResonating"))
+                .define("inWorldResonating", true);
             builder.pop();
         }
     }
