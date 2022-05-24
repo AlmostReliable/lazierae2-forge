@@ -3,11 +3,11 @@
   "process_time": 80,
   "energy_cost": 800,
   "output": {
-    "item": "ae2:certus_quartz_dust"
+    "item": "lazierae2:resonating_dust"
   },
   "input": [
     {
-      "tag": "forge:gems/certus_quartz"
+      "tag": "forge:gems/resonating"
     }
   ]
 }

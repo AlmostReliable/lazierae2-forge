@@ -108,7 +108,8 @@ public final class ProcessorRecipeBuilder {
         var outputId = output.getItem().getRegistryName();
         var modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
             outputId.getNamespace();
-        var recipeId = new ResourceLocation(modID, f("{}/{}", recipeType.getId(), outputId.getPath()));
+        var outputName = output.getCount() > 1 ? f("{}_{}", outputId.getPath(), output.getCount()) : outputId.getPath();
+        var recipeId = new ResourceLocation(modID, f("{}/{}", recipeType.getId(), outputName));
         consumer.accept(new FinishedProcessorRecipe(build(recipeId)));
     }
 

@@ -344,6 +344,24 @@ public class RecipeData extends RecipeProvider {
             .processingTime(80)
             .energyCost(800)
             .build(c);
+        ProcessorRecipeBuilder
+            .grinder(AEItems.FLUIX_DUST)
+            .input(ConventionTags.FLUIX_CRYSTAL)
+            .processingTime(80)
+            .energyCost(800)
+            .build(c);
+        ProcessorRecipeBuilder
+            .grinder(AEItems.CERTUS_QUARTZ_DUST)
+            .input(ConventionTags.CERTUS_QUARTZ)
+            .processingTime(80)
+            .energyCost(800)
+            .build(c);
+        ProcessorRecipeBuilder
+            .grinder(Setup.Items.RESONATING_DUST.get())
+            .input(Setup.Tags.Items.GEMS_RESONATING)
+            .processingTime(80)
+            .energyCost(800)
+            .build(c);
     }
 
     private void infuserRecipes(Consumer<? super FinishedRecipe> c) {
