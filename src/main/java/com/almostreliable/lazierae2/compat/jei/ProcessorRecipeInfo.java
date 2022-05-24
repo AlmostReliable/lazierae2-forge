@@ -2,6 +2,7 @@ package com.almostreliable.lazierae2.compat.jei;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
@@ -13,19 +14,19 @@ import java.util.List;
  * Default implementation taken from JEIs
  * BasicRecipeTransferInfo.
  */
-public class ProcessorRecipeInfo implements IRecipeTransferInfo<ProcessorMenu, ProcessorRecipe> {
+public class ProcessorRecipeInfo<R extends ProcessorRecipe> implements IRecipeTransferInfo<ProcessorMenu, R> {
 
-    private final ResourceLocation recipeCategoryUid;
+    private final RecipeType<R> recipeType;
     private final int recipeSlotStart;
     private final int recipeSlotCount;
     private final int inventorySlotStart;
     private final int inventorySlotCount;
 
     ProcessorRecipeInfo(
-        ResourceLocation recipeCategoryUid, int recipeSlotStart, int recipeSlotCount, int inventorySlotStart,
+        RecipeType<R> recipeType, int recipeSlotStart, int recipeSlotCount, int inventorySlotStart,
         int inventorySlotCount
     ) {
-        this.recipeCategoryUid = recipeCategoryUid;
+        this.recipeType = recipeType;
         this.recipeSlotStart = recipeSlotStart;
         this.recipeSlotCount = recipeSlotCount;
         this.inventorySlotStart = inventorySlotStart;
@@ -38,8 +39,13 @@ public class ProcessorRecipeInfo implements IRecipeTransferInfo<ProcessorMenu, P
     }
 
     @Override
+    public RecipeType<R> getRecipeType() {
+        return recipeType;
+    }
+
+    @Override
     public boolean canHandle(ProcessorMenu container, ProcessorRecipe recipe) {
-        return container.entity.getProcessorType().getId().equals(recipeCategoryUid.getPath());
+        return container.entity.getProcessorType().getId().equals(recipeType.getUid().getPath());
     }
 
     @Override
@@ -62,13 +68,15 @@ public class ProcessorRecipeInfo implements IRecipeTransferInfo<ProcessorMenu, P
         return slots;
     }
 
+    @SuppressWarnings({"removal", "unchecked"})
     @Override
-    public Class<ProcessorRecipe> getRecipeClass() {
-        return ProcessorRecipe.class;
+    public Class<R> getRecipeClass() {
+        return (Class<R>) ProcessorRecipe.class;
     }
 
+    @SuppressWarnings("removal")
     @Override
     public ResourceLocation getRecipeCategoryUid() {
-        return recipeCategoryUid;
+        return recipeType.getUid();
     }
 }

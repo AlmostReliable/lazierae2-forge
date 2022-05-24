@@ -72,6 +72,7 @@ public abstract class TripleInputCategory extends ProcessorCategory<TripleInputR
         GuiUtil.renderText(stack, time, ANCHOR.TOP_RIGHT, 91, 54, 0.8f, 0x00_0000);
     }
 
+    @SuppressWarnings("removal")
     @Override
     public Class<? extends TripleInputRecipe> getRecipeClass() {
         return TripleInputRecipe.class;

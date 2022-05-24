@@ -56,6 +56,7 @@ public abstract class SingleInputCategory extends ProcessorCategory<SingleInputR
         GuiUtil.renderText(stack, time, ANCHOR.TOP_RIGHT, 91, 28, 0.8f, 0x00_0000);
     }
 
+    @SuppressWarnings("removal")
     @Override
     public Class<? extends SingleInputRecipe> getRecipeClass() {
         return SingleInputRecipe.class;

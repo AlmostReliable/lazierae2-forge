@@ -25,7 +25,7 @@ public abstract class ProcessorCategory<R extends ProcessorRecipe> implements IR
 
     ProcessorCategory(IGuiHelper guiHelper, String id, ItemLike iconProvider) {
         this.id = id;
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(iconProvider));
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(iconProvider));
 
         var progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", id));
         progressEmpty = guiHelper
