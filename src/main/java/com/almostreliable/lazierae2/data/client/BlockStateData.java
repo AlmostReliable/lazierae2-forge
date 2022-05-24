@@ -8,6 +8,7 @@ import com.almostreliable.lazierae2.content.assembler.HullBlock;
 import com.almostreliable.lazierae2.content.processor.ProcessorBlock;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
+import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -68,12 +69,18 @@ public class BlockStateData extends BlockStateProvider {
      * @param block the machine block to register
      */
     private void registerMachine(String id, MachineBlock block) {
-        var sideTexture = new ResourceLocation(MOD_ID, "block/machine/side");
-        var inactiveTexture = new ResourceLocation(MOD_ID, f("block/machine/{}", id));
-        var activeTexture = new ResourceLocation(MOD_ID, f("block/machine/{}_active", id));
+        var sideTexture = TextUtil.getRL("block/machine/wall");
+        var topTexture = TextUtil.getRL("block/machine/top");
+        var inactiveTexture = TextUtil.getRL(f("block/machine/{}", id));
+        var activeTexture = TextUtil.getRL(f("block/machine/{}_active", id));
 
-        var modelInactive = models().orientable(id, sideTexture, inactiveTexture, sideTexture);
-        var modelActive = models().orientable(getActiveId(id), sideTexture, activeTexture, sideTexture);
+        var modelInactive = models().orientableWithBottom(id, sideTexture, inactiveTexture, topTexture, topTexture);
+        var modelActive = models().orientableWithBottom(getActiveId(id),
+            sideTexture,
+            activeTexture,
+            topTexture,
+            topTexture
+        );
 
         orientedBlock(block,
             MachineBlock.FACING,

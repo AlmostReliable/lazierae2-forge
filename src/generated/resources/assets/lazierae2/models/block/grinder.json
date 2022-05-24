@@ -1,8 +1,9 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/orientable_with_bottom",
   "textures": {
-    "side": "lazierae2:block/machine/side",
+    "side": "lazierae2:block/machine/wall",
     "front": "lazierae2:block/machine/grinder",
-    "top": "lazierae2:block/machine/side"
+    "bottom": "lazierae2:block/machine/top",
+    "top": "lazierae2:block/machine/top"
   }
 }
