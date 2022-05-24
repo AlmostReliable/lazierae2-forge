@@ -68,6 +68,10 @@ bab450c8baf34735b91e69c33483e408f0d4e0f5 data/ae2/recipes/grinder/certus_quartz_
 62f01b4d13603232fc12da59924195848d7cb241 data/ae2/recipes/grinder/ender_dust.json
 2c9928aa73eda05d1a02adc66cef600f239d5970 data/ae2/recipes/grinder/fluix_dust.json
 f31df388c58259b6cb50e1a2a19b2afd949bccb9 data/ae2/recipes/grinder/sky_dust.json
+ddf36cbca2a9f91fede38af05a01803e23195c62 data/ae2/recipes/infuser/fluix_pearl.json
+a8e713530c5a4c64af9fbae0212cbed42207df1e data/ae2/recipes/infuser/quartz_glass.json
+037961925208aa9755a680f3aad9ab1835733fa9 data/ae2/recipes/infuser/quartz_vibrant_glass.json
+ed041076e07eb98b772c568a7508a4ba833125c6 data/ae2/recipes/infuser/sky_stone_block.json
 b132f2c2bf160b0741d67863791981e93ab217b1 data/forge/tags/items/dusts.json
 f56eb95de313b70db64f221197a519f4fbca7d79 data/forge/tags/items/dusts/carbonic_fluix.json
 c1d06386a929dd0cdb93b48b2543e6503ffba506 data/forge/tags/items/dusts/coal.json
@@ -105,7 +109,7 @@ fa15288a47406a85e5c6deed56585cd5e77c4fed data/lazierae2/recipes/etcher/universal
 fa3dfe8c0d663845d485eec040b7a2d76191340c data/lazierae2/recipes/grinder/resonating_dust.json
 b70b34cf07dcb19d8712b787730fa45c0b72b54f data/lazierae2/recipes/growth_core.json
 1bf6dbc5d308e1c873be3cec071f7d06a92ae47b data/lazierae2/recipes/infuser.json
-61cd4e013db9550c3009986f9a8e58160deb8455 data/lazierae2/recipes/infuser/carbonic_fluix_dust.json
+2accbe1ba96ad9939df9e577ba2ba6a36282ab5a data/lazierae2/recipes/infuser/carbonic_fluix_dust.json
 e6b42b3a56995574634a413598585de81ac5f1ae data/lazierae2/recipes/infuser/fluix_steel_ingot.json
 a84afb70f780115e2e301411cbce40dc95aa5345 data/lazierae2/recipes/infuser/speculation_core_1.json
 ec233756aa56e5827797f7751c88f6bb1da5e8f0 data/lazierae2/recipes/logic_unit.json

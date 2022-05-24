@@ -368,7 +368,7 @@ public class RecipeData extends RecipeProvider {
         ProcessorRecipeBuilder
             .infuser(Setup.Items.CARB_FLUIX_DUST.get())
             .input(Setup.Tags.Items.DUSTS_COAL)
-            .input(AEItems.FLUIX_DUST)
+            .input(ConventionTags.FLUIX_DUST)
             .input(ConventionTags.SILICON)
             .processingTime(30)
             .energyCost(300)
@@ -386,6 +386,36 @@ public class RecipeData extends RecipeProvider {
             .input(AEItems.SKY_DUST)
             .input(AEItems.MATTER_BALL)
             .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
+            .processingTime(60)
+            .energyCost(600)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser(AEItems.FLUIX_PEARL)
+            .input(AEBlocks.FLUIX_BLOCK)
+            .input(Tags.Items.ENDER_PEARLS)
+            .input(ConventionTags.FLUIX_DUST)
+            .processingTime(60)
+            .energyCost(600)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser(AEBlocks.SKY_STONE_BLOCK)
+            .input(Items.BLACK_CONCRETE_POWDER)
+            .input(AEItems.SKY_DUST)
+            .processingTime(60)
+            .energyCost(600)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser(AEBlocks.QUARTZ_GLASS)
+            .input(ConventionTags.CERTUS_QUARTZ_DUST)
+            .input(Tags.Items.GLASS)
+            .processingTime(60)
+            .energyCost(600)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser(AEBlocks.QUARTZ_VIBRANT_GLASS)
+            .input(ConventionTags.CERTUS_QUARTZ_DUST)
+            .input(Tags.Items.GLASS)
+            .input(Tags.Items.DUSTS_GLOWSTONE)
             .processingTime(60)
             .energyCost(600)
             .build(c);
