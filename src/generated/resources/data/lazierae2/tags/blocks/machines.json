@@ -2,9 +2,9 @@
   "replace": false,
   "values": [
     "lazierae2:aggregator",
-    "lazierae2:centrifuge",
-    "lazierae2:energizer",
     "lazierae2:etcher",
+    "lazierae2:grinder",
+    "lazierae2:infuser",
     "lazierae2:maintainer"
   ]
 }

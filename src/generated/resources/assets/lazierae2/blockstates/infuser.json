@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "active=false,facing=north": {
+      "model": "lazierae2:block/infuser"
+    },
+    "active=true,facing=north": {
+      "model": "lazierae2:block/infuser_active"
+    },
+    "active=false,facing=south": {
+      "model": "lazierae2:block/infuser",
+      "y": 180
+    },
+    "active=true,facing=south": {
+      "model": "lazierae2:block/infuser_active",
+      "y": 180
+    },
+    "active=false,facing=west": {
+      "model": "lazierae2:block/infuser",
+      "y": 270
+    },
+    "active=true,facing=west": {
+      "model": "lazierae2:block/infuser_active",
+      "y": 270
+    },
+    "active=false,facing=east": {
+      "model": "lazierae2:block/infuser",
+      "y": 90
+    },
+    "active=true,facing=east": {
+      "model": "lazierae2:block/infuser_active",
+      "y": 90
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:sand"
+    },
+    {
+      "tag": "forge:dusts/resonating"
+    }
+  ],
+  "result": {
+    "item": "lazierae2:resonating_seed"
+  }
+}

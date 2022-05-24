@@ -1,0 +1,15 @@
+{
+  "type": "ae2:inscriber",
+  "mode": "inscribe",
+  "result": {
+    "item": "ae2:printed_engineering_processor"
+  },
+  "ingredients": {
+    "top": {
+      "item": "lazierae2:universal_press"
+    },
+    "middle": {
+      "tag": "forge:gems/diamond"
+    }
+  }
+}

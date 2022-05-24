@@ -30,11 +30,6 @@ public abstract class SingleInputCategory extends ProcessorCategory<SingleInputR
     }
 
     @Override
-    public Class<? extends SingleInputRecipe> getRecipeClass() {
-        return SingleInputRecipe.class;
-    }
-
-    @Override
     public IDrawable getBackground() {
         return background;
     }
@@ -59,5 +54,10 @@ public abstract class SingleInputCategory extends ProcessorCategory<SingleInputR
         // required time
         var time = f("{} ticks", recipe.getProcessTime());
         GuiUtil.renderText(stack, time, ANCHOR.TOP_RIGHT, 91, 28, 0.8f, 0x00_0000);
+    }
+
+    @Override
+    public Class<? extends SingleInputRecipe> getRecipeClass() {
+        return SingleInputRecipe.class;
     }
 }

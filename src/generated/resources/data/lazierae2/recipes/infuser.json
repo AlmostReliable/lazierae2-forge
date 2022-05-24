@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "faf",
+    "opo",
+    "ece"
+  ],
+  "key": {
+    "f": {
+      "item": "ae2:fluix_pearl"
+    },
+    "a": {
+      "item": "ae2:molecular_assembler"
+    },
+    "o": {
+      "item": "minecraft:observer"
+    },
+    "p": {
+      "tag": "lazierae2:processors/parallel"
+    },
+    "e": {
+      "item": "ae2:engineering_processor"
+    },
+    "c": {
+      "item": "ae2:condenser"
+    }
+  },
+  "result": {
+    "item": "lazierae2:infuser"
+  }
+}

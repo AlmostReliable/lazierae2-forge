@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "cic",
+    "pup",
+    "fef"
+  ],
+  "key": {
+    "c": {
+      "tag": "ae2:memory_cards"
+    },
+    "i": {
+      "item": "ae2:interface"
+    },
+    "p": {
+      "tag": "lazierae2:processors/parallel"
+    },
+    "u": {
+      "item": "lazierae2:logic_unit"
+    },
+    "f": {
+      "tag": "forge:ingots/fluix_steel"
+    },
+    "e": {
+      "item": "ae2:dense_energy_cell"
+    }
+  },
+  "result": {
+    "item": "lazierae2:maintainer"
+  }
+}

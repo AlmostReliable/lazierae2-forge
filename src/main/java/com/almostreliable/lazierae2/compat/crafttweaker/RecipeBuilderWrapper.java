@@ -31,9 +31,9 @@ public class RecipeBuilderWrapper {
         this.id = id;
         builder = switch (type) {
             case AGGREGATOR -> ProcessorRecipeBuilder.aggregator(output.getInternal().getItem(), output.getAmount());
-            case CENTRIFUGE -> ProcessorRecipeBuilder.centrifuge(output.getInternal().getItem(), output.getAmount());
-            case ENERGIZER -> ProcessorRecipeBuilder.energizer(output.getInternal().getItem(), output.getAmount());
             case ETCHER -> ProcessorRecipeBuilder.etcher(output.getInternal().getItem(), output.getAmount());
+            case GRINDER -> ProcessorRecipeBuilder.grinder(output.getInternal().getItem(), output.getAmount());
+            case INFUSER -> ProcessorRecipeBuilder.infuser(output.getInternal().getItem(), output.getAmount());
         };
     }
 

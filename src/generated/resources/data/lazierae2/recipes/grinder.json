@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "vbv",
+    "aua",
+    "fif"
+  ],
+  "key": {
+    "v": {
+      "item": "ae2:quartz_vibrant_glass"
+    },
+    "b": {
+      "item": "minecraft:iron_bars"
+    },
+    "a": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "u": {
+      "item": "lazierae2:logic_unit"
+    },
+    "f": {
+      "tag": "forge:ingots/fluix_steel"
+    },
+    "i": {
+      "tag": "forge:storage_blocks/iron"
+    }
+  },
+  "result": {
+    "item": "lazierae2:grinder"
+  }
+}

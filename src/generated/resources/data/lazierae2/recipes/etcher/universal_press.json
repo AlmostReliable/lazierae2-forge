@@ -1,0 +1,17 @@
+{
+  "type": "lazierae2:etcher",
+  "process_time": 200,
+  "energy_cost": 2000,
+  "output": {
+    "item": "lazierae2:universal_press",
+    "count": 2
+  },
+  "input": [
+    {
+      "item": "lazierae2:universal_press"
+    },
+    {
+      "tag": "forge:storage_blocks/iron"
+    }
+  ]
+}

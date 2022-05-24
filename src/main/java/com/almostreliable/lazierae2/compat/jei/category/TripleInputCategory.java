@@ -36,11 +36,6 @@ public abstract class TripleInputCategory extends ProcessorCategory<TripleInputR
     }
 
     @Override
-    public Class<? extends TripleInputRecipe> getRecipeClass() {
-        return TripleInputRecipe.class;
-    }
-
-    @Override
     public IDrawable getBackground() {
         return background;
     }
@@ -75,5 +70,10 @@ public abstract class TripleInputCategory extends ProcessorCategory<TripleInputR
         // required time
         var time = f("{} ticks", recipe.getProcessTime());
         GuiUtil.renderText(stack, time, ANCHOR.TOP_RIGHT, 91, 54, 0.8f, 0x00_0000);
+    }
+
+    @Override
+    public Class<? extends TripleInputRecipe> getRecipeClass() {
+        return TripleInputRecipe.class;
     }
 }

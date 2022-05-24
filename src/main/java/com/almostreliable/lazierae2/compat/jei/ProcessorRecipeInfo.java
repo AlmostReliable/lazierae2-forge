@@ -38,16 +38,6 @@ public class ProcessorRecipeInfo implements IRecipeTransferInfo<ProcessorMenu, P
     }
 
     @Override
-    public Class<ProcessorRecipe> getRecipeClass() {
-        return ProcessorRecipe.class;
-    }
-
-    @Override
-    public ResourceLocation getRecipeCategoryUid() {
-        return recipeCategoryUid;
-    }
-
-    @Override
     public boolean canHandle(ProcessorMenu container, ProcessorRecipe recipe) {
         return container.entity.getProcessorType().getId().equals(recipeCategoryUid.getPath());
     }
@@ -70,5 +60,15 @@ public class ProcessorRecipeInfo implements IRecipeTransferInfo<ProcessorMenu, P
             slots.add(slot);
         }
         return slots;
+    }
+
+    @Override
+    public Class<ProcessorRecipe> getRecipeClass() {
+        return ProcessorRecipe.class;
+    }
+
+    @Override
+    public ResourceLocation getRecipeCategoryUid() {
+        return recipeCategoryUid;
     }
 }

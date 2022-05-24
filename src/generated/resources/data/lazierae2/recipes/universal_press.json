@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ipi",
+    "fpf",
     "csl",
-    "iei"
+    "fef"
   ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/fluix_iron"
+    "f": {
+      "tag": "forge:ingots/fluix_steel"
     },
     "p": {
       "item": "ae2:silicon_press"

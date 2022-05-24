@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sgs",
-    "dpd",
-    "sgs"
+    "sps",
+    "fff",
+    "qqq"
   ],
   "key": {
     "s": {
-      "tag": "forge:ingots/fluix_steel"
-    },
-    "g": {
-      "item": "ae2:quartz_glass"
-    },
-    "d": {
-      "tag": "forge:dusts/carbonic_fluix"
+      "tag": "forge:silicon"
     },
     "p": {
-      "item": "ae2:engineering_processor"
+      "item": "ae2:logic_processor"
+    },
+    "f": {
+      "tag": "forge:ingots/fluix_steel"
+    },
+    "q": {
+      "item": "ae2:quartz_fiber"
     }
   },
   "result": {

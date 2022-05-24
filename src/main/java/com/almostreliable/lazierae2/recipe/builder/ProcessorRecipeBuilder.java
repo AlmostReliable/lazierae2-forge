@@ -39,28 +39,28 @@ public final class ProcessorRecipeBuilder {
         return aggregator(output, 1);
     }
 
-    public static ProcessorRecipeBuilder centrifuge(ItemLike output, int outputCount) {
-        return new ProcessorRecipeBuilder(ProcessorType.CENTRIFUGE, output, outputCount);
-    }
-
-    public static ProcessorRecipeBuilder centrifuge(ItemLike output) {
-        return centrifuge(output, 1);
-    }
-
-    public static ProcessorRecipeBuilder energizer(ItemLike output, int outputCount) {
-        return new ProcessorRecipeBuilder(ProcessorType.ENERGIZER, output, outputCount);
-    }
-
-    public static ProcessorRecipeBuilder energizer(ItemLike output) {
-        return energizer(output, 1);
-    }
-
     public static ProcessorRecipeBuilder etcher(ItemLike output, int outputCount) {
         return new ProcessorRecipeBuilder(ProcessorType.ETCHER, output, outputCount);
     }
 
     public static ProcessorRecipeBuilder etcher(ItemLike output) {
         return etcher(output, 1);
+    }
+
+    public static ProcessorRecipeBuilder grinder(ItemLike output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.GRINDER, output, outputCount);
+    }
+
+    public static ProcessorRecipeBuilder grinder(ItemLike output) {
+        return grinder(output, 1);
+    }
+
+    public static ProcessorRecipeBuilder infuser(ItemLike output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.INFUSER, output, outputCount);
+    }
+
+    public static ProcessorRecipeBuilder infuser(ItemLike output) {
+        return infuser(output, 1);
     }
 
     public ProcessorRecipeBuilder input(Ingredient... inputs) {
@@ -104,12 +104,16 @@ public final class ProcessorRecipeBuilder {
         return this;
     }
 
-    public void build(Consumer<? super FinishedRecipe> consumer) {
+    public void build(Consumer<? super FinishedRecipe> consumer, String suffix) {
         var outputId = output.getItem().getRegistryName();
         var modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
             outputId.getNamespace();
-        var recipeId = new ResourceLocation(modID, f("{}/{}", recipeType.getId(), outputId.getPath()));
+        var recipeId = new ResourceLocation(modID, f("{}/{}{}", recipeType.getId(), outputId.getPath(), suffix));
         consumer.accept(new FinishedProcessorRecipe(build(recipeId)));
+    }
+
+    public void build(Consumer<? super FinishedRecipe> consumer) {
+        build(consumer, "");
     }
 
     public ProcessorRecipe build(ResourceLocation recipeId) {

@@ -1,0 +1,13 @@
+{
+  "type": "lazierae2:grinder",
+  "process_time": 80,
+  "energy_cost": 800,
+  "output": {
+    "item": "ae2:fluix_dust"
+  },
+  "input": [
+    {
+      "tag": "forge:gems/fluix"
+    }
+  ]
+}

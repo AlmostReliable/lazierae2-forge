@@ -1,0 +1,20 @@
+{
+  "type": "lazierae2:aggregator",
+  "process_time": 5,
+  "energy_cost": 50,
+  "output": {
+    "item": "lazierae2:resonating_dust",
+    "count": 2
+  },
+  "input": [
+    {
+      "item": "ae2:sky_dust"
+    },
+    {
+      "tag": "forge:gems/diamond"
+    },
+    {
+      "tag": "forge:dusts/ender_pearl"
+    }
+  ]
+}

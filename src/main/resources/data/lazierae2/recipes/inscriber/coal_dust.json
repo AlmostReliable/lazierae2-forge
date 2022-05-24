@@ -1,0 +1,12 @@
+{
+  "type": "ae2:inscriber",
+  "mode": "inscribe",
+  "result": {
+    "item": "lazierae2:coal_dust"
+  },
+  "ingredients": {
+    "middle": {
+      "tag": "minecraft:coals"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ama",
+    "aba",
+    "aga"
+  ],
+  "key": {
+    "a": {
+      "item": "ae2:quartz_growth_accelerator"
+    },
+    "m": {
+      "item": "ae2:molecular_assembler"
+    },
+    "b": {
+      "item": "minecraft:water_bucket"
+    },
+    "g": {
+      "tag": "ae2:glass_cable"
+    }
+  },
+  "result": {
+    "item": "lazierae2:growth_core"
+  }
+}

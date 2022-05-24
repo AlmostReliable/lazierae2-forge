@@ -1,0 +1,19 @@
+{
+  "type": "lazierae2:infuser",
+  "process_time": 30,
+  "energy_cost": 300,
+  "output": {
+    "item": "lazierae2:carbonic_fluix_dust"
+  },
+  "input": [
+    {
+      "tag": "forge:dusts/coal"
+    },
+    {
+      "tag": "forge:dusts/fluix"
+    },
+    {
+      "tag": "forge:silicon"
+    }
+  ]
+}

@@ -40,9 +40,9 @@ public class BlockStateData extends BlockStateProvider {
     @Override
     protected void registerStatesAndModels() {
         registerProcessor(Blocks.AGGREGATOR.get());
-        registerProcessor(Blocks.CENTRIFUGE.get());
-        registerProcessor(Blocks.ENERGIZER.get());
         registerProcessor(Blocks.ETCHER.get());
+        registerProcessor(Blocks.GRINDER.get());
+        registerProcessor(Blocks.INFUSER.get());
         registerAssembler(CONTROLLER_ID, Assembler.CONTROLLER.get());
         registerAssembler(WALL_ID, Assembler.WALL.get());
         registerAssembler(FRAME_ID, Assembler.FRAME.get());
