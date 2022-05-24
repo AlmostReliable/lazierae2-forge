@@ -11,7 +11,6 @@ import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -20,6 +19,7 @@ import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.ModelFile.UncheckedModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.function.Function;
@@ -40,7 +40,7 @@ public class BlockStateData extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        registerProcessor(Blocks.AGGREGATOR.get());
+        registerProcessorNoModel(Blocks.AGGREGATOR.get());
         registerProcessor(Blocks.ETCHER.get());
         registerProcessor(Blocks.GRINDER.get());
         registerProcessor(Blocks.INFUSER.get());
@@ -88,9 +88,20 @@ public class BlockStateData extends BlockStateProvider {
         );
     }
 
+    private void registerProcessorNoModel(ProcessorBlock block) {
+        var id = block.getId();
+        var modelInactive = TextUtil.getRL(f("block/{}", id));
+        var modelActive = TextUtil.getRL(f("block/{}_active", id));
+        orientedBlock(block,
+            MachineBlock.FACING,
+            state -> new UncheckedModelFile(
+                state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive)
+        );
+    }
+
     private void registerAssembler(String id, GenericBlock block) {
-        var inactiveTexture = new ResourceLocation(MOD_ID, f("block/assembler/{}", id));
-        var activeTexture = new ResourceLocation(MOD_ID, f("block/assembler/{}_active", id));
+        var inactiveTexture = TextUtil.getRL(f("block/assembler/{}", id));
+        var activeTexture = TextUtil.getRL(f("block/assembler/{}_active", id));
         BlockModelBuilder modelInactive;
         BlockModelBuilder modelActive;
         if (block instanceof AssemblerBlock) {
@@ -100,7 +111,7 @@ public class BlockStateData extends BlockStateProvider {
                 state -> state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive
             );
         } else {
-            var sideTexture = new ResourceLocation(MOD_ID, f("block/assembler/{}", WALL_ID));
+            var sideTexture = TextUtil.getRL(f("block/assembler/{}", WALL_ID));
             modelInactive = models().orientable(id, sideTexture, inactiveTexture, sideTexture);
             modelActive = models().orientable(getActiveId(id), sideTexture, activeTexture, sideTexture);
             orientedBlock(block,
