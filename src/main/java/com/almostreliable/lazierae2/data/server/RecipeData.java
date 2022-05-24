@@ -283,12 +283,39 @@ public class RecipeData extends RecipeProvider {
             .energyCost(1_500)
             .build(c);
         ProcessorRecipeBuilder
-            .etcher(Setup.Items.FLUIX_STEEL.get())
-            .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
-            .input(Tags.Items.INGOTS_IRON)
-            .input(AEItems.SKY_DUST)
-            .processingTime(40)
-            .energyCost(200)
+            .etcher(AEItems.LOGIC_PROCESSOR_PRESS, 2)
+            .input(AEItems.LOGIC_PROCESSOR_PRESS)
+            .input(Tags.Items.STORAGE_BLOCKS_IRON)
+            .processingTime(200)
+            .energyCost(2_000)
+            .build(c);
+        ProcessorRecipeBuilder
+            .etcher(AEItems.CALCULATION_PROCESSOR_PRESS, 2)
+            .input(AEItems.CALCULATION_PROCESSOR_PRESS)
+            .input(Tags.Items.STORAGE_BLOCKS_IRON)
+            .processingTime(200)
+            .energyCost(2_000)
+            .build(c);
+        ProcessorRecipeBuilder
+            .etcher(AEItems.ENGINEERING_PROCESSOR_PRESS, 2)
+            .input(AEItems.ENGINEERING_PROCESSOR_PRESS)
+            .input(Tags.Items.STORAGE_BLOCKS_IRON)
+            .processingTime(200)
+            .energyCost(2_000)
+            .build(c);
+        ProcessorRecipeBuilder
+            .etcher(AEItems.SILICON_PRESS, 2)
+            .input(AEItems.SILICON_PRESS)
+            .input(Tags.Items.STORAGE_BLOCKS_IRON)
+            .processingTime(200)
+            .energyCost(2_000)
+            .build(c);
+        ProcessorRecipeBuilder
+            .etcher(Setup.Items.UNIVERSAL_PRESS.get(), 2)
+            .input(Setup.Items.UNIVERSAL_PRESS.get())
+            .input(Tags.Items.STORAGE_BLOCKS_IRON)
+            .processingTime(200)
+            .energyCost(2_000)
             .build(c);
     }
 
