@@ -325,7 +325,7 @@ public class RecipeData extends RecipeProvider {
             .input(ConventionTags.CERTUS_QUARTZ_ORE)
             .processingTime(80)
             .energyCost(800)
-            .build(c);
+            .build(c, "_from_ore");
         ProcessorRecipeBuilder
             .grinder(AEItems.SKY_DUST)
             .input(AEBlocks.SKY_STONE_BLOCK)

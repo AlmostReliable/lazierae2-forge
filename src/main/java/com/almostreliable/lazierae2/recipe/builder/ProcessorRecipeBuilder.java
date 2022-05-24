@@ -104,13 +104,16 @@ public final class ProcessorRecipeBuilder {
         return this;
     }
 
-    public void build(Consumer<? super FinishedRecipe> consumer) {
+    public void build(Consumer<? super FinishedRecipe> consumer, String suffix) {
         var outputId = output.getItem().getRegistryName();
         var modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
             outputId.getNamespace();
-        var outputName = output.getCount() > 1 ? f("{}_{}", outputId.getPath(), output.getCount()) : outputId.getPath();
-        var recipeId = new ResourceLocation(modID, f("{}/{}", recipeType.getId(), outputName));
+        var recipeId = new ResourceLocation(modID, f("{}/{}{}", recipeType.getId(), outputId.getPath(), suffix));
         consumer.accept(new FinishedProcessorRecipe(build(recipeId)));
+    }
+
+    public void build(Consumer<? super FinishedRecipe> consumer) {
+        build(consumer, "");
     }
 
     public ProcessorRecipe build(ResourceLocation recipeId) {
