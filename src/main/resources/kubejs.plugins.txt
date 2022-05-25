@@ -1,0 +1,1 @@
+com.almostreliable.lazierae2.compat.kubejs.Plugin
