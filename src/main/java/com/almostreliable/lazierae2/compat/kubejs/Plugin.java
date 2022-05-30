@@ -1,10 +1,11 @@
 package com.almostreliable.lazierae2.compat.kubejs;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
-import com.almostreliable.lazierae2.core.Constants;
 import com.almostreliable.lazierae2.util.TextUtil;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.RegisterRecipeHandlersEvent;
+
+import static com.almostreliable.lazierae2.core.Constants.Blocks.*;
 
 public class Plugin extends KubeJSPlugin {
 
@@ -21,11 +22,9 @@ public class Plugin extends KubeJSPlugin {
      */
     @Override
     public void addRecipes(RegisterRecipeHandlersEvent event) {
-        event.register(TextUtil.getRL(Constants.Blocks.AGGREGATOR_ID),
-            () -> new ProcessorRecipeJS(ProcessorType.AGGREGATOR)
-        );
-        event.register(TextUtil.getRL(Constants.Blocks.ETCHER_ID), () -> new ProcessorRecipeJS(ProcessorType.ETCHER));
-        event.register(TextUtil.getRL(Constants.Blocks.GRINDER_ID), () -> new ProcessorRecipeJS(ProcessorType.GRINDER));
-        event.register(TextUtil.getRL(Constants.Blocks.INFUSER_ID), () -> new ProcessorRecipeJS(ProcessorType.INFUSER));
+        event.register(TextUtil.getRL(AGGREGATOR_ID), () -> new ProcessorRecipeJS(ProcessorType.AGGREGATOR));
+        event.register(TextUtil.getRL(ETCHER_ID), () -> new ProcessorRecipeJS(ProcessorType.ETCHER));
+        event.register(TextUtil.getRL(GRINDER_ID), () -> new ProcessorRecipeJS(ProcessorType.GRINDER));
+        event.register(TextUtil.getRL(INFUSER_ID), () -> new ProcessorRecipeJS(ProcessorType.INFUSER));
     }
 }
