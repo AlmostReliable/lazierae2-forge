@@ -1,0 +1,17 @@
+{
+  "type": "lazierae2:grinder",
+  "conditions": [
+    {
+      "modid": "mekanism",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "output": {
+    "item": "mekanism:sawdust"
+  },
+  "input": {
+    "tag": "minecraft:logs"
+  },
+  "process_time": 20,
+  "energy_cost": 300
+}

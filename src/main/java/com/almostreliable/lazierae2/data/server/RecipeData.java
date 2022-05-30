@@ -7,6 +7,7 @@ import appeng.datagen.providers.tags.ConventionTags;
 import com.almostreliable.lazierae2.core.Setup;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.recipe.builder.ProcessorRecipeBuilder;
+import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -14,9 +15,12 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
+
+import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class RecipeData extends RecipeProvider {
 
@@ -35,6 +39,7 @@ public class RecipeData extends RecipeProvider {
         etcherRecipes(c);
         grinderRecipes(c);
         infuserRecipes(c);
+        compatRecipes(c);
     }
 
     private void shapedBlocks(Consumer<FinishedRecipe> c) {
@@ -419,5 +424,175 @@ public class RecipeData extends RecipeProvider {
             .processingTime(60)
             .energyCost(600)
             .build(c);
+    }
+
+    private void compatRecipes(Consumer<? super FinishedRecipe> c) {
+        mekanismRecipes(c);
+    }
+
+    private void mekanismRecipes(Consumer<? super FinishedRecipe> c) {
+        mekanismGrinderRecipes(c);
+        mekanismInfuserRecipes(c);
+    }
+
+    private void mekanismGrinderRecipes(Consumer<? super FinishedRecipe> c) {
+        ProcessorRecipeBuilder
+            .grinder("mekanism:sawdust")
+            .input(ItemTags.LOGS)
+            .processingTime(20)
+            .energyCost(300)
+            .build(c);
+        ProcessorRecipeBuilder
+            .grinder("mekanism:fluorite_gem", 6)
+            .input(Setup.Tags.Items.ORES_FLUORITE)
+            .processingTime(40)
+            .energyCost(300)
+            .build(c);
+        ProcessorRecipeBuilder
+            .grinder("mekanism:dirty_netherite_scrap", 3)
+            .input(Tags.Items.ORES_NETHERITE_SCRAP)
+            .processingTime(50)
+            .energyCost(500)
+            .build(c);
+        ProcessorRecipeBuilder
+            .grinder("mekanism:dust_netherite", 1)
+            .input(Tags.Items.INGOTS_NETHERITE)
+            .processingTime(40)
+            .energyCost(500)
+            .build(c);
+        mekanismGrinderBiofuel(c, 8, Items.CAKE, Items.PUMPKIN_PIE);
+        mekanismGrinderBiofuel(
+            c,
+            7,
+            Items.BAKED_POTATO,
+            Items.BREAD,
+            Items.BROWN_MUSHROOM_BLOCK,
+            Items.COOKIE,
+            Items.FLOWERING_AZALEA,
+            Items.HAY_BLOCK,
+            Items.NETHER_WART_BLOCK,
+            Items.RED_MUSHROOM_BLOCK,
+            Items.WARPED_WART_BLOCK
+        );
+        mekanismGrinderBiofuel(
+            c,
+            5,
+            Items.ALLIUM,
+            Items.APPLE,
+            Items.AZALEA,
+            Items.AZURE_BLUET,
+            Items.BEETROOT,
+            Items.BIG_DRIPLEAF,
+            Items.BLUE_ORCHID,
+            Items.BROWN_MUSHROOM,
+            Items.CARROT,
+            Items.CARVED_PUMPKIN,
+            Items.COCOA_BEANS,
+            Items.CORNFLOWER,
+            Items.CRIMSON_FUNGUS,
+            Items.CRIMSON_ROOTS,
+            Items.DANDELION,
+            Items.FERN,
+            Items.LARGE_FERN,
+            Items.LILAC,
+            Items.LILY_OF_THE_VALLEY,
+            Items.LILY_PAD,
+            Items.MELON,
+            Items.MOSS_BLOCK,
+            Items.MUSHROOM_STEM,
+            Items.NETHER_WART,
+            Items.ORANGE_TULIP,
+            Items.OXEYE_DAISY,
+            Items.PEONY,
+            Items.PINK_TULIP,
+            Items.POPPY,
+            Items.POTATO,
+            Items.PUMPKIN,
+            Items.RED_MUSHROOM,
+            Items.RED_TULIP,
+            Items.ROSE_BUSH,
+            Items.SEA_PICKLE,
+            Items.SHROOMLIGHT,
+            Items.SPORE_BLOSSOM,
+            Items.SUNFLOWER,
+            Items.WARPED_FUNGUS,
+            Items.WARPED_ROOTS,
+            Items.WHEAT,
+            Items.WHITE_TULIP,
+            Items.WITHER_ROSE
+        );
+        mekanismGrinderBiofuel(
+            c,
+            4,
+            Items.CACTUS,
+            Items.DRIED_KELP_BLOCK,
+            Items.FLOWERING_AZALEA_LEAVES,
+            Items.GLOW_LICHEN,
+            Items.MELON_SLICE,
+            Items.NETHER_SPROUTS,
+            Items.SUGAR_CANE,
+            Items.TALL_GRASS,
+            Items.TWISTING_VINES,
+            Items.VINE,
+            Items.WEEPING_VINES
+        );
+        mekanismGrinderBiofuel(
+            c,
+            2,
+            Items.ACACIA_LEAVES,
+            Items.ACACIA_SAPLING,
+            Items.AZALEA_LEAVES,
+            Items.BEETROOT_SEEDS,
+            Items.BIRCH_LEAVES,
+            Items.BIRCH_SAPLING,
+            Items.DARK_OAK_LEAVES,
+            Items.DARK_OAK_SAPLING,
+            Items.DRIED_KELP,
+            Items.GLOW_BERRIES,
+            Items.GRASS,
+            Items.HANGING_ROOTS,
+            Items.JUNGLE_LEAVES,
+            Items.JUNGLE_SAPLING,
+            Items.KELP,
+            Items.MELON_SEEDS,
+            Items.MOSS_CARPET,
+            Items.OAK_LEAVES,
+            Items.OAK_SAPLING,
+            Items.PUMPKIN_SEEDS,
+            Items.SEAGRASS,
+            Items.SMALL_DRIPLEAF,
+            Items.SPRUCE_LEAVES,
+            Items.SPRUCE_SAPLING,
+            Items.SWEET_BERRIES,
+            Items.WHEAT_SEEDS
+        );
+    }
+
+    private void mekanismInfuserRecipes(Consumer<? super FinishedRecipe> c) {
+        ProcessorRecipeBuilder
+            .infuser("mekanism:dye_base", 2)
+            .input(Items.PAPER)
+            .input(Items.CLAY_BALL)
+            .processingTime(8)
+            .energyCost(50)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser("mekanism:structural_glass", 1)
+            .input(Setup.Tags.Items.INGOTS_STEEL)
+            .input(Tags.Items.SAND)
+            .processingTime(15)
+            .energyCost(250)
+            .build(c);
+    }
+
+    private void mekanismGrinderBiofuel(Consumer<? super FinishedRecipe> c, int count, ItemLike... inputs) {
+        for (var input : inputs) {
+            ProcessorRecipeBuilder
+                .grinder("mekanism:bio_fuel", count)
+                .input(input)
+                .processingTime(15)
+                .energyCost(100)
+                .build(c, f("/{}", GameUtil.getIdFromItem(input.asItem())));
+        }
     }
 }

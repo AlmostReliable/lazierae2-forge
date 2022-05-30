@@ -1,0 +1,23 @@
+{
+  "type": "lazierae2:infuser",
+  "conditions": [
+    {
+      "modid": "mekanism",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "output": {
+    "item": "mekanism:dye_base",
+    "count": 2
+  },
+  "input": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "minecraft:clay_ball"
+    }
+  ],
+  "process_time": 8,
+  "energy_cost": 50
+}

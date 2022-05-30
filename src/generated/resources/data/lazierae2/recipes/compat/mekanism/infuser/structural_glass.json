@@ -1,0 +1,22 @@
+{
+  "type": "lazierae2:infuser",
+  "conditions": [
+    {
+      "modid": "mekanism",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "output": {
+    "item": "mekanism:structural_glass"
+  },
+  "input": [
+    {
+      "tag": "forge:ingots/steel"
+    },
+    {
+      "tag": "forge:sand"
+    }
+  ],
+  "process_time": 15,
+  "energy_cost": 250
+}
