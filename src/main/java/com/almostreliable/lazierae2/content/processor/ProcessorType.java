@@ -3,76 +3,47 @@ package com.almostreliable.lazierae2.content.processor;
 import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Config.ProcessorConfig;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
-import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
+import com.almostreliable.lazierae2.core.Setup.Serializers;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipeFactory;
 import com.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
 import com.almostreliable.lazierae2.recipe.type.TripleInputRecipe;
+import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.registries.RegistryObject;
 
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.almostreliable.lazierae2.core.Constants.Blocks.*;
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
-import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public enum ProcessorType implements RecipeType<ProcessorRecipe> {
 
-    AGGREGATOR(
-        AGGREGATOR_ID,
-        3,
-        () -> Config.COMMON.aggregator,
-        () -> Blocks.AGGREGATOR,
-        TripleInputRecipe::new,
-        () -> Serializers.AGGREGATOR
-    ), ETCHER(
-        ETCHER_ID,
-        3,
-        () -> Config.COMMON.etcher,
-        () -> Blocks.ETCHER,
-        TripleInputRecipe::new,
-        () -> Serializers.ETCHER
-    ), GRINDER(
-        GRINDER_ID,
-        1,
-        () -> Config.COMMON.grinder,
-        () -> Blocks.GRINDER,
-        SingleInputRecipe::new,
-        () -> Serializers.GRINDER
-    ), INFUSER(
-        INFUSER_ID,
-        3,
-        () -> Config.COMMON.infuser,
-        () -> Blocks.INFUSER,
-        TripleInputRecipe::new,
-        () -> Serializers.INFUSER
-    );
+    AGGREGATOR(AGGREGATOR_ID, 3, () -> Config.COMMON.aggregator, () -> Blocks.AGGREGATOR, () -> Serializers.AGGREGATOR),
+    ETCHER(ETCHER_ID, 3, () -> Config.COMMON.etcher, () -> Blocks.ETCHER, () -> Serializers.ETCHER),
+    GRINDER(GRINDER_ID, 1, () -> Config.COMMON.grinder, () -> Blocks.GRINDER, () -> Serializers.GRINDER),
+    INFUSER(INFUSER_ID, 3, () -> Config.COMMON.infuser, () -> Blocks.INFUSER, () -> Serializers.INFUSER);
 
     private final String id;
     private final int inputSlots;
-    private final Lazy<ProcessorConfig> processorConfig;
-    private final Supplier<? extends Supplier<ProcessorBlock>> itemProvider;
-    private final BiFunction<ResourceLocation, ProcessorType, ProcessorRecipe> recipeFactory;
-    private final Supplier<? extends Supplier<RecipeSerializer<ProcessorRecipe>>> recipeSerializer;
+    private final Lazy<ProcessorConfig> config;
+    private final Supplier<RegistryObject<? extends ProcessorBlock>> itemProvider;
+    private final Supplier<RegistryObject<? extends RecipeSerializer<ProcessorRecipe>>> recipeSerializer;
 
     ProcessorType(
-        String id, int inputSlots, Supplier<ProcessorConfig> processorConfig,
-        Supplier<? extends Supplier<ProcessorBlock>> itemProvider,
-        BiFunction<ResourceLocation, ProcessorType, ProcessorRecipe> recipeFactory,
-        Supplier<? extends Supplier<RecipeSerializer<ProcessorRecipe>>> recipeSerializer
+        String id, int inputSlots, Supplier<ProcessorConfig> config,
+        Supplier<RegistryObject<? extends ProcessorBlock>> itemProvider,
+        Supplier<RegistryObject<? extends RecipeSerializer<ProcessorRecipe>>> recipeSerializer
     ) {
         this.id = id;
         this.inputSlots = inputSlots;
-        this.processorConfig = Lazy.of(processorConfig);
+        this.config = Lazy.of(config);
         this.itemProvider = itemProvider;
-        this.recipeFactory = recipeFactory;
         this.recipeSerializer = recipeSerializer;
-        Registry.register(Registry.RECIPE_TYPE, f("{}:{}", MOD_ID, id), this);
+        Registry.register(Registry.RECIPE_TYPE, TextUtil.getRL(id), this);
     }
 
     @Override
@@ -89,31 +60,31 @@ public enum ProcessorType implements RecipeType<ProcessorRecipe> {
     }
 
     public int getBaseProcessTime() {
-        return processorConfig.get().baseProcessTime.get();
+        return config.get().baseProcessTime.get();
     }
 
     public int getBaseEnergyCost() {
-        return processorConfig.get().baseEnergyUsage.get();
+        return config.get().baseEnergyUsage.get();
     }
 
     public int getUpgradeSlots() {
-        return processorConfig.get().upgradeSlots.get();
+        return config.get().upgradeSlots.get();
     }
 
     public int getBaseEnergyBuffer() {
-        return processorConfig.get().baseEnergyBuffer.get();
+        return config.get().baseEnergyBuffer.get();
     }
 
     public int getEnergyBufferAdd() {
-        return processorConfig.get().energyBufferAdd.get();
+        return config.get().energyBufferAdd.get();
     }
 
-    public BiFunction<ResourceLocation, ProcessorType, ProcessorRecipe> getRecipeFactory() {
-        return recipeFactory;
+    public ProcessorRecipeFactory getRecipeFactory() {
+        return inputSlots == 1 ? SingleInputRecipe::new : TripleInputRecipe::new;
     }
 
-    public Supplier<RecipeSerializer<ProcessorRecipe>> getRecipeSerializer() {
-        return recipeSerializer.get();
+    public RecipeSerializer<ProcessorRecipe> getRecipeSerializer() {
+        return recipeSerializer.get().get();
     }
 
     public int getInputSlots() {
@@ -121,10 +92,10 @@ public enum ProcessorType implements RecipeType<ProcessorRecipe> {
     }
 
     public double getProcessTimeMultiplier() {
-        return processorConfig.get().processTimeMulti.get();
+        return config.get().processTimeMulti.get();
     }
 
     public double getEnergyCostMultiplier() {
-        return processorConfig.get().energyUsageMulti.get();
+        return config.get().energyUsageMulti.get();
     }
 }

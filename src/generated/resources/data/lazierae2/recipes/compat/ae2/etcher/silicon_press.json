@@ -1,0 +1,17 @@
+{
+  "type": "lazierae2:etcher",
+  "output": {
+    "item": "ae2:silicon_press",
+    "count": 2
+  },
+  "input": [
+    {
+      "item": "ae2:silicon_press"
+    },
+    {
+      "tag": "forge:storage_blocks/iron"
+    }
+  ],
+  "process_time": 200,
+  "energy_cost": 2000
+}

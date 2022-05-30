@@ -1,10 +1,8 @@
 package com.almostreliable.lazierae2.recipe.type;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
-import com.almostreliable.lazierae2.util.RecipeUtil;
-import com.google.gson.JsonObject;
+import com.almostreliable.lazierae2.recipe.IRecipeItemProvider;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -12,29 +10,72 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
-import javax.annotation.Nullable;
+import java.util.List;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public abstract class ProcessorRecipe implements Recipe<Container> {
 
-    final NonNullList<Ingredient> inputs = NonNullList.create();
+    private final ResourceLocation recipeId;
     private final ProcessorType processorType;
-    private final ResourceLocation id;
-    private int processTime;
-    private int energyCost;
-    private ItemStack output;
+    private final List<ICondition> conditions;
+    private final IRecipeItemProvider output;
+    private final NonNullList<Ingredient> inputs;
+    private final int processTime;
+    private final int energyCost;
 
     ProcessorRecipe(
-        ResourceLocation id, ProcessorType processorType
+        ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions, IRecipeItemProvider output,
+        NonNullList<Ingredient> inputs, int processTime, int energyCost
     ) {
-        this.id = id;
+        this.recipeId = recipeId;
         this.processorType = processorType;
+        this.conditions = conditions;
+        this.output = output;
+        this.inputs = inputs;
+        this.processTime = processTime == 0 ? processorType.getBaseProcessTime() : processTime;
+        this.energyCost = energyCost == 0 ? processorType.getBaseEnergyCost() : energyCost;
+        validateInputs();
     }
 
-    public void validate() {
+    @Override
+    public ItemStack assemble(Container inv) {
+        return output.stack().copy();
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return false;
+    }
+
+    @Override
+    public ItemStack getResultItem() {
+        return output.stack();
+    }
+
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    @Override
+    public ResourceLocation getId() {
+        return recipeId;
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
+        return processorType.getRecipeSerializer();
+    }
+
+    @Override
+    public RecipeType<?> getType() {
+        return processorType;
+    }
+
+    private void validateInputs() {
         if (inputs.isEmpty()) {
             throw new IllegalArgumentException(f("No inputs for recipe type '{}' with output '{}'!",
                 processorType.getId(),
@@ -47,96 +88,25 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
                 output.toString()
             ));
         }
-        if (processTime == 0) processTime = processorType.getBaseProcessTime();
-        if (energyCost == 0) energyCost = processorType.getBaseEnergyCost();
     }
 
-    @Override
-    public ItemStack assemble(Container inv) {
-        return output.copy();
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
-    }
-
-    @Override
-    public ItemStack getResultItem() {
+    public IRecipeItemProvider getOutput() {
         return output;
     }
 
-    @Override
-    public boolean isSpecial() {
-        return true;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return processorType.getRecipeSerializer().get();
-    }
-
-    @Override
-    public RecipeType<?> getType() {
-        return processorType;
+    public List<ICondition> getConditions() {
+        return conditions;
     }
 
     public int getProcessTime() {
         return processTime;
     }
 
-    public void setProcessTime(int processTime) {
-        this.processTime = processTime;
-    }
-
     public int getEnergyCost() {
         return energyCost;
     }
 
-    public void setEnergyCost(int energyCost) {
-        this.energyCost = energyCost;
-    }
-
     public NonNullList<Ingredient> getInputs() {
         return inputs;
-    }
-
-    public void setOutput(ItemStack output) {
-        this.output = output;
-    }
-
-    public static class ProcessorRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ProcessorRecipe> {
-
-        private final ProcessorType processorType;
-
-        public ProcessorRecipeSerializer(ProcessorType processorType) {
-            this.processorType = processorType;
-        }
-
-        @Override
-        public ProcessorRecipe fromJson(ResourceLocation id, JsonObject json) {
-            var recipe = processorType.getRecipeFactory().apply(id, processorType);
-            RecipeUtil.fromJSON(json, recipe);
-            recipe.validate();
-            return recipe;
-        }
-
-        @Nullable
-        @Override
-        public ProcessorRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer) {
-            var recipe = processorType.getRecipeFactory().apply(id, processorType);
-            RecipeUtil.fromNetwork(buffer, recipe);
-            return recipe;
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, ProcessorRecipe recipe) {
-            RecipeUtil.toNetwork(buffer, recipe);
-        }
     }
 }

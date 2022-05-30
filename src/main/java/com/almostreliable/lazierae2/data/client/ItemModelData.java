@@ -62,7 +62,7 @@ public class ItemModelData extends ItemModelProvider {
     }
 
     private void withBlockParent(Supplier<? extends Block> block) {
-        var id = GameUtil.getIdFroBlock(block.get());
+        var id = GameUtil.getIdFromBlock(block.get());
         var parentLocation = TextUtil.getRL(f("block/{}", id));
         withExistingParent(id, parentLocation);
     }

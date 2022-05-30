@@ -1,0 +1,19 @@
+{
+  "type": "lazierae2:etcher",
+  "output": {
+    "item": "ae2:engineering_processor"
+  },
+  "input": [
+    {
+      "tag": "forge:gems/diamond"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "tag": "forge:silicon"
+    }
+  ],
+  "process_time": 100,
+  "energy_cost": 1000
+}

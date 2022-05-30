@@ -1,0 +1,16 @@
+{
+  "type": "lazierae2:infuser",
+  "output": {
+    "item": "ae2:quartz_glass"
+  },
+  "input": [
+    {
+      "tag": "forge:dusts/certus_quartz"
+    },
+    {
+      "tag": "forge:glass"
+    }
+  ],
+  "process_time": 60,
+  "energy_cost": 600
+}

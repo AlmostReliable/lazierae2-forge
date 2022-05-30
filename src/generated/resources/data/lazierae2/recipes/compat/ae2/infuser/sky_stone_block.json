@@ -1,0 +1,16 @@
+{
+  "type": "lazierae2:infuser",
+  "output": {
+    "item": "ae2:sky_stone_block"
+  },
+  "input": [
+    {
+      "item": "minecraft:black_concrete_powder"
+    },
+    {
+      "item": "ae2:sky_dust"
+    }
+  ],
+  "process_time": 60,
+  "energy_cost": 600
+}

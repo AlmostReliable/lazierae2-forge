@@ -1,0 +1,13 @@
+{
+  "type": "lazierae2:aggregator",
+  "output": {
+    "item": "ae2:charged_certus_quartz_crystal"
+  },
+  "input": [
+    {
+      "item": "ae2:certus_quartz_crystal"
+    }
+  ],
+  "process_time": 30,
+  "energy_cost": 1500
+}

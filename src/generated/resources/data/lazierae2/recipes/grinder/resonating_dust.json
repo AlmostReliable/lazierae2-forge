@@ -1,13 +1,11 @@
 {
   "type": "lazierae2:grinder",
-  "process_time": 80,
-  "energy_cost": 800,
   "output": {
     "item": "lazierae2:resonating_dust"
   },
-  "input": [
-    {
-      "tag": "forge:gems/resonating"
-    }
-  ]
+  "input": {
+    "tag": "forge:gems/resonating"
+  },
+  "process_time": 80,
+  "energy_cost": 800
 }

@@ -1,0 +1,17 @@
+{
+  "type": "lazierae2:aggregator",
+  "output": {
+    "item": "ae2:certus_quartz_crystal",
+    "count": 2
+  },
+  "input": [
+    {
+      "tag": "forge:sand"
+    },
+    {
+      "tag": "forge:dusts/certus_quartz"
+    }
+  ],
+  "process_time": 200,
+  "energy_cost": 12000
+}

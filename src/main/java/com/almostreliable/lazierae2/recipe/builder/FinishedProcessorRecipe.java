@@ -1,17 +1,17 @@
 package com.almostreliable.lazierae2.recipe.builder;
 
+import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 import static com.almostreliable.lazierae2.core.Constants.Recipe.*;
-import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class FinishedProcessorRecipe implements FinishedRecipe {
 
@@ -23,18 +23,24 @@ public class FinishedProcessorRecipe implements FinishedRecipe {
 
     @Override
     public void serializeRecipeData(JsonObject json) {
+        if (!recipe.getConditions().isEmpty()) {
+            var conditions = new JsonArray();
+            recipe.getConditions().forEach(c -> conditions.add(CraftingHelper.serialize(c)));
+            json.add(CONDITIONS, conditions);
+        }
+
+        recipe.getOutput().toJson(json);
+
+        if (((ProcessorType) recipe.getType()).getInputSlots() == 1) {
+            recipe.getInputs().forEach(input -> json.add(INPUT, input.toJson()));
+        } else {
+            var inputs = new JsonArray();
+            recipe.getInputs().forEach(input -> inputs.add(input.toJson()));
+            json.add(INPUT, inputs);
+        }
+
         json.addProperty(PROCESS_TIME, recipe.getProcessTime());
         json.addProperty(ENERGY_COST, recipe.getEnergyCost());
-        var output = new JsonObject();
-        output.addProperty(ITEM, Objects.requireNonNull(
-            recipe.getResultItem().getItem().getRegistryName(),
-            () -> f("Output in {}-recipe was not defined!", recipe.getType())
-        ).toString());
-        if (recipe.getResultItem().getCount() > 1) output.addProperty(COUNT, recipe.getResultItem().getCount());
-        json.add(OUTPUT, output);
-        var inputs = new JsonArray();
-        recipe.getInputs().forEach(input -> inputs.add(input.toJson()));
-        json.add(INPUT, inputs);
     }
 
     @Override

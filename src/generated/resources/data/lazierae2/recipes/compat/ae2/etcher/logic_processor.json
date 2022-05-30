@@ -1,0 +1,19 @@
+{
+  "type": "lazierae2:etcher",
+  "output": {
+    "item": "ae2:logic_processor"
+  },
+  "input": [
+    {
+      "tag": "forge:ingots/gold"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "tag": "forge:silicon"
+    }
+  ],
+  "process_time": 100,
+  "energy_cost": 1000
+}

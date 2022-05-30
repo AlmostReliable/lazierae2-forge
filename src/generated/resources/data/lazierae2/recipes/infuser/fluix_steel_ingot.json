@@ -1,7 +1,5 @@
 {
   "type": "lazierae2:infuser",
-  "process_time": 80,
-  "energy_cost": 1500,
   "output": {
     "item": "lazierae2:fluix_steel_ingot"
   },
@@ -15,5 +13,7 @@
     {
       "tag": "forge:ingots/iron"
     }
-  ]
+  ],
+  "process_time": 80,
+  "energy_cost": 1500
 }

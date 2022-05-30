@@ -1,0 +1,20 @@
+{
+  "type": "lazierae2:aggregator",
+  "output": {
+    "item": "ae2:fluix_dust",
+    "count": 2
+  },
+  "input": [
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "item": "ae2:charged_certus_quartz_crystal"
+    },
+    {
+      "tag": "forge:gems/quartz"
+    }
+  ],
+  "process_time": 5,
+  "energy_cost": 50
+}

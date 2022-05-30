@@ -1,0 +1,17 @@
+{
+  "type": "lazierae2:grinder",
+  "conditions": [
+    {
+      "modid": "mekanism",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "output": {
+    "item": "mekanism:dust_netherite"
+  },
+  "input": {
+    "tag": "forge:ingots/netherite"
+  },
+  "process_time": 40,
+  "energy_cost": 500
+}

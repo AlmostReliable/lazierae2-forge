@@ -1,7 +1,5 @@
 {
   "type": "lazierae2:etcher",
-  "process_time": 150,
-  "energy_cost": 1500,
   "output": {
     "item": "lazierae2:speculative_processor"
   },
@@ -15,5 +13,7 @@
     {
       "tag": "forge:silicon"
     }
-  ]
+  ],
+  "process_time": 150,
+  "energy_cost": 1500
 }

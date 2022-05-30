@@ -83,12 +83,13 @@ public final class Constants {
 
     public enum Recipe {
         ;
-        public static final String INPUT = "input";
+        public static final String CONDITIONS = "conditions";
         public static final String OUTPUT = "output";
-        public static final String PROCESS_TIME = "process_time";
-        public static final String ENERGY_COST = "energy_cost";
         public static final String ITEM = "item";
         public static final String COUNT = "count";
+        public static final String INPUT = "input";
+        public static final String PROCESS_TIME = "process_time";
+        public static final String ENERGY_COST = "energy_cost";
     }
 
     public enum Config {
