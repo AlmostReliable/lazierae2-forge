@@ -12,11 +12,10 @@ import com.almostreliable.lazierae2.content.processor.ProcessorBlock;
 import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
-import com.almostreliable.lazierae2.core.Setup.Recipes.Serializers;
 import com.almostreliable.lazierae2.core.TypeEnums.CENTER_TYPE;
 import com.almostreliable.lazierae2.core.TypeEnums.HULL_TYPE;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
-import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe.ProcessorRecipeSerializer;
+import com.almostreliable.lazierae2.recipe.type.ProcessorRecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -333,32 +332,23 @@ public final class Setup {
         }
     }
 
-    public static final class Recipes {
+    public static final class Serializers {
 
-        private Recipes() {}
+        private static final DeferredRegister<RecipeSerializer<?>> REGISTRY
+            = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MOD_ID);
 
-        public static final class Serializers {
+        public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> AGGREGATOR
+            = register(ProcessorType.AGGREGATOR);
+        public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> ETCHER = register(ProcessorType.ETCHER);
+        public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> GRINDER = register(ProcessorType.GRINDER);
+        public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> INFUSER = register(ProcessorType.INFUSER);
 
-            private static final DeferredRegister<RecipeSerializer<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS,
-                MOD_ID
-            );
+        private Serializers() {}
 
-            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> AGGREGATOR
-                = register(ProcessorType.AGGREGATOR);
-            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> ETCHER
-                = register(ProcessorType.ETCHER);
-            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> GRINDER
-                = register(ProcessorType.GRINDER);
-            public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> INFUSER
-                = register(ProcessorType.INFUSER);
-
-            private Serializers() {}
-
-            private static RegistryObject<RecipeSerializer<ProcessorRecipe>> register(
-                ProcessorType processorType
-            ) {
-                return REGISTRY.register(processorType.getId(), () -> new ProcessorRecipeSerializer(processorType));
-            }
+        private static RegistryObject<RecipeSerializer<ProcessorRecipe>> register(
+            ProcessorType processorType
+        ) {
+            return REGISTRY.register(processorType.getId(), () -> new ProcessorRecipeSerializer(processorType));
         }
     }
 }

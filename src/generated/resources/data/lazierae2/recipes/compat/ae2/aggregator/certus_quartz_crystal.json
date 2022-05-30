@@ -1,9 +1,7 @@
 {
   "type": "lazierae2:aggregator",
-  "process_time": 200,
-  "energy_cost": 12000,
   "output": {
-    "item": "ae2:fluix_crystal",
+    "item": "ae2:certus_quartz_crystal",
     "count": 2
   },
   "input": [
@@ -11,7 +9,9 @@
       "tag": "forge:sand"
     },
     {
-      "tag": "forge:dusts/fluix"
+      "tag": "forge:dusts/certus_quartz"
     }
-  ]
+  ],
+  "process_time": 200,
+  "energy_cost": 12000
 }

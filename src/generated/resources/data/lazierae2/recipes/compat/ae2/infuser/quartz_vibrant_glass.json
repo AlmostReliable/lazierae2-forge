@@ -1,7 +1,5 @@
 {
   "type": "lazierae2:infuser",
-  "process_time": 60,
-  "energy_cost": 600,
   "output": {
     "item": "ae2:quartz_vibrant_glass"
   },
@@ -15,5 +13,7 @@
     {
       "tag": "forge:dusts/glowstone"
     }
-  ]
+  ],
+  "process_time": 60,
+  "energy_cost": 600
 }

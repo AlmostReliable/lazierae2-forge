@@ -2,6 +2,8 @@ package com.almostreliable.lazierae2.recipe.builder;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
+import com.almostreliable.lazierae2.util.GameUtil;
+import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +18,6 @@ import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
@@ -24,9 +25,9 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public final class ProcessorRecipeBuilder {
 
-    private final ItemStack output;
     private final ProcessorType recipeType;
     private final List<ICondition> conditions = new ArrayList<>();
+    private final ItemStack output;
     private final NonNullList<Ingredient> inputs = NonNullList.create();
     private int processTime;
     private int energyCost;
@@ -117,11 +118,13 @@ public final class ProcessorRecipeBuilder {
     }
 
     public void build(Consumer<? super FinishedRecipe> consumer, String suffix) {
-        var outputId = output.getItem().getRegistryName();
-        var modID = "minecraft".equals(Objects.requireNonNull(outputId).getNamespace()) ? MOD_ID :
-            outputId.getNamespace();
-        var recipeId = new ResourceLocation(modID, f("{}/{}{}", recipeType.getId(), outputId.getPath(), suffix));
-        consumer.accept(new FinishedProcessorRecipe(build(recipeId)));
+        var namespace = GameUtil.getNameSpaceFromItem(output.getItem()).replace("minecraft", MOD_ID);
+        var outputId = GameUtil.getIdFromItem(output.getItem());
+        var path = f("{}/{}{}", recipeType.getId(), outputId, suffix);
+        if (!namespace.equals(MOD_ID)) {
+            path = f("compat/{}/{}", namespace, path);
+        }
+        consumer.accept(new FinishedProcessorRecipe(build(TextUtil.getRL(path))));
     }
 
     public void build(Consumer<? super FinishedRecipe> consumer) {
@@ -129,17 +132,8 @@ public final class ProcessorRecipeBuilder {
     }
 
     public ProcessorRecipe build(ResourceLocation recipeId) {
-        var recipe = recipeType.getRecipeFactory().apply(recipeId, recipeType);
-        recipe.getInputs().addAll(inputs);
-        recipe.setOutput(output);
-        recipe.setProcessTime(processTime);
-        recipe.setEnergyCost(energyCost);
-        recipe.setConditions(conditions);
-        recipe.validate();
-        return recipe;
-    }
-
-    public ItemStack getOutput() {
-        return output;
+        return recipeType
+            .getRecipeFactory()
+            .create(recipeId, recipeType, conditions, output, inputs, processTime, energyCost);
     }
 }

@@ -1,7 +1,5 @@
 {
   "type": "lazierae2:aggregator",
-  "process_time": 5,
-  "energy_cost": 50,
   "output": {
     "item": "ae2:fluix_dust",
     "count": 2
@@ -16,5 +14,7 @@
     {
       "tag": "forge:gems/quartz"
     }
-  ]
+  ],
+  "process_time": 5,
+  "energy_cost": 50
 }

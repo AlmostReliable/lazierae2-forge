@@ -1,10 +1,11 @@
 {
   "type": "lazierae2:grinder",
   "output": {
-    "item": "lazierae2:coal_dust"
+    "item": "ae2:certus_quartz_dust",
+    "count": 6
   },
   "input": {
-    "tag": "minecraft:coals"
+    "tag": "forge:ores/certus_quartz"
   },
   "process_time": 80,
   "energy_cost": 800

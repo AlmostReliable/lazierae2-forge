@@ -1,17 +1,17 @@
 {
   "type": "lazierae2:etcher",
-  "process_time": 200,
-  "energy_cost": 2000,
   "output": {
-    "item": "ae2:calculation_processor_press",
+    "item": "ae2:logic_processor_press",
     "count": 2
   },
   "input": [
     {
-      "item": "ae2:calculation_processor_press"
+      "item": "ae2:logic_processor_press"
     },
     {
       "tag": "forge:storage_blocks/iron"
     }
-  ]
+  ],
+  "process_time": 200,
+  "energy_cost": 2000
 }

@@ -1,7 +1,5 @@
 {
   "type": "lazierae2:infuser",
-  "process_time": 60,
-  "energy_cost": 600,
   "output": {
     "item": "ae2:sky_stone_block"
   },
@@ -12,5 +10,7 @@
     {
       "item": "ae2:sky_dust"
     }
-  ]
+  ],
+  "process_time": 60,
+  "energy_cost": 600
 }

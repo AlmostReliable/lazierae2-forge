@@ -1,13 +1,11 @@
 {
   "type": "lazierae2:etcher",
-  "process_time": 100,
-  "energy_cost": 1000,
   "output": {
-    "item": "ae2:calculation_processor"
+    "item": "ae2:logic_processor"
   },
   "input": [
     {
-      "item": "ae2:certus_quartz_crystal"
+      "tag": "forge:ingots/gold"
     },
     {
       "tag": "forge:dusts/redstone"
@@ -15,5 +13,7 @@
     {
       "tag": "forge:silicon"
     }
-  ]
+  ],
+  "process_time": 100,
+  "energy_cost": 1000
 }

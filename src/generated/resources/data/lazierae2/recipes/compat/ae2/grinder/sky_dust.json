@@ -1,10 +1,10 @@
 {
   "type": "lazierae2:grinder",
   "output": {
-    "item": "lazierae2:coal_dust"
+    "item": "ae2:sky_dust"
   },
   "input": {
-    "tag": "minecraft:coals"
+    "item": "ae2:sky_stone_block"
   },
   "process_time": 80,
   "energy_cost": 800

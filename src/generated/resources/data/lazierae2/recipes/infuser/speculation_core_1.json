@@ -1,7 +1,5 @@
 {
   "type": "lazierae2:infuser",
-  "process_time": 60,
-  "energy_cost": 600,
   "output": {
     "item": "lazierae2:speculation_core_1"
   },
@@ -15,5 +13,7 @@
     {
       "tag": "forge:dusts/carbonic_fluix"
     }
-  ]
+  ],
+  "process_time": 60,
+  "energy_cost": 600
 }
