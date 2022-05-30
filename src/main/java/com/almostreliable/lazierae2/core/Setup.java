@@ -162,7 +162,7 @@ public final class Setup {
 
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(Blocks.AGGREGATOR.get());
+            return new ItemStack(Items.RESONATING_CRYSTAL.get());
         }
     }
 
