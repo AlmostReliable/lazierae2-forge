@@ -110,12 +110,20 @@ repositories {
         }
     }
     maven {
-        name "Progwml6 maven" // Just Enough Items
+        name "Progwml6 Maven" // Just Enough Items
         url "https://dvs1.progwml6.com/files/maven/"
     }
     maven {
-        name 'BlameJared' // CraftTweaker
+        name 'BlameJared Maven' // CraftTweaker
         url 'https://maven.blamejared.com'
+    }
+    maven {
+        name 'Architectury Maven' // Architectury
+        url "https://maven.architectury.dev"
+    }
+    maven {
+        name 'Saps Maven' // Rhino
+        url "https://maven.saps.dev/minecraft"
     }
     maven {
         name 'CurseMaven'
@@ -134,6 +142,9 @@ dependencies {
     implementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${crt_version}")
+    implementation fg.deobf("dev.architectury:architectury-forge:${archi_version}")
+    implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
+    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kube_version}")
 
     // runtime dependencies
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // JEI - in sync with API version
@@ -152,20 +163,23 @@ mixin {
 processResources {
     def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
     def replaceProperties = [
-        mod_id           : mod_id,
-        mod_name         : mod_name,
-        mod_version      : mod_version,
-        mod_authors      : mod_authors,
-        mod_description  : mod_description,
-        mod_credits      : mod_credits,
-        mc_version_range : mc_version_range,
-        forge_min_version: forge_min_version,
-        license          : license,
-        github_user      : github_user,
-        github_repo      : github_repo,
-        ae2_version_range: ae2_version_range,
-        jei_version_range: jei_version_range,
-        crt_version_range: crt_version_range
+        mod_id             : mod_id,
+        mod_name           : mod_name,
+        mod_version        : mod_version,
+        mod_authors        : mod_authors,
+        mod_description    : mod_description,
+        mod_credits        : mod_credits,
+        mc_version_range   : mc_version_range,
+        forge_min_version  : forge_min_version,
+        license            : license,
+        github_user        : github_user,
+        github_repo        : github_repo,
+        ae2_version_range  : ae2_version_range,
+        jei_version_range  : jei_version_range,
+        crt_version_range  : crt_version_range,
+        archi_version_range: archi_version_range,
+        rhino_version_range: rhino_version_range,
+        kube_version_range : kube_version_range
     ]
 
     inputs.properties replaceProperties

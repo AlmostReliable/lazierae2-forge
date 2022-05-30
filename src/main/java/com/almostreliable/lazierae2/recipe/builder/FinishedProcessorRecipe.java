@@ -17,7 +17,7 @@ public class FinishedProcessorRecipe implements FinishedRecipe {
 
     private final ProcessorRecipe recipe;
 
-    FinishedProcessorRecipe(ProcessorRecipe recipe) {
+    public FinishedProcessorRecipe(ProcessorRecipe recipe) {
         this.recipe = recipe;
     }
 
