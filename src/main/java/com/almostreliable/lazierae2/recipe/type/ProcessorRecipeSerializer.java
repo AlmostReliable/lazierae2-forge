@@ -1,6 +1,7 @@
 package com.almostreliable.lazierae2.recipe.type;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.recipe.RecipeStackProvider;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
@@ -35,7 +36,7 @@ public class ProcessorRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
 
     @Override
     public ProcessorRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-        var output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, OUTPUT));
+        var output = new RecipeStackProvider(ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, OUTPUT)));
         NonNullList<Ingredient> inputs = NonNullList.create();
         if (processorType.getInputSlots() == 1) {
             inputs.add(deserializeIngredient(GsonHelper.getAsJsonObject(json, INPUT)));
@@ -52,7 +53,7 @@ public class ProcessorRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
     @Nullable
     @Override
     public ProcessorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-        var output = buffer.readItem();
+        var output = new RecipeStackProvider(buffer.readItem());
         NonNullList<Ingredient> inputs = NonNullList.create();
         var size = processorType.getInputSlots() == 1 ? 1 : buffer.readVarInt();
         for (var i = 0; i < size; i++) {

@@ -2,7 +2,6 @@ package com.almostreliable.lazierae2.recipe.builder;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
-import com.almostreliable.lazierae2.util.GameUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -30,10 +29,7 @@ public class FinishedProcessorRecipe implements FinishedRecipe {
             json.add(CONDITIONS, conditions);
         }
 
-        var output = new JsonObject();
-        output.addProperty(ITEM, GameUtil.getRegistryNameFromItem(recipe.getResultItem().getItem()));
-        if (recipe.getResultItem().getCount() > 1) output.addProperty(COUNT, recipe.getResultItem().getCount());
-        json.add(OUTPUT, output);
+        recipe.getOutput().toJson(json);
 
         if (((ProcessorType) recipe.getType()).getInputSlots() == 1) {
             recipe.getInputs().forEach(input -> json.add(INPUT, input.toJson()));

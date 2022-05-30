@@ -1,6 +1,7 @@
 package com.almostreliable.lazierae2.recipe.type;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.recipe.IRecipeItemProvider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -20,13 +21,13 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
     private final ResourceLocation recipeId;
     private final ProcessorType processorType;
     private final List<ICondition> conditions;
-    private final ItemStack output;
+    private final IRecipeItemProvider output;
     private final NonNullList<Ingredient> inputs;
     private final int processTime;
     private final int energyCost;
 
     ProcessorRecipe(
-        ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions, ItemStack output,
+        ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions, IRecipeItemProvider output,
         NonNullList<Ingredient> inputs, int processTime, int energyCost
     ) {
         this.recipeId = recipeId;
@@ -41,7 +42,7 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack assemble(Container inv) {
-        return output.copy();
+        return output.stack().copy();
     }
 
     @Override
@@ -51,7 +52,7 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem() {
-        return output;
+        return output.stack();
     }
 
     @Override
@@ -87,6 +88,10 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
                 output.toString()
             ));
         }
+    }
+
+    public IRecipeItemProvider getOutput() {
+        return output;
     }
 
     public List<ICondition> getConditions() {

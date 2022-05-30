@@ -1,8 +1,11 @@
 package com.almostreliable.lazierae2.recipe.builder;
 
+import appeng.core.AppEng;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.recipe.IRecipeItemProvider;
+import com.almostreliable.lazierae2.recipe.RecipeResourceProvider;
+import com.almostreliable.lazierae2.recipe.RecipeStackProvider;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
-import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -27,14 +30,21 @@ public final class ProcessorRecipeBuilder {
 
     private final ProcessorType recipeType;
     private final List<ICondition> conditions = new ArrayList<>();
-    private final ItemStack output;
+    private final IRecipeItemProvider output;
     private final NonNullList<Ingredient> inputs = NonNullList.create();
     private int processTime;
     private int energyCost;
 
     private ProcessorRecipeBuilder(ProcessorType recipeType, ItemLike output, int outputCount) {
         this.recipeType = recipeType;
-        this.output = new ItemStack(output, outputCount);
+        this.output = new RecipeStackProvider(new ItemStack(output, outputCount));
+    }
+
+    private ProcessorRecipeBuilder(ProcessorType recipeType, String output, int outputCount) {
+        this.recipeType = recipeType;
+        var outputSplit = output.split(":");
+        var outputId = new ResourceLocation(outputSplit[0], outputSplit[1]);
+        this.output = new RecipeResourceProvider(outputId, outputCount);
     }
 
     public static ProcessorRecipeBuilder aggregator(ItemLike output, int outputCount) {
@@ -42,6 +52,14 @@ public final class ProcessorRecipeBuilder {
     }
 
     public static ProcessorRecipeBuilder aggregator(ItemLike output) {
+        return aggregator(output, 1);
+    }
+
+    public static ProcessorRecipeBuilder aggregator(String output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.AGGREGATOR, output, outputCount);
+    }
+
+    public static ProcessorRecipeBuilder aggregator(String output) {
         return aggregator(output, 1);
     }
 
@@ -53,11 +71,27 @@ public final class ProcessorRecipeBuilder {
         return etcher(output, 1);
     }
 
+    public static ProcessorRecipeBuilder etcher(String output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.ETCHER, output, outputCount);
+    }
+
+    public static ProcessorRecipeBuilder etcher(String output) {
+        return etcher(output, 1);
+    }
+
     public static ProcessorRecipeBuilder grinder(ItemLike output, int outputCount) {
         return new ProcessorRecipeBuilder(ProcessorType.GRINDER, output, outputCount);
     }
 
     public static ProcessorRecipeBuilder grinder(ItemLike output) {
+        return grinder(output, 1);
+    }
+
+    public static ProcessorRecipeBuilder grinder(String output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.GRINDER, output, outputCount);
+    }
+
+    public static ProcessorRecipeBuilder grinder(String output) {
         return grinder(output, 1);
     }
 
@@ -69,11 +103,12 @@ public final class ProcessorRecipeBuilder {
         return infuser(output, 1);
     }
 
-    public ProcessorRecipeBuilder modLoaded(String... modIds) {
-        for (var id : modIds) {
-            conditions.add(new ModLoadedCondition(id));
-        }
-        return this;
+    public static ProcessorRecipeBuilder infuser(String output, int outputCount) {
+        return new ProcessorRecipeBuilder(ProcessorType.INFUSER, output, outputCount);
+    }
+
+    public static ProcessorRecipeBuilder infuser(String output) {
+        return infuser(output, 1);
     }
 
     public ProcessorRecipeBuilder input(Ingredient... inputs) {
@@ -118,10 +153,11 @@ public final class ProcessorRecipeBuilder {
     }
 
     public void build(Consumer<? super FinishedRecipe> consumer, String suffix) {
-        var namespace = GameUtil.getNameSpaceFromItem(output.getItem()).replace("minecraft", MOD_ID);
-        var outputId = GameUtil.getIdFromItem(output.getItem());
+        var namespace = output.id().getNamespace().replace("minecraft", MOD_ID);
+        var outputId = output.id().getPath();
         var path = f("{}/{}{}", recipeType.getId(), outputId, suffix);
         if (!namespace.equals(MOD_ID)) {
+            if (!namespace.equals(AppEng.MOD_ID)) modLoaded(namespace);
             path = f("compat/{}/{}", namespace, path);
         }
         consumer.accept(new FinishedProcessorRecipe(build(TextUtil.getRL(path))));
@@ -135,5 +171,11 @@ public final class ProcessorRecipeBuilder {
         return recipeType
             .getRecipeFactory()
             .create(recipeId, recipeType, conditions, output, inputs, processTime, energyCost);
+    }
+
+    private void modLoaded(String... modIds) {
+        for (var id : modIds) {
+            conditions.add(new ModLoadedCondition(id));
+        }
     }
 }

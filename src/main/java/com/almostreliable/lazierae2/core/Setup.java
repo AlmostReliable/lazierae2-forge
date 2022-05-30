@@ -308,6 +308,10 @@ public final class Setup {
             public static final TagKey<Item> PROCESSOR_PARALLEL = mod("processors/parallel");
             public static final TagKey<Item> PROCESSOR_SPEC = mod("processors/speculative");
 
+            // Mekanism
+            public static final TagKey<Item> ORES_FLUORITE = forge("ores/fluorite");
+            public static final TagKey<Item> INGOTS_STEEL = forge("ingots/steel");
+
             private Items() {}
 
             private static TagKey<Item> forge(String path) {
