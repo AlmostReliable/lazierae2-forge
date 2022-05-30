@@ -330,7 +330,7 @@ public class RecipeData extends RecipeProvider {
             .input(ConventionTags.CERTUS_QUARTZ_ORE)
             .processingTime(80)
             .energyCost(800)
-            .build(c, "_from_ore");
+            .build(c, f("/{}", GameUtil.getIdFromItem(AEBlocks.QUARTZ_ORE.asItem())));
         ProcessorRecipeBuilder
             .grinder(AEItems.SKY_DUST)
             .input(AEBlocks.SKY_STONE_BLOCK)
@@ -360,7 +360,7 @@ public class RecipeData extends RecipeProvider {
             .input(ConventionTags.CERTUS_QUARTZ)
             .processingTime(80)
             .energyCost(800)
-            .build(c);
+            .build(c, f("/{}", GameUtil.getIdFromItem(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())));
         ProcessorRecipeBuilder
             .grinder(Setup.Items.RESONATING_DUST.get())
             .input(Setup.Tags.Items.GEMS_RESONATING)

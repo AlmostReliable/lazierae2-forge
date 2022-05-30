@@ -89,8 +89,8 @@ bda3dc15782d031c4b53ae7ee3b2fba49cc759d1 data/lazierae2/recipes/compat/ae2/etche
 6dc41afbcb7373c364c5b9bbe17bf77179ffc65d data/lazierae2/recipes/compat/ae2/etcher/logic_processor.json
 dd522a07d3ebfd35be6e586d608cdabebe6f7b02 data/lazierae2/recipes/compat/ae2/etcher/logic_processor_press.json
 7fab9b131098e5836d4bc4647e739da77fac0a08 data/lazierae2/recipes/compat/ae2/etcher/silicon_press.json
-7c370878bb9a08627035a360e1810d5e2c7d9797 data/lazierae2/recipes/compat/ae2/grinder/certus_quartz_dust.json
-ad388a0d1715d611db3b9108deea46d069be8100 data/lazierae2/recipes/compat/ae2/grinder/certus_quartz_dust_from_ore.json
+7c370878bb9a08627035a360e1810d5e2c7d9797 data/lazierae2/recipes/compat/ae2/grinder/certus_quartz_dust/certus_quartz_crystal.json
+ad388a0d1715d611db3b9108deea46d069be8100 data/lazierae2/recipes/compat/ae2/grinder/certus_quartz_dust/quartz_ore.json
 7292237fa0bba67cb6757dd388d69c8626709cb0 data/lazierae2/recipes/compat/ae2/grinder/ender_dust.json
 1897e232d83f55a360bcf961c00d75ebe8c16689 data/lazierae2/recipes/compat/ae2/grinder/fluix_dust.json
 3f442ce0987e7e8da7d55220d0f42abe0f4b6cc3 data/lazierae2/recipes/compat/ae2/grinder/sky_dust.json
