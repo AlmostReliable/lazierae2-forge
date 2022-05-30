@@ -12,9 +12,12 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
@@ -23,6 +26,7 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
     final NonNullList<Ingredient> inputs = NonNullList.create();
     private final ProcessorType processorType;
     private final ResourceLocation id;
+    private List<ICondition> conditions = new ArrayList<>();
     private int processTime;
     private int energyCost;
     private ItemStack output;
@@ -84,6 +88,14 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
     @Override
     public RecipeType<?> getType() {
         return processorType;
+    }
+
+    public List<ICondition> getConditions() {
+        return conditions;
+    }
+
+    public void setConditions(List<ICondition> conditions) {
+        this.conditions = conditions;
     }
 
     public int getProcessTime() {

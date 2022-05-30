@@ -10,8 +10,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -22,6 +26,7 @@ public final class ProcessorRecipeBuilder {
 
     private final ItemStack output;
     private final ProcessorType recipeType;
+    private final List<ICondition> conditions = new ArrayList<>();
     private final NonNullList<Ingredient> inputs = NonNullList.create();
     private int processTime;
     private int energyCost;
@@ -61,6 +66,13 @@ public final class ProcessorRecipeBuilder {
 
     public static ProcessorRecipeBuilder infuser(ItemLike output) {
         return infuser(output, 1);
+    }
+
+    public ProcessorRecipeBuilder modLoaded(String... modIds) {
+        for (var id : modIds) {
+            conditions.add(new ModLoadedCondition(id));
+        }
+        return this;
     }
 
     public ProcessorRecipeBuilder input(Ingredient... inputs) {
@@ -122,6 +134,7 @@ public final class ProcessorRecipeBuilder {
         recipe.setOutput(output);
         recipe.setProcessTime(processTime);
         recipe.setEnergyCost(energyCost);
+        recipe.setConditions(conditions);
         recipe.validate();
         return recipe;
     }

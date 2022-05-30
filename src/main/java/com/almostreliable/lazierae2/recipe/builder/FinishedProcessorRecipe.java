@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -35,6 +36,10 @@ public class FinishedProcessorRecipe implements FinishedRecipe {
         var inputs = new JsonArray();
         recipe.getInputs().forEach(input -> inputs.add(input.toJson()));
         json.add(INPUT, inputs);
+        if (recipe.getConditions().isEmpty()) return;
+        var conditions = new JsonArray();
+        recipe.getConditions().forEach(c -> conditions.add(CraftingHelper.serialize(c)));
+        json.add("conditions", conditions);
     }
 
     @Override
