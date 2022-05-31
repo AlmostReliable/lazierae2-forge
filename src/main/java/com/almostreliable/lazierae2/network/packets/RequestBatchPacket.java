@@ -1,8 +1,8 @@
 package com.almostreliable.lazierae2.network.packets;
 
 import com.almostreliable.lazierae2.content.GenericMenu;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
+import com.almostreliable.lazierae2.content.requester.RequesterEntity;
+import com.almostreliable.lazierae2.content.requester.RequesterMenu;
 import com.almostreliable.lazierae2.network.ClientToServerPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,12 +37,12 @@ public class RequestBatchPacket extends ClientToServerPacket<RequestBatchPacket>
 
     @Override
     protected void handlePacket(RequestBatchPacket packet, @Nullable ServerPlayer player) {
-        if (player != null && player.containerMenu instanceof MaintainerMenu) {
+        if (player != null && player.containerMenu instanceof RequesterMenu) {
             var entity = ((GenericMenu<?>) player.containerMenu).entity;
-            if (!(entity instanceof MaintainerEntity maintainer)) return;
-            var level = maintainer.getLevel();
-            if (level == null || !level.isLoaded(maintainer.getBlockPos())) return;
-            maintainer.craftRequests.get(packet.slot).updateBatch(packet.value);
+            if (!(entity instanceof RequesterEntity requester)) return;
+            var level = requester.getLevel();
+            if (level == null || !level.isLoaded(requester.getBlockPos())) return;
+            requester.craftRequests.get(packet.slot).updateBatch(packet.value);
         }
     }
 }

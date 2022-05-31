@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.content.maintainer;
+package com.almostreliable.lazierae2.content.requester;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.IStackWatcher;
@@ -17,11 +17,11 @@ import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 public class StorageManager implements IStorageWatcherNode, INBTSerializable<CompoundTag> {
 
     private final Storage[] storages;
-    private final MaintainerEntity owner;
+    private final RequesterEntity owner;
     @Nullable
     private IStackWatcher stackWatcher;
 
-    StorageManager(MaintainerEntity owner, int slots) {
+    StorageManager(RequesterEntity owner, int slots) {
         this.owner = owner;
         storages = new Storage[slots];
     }

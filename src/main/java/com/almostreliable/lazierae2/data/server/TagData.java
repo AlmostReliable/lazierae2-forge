@@ -67,7 +67,7 @@ public final class TagData {
                 Blocks.ETCHER.get(),
                 Blocks.GRINDER.get(),
                 Blocks.INFUSER.get(),
-                Blocks.MAINTAINER.get()
+                Blocks.REQUESTER.get()
             );
             tag(MINEABLE_WITH_PICKAXE).addTag(Setup.Tags.Blocks.MACHINES);
         }

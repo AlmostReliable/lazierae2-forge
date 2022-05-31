@@ -95,7 +95,7 @@ public class RecipeData extends RecipeProvider {
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.PROCESSOR_PARALLEL))
             .save(c);
         ShapedRecipeBuilder
-            .shaped(Blocks.MAINTAINER.get())
+            .shaped(Blocks.REQUESTER.get())
             .pattern("cic")
             .pattern("pup")
             .pattern("fef")

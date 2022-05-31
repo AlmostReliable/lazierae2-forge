@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.content.maintainer;
+package com.almostreliable.lazierae2.content.requester;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.*;
@@ -41,10 +41,10 @@ import java.util.Objects;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
-public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, ICraftingRequester {
+public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, ICraftingRequester {
 
     private static final int SLOTS = 6;
-    public final RequestInventory craftRequests;
+    public final RequesterInventory craftRequests;
     private final IProgressionState[] progressions;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
@@ -52,12 +52,12 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     private TickRateModulation currentTickRateModulation = TickRateModulation.IDLE;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    public MaintainerEntity(
+    public RequesterEntity(
         BlockPos pos, BlockState state
     ) {
-        super(Entities.MAINTAINER.get(), pos, state);
+        super(Entities.REQUESTER.get(), pos, state);
         actionSource = new MachineSource(this);
-        craftRequests = new RequestInventory(this, SLOTS);
+        craftRequests = new RequesterInventory(this, SLOTS);
         storageManager = new StorageManager(this, SLOTS);
         progressions = new IProgressionState[SLOTS];
         Arrays.fill(progressions, IProgressionState.IDLE);
@@ -101,7 +101,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-        return new MaintainerMenu(windowId, this, inventory);
+        return new RequesterMenu(windowId, this, inventory);
     }
 
     @Nullable
@@ -144,7 +144,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
         assert level != null;
         storageManager.dropContents();
         if (creative) return;
-        var stack = new ItemStack(Blocks.MAINTAINER.get());
+        var stack = new ItemStack(Blocks.REQUESTER.get());
         level.addFreshEntity(new ItemEntity(level,
             worldPosition.getX() + 0.5,
             worldPosition.getY() + 0.5,
@@ -224,10 +224,10 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
             .addService(IStorageWatcherNode.class, storageManager)
             .addService(ICraftingRequester.class, this)
             .addService(IGridTickable.class, this)
-            .setVisualRepresentation(Blocks.MAINTAINER.get())
+            .setVisualRepresentation(Blocks.REQUESTER.get())
             .setInWorldNode(true)
             .setTagName("proxy")
-            .setIdlePowerUsage(Config.COMMON.maintainerIdleEnergy.get())
+            .setIdlePowerUsage(Config.COMMON.requesterIdleEnergy.get())
             .setExposedOnSides(EnumSet.allOf(Direction.class));
     }
 
@@ -288,7 +288,7 @@ public class MaintainerEntity extends GenericEntity implements IInWorldGridNodeH
 
     public IGrid getMainNodeGrid() {
         var grid = mainNode.getGrid();
-        Objects.requireNonNull(grid, "MaintainerEntity was not fully initialized - Grid is null");
+        Objects.requireNonNull(grid, "RequesterEntity was not fully initialized - Grid is null");
         return grid;
     }
 }

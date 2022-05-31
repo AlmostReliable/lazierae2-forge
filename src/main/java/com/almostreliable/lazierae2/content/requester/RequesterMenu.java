@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.content.maintainer;
+package com.almostreliable.lazierae2.content.requester;
 
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus;
@@ -11,16 +11,16 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
+public class RequesterMenu extends GenericMenu<RequesterEntity> {
 
     private static final int SLOT_GAP = 2;
-    private final RequestInventory requestInventory;
+    private final RequesterInventory requesterInventory;
 
-    public MaintainerMenu(
-        int windowId, MaintainerEntity entity, Inventory menuInventory
+    public RequesterMenu(
+        int windowId, RequesterEntity entity, Inventory menuInventory
     ) {
-        super(Menus.MAINTAINER.get(), windowId, entity, menuInventory);
-        requestInventory = entity.craftRequests;
+        super(Menus.REQUESTER.get(), windowId, entity, menuInventory);
+        requesterInventory = entity.craftRequests;
         setupContainerInventory();
         setupPlayerInventory();
         syncData();
@@ -29,12 +29,13 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     @Override
     public ItemStack quickMoveStack(Player player, int slot) {
         // transfer stack to first empty request slot
-        if (slot < requestInventory.getSlots() || slot > requestInventory.getSlots() + GenericMenu.PLAYER_INV_SIZE) {
+        if (slot < requesterInventory.getSlots() ||
+            slot > requesterInventory.getSlots() + GenericMenu.PLAYER_INV_SIZE) {
             return ItemStack.EMPTY;
         }
         var stack = getSlot(slot).getItem();
         if (stack.isEmpty()) return ItemStack.EMPTY;
-        var targetSlotIndex = requestInventory.firstAvailableSlot();
+        var targetSlotIndex = requesterInventory.firstAvailableSlot();
         if (targetSlotIndex == -1) return ItemStack.EMPTY;
         var targetSlot = getSlot(targetSlotIndex);
         if (!(targetSlot instanceof FakeSlot fakeSlot) || fakeSlot.isLocked()) return ItemStack.EMPTY;
@@ -44,7 +45,7 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
-        if (slotId >= 0 && slotId < requestInventory.getSlots()) {
+        if (slotId >= 0 && slotId < requesterInventory.getSlots()) {
             var slot = getSlot(slotId);
             if (slot instanceof FakeSlot fakeSlot && !fakeSlot.isLocked()) {
                 handleClick(dragType, clickType, slot);
@@ -76,8 +77,8 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
 
     @Override
     protected void setupContainerInventory() {
-        for (var i = 0; i < requestInventory.getSlots(); i++) {
-            addSlot(new FakeSlot(this, requestInventory, i, 26, 7 + (i * SLOT_SIZE) + (i * SLOT_GAP)));
+        for (var i = 0; i < requesterInventory.getSlots(); i++) {
+            addSlot(new FakeSlot(this, requesterInventory, i, 26, 7 + (i * SLOT_SIZE) + (i * SLOT_GAP)));
         }
     }
 
@@ -87,9 +88,9 @@ public class MaintainerMenu extends GenericMenu<MaintainerEntity> {
     }
 
     private void syncData() {
-        for (var slot = 0; slot < requestInventory.getSlots(); slot++) {
+        for (var slot = 0; slot < requesterInventory.getSlots(); slot++) {
             var finalSlot = slot;
-            sync.addDataHandler(requestInventory.get(finalSlot));
+            sync.addDataHandler(requesterInventory.get(finalSlot));
             sync.addDataHandler(new EnumDataHandler<>(
                 () -> getRequestStatus(finalSlot).translateToClient(),
                 value -> entity.setClientProgression(finalSlot, value),

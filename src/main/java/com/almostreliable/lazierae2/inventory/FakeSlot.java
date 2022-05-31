@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.inventory;
 
-import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
+import com.almostreliable.lazierae2.content.requester.RequesterMenu;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class FakeSlot extends SlotItemHandler {
 
-    private final MaintainerMenu owner;
+    private final RequesterMenu owner;
 
-    public FakeSlot(MaintainerMenu owner, IItemHandler itemHandler, int index, int x, int y) {
+    public FakeSlot(RequesterMenu owner, IItemHandler itemHandler, int index, int x, int y) {
         super(itemHandler, index, x, y);
         this.owner = owner;
     }

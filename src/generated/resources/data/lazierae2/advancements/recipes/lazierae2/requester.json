@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "lazierae2:maintainer"
+      "lazierae2:requester"
     ]
   },
   "criteria": {
@@ -21,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "lazierae2:maintainer"
+        "recipe": "lazierae2:requester"
       }
     }
   },

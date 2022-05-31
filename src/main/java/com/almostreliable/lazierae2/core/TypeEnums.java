@@ -34,7 +34,7 @@ public final class TypeEnums {
     }
 
     /**
-     * Enum to represent the different progression types for the maintainer.
+     * Enum to represent the different progression types for the requester.
      */
     public enum PROGRESSION_TYPE {
         LINK, PLAN, EXPORT, IDLE, REQUEST;

@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.gui;
 
-import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
+import com.almostreliable.lazierae2.content.requester.RequesterMenu;
 import com.almostreliable.lazierae2.gui.control.RequestControl;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -10,16 +10,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class MaintainerScreen extends GenericScreen<MaintainerMenu> {
+import static com.almostreliable.lazierae2.core.Constants.Blocks.REQUESTER_ID;
+import static com.almostreliable.lazierae2.util.TextUtil.f;
 
-    private static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/maintainer.png");
+public class RequesterScreen extends GenericScreen<RequesterMenu> {
+
+    private static final ResourceLocation TEXTURE = TextUtil.getRL(f("textures/gui/{}.png", REQUESTER_ID));
     private static final int TEXTURE_WIDTH = 176;
     private static final int TEXTURE_HEIGHT = 211;
     public final RequestControl requestControl;
 
     @SuppressWarnings({"AssignmentToSuperclassField", "ThisEscapedInObjectConstruction"})
-    public MaintainerScreen(
-        MaintainerMenu menu, Inventory inventory, Component ignoredTitle
+    public RequesterScreen(
+        RequesterMenu menu, Inventory inventory, Component ignoredTitle
     ) {
         super(menu, inventory);
         imageWidth = TEXTURE_WIDTH;

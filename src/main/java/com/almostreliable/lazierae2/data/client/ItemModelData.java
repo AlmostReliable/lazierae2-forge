@@ -34,7 +34,7 @@ public class ItemModelData extends ItemModelProvider {
         withBlockParent(Blocks.ETCHER);
         withBlockParent(Blocks.GRINDER);
         withBlockParent(Blocks.INFUSER);
-        withBlockParent(Blocks.MAINTAINER);
+        withBlockParent(Blocks.REQUESTER);
         withBlockParent(Assembler.CONTROLLER);
         withBlockParent(Assembler.WALL);
         withBlockParent(Assembler.FRAME);

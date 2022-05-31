@@ -10,8 +10,8 @@ import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Items;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.data.DataGeneration;
-import com.almostreliable.lazierae2.gui.MaintainerScreen;
 import com.almostreliable.lazierae2.gui.ProcessorScreen;
+import com.almostreliable.lazierae2.gui.RequesterScreen;
 import com.almostreliable.lazierae2.network.PacketHandler;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -62,7 +62,7 @@ public class LazierAE2 {
     private static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MenuScreens.register(Menus.PROCESSOR.get(), ProcessorScreen::new);
-            MenuScreens.register(Menus.MAINTAINER.get(), MaintainerScreen::new);
+            MenuScreens.register(Menus.REQUESTER.get(), RequesterScreen::new);
             ItemProperties.register(Items.RESONATING_SEED.get(),
                 GROWTH_PREDICATE_ID,
                 (is, level, p, s) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED

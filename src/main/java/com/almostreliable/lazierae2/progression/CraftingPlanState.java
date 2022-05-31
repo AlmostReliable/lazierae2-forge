@@ -2,7 +2,7 @@ package com.almostreliable.lazierae2.progression;
 
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.ticking.TickRateModulation;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.content.requester.RequesterEntity;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 
 import java.util.concurrent.ExecutionException;
@@ -18,7 +18,7 @@ public final class CraftingPlanState implements IProgressionState {
 
     @SuppressWarnings("java:S2142")
     @Override
-    public IProgressionState handle(MaintainerEntity owner, int slot) {
+    public IProgressionState handle(RequesterEntity owner, int slot) {
         if (!future.isDone()) {
             return this;
         }

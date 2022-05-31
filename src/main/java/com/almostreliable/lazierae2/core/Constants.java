@@ -15,7 +15,7 @@ public final class Constants {
         public static final String ETCHER_ID = "etcher";
         public static final String GRINDER_ID = "grinder";
         public static final String INFUSER_ID = "infuser";
-        public static final String MAINTAINER_ID = "maintainer";
+        public static final String REQUESTER_ID = "requester";
         public static final String CONTROLLER_ID = "controller";
         public static final String CENTER_ID = "center";
         public static final String WALL_ID = "wall";

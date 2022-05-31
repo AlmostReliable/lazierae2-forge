@@ -108,7 +108,7 @@ public final class Config {
         public final ProcessorConfig etcher;
         public final ProcessorConfig grinder;
         public final ProcessorConfig infuser;
-        public final DoubleValue maintainerIdleEnergy;
+        public final DoubleValue requesterIdleEnergy;
         public final BooleanValue inWorldResonating;
 
         private CommonConfig(Builder builder) {
@@ -125,10 +125,10 @@ public final class Config {
             etcher = new ProcessorConfig(builder, ETCHER_ID);
             builder.pop();
 
-            builder.push(MAINTAINER_ID);
-            maintainerIdleEnergy = builder
-                .comment(f(" The energy the {} drains from the ME network when idle.", MAINTAINER_ID))
-                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", MAINTAINER_ID, IDLE_ENERGY)))
+            builder.push(REQUESTER_ID);
+            requesterIdleEnergy = builder
+                .comment(f(" The energy the {} drains from the ME network when idle.", REQUESTER_ID))
+                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", REQUESTER_ID, IDLE_ENERGY)))
                 .defineInRange("idleEnergy", 5.0, 0.0, Double.MAX_VALUE);
             builder.pop();
 

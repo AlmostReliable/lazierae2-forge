@@ -1,7 +1,7 @@
 package com.almostreliable.lazierae2.progression;
 
 import appeng.api.networking.ticking.TickRateModulation;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.content.requester.RequesterEntity;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 
 public interface IProgressionState {
@@ -15,7 +15,7 @@ public interface IProgressionState {
      * @param slot  the slot of the progression.
      * @return the next state, self, or idle if the progression is complete.
      */
-    IProgressionState handle(MaintainerEntity owner, int slot);
+    IProgressionState handle(RequesterEntity owner, int slot);
 
     PROGRESSION_TYPE type();
 

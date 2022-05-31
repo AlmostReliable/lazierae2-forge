@@ -47,7 +47,7 @@ public class BlockStateData extends BlockStateProvider {
         registerAssembler(CONTROLLER_ID, Assembler.CONTROLLER.get());
         registerAssembler(WALL_ID, Assembler.WALL.get());
         registerAssembler(FRAME_ID, Assembler.FRAME.get());
-        registerMachine(MAINTAINER_ID, Blocks.MAINTAINER.get());
+        registerMachine(REQUESTER_ID, Blocks.REQUESTER.get());
     }
 
     /**

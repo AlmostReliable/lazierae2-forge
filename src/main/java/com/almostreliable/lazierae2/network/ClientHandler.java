@@ -1,7 +1,7 @@
 package com.almostreliable.lazierae2.network;
 
 import com.almostreliable.lazierae2.content.GenericMenu;
-import com.almostreliable.lazierae2.gui.MaintainerScreen;
+import com.almostreliable.lazierae2.gui.RequesterScreen;
 import com.almostreliable.lazierae2.network.packets.MenuSyncPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -12,7 +12,7 @@ public final class ClientHandler {
 
     public static void updateRequestGui(int slot) {
         var screen = Minecraft.getInstance().screen;
-        if (!(screen instanceof MaintainerScreen gui)) return;
+        if (!(screen instanceof RequesterScreen gui)) return;
         gui.requestControl.refreshControlBoxes(slot);
     }
 

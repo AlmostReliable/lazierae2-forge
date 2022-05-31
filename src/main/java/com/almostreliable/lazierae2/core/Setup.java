@@ -5,13 +5,13 @@ import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.content.assembler.*;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerBlock;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerMenu;
 import com.almostreliable.lazierae2.content.processor.ProcessorBlock;
 import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.content.requester.RequesterBlock;
+import com.almostreliable.lazierae2.content.requester.RequesterEntity;
+import com.almostreliable.lazierae2.content.requester.RequesterMenu;
 import com.almostreliable.lazierae2.core.TypeEnums.CENTER_TYPE;
 import com.almostreliable.lazierae2.core.TypeEnums.HULL_TYPE;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
@@ -113,9 +113,9 @@ public final class Setup {
             Blocks.ETCHER
         );
 
-        public static final RegistryObject<BlockEntityType<MaintainerEntity>> MAINTAINER = register(MAINTAINER_ID,
-            MaintainerEntity::new,
-            Blocks.MAINTAINER
+        public static final RegistryObject<BlockEntityType<RequesterEntity>> REQUESTER = register(REQUESTER_ID,
+            RequesterEntity::new,
+            Blocks.REQUESTER
         );
     }
 
@@ -134,13 +134,13 @@ public final class Setup {
             }
         );
 
-        public static final RegistryObject<MenuType<MaintainerMenu>> MAINTAINER = register(MAINTAINER_ID,
+        public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register(REQUESTER_ID,
             (windowId, inventory, data) -> {
                 var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
-                if (!(entity instanceof MaintainerEntity maintainer)) {
-                    throw new IllegalStateException("Entity is not a LazierAE2 maintainer!");
+                if (!(entity instanceof RequesterEntity requester)) {
+                    throw new IllegalStateException("Entity is not a LazierAE2 requester!");
                 }
-                return new MaintainerMenu(windowId, maintainer, inventory);
+                return new RequesterMenu(windowId, requester, inventory);
             }
         );
 
@@ -180,7 +180,7 @@ public final class Setup {
             ProcessorType.INFUSER
         );
 
-        public static final RegistryObject<MaintainerBlock> MAINTAINER = register(MAINTAINER_ID, MaintainerBlock::new);
+        public static final RegistryObject<RequesterBlock> REQUESTER = register(REQUESTER_ID, RequesterBlock::new);
 
         static {
             Assembler.init();

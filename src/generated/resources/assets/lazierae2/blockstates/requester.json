@@ -1,33 +1,33 @@
 {
   "variants": {
     "active=false,facing=north": {
-      "model": "lazierae2:block/maintainer"
+      "model": "lazierae2:block/requester"
     },
     "active=true,facing=north": {
-      "model": "lazierae2:block/maintainer_active"
+      "model": "lazierae2:block/requester_active"
     },
     "active=false,facing=south": {
-      "model": "lazierae2:block/maintainer",
+      "model": "lazierae2:block/requester",
       "y": 180
     },
     "active=true,facing=south": {
-      "model": "lazierae2:block/maintainer_active",
+      "model": "lazierae2:block/requester_active",
       "y": 180
     },
     "active=false,facing=west": {
-      "model": "lazierae2:block/maintainer",
+      "model": "lazierae2:block/requester",
       "y": 270
     },
     "active=true,facing=west": {
-      "model": "lazierae2:block/maintainer_active",
+      "model": "lazierae2:block/requester_active",
       "y": 270
     },
     "active=false,facing=east": {
-      "model": "lazierae2:block/maintainer",
+      "model": "lazierae2:block/requester",
       "y": 90
     },
     "active=true,facing=east": {
-      "model": "lazierae2:block/maintainer_active",
+      "model": "lazierae2:block/requester_active",
       "y": 90
     }
   }

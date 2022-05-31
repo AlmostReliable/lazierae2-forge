@@ -16,15 +16,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import static com.almostreliable.lazierae2.core.Constants.Blocks.PROCESSOR_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
 
+    public static final ResourceLocation TEXTURE = TextUtil.getRL(f("textures/gui/{}.png", PROCESSOR_ID));
     public static final int TEXTURE_WIDTH = 178;
     public static final int TEXTURE_HEIGHT = 154;
     public static final int PROGRESS_WIDTH = 40;
     public static final int PROGRESS_HEIGHT = 27;
-    public static final ResourceLocation TEXTURE = TextUtil.getRL("textures/gui/processor.png");
     public static final int SLOT_SIZE = 18;
     public static final int ENERGY_WIDTH = 2;
     private static final int ENERGY_HEIGHT = 58;

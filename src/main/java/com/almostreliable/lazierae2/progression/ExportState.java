@@ -3,7 +3,7 @@ package com.almostreliable.lazierae2.progression;
 import appeng.api.config.Actionable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.StorageHelper;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.content.requester.RequesterEntity;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 
 public class ExportState implements IProgressionState {
@@ -11,7 +11,7 @@ public class ExportState implements IProgressionState {
     ExportState() {}
 
     @Override
-    public IProgressionState handle(MaintainerEntity owner, int slot) {
+    public IProgressionState handle(RequesterEntity owner, int slot) {
         var storage = owner.getStorageManager().get(0);
         if (storage.getItemType() == null) {
             return IProgressionState.IDLE;

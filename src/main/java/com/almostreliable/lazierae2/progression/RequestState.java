@@ -2,7 +2,7 @@ package com.almostreliable.lazierae2.progression;
 
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.ticking.TickRateModulation;
-import com.almostreliable.lazierae2.content.maintainer.MaintainerEntity;
+import com.almostreliable.lazierae2.content.requester.RequesterEntity;
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 
 public class RequestState implements IProgressionState {
@@ -10,7 +10,7 @@ public class RequestState implements IProgressionState {
     RequestState() {}
 
     @Override
-    public IProgressionState handle(MaintainerEntity owner, int slot) {
+    public IProgressionState handle(RequesterEntity owner, int slot) {
 
         var craftRequests = owner.craftRequests;
 

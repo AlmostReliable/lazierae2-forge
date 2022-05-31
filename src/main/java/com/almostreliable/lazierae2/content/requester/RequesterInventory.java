@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.content.maintainer;
+package com.almostreliable.lazierae2.content.requester;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -16,13 +16,13 @@ import java.util.Objects;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
-public final class RequestInventory implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
+public final class RequesterInventory implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
-    private final MaintainerEntity entity;
+    private final RequesterEntity entity;
     private final Request[] requests;
 
-    RequestInventory(
-        MaintainerEntity entity, int slots
+    RequesterInventory(
+        RequesterEntity entity, int slots
     ) {
         this.entity = entity;
         requests = new Request[slots];

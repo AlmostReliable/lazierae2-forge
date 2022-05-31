@@ -2,7 +2,7 @@ package com.almostreliable.lazierae2.gui.control;
 
 import com.almostreliable.lazierae2.core.TypeEnums.PROGRESSION_TYPE;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
-import com.almostreliable.lazierae2.gui.MaintainerScreen;
+import com.almostreliable.lazierae2.gui.RequesterScreen;
 import com.almostreliable.lazierae2.gui.widgets.GenericButton;
 import com.almostreliable.lazierae2.gui.widgets.ToggleButton;
 import com.almostreliable.lazierae2.network.PacketHandler;
@@ -32,11 +32,11 @@ import java.util.List;
 public final class RequestControl {
 
     private static final int WIDGETS_PER_CONTROL = 6;
-    public final MaintainerScreen screen;
+    public final RequesterScreen screen;
     private final int slots;
     private final Control[] controls;
 
-    public RequestControl(MaintainerScreen screen, int slots) {
+    public RequestControl(RequesterScreen screen, int slots) {
         this.screen = screen;
         this.slots = slots;
         controls = new Control[slots];
@@ -298,7 +298,7 @@ public final class RequestControl {
                 private static final String TEXTURE_ID = "submit";
                 private static final List<Component> TOOLTIP = Tooltip.builder().line(TEXTURE_ID).build();
 
-                private SubmitButton(MaintainerScreen screen, int x, int y) {
+                private SubmitButton(RequesterScreen screen, int x, int y) {
                     super(screen, x, y, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID);
                 }
 
@@ -344,7 +344,7 @@ public final class RequestControl {
             private static final int GAP = 7;
             private static final List<Component> TOOLTIP = Tooltip.builder().line(TEXTURE_ID).build();
 
-            private StateButton(MaintainerScreen screen) {
+            private StateButton(RequesterScreen screen) {
                 super(
                     screen,
                     POS_X,
