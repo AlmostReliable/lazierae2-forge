@@ -20,14 +20,6 @@ public final class GameUtil {
         return stack.getItem().equals(AEItems.SPEED_CARD.asItem());
     }
 
-    public static String getRegistryNameFromItem(Item item) {
-        return Objects.requireNonNull(item.getRegistryName()).toString();
-    }
-
-    public static String getNameSpaceFromItem(Item item) {
-        return Objects.requireNonNull(item.getRegistryName()).getNamespace();
-    }
-
     public static String getIdFromItem(Item item) {
         return Objects.requireNonNull(item.getRegistryName()).getPath();
     }

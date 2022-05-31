@@ -30,7 +30,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
     public static final int PROGRESS_WIDTH = 40;
     public static final int PROGRESS_HEIGHT = 27;
     public static final int SLOT_SIZE = 18;
-    public static final int ENERGY_WIDTH = 2;
+    private static final int ENERGY_WIDTH = 2;
     private static final int ENERGY_HEIGHT = 58;
     private final ResourceLocation progressTexture;
     private final Tooltip progressTooltip;

@@ -39,7 +39,7 @@ public class SingularityEntityMixin extends AEBaseItemEntity {
     public void tick() {
         super.tick();
         if (!getItem().is(AEItems.ENDER_DUST.asItem())) return;
-        if (isRemoved() || !Config.COMMON.inWorldResonating.get()) return;
+        if (isRemoved() || Config.COMMON.inWorldResonating.get().equals(false)) return;
 
         if (level.isClientSide() && delay > 30 && AEConfig.instance().isEnableEffects()) {
             AppEng.instance().spawnEffect(EffectType.Lightning, level, getX(), getY(), getZ(), null);

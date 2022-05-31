@@ -60,10 +60,7 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
             }
         } else {
             // from inventory to machine inputs
-            slotStack = processorInventory.insertWithinRange(slotStack,
-                ProcessorInventory.NON_INPUT_SLOTS,
-                ProcessorInventory.NON_INPUT_SLOTS + processorInventory.getInputSlots()
-            );
+            slotStack = processorInventory.insertToInputs(slotStack);
         }
 
         // check if something changed

@@ -136,12 +136,12 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
         ioInventoryCap.invalidate();
     }
 
-    ItemStack insertWithinRange(ItemStack stack, int start, int end) {
+    ItemStack insertToInputs(ItemStack stack) {
         if (stack.isEmpty()) return stack;
 
         // move non stackables to the first available slot
         if (!stack.isStackable()) {
-            for (var slot = start; slot < Math.min(getSlots(), end); slot++) {
+            for (var slot = NON_INPUT_SLOTS; slot < Math.min(getSlots(), NON_INPUT_SLOTS + inputSlots); slot++) {
                 stack = insertItem(slot, stack, false);
                 if (stack.isEmpty()) return ItemStack.EMPTY;
             }
@@ -149,7 +149,7 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
         }
 
         // fill up existing stacks
-        for (var slot = start; slot < Math.min(getSlots(), end); slot++) {
+        for (var slot = NON_INPUT_SLOTS; slot < Math.min(getSlots(), NON_INPUT_SLOTS + inputSlots); slot++) {
             var slotStack = getStackInSlot(slot);
             if (ItemHandlerHelper.canItemStacksStackRelaxed(slotStack, stack)) {
                 var oldCount = stack.getCount();
@@ -160,7 +160,7 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
 
         // insert remainder into empty slot
         if (!stack.isEmpty()) {
-            for (var slot = start; slot < Math.min(getSlots(), end); slot++) {
+            for (var slot = NON_INPUT_SLOTS; slot < Math.min(getSlots(), NON_INPUT_SLOTS + inputSlots); slot++) {
                 if (getStackInSlot(slot).isEmpty()) {
                     stack = insertItem(slot, stack, false);
                     if (stack.isEmpty()) return stack;
