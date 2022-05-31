@@ -1,7 +1,7 @@
 <div align="center">
 <h1>Lazier AE2</h1>
 
-> A [Minecraft] mod to make your life with [Applied Energistics 2][ae2] a little easier.
+A [Minecraft] mod to make your life with [Applied Energistics 2][ae2] a little easier.
 
 [![Version][version_badge]][version_link]
 [![Total Downloads][total_downloads_badge]][curseforge]
