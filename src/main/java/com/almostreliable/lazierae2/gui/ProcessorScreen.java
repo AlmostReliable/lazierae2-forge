@@ -6,6 +6,8 @@ import com.almostreliable.lazierae2.gui.control.IOControl;
 import com.almostreliable.lazierae2.gui.widgets.AutoExtractButton;
 import com.almostreliable.lazierae2.gui.widgets.EnergyDumpButton;
 import com.almostreliable.lazierae2.inventory.UpgradeSlot;
+import com.almostreliable.lazierae2.util.GuiUtil;
+import com.almostreliable.lazierae2.util.GuiUtil.ANCHOR;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -15,6 +17,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.fml.ModList;
 
 import static com.almostreliable.lazierae2.core.Constants.Blocks.PROCESSOR_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
@@ -54,7 +57,10 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
 
     @Override
     protected void renderLabels(PoseStack stack, int mX, int mY) {
-        drawCenteredString(stack, font, title, (TEXTURE_WIDTH - ENERGY_WIDTH) / 2, -12, 16_777_215);
+        drawCenteredString(stack, font, title, (TEXTURE_WIDTH - ENERGY_WIDTH) / 2, -12, 0xFFFF_FFFF);
+        if (ModList.get().isLoaded("jei")) {
+            GuiUtil.renderText(stack, "R", ANCHOR.TOP_LEFT, 156, 7, 1.2f, 0xFF37_3737);
+        }
     }
 
     @Override

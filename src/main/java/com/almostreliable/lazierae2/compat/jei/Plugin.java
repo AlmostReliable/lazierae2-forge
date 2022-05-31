@@ -102,14 +102,15 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration r) {
-        r.addGuiContainerHandler(ProcessorScreen.class, new ProcessorGuiContainerHandler(0,
-            -12,
-            ProcessorScreen.TEXTURE_WIDTH - ProcessorScreen.ENERGY_WIDTH,
-            10,
+        var handler = new ProcessorGuiContainerHandler(156,
+            7,
+            7,
+            8,
             AggregatorCategory.TYPE,
             EtcherCategory.TYPE,
             GrinderCategory.TYPE,
             InfuserCategory.TYPE
-        ));
+        );
+        r.addGuiContainerHandler(ProcessorScreen.class, handler);
     }
 }
