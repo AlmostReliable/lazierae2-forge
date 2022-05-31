@@ -4,6 +4,7 @@ import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,7 +58,11 @@ public abstract class GenericBlock extends Block {
     ) {
         var description = TextUtil.translateAsString(TRANSLATE_TYPE.TOOLTIP, f("{}.description", getId()));
         if (!description.isEmpty()) {
-            tooltip.addAll(Tooltip.builder().line(f("{}.description", getId()), ChatFormatting.AQUA).build());
+            tooltip.addAll(Tooltip
+                .builder()
+                .line(Screen::hasShiftDown, f("{}.description", getId()), ChatFormatting.AQUA)
+                .hotkeyHoldAction(() -> !Screen.hasShiftDown(), "key.keyboard.left.shift", "extended_info")
+                .build());
         }
         super.appendHoverText(stack, level, tooltip, flag);
     }

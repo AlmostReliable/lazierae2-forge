@@ -46,8 +46,6 @@ public class ProcessorBlock extends MachineBlock {
     public void appendHoverText(
         ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag
     ) {
-        super.appendHoverText(stack, level, tooltip, flag);
-
         var tag = stack.getTag();
         var upgrades = 0;
         var energy = 0;
@@ -67,8 +65,11 @@ public class ProcessorBlock extends MachineBlock {
                 .keyValue("item.upgrades", () -> finalUpgrades, processorType::getUpgradeSlots)
                 .keyValue("item.energy", () -> TextUtil.formatEnergy(finalEnergy, 1, 3, Screen.hasShiftDown(), true))
                 .line(() -> finalSideConfig, "item.side_config", ChatFormatting.YELLOW)
+                .blank()
                 .build());
         }
+
+        super.appendHoverText(stack, level, tooltip, flag);
     }
 
     @Nullable

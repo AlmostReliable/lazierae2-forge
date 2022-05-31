@@ -31,11 +31,11 @@
   "block.lazierae2.wall": "Assembler Wall",
   "block.lazierae2.frame": "Assembler Frame",
 
-  "tooltip.lazierae2.aggregator.description": "Combines Crystal Growth Accelerators in one spot and is easy to automate.",
-  "tooltip.lazierae2.etcher.description": "Essentially an advanced Inscriber but faster, upgradable and makes use of raw materials.",
-  "tooltip.lazierae2.grinder.description": "Crushes materials to their dust form for further processing.",
-  "tooltip.lazierae2.infuser.description": "An upgradable and easy to automate Charger.",
-  "tooltip.lazierae2.requester.description": "Will automatically keep up to 6 items in stock and request new crafts when needed. It needs to connected to a ME network.",
+  "tooltip.lazierae2.aggregator.description": "Facilitates in-world crafting by combining Crystal Growth Accelerators. Grants access to Crystal Crafts by using raw materials and has charging capabilities.",
+  "tooltip.lazierae2.etcher.description": "Essentially an Advanced Inscriber but upgradable and faster by making use of raw materials.",
+  "tooltip.lazierae2.grinder.description": "Grinds resources into their component parts for further use.",
+  "tooltip.lazierae2.infuser.description": "Fuses materials into new resources.",
+  "tooltip.lazierae2.requester.description": "Keeps track of up to 6 different item types and requests new crafts when needed. Needs to be connected to an ME network.",
 
   "tooltip.lazierae2.action_hold": "Hold",
   "tooltip.lazierae2.action_click": "Click",
