@@ -162,42 +162,6 @@ public class RecipeData extends RecipeProvider {
             .requires(ConventionTags.SILICON)
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(ConventionTags.SILICON))
             .save(c);
-        ShapelessRecipeBuilder
-            .shapeless(Setup.Items.SPEC_CORE_2.get())
-            .requires(Tags.Items.DUSTS_REDSTONE)
-            .requires(Setup.Items.SPEC_CORE_1.get(), 2)
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_1.get()))
-            .save(c);
-        ShapelessRecipeBuilder
-            .shapeless(Setup.Items.SPEC_CORE_4.get())
-            .requires(ConventionTags.SILICON)
-            .requires(Setup.Items.SPEC_CORE_2.get(), 2)
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_2.get()))
-            .save(c);
-        ShapelessRecipeBuilder
-            .shapeless(Setup.Items.SPEC_CORE_8.get())
-            .requires(AEItems.LOGIC_PROCESSOR)
-            .requires(Setup.Items.SPEC_CORE_4.get(), 2)
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_4.get()))
-            .save(c);
-        ShapelessRecipeBuilder
-            .shapeless(Setup.Items.SPEC_CORE_16.get())
-            .requires(AEItems.CALCULATION_PROCESSOR)
-            .requires(Setup.Items.SPEC_CORE_8.get(), 2)
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_8.get()))
-            .save(c);
-        ShapelessRecipeBuilder
-            .shapeless(Setup.Items.SPEC_CORE_32.get())
-            .requires(AEItems.ENGINEERING_PROCESSOR)
-            .requires(Setup.Items.SPEC_CORE_16.get(), 2)
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_16.get()))
-            .save(c);
-        ShapelessRecipeBuilder
-            .shapeless(Setup.Items.SPEC_CORE_64.get())
-            .requires(Setup.Items.PARALLEL_PROCESSOR.get())
-            .requires(Setup.Items.SPEC_CORE_32.get(), 2)
-            .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Items.SPEC_CORE_32.get()))
-            .save(c);
     }
 
     private void aggregatorRecipes(Consumer<? super FinishedRecipe> c) {
@@ -274,14 +238,6 @@ public class RecipeData extends RecipeProvider {
         ProcessorRecipeBuilder
             .etcher(Setup.Items.PARALLEL_PROCESSOR.get())
             .input(Setup.Tags.Items.GEMS_RESONATING)
-            .input(Tags.Items.DUSTS_REDSTONE)
-            .input(ConventionTags.SILICON)
-            .processingTime(150)
-            .energyCost(1_500)
-            .build(c);
-        ProcessorRecipeBuilder
-            .etcher(Setup.Items.SPEC_PROCESSOR.get())
-            .input(Setup.Items.SPEC_CORE_64.get())
             .input(Tags.Items.DUSTS_REDSTONE)
             .input(ConventionTags.SILICON)
             .processingTime(150)
@@ -385,14 +341,6 @@ public class RecipeData extends RecipeProvider {
             .input(Tags.Items.INGOTS_IRON)
             .processingTime(80)
             .energyCost(1_500)
-            .build(c);
-        ProcessorRecipeBuilder
-            .infuser(Setup.Items.SPEC_CORE_1.get())
-            .input(AEItems.SKY_DUST)
-            .input(AEItems.MATTER_BALL)
-            .input(Setup.Tags.Items.DUSTS_CARBONIC_FLUIX)
-            .processingTime(60)
-            .energyCost(600)
             .build(c);
         ProcessorRecipeBuilder
             .infuser(AEItems.FLUIX_PEARL)

@@ -48,18 +48,4 @@ public final class TypeEnums {
             return this == LINK || this == EXPORT;
         }
     }
-
-    /**
-     * Enum to represent the different types of hull for the multi-block assembler.
-     */
-    public enum HULL_TYPE {
-        WALL, FRAME
-    }
-
-    /**
-     * Enum to represent the different types of center blocks for the multi-block assembler.
-     */
-    public enum CENTER_TYPE {
-        ACCELERATOR, TIER_1, TIER_2, TIER_3
-    }
 }

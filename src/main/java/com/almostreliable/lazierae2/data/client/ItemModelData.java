@@ -2,7 +2,6 @@ package com.almostreliable.lazierae2.data.client;
 
 import appeng.init.client.InitItemModelsProperties;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
-import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.almostreliable.lazierae2.core.Setup.Items;
 import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
@@ -35,9 +34,6 @@ public class ItemModelData extends ItemModelProvider {
         withBlockParent(Blocks.GRINDER);
         withBlockParent(Blocks.INFUSER);
         withBlockParent(Blocks.REQUESTER);
-        withBlockParent(Assembler.CONTROLLER);
-        withBlockParent(Assembler.WALL);
-        withBlockParent(Assembler.FRAME);
 
         genericItem(Items.COAL_DUST);
         genericItem(Items.CARB_FLUIX_DUST);
@@ -49,16 +45,7 @@ public class ItemModelData extends ItemModelProvider {
         genericItem(Items.GROWTH_CORE);
         genericItem(Items.UNIVERSAL_PRESS);
         genericItem(Items.PARALLEL_PRINTED);
-        genericItem(Items.SPEC_PRINTED);
         genericItem(Items.PARALLEL_PROCESSOR);
-        genericItem(Items.SPEC_PROCESSOR);
-        genericItem(Items.SPEC_CORE_1);
-        genericItem(Items.SPEC_CORE_2);
-        genericItem(Items.SPEC_CORE_4);
-        genericItem(Items.SPEC_CORE_8);
-        genericItem(Items.SPEC_CORE_16);
-        genericItem(Items.SPEC_CORE_32);
-        genericItem(Items.SPEC_CORE_64);
     }
 
     private void withBlockParent(Supplier<? extends Block> block) {

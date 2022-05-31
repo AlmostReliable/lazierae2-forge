@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.content.processor;
 
-import com.almostreliable.lazierae2.content.MachineBlock;
+import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.core.TypeEnums.BLOCK_SIDE;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.network.sync.IDataHandler;
@@ -92,7 +92,7 @@ public class SideConfiguration implements INBTSerializable<CompoundTag>, IDataHa
     }
 
     private Direction getDirectionFromSide(BLOCK_SIDE side) {
-        var facing = entity.getBlockState().getValue(MachineBlock.FACING);
+        var facing = entity.getBlockState().getValue(GenericBlock.FACING);
         return switch (side) {
             case TOP -> Direction.UP;
             case BOTTOM -> Direction.DOWN;

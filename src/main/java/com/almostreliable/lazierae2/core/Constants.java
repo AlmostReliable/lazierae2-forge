@@ -16,14 +16,6 @@ public final class Constants {
         public static final String GRINDER_ID = "grinder";
         public static final String INFUSER_ID = "infuser";
         public static final String REQUESTER_ID = "requester";
-        public static final String CONTROLLER_ID = "controller";
-        public static final String CENTER_ID = "center";
-        public static final String WALL_ID = "wall";
-        public static final String FRAME_ID = "frame";
-        public static final String ACCELERATOR_ID = "accelerator";
-        public static final String TIER_1_ID = "tier1";
-        public static final String TIER_2_ID = "tier2";
-        public static final String TIER_3_ID = "tier3";
     }
 
     public enum Items {
@@ -38,16 +30,7 @@ public final class Constants {
         public static final String RESONATING_CRYSTAL_ID = "resonating_crystal";
         public static final String RESONATING_DUST_ID = "resonating_dust";
         public static final String RESONATING_SEED_ID = "resonating_seed";
-        public static final String SPEC_CORE_1_ID = "speculation_core_1";
-        public static final String SPEC_CORE_2_ID = "speculation_core_2";
-        public static final String SPEC_CORE_4_ID = "speculation_core_4";
-        public static final String SPEC_CORE_8_ID = "speculation_core_8";
-        public static final String SPEC_CORE_16_ID = "speculation_core_16";
-        public static final String SPEC_CORE_32_ID = "speculation_core_32";
-        public static final String SPEC_CORE_64_ID = "speculation_core_64";
-        public static final String SPEC_PROCESSOR_ID = "speculative_processor";
         public static final String UNIVERSAL_PRESS_ID = "universal_press";
-        public static final String SPEC_PRINTED_ID = "speculative_printed";
     }
 
     public enum Nbt {

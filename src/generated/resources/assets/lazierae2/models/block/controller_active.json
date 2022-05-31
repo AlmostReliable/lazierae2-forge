@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "lazierae2:block/assembler/controller_active"
-  }
-}
