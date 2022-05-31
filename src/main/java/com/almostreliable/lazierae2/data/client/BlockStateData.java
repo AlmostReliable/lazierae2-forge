@@ -8,6 +8,7 @@ import com.almostreliable.lazierae2.content.assembler.HullBlock;
 import com.almostreliable.lazierae2.content.processor.ProcessorBlock;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
+import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.data.DataGenerator;
@@ -30,8 +31,6 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class BlockStateData extends BlockStateProvider {
 
-    // TODO: refactor
-
     public BlockStateData(
         DataGenerator gen, ExistingFileHelper fileHelper
     ) {
@@ -40,58 +39,34 @@ public class BlockStateData extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        registerProcessorNoModel(Blocks.AGGREGATOR.get());
-        registerProcessor(Blocks.ETCHER.get());
-        registerProcessor(Blocks.GRINDER.get());
-        registerProcessor(Blocks.INFUSER.get());
+        machineNoModel(Blocks.AGGREGATOR.get());
+        machine(Blocks.ETCHER.get());
+        machine(Blocks.GRINDER.get());
+        machine(Blocks.INFUSER.get());
+        machine(Blocks.REQUESTER.get());
         registerAssembler(CONTROLLER_ID, Assembler.CONTROLLER.get());
         registerAssembler(WALL_ID, Assembler.WALL.get());
         registerAssembler(FRAME_ID, Assembler.FRAME.get());
-        registerMachine(REQUESTER_ID, Blocks.REQUESTER.get());
     }
 
-    /**
-     * Handles the registration of the processor blockstate data.
-     *
-     * @param block the processor block to register
-     */
-    private void registerProcessor(ProcessorBlock block) {
-        registerMachine(block.getId(), block);
-    }
-
-    /**
-     * Handles the registration of the machine blockstate data.
-     * <p>
-     * Creates a blockstate with the same texture on all sides except the facing direction.
-     * The texture of the facing direction depends on the current value of the ACTIVE blockstate.
-     *
-     * @param id    the id of the block
-     * @param block the machine block to register
-     */
-    private void registerMachine(String id, MachineBlock block) {
-        var sideTexture = TextUtil.getRL("block/machine/wall");
-        var topTexture = TextUtil.getRL("block/machine/top");
-        var inactiveTexture = TextUtil.getRL(f("block/machine/{}", id));
-        var activeTexture = TextUtil.getRL(f("block/machine/{}_active", id));
-
-        var modelInactive = models().orientableWithBottom(id, sideTexture, inactiveTexture, topTexture, topTexture);
-        var modelActive = models().orientableWithBottom(getActiveId(id),
-            sideTexture,
-            activeTexture,
-            topTexture,
-            topTexture
-        );
-
+    private void machine(MachineBlock block) {
+        var id = GameUtil.getIdFromBlock(block);
+        var wall = TextUtil.getRL("block/machine/wall");
+        var top = TextUtil.getRL("block/machine/top");
+        var inactive = TextUtil.getRL(f("block/machine/{}", id));
+        var active = TextUtil.getRL(f("block/machine/{}", formActiveId(id)));
+        var modelInactive = models().orientableWithBottom(id, wall, inactive, top, top);
+        var modelActive = models().orientableWithBottom(formActiveId(id), wall, active, top, top);
         orientedBlock(block,
             MachineBlock.FACING,
             state -> state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive
         );
     }
 
-    private void registerProcessorNoModel(ProcessorBlock block) {
-        var id = block.getId();
+    private void machineNoModel(ProcessorBlock block) {
+        var id = GameUtil.getIdFromBlock(block);
         var modelInactive = TextUtil.getRL(f("block/{}", id));
-        var modelActive = TextUtil.getRL(f("block/{}_active", id));
+        var modelActive = TextUtil.getRL(f("block/{}", formActiveId(id)));
         orientedBlock(block,
             MachineBlock.FACING,
             state -> new UncheckedModelFile(
@@ -100,20 +75,20 @@ public class BlockStateData extends BlockStateProvider {
     }
 
     private void registerAssembler(String id, GenericBlock block) {
-        var inactiveTexture = TextUtil.getRL(f("block/assembler/{}", id));
-        var activeTexture = TextUtil.getRL(f("block/assembler/{}_active", id));
+        var inactive = TextUtil.getRL(f("block/assembler/{}", id));
+        var active = TextUtil.getRL(f("block/assembler/{}_active", id));
         BlockModelBuilder modelInactive;
         BlockModelBuilder modelActive;
         if (block instanceof AssemblerBlock) {
-            modelInactive = models().cubeAll(id, inactiveTexture);
-            modelActive = models().cubeAll(getActiveId(id), activeTexture);
+            modelInactive = models().cubeAll(id, inactive);
+            modelActive = models().cubeAll(formActiveId(id), active);
             stateBlock(block,
                 state -> state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive
             );
         } else {
             var sideTexture = TextUtil.getRL(f("block/assembler/{}", WALL_ID));
-            modelInactive = models().orientable(id, sideTexture, inactiveTexture, sideTexture);
-            modelActive = models().orientable(getActiveId(id), sideTexture, activeTexture, sideTexture);
+            modelInactive = models().orientable(id, sideTexture, inactive, sideTexture);
+            modelActive = models().orientable(formActiveId(id), sideTexture, active, sideTexture);
             orientedBlock(block,
                 ControllerBlock.FACING,
                 state -> state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive,
@@ -122,12 +97,6 @@ public class BlockStateData extends BlockStateProvider {
         }
     }
 
-    /**
-     * Generates the blockstate variants depending on the facing direction of the block.
-     *
-     * @param block         the processor block to generate the variants for
-     * @param modelFunction the function to get the correct model file
-     */
     private void orientedBlock(
         Block block, DirectionProperty facingProp, Function<? super BlockState, ? extends ModelFile> modelFunction,
         Property<?>... ignored
@@ -151,7 +120,7 @@ public class BlockStateData extends BlockStateProvider {
             .build(), AssemblerBlock.IS_MULTIBLOCK, HullBlock.HORIZONTAL, HullBlock.VERTICAL);
     }
 
-    private String getActiveId(String id) {
+    private String formActiveId(String id) {
         return f("{}_active", id);
     }
 }
