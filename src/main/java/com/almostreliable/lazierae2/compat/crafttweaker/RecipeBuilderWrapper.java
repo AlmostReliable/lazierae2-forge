@@ -7,6 +7,7 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import net.minecraft.resources.ResourceLocation;
@@ -38,8 +39,14 @@ public class RecipeBuilderWrapper {
     }
 
     @Method
-    public RecipeBuilderWrapper input(IIngredient input) {
-        builder.input(input.asVanillaIngredient());
+    public RecipeBuilderWrapper input(IIngredientWithAmount input) {
+        builder.input(input.getIngredient().asVanillaIngredient(), input.getAmount());
+        return this;
+    }
+
+    @Method
+    public RecipeBuilderWrapper input(IIngredient input, int count) {
+        builder.input(input.asVanillaIngredient(), count);
         return this;
     }
 

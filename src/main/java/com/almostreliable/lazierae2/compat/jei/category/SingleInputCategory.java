@@ -6,6 +6,7 @@ import com.almostreliable.lazierae2.util.GuiUtil;
 import com.almostreliable.lazierae2.util.GuiUtil.ANCHOR;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -13,6 +14,8 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.level.ItemLike;
+
+import java.util.List;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
@@ -37,7 +40,13 @@ public abstract class SingleInputCategory extends ProcessorCategory<SingleInputR
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, SingleInputRecipe recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 7).addItemStack(recipe.getResultItem());
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 7).addIngredients(recipe.getInputs().get(0));
+
+        var inputs = recipe.getInputs();
+        var inputStacks = inputs.get(0).ingredient().getItems();
+        for (var stack : inputStacks) {
+            stack.setCount(inputs.get(0).count());
+        }
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 7).addIngredients(VanillaTypes.ITEM_STACK, List.of(inputStacks));
         super.setRecipe(builder, recipe, focuses);
     }
 

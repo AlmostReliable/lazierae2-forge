@@ -1,14 +1,13 @@
 package com.almostreliable.lazierae2.recipe.type;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.recipe.IngredientWithCount;
 import com.almostreliable.lazierae2.recipe.RecipeStackProvider;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -26,22 +25,16 @@ public class ProcessorRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
         this.processorType = processorType;
     }
 
-    private static Ingredient deserializeIngredient(JsonElement element) {
-        if (element.isJsonObject()) {
-            var json = element.getAsJsonObject();
-            if (json.has(INPUT)) return Ingredient.fromJson(json.get(INPUT));
-        }
-        return Ingredient.fromJson(element);
-    }
-
     @Override
     public ProcessorRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
         var output = new RecipeStackProvider(ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, OUTPUT)));
-        NonNullList<Ingredient> inputs = NonNullList.create();
+        NonNullList<IngredientWithCount> inputs = NonNullList.create();
         if (processorType.getInputSlots() == 1) {
-            inputs.add(deserializeIngredient(GsonHelper.getAsJsonObject(json, INPUT)));
+            inputs.add(IngredientWithCount.fromJson(GsonHelper.getAsJsonObject(json, INPUT)));
         } else {
-            GsonHelper.getAsJsonArray(json, INPUT).forEach(jsonInput -> inputs.add(deserializeIngredient(jsonInput)));
+            GsonHelper
+                .getAsJsonArray(json, INPUT)
+                .forEach(jsonInput -> inputs.add(IngredientWithCount.fromJson(jsonInput.getAsJsonObject())));
         }
         var processTime = GsonHelper.getAsInt(json, PROCESS_TIME, processorType.getBaseProcessTime());
         var energyCost = GsonHelper.getAsInt(json, ENERGY_COST, processorType.getBaseEnergyCost());
@@ -54,10 +47,10 @@ public class ProcessorRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
     @Override
     public ProcessorRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         var output = new RecipeStackProvider(buffer.readItem());
-        NonNullList<Ingredient> inputs = NonNullList.create();
+        NonNullList<IngredientWithCount> inputs = NonNullList.create();
         var size = processorType.getInputSlots() == 1 ? 1 : buffer.readVarInt();
         for (var i = 0; i < size; i++) {
-            inputs.add(Ingredient.fromNetwork(buffer));
+            inputs.add(IngredientWithCount.fromNetwork(buffer));
         }
         var processTime = buffer.readInt();
         var energyCost = buffer.readInt();

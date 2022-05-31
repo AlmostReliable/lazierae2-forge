@@ -6,14 +6,19 @@ import com.almostreliable.lazierae2.util.GuiUtil;
 import com.almostreliable.lazierae2.util.GuiUtil.ANCHOR;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
@@ -43,13 +48,24 @@ public abstract class TripleInputCategory extends ProcessorCategory<TripleInputR
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, TripleInputRecipe recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.OUTPUT, 74, 23).addItemStack(recipe.getResultItem());
-        builder.addSlot(RecipeIngredientRole.INPUT, 2, 2).addIngredients(recipe.getInputs().get(0));
+
+        var inputs = recipe.getInputs();
+        Map<Integer, List<ItemStack>> inputMap = new HashMap<>();
+        for (var i = 0; i < inputs.size(); i++) {
+            var stacks = inputs.get(i).ingredient().getItems();
+            for (var stack : stacks) {
+                stack.setCount(inputs.get(i).count());
+            }
+            inputMap.put(i, List.of(stacks));
+        }
+
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 2).addIngredients(VanillaTypes.ITEM_STACK, inputMap.get(0));
         builder
             .addSlot(RecipeIngredientRole.INPUT, 2, 23)
-            .addIngredients(recipe.getInputs().size() >= 2 ? recipe.getInputs().get(1) : Ingredient.EMPTY);
+            .addIngredients(VanillaTypes.ITEM_STACK, inputMap.size() >= 2 ? inputMap.get(1) : List.of(ItemStack.EMPTY));
         builder
             .addSlot(RecipeIngredientRole.INPUT, 2, 44)
-            .addIngredients(recipe.getInputs().size() >= 3 ? recipe.getInputs().get(2) : Ingredient.EMPTY);
+            .addIngredients(VanillaTypes.ITEM_STACK, inputMap.size() >= 3 ? inputMap.get(2) : List.of(ItemStack.EMPTY));
         builder.setShapeless();
         super.setRecipe(builder, recipe, focuses);
     }

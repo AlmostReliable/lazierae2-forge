@@ -3,6 +3,7 @@ package com.almostreliable.lazierae2.recipe.builder;
 import appeng.core.AppEng;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.recipe.IRecipeItemProvider;
+import com.almostreliable.lazierae2.recipe.IngredientWithCount;
 import com.almostreliable.lazierae2.recipe.RecipeResourceProvider;
 import com.almostreliable.lazierae2.recipe.RecipeStackProvider;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
@@ -31,7 +32,7 @@ public final class ProcessorRecipeBuilder {
     private final ProcessorType recipeType;
     private final List<ICondition> conditions = new ArrayList<>();
     private final IRecipeItemProvider output;
-    private final NonNullList<Ingredient> inputs = NonNullList.create();
+    private final NonNullList<IngredientWithCount> inputs = NonNullList.create();
     private int processTime;
     private int energyCost;
 
@@ -111,8 +112,18 @@ public final class ProcessorRecipeBuilder {
         return infuser(output, 1);
     }
 
-    public ProcessorRecipeBuilder input(Ingredient... inputs) {
+    public ProcessorRecipeBuilder input(IngredientWithCount... inputs) {
         Collections.addAll(this.inputs, inputs);
+        return this;
+    }
+
+    public ProcessorRecipeBuilder input(Ingredient input) {
+        inputs.add(new IngredientWithCount(input, 1));
+        return this;
+    }
+
+    public ProcessorRecipeBuilder input(Ingredient input, int count) {
+        inputs.add(new IngredientWithCount(input, count));
         return this;
     }
 
@@ -120,8 +131,16 @@ public final class ProcessorRecipeBuilder {
         return input(Ingredient.of(input));
     }
 
+    public ProcessorRecipeBuilder input(ItemLike input, int count) {
+        return input(Ingredient.of(input), count);
+    }
+
     public ProcessorRecipeBuilder input(TagKey<Item> input) {
         return input(Ingredient.of(input));
+    }
+
+    public ProcessorRecipeBuilder input(TagKey<Item> input, int count) {
+        return input(Ingredient.of(input), count);
     }
 
     /**

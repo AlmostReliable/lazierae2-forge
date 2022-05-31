@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning].
 - added AE2 Inscriber recipes for the Universal Press
   - you can also duplicate the press now
   - the word Universal is more fitting now
+- added the ability to have multiple inputs per slot for recipes
 - renamed the Pulse Centrifuge to Pulse Grinder
 - renamed the Crystal Growth Chamber to Crystal Growth Core
   - we got questions in the past why the Chamber has no use, although it's just a crafting ingredient

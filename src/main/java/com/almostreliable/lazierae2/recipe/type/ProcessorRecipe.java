@@ -2,11 +2,11 @@ package com.almostreliable.lazierae2.recipe.type;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.recipe.IRecipeItemProvider;
+import com.almostreliable.lazierae2.recipe.IngredientWithCount;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -22,13 +22,13 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
     private final ProcessorType processorType;
     private final List<ICondition> conditions;
     private final IRecipeItemProvider output;
-    private final NonNullList<Ingredient> inputs;
+    private final NonNullList<IngredientWithCount> inputs;
     private final int processTime;
     private final int energyCost;
 
     ProcessorRecipe(
         ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions, IRecipeItemProvider output,
-        NonNullList<Ingredient> inputs, int processTime, int energyCost
+        NonNullList<IngredientWithCount> inputs, int processTime, int energyCost
     ) {
         this.recipeId = recipeId;
         this.processorType = processorType;
@@ -106,7 +106,7 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
         return energyCost;
     }
 
-    public NonNullList<Ingredient> getInputs() {
+    public NonNullList<IngredientWithCount> getInputs() {
         return inputs;
     }
 }

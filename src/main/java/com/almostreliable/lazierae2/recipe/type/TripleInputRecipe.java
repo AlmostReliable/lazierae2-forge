@@ -3,6 +3,7 @@ package com.almostreliable.lazierae2.recipe.type;
 import com.almostreliable.lazierae2.content.processor.ProcessorInventory;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.recipe.IRecipeItemProvider;
+import com.almostreliable.lazierae2.recipe.IngredientWithCount;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -18,7 +19,7 @@ public class TripleInputRecipe extends ProcessorRecipe {
 
     public TripleInputRecipe(
         ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions, IRecipeItemProvider output,
-        NonNullList<Ingredient> inputs, int processTime, int energyCost
+        NonNullList<IngredientWithCount> inputs, int processTime, int energyCost
     ) {
         super(recipeId, processorType, conditions, output, inputs, processTime, energyCost);
     }
@@ -34,9 +35,10 @@ public class TripleInputRecipe extends ProcessorRecipe {
             var stack = inv.getItem(slot);
             if (!stack.isEmpty() && matchedContainerItems[slot - ProcessorInventory.NON_INPUT_SLOTS] == null) {
                 for (var input : getInputs()) {
-                    if (!matchedIngredients.contains(input) && input.test(stack)) {
-                        matchedContainerItems[slot - ProcessorInventory.NON_INPUT_SLOTS] = input;
-                        matchedIngredients.add(input);
+                    if (!matchedIngredients.contains(input.ingredient()) && input.ingredient().test(stack) &&
+                        stack.getCount() >= input.count()) {
+                        matchedContainerItems[slot - ProcessorInventory.NON_INPUT_SLOTS] = input.ingredient();
+                        matchedIngredients.add(input.ingredient());
                     }
                 }
             }

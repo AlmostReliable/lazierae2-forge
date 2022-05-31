@@ -4,7 +4,6 @@ import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
-import com.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
 import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,9 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
@@ -184,7 +182,8 @@ public class ProcessorEntity extends GenericEntity {
         if (tag.contains(AUTO_EXTRACT_ID)) autoExtract = tag.getBoolean(AUTO_EXTRACT_ID);
     }
 
-    private void finishWork(ProcessorRecipe recipe, Set<Integer> recipeInputSlots) {
+    private void finishWork(ProcessorRecipe recipe, Map<Integer, Integer> recipeInputSlots) {
+        inventory.shrinkInputSlots(recipeInputSlots, recipeMultiplier);
         if (inventory.getStackInOutput().isEmpty()) {
             var outputStack = recipe.assemble(inventory.toVanilla());
             outputStack.setCount(outputStack.getCount() * recipeMultiplier);
@@ -193,7 +192,6 @@ public class ProcessorEntity extends GenericEntity {
             inventory.getStackInOutput().grow(recipe.getResultItem().getCount() * recipeMultiplier);
         }
 
-        inventory.shrinkInputSlots(recipeInputSlots, recipeMultiplier);
         progress = 0;
         setChanged();
 
@@ -214,7 +212,7 @@ public class ProcessorEntity extends GenericEntity {
         setChanged();
     }
 
-    private boolean canWork(ProcessorRecipe recipe, double energyCostExact, Set<Integer> recipeInputSlots) {
+    private boolean canWork(ProcessorRecipe recipe, double energyCostExact, Map<Integer, Integer> recipeInputSlots) {
         recipeMultiplierByEnergy(energyCostExact);
         if (recipeMultiplier == 0) return false;
 
@@ -228,34 +226,25 @@ public class ProcessorEntity extends GenericEntity {
         if (recipeMultiplier == 0) return false;
 
         var smallestInputCount = -1;
-        for (var slot : recipeInputSlots) {
-            var count = inventory.getStackInSlot(slot).getCount();
+        for (var input : recipeInputSlots.entrySet()) {
+            var count = inventory.getStackInSlot(input.getKey()).getCount() / input.getValue();
             if (smallestInputCount == -1 || count < smallestInputCount) {
                 smallestInputCount = count;
             }
         }
         if (smallestInputCount == -1) throw new IllegalStateException("No slots to shrink");
         recipeMultiplier = Math.min(recipeMultiplier, smallestInputCount);
-
-        return true;
+        return recipeMultiplier != 0;
     }
 
     @NotNull
-    private Set<Integer> getInputSlotsForRecipe(ProcessorRecipe recipe) {
-        Set<Integer> slotsToShrink = new HashSet<>();
-        if (recipe instanceof SingleInputRecipe) {
-            slotsToShrink.add(ProcessorInventory.NON_INPUT_SLOTS);
-        } else if (recipe.getInputs().size() == 3) {
+    private Map<Integer, Integer> getInputSlotsForRecipe(ProcessorRecipe recipe) {
+        Map<Integer, Integer> slotsToShrink = new HashMap<>();
+        for (var input : recipe.getInputs()) {
             for (var slot = ProcessorInventory.NON_INPUT_SLOTS; slot < inventory.getSlots(); slot++) {
-                slotsToShrink.add(slot);
-            }
-        } else {
-            for (var input : recipe.getInputs()) {
-                for (var slot = ProcessorInventory.NON_INPUT_SLOTS; slot < inventory.getSlots(); slot++) {
-                    if (input.test(inventory.getStackInSlot(slot))) {
-                        slotsToShrink.add(slot);
-                        break;
-                    }
+                if (input.ingredient().test(inventory.getStackInSlot(slot))) {
+                    slotsToShrink.put(slot, input.count());
+                    break;
                 }
             }
         }

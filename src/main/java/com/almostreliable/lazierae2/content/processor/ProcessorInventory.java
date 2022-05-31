@@ -17,7 +17,7 @@ import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Set;
+import java.util.Map;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
@@ -119,12 +119,12 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
         setStackInSlot(UPGRADE_SLOT, ItemStack.of(tag));
     }
 
-    void shrinkInputSlots(Set<Integer> slotsToShrink, int outputMultiplier) {
-        for (var slot : slotsToShrink) {
-            if (getStackInSlot(slot).getCount() == outputMultiplier) {
-                setStackInSlot(slot, ItemStack.EMPTY);
+    void shrinkInputSlots(Map<Integer, Integer> slotsToShrink, int outputMultiplier) {
+        for (var slot : slotsToShrink.entrySet()) {
+            if (getStackInSlot(slot.getKey()).getCount() == slot.getValue() * outputMultiplier) {
+                setStackInSlot(slot.getKey(), ItemStack.EMPTY);
             } else {
-                getStackInSlot(slot).shrink(outputMultiplier);
+                getStackInSlot(slot.getKey()).shrink(slot.getValue() * outputMultiplier);
                 entity.setChanged();
             }
         }

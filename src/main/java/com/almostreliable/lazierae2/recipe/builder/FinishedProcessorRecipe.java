@@ -32,10 +32,10 @@ public class FinishedProcessorRecipe implements FinishedRecipe {
         recipe.getOutput().toJson(json);
 
         if (((ProcessorType) recipe.getType()).getInputSlots() == 1) {
-            recipe.getInputs().forEach(input -> json.add(INPUT, input.toJson()));
+            recipe.getInputs().forEach(input -> input.toJson(json));
         } else {
             var inputs = new JsonArray();
-            recipe.getInputs().forEach(input -> inputs.add(input.toJson()));
+            recipe.getInputs().forEach(input -> input.toJson(inputs));
             json.add(INPUT, inputs);
         }
 
