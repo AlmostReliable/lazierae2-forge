@@ -7,12 +7,13 @@
     }
   ],
   "output": {
-    "item": "refinedstorage:quartz_enriched_iron"
+    "item": "refinedstorage:quartz_enriched_iron",
+    "count": 4
   },
   "input": [
     {
       "tag": "forge:ingots/iron",
-      "count": 3
+      "count": 2
     },
     {
       "tag": "forge:gems/quartz"

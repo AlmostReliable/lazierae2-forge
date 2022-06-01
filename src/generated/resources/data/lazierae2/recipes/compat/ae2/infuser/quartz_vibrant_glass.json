@@ -14,6 +14,6 @@
       "tag": "forge:dusts/glowstone"
     }
   ],
-  "process_time": 60,
-  "energy_cost": 600
+  "process_time": 50,
+  "energy_cost": 1000
 }

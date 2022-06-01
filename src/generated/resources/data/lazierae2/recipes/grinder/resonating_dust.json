@@ -6,6 +6,6 @@
   "input": {
     "tag": "forge:gems/resonating"
   },
-  "process_time": 80,
-  "energy_cost": 800
+  "process_time": 35,
+  "energy_cost": 650
 }

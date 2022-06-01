@@ -6,6 +6,6 @@
   "input": {
     "tag": "forge:ender_pearls"
   },
-  "process_time": 80,
-  "energy_cost": 800
+  "process_time": 25,
+  "energy_cost": 350
 }

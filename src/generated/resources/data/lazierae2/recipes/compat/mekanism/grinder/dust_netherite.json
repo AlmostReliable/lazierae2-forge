@@ -12,6 +12,6 @@
   "input": {
     "tag": "forge:ingots/netherite"
   },
-  "process_time": 40,
+  "process_time": 60,
   "energy_cost": 500
 }

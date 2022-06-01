@@ -9,9 +9,10 @@
       "item": "lazierae2:universal_press"
     },
     {
-      "tag": "forge:storage_blocks/iron"
+      "tag": "forge:ingots/iron",
+      "count": 6
     }
   ],
-  "process_time": 200,
-  "energy_cost": 2000
+  "process_time": 300,
+  "energy_cost": 8000
 }

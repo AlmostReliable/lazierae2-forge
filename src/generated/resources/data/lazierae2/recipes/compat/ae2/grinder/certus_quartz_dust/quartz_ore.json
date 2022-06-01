@@ -7,6 +7,6 @@
   "input": {
     "tag": "forge:ores/certus_quartz"
   },
-  "process_time": 80,
-  "energy_cost": 800
+  "process_time": 50,
+  "energy_cost": 850
 }

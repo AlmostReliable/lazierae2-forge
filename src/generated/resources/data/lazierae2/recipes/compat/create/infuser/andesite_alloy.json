@@ -14,9 +14,10 @@
       "item": "minecraft:andesite"
     },
     {
-      "tag": "forge:nuggets/iron"
+      "tag": "forge:nuggets/iron",
+      "count": 2
     }
   ],
-  "process_time": 30,
-  "energy_cost": 180
+  "process_time": 8,
+  "energy_cost": 50
 }

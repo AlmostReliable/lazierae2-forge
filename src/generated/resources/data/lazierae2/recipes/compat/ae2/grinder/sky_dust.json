@@ -6,6 +6,6 @@
   "input": {
     "item": "ae2:sky_stone_block"
   },
-  "process_time": 80,
-  "energy_cost": 800
+  "process_time": 25,
+  "energy_cost": 300
 }

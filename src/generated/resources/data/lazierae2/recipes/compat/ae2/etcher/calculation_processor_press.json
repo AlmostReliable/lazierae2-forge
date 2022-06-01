@@ -9,9 +9,10 @@
       "item": "ae2:calculation_processor_press"
     },
     {
-      "tag": "forge:storage_blocks/iron"
+      "tag": "forge:ingots/iron",
+      "count": 6
     }
   ],
   "process_time": 200,
-  "energy_cost": 2000
+  "energy_cost": 5000
 }

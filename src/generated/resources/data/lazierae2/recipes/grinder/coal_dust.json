@@ -6,6 +6,6 @@
   "input": {
     "tag": "minecraft:coals"
   },
-  "process_time": 80,
-  "energy_cost": 800
+  "process_time": 20,
+  "energy_cost": 200
 }

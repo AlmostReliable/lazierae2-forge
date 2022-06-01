@@ -11,9 +11,10 @@
       "tag": "forge:ender_pearls"
     },
     {
-      "tag": "forge:dusts/fluix"
+      "tag": "forge:dusts/fluix",
+      "count": 2
     }
   ],
   "process_time": 60,
-  "energy_cost": 600
+  "energy_cost": 800
 }

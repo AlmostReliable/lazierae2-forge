@@ -12,6 +12,6 @@
   "input": {
     "tag": "minecraft:logs"
   },
-  "process_time": 20,
-  "energy_cost": 300
+  "process_time": 15,
+  "energy_cost": 180
 }
