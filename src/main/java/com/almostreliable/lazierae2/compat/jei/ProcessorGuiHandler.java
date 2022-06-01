@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class ProcessorGuiContainerHandler implements IGuiContainerHandler<ProcessorScreen> {
+public class ProcessorGuiHandler implements IGuiContainerHandler<ProcessorScreen> {
 
     private final int x;
     private final int y;
@@ -23,7 +23,7 @@ public class ProcessorGuiContainerHandler implements IGuiContainerHandler<Proces
     private final int height;
     private final RecipeType<?>[] recipeTypes;
 
-    ProcessorGuiContainerHandler(int x, int y, int width, int height, RecipeType<?>... recipeTypes) {
+    ProcessorGuiHandler(int x, int y, int width, int height, RecipeType<?>... recipeTypes) {
         this.x = x;
         this.y = y;
         this.width = width;

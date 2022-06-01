@@ -13,6 +13,7 @@ import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Items;
 import com.almostreliable.lazierae2.gui.ProcessorScreen;
+import com.almostreliable.lazierae2.gui.RequesterScreen;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.almostreliable.lazierae2.recipe.type.SingleInputRecipe;
 import com.almostreliable.lazierae2.recipe.type.TripleInputRecipe;
@@ -102,7 +103,7 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration r) {
-        var handler = new ProcessorGuiContainerHandler(156,
+        var handler = new ProcessorGuiHandler(156,
             7,
             7,
             8,
@@ -112,5 +113,6 @@ public class Plugin implements IModPlugin {
             InfuserCategory.TYPE
         );
         r.addGuiContainerHandler(ProcessorScreen.class, handler);
+        r.addGhostIngredientHandler(RequesterScreen.class, new RequesterGhostHandler());
     }
 }
