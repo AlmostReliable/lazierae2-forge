@@ -131,7 +131,7 @@ dependencies {
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${mc_version}:${crt_version}")
     implementation fg.deobf("dev.architectury:architectury-forge:${archi_version}")
     implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
-    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kube_version}")
+    compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kube_version}")
 
     // runtime dependencies
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // JEI - in sync with API version
