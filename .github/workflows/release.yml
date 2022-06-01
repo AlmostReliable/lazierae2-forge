@@ -56,6 +56,52 @@ jobs:
           set_var PRE_RELEASE "$([[ -z $RELEASE_TYPE ]] && echo false || echo true)"
           set_var RELEASE_TYPE "$([[ -z $RELEASE_TYPE ]] && echo release || echo $RELEASE_TYPE)"
 
+      - name: Upload to CurseForge
+        uses: Kir-Antipov/mc-publish@v2.1
+        with:
+          curseforge-id: 489843
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: ${{ env.JAR_FILE }}
+          name: ${{ env.MOD_NAME }}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
+          version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          loaders: forge
+          game-versions: ${{ env.MINECRAFT_VERSION }}
+          version-resolver: exact
+          dependencies: |
+            applied-energistics-2 | depends | *
+            jei | suggests | *
+            crafttweaker | suggests | *
+            kubejs | suggests | *
+          java: 17
+          retry-attempts: 2
+          retry-delay: 10000
+
+      - name: Upload to Modrinth
+        uses: Kir-Antipov/mc-publish@v2.1
+        with:
+          modrinth-id: 7mmL0PW9
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          files: ${{ env.JAR_FILE }}
+          name: ${{ env.MOD_NAME }}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
+          version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
+          version-type: ${{ env.RELEASE_TYPE }}
+          changelog-file: CHANGELOG.md
+
+          loaders: forge
+          game-versions: ${{ env.MINECRAFT_VERSION }}
+          version-resolver: exact
+          dependencies: |
+            ae2 | depends | *
+            kubejs | suggests | *
+          java: 17
+          retry-attempts: 2
+          retry-delay: 10000
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -69,27 +115,3 @@ jobs:
         with:
           files: ${{ env.JAR_FILE }}
           prerelease: ${{ env.PRE_RELEASE }}
-
-      - name: Upload to CurseForge and Modrinth
-        uses: Kir-Antipov/mc-publish@v2.1
-        with:
-          modrinth-id: 7mmL0PW9
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-id: 489843
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: ${{ env.JAR_FILE }}
-          name: ${{ env.MOD_NAME }}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
-          version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
-          version-type: ${{ env.RELEASE_TYPE }}
-          changelog-file: CHANGELOG.md
-
-          loaders: forge
-          game-versions: ${{ env.MINECRAFT_VERSION }}
-          dependencies: |
-            applied-energistics-2 | depends
-            jei | suggests
-            crafttweaker | suggests
-            kubejs | suggests
-          retry-attempts: 2
-          retry-delay: 10000
