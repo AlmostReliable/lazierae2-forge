@@ -274,7 +274,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
         for (var slot = 0; slot < progressions.length; slot++) {
             var state = progressions[slot];
             if (state instanceof CraftingLinkState cls && cls.link().equals(link)) {
-                storageManager.get(slot).update(what, amount);
+                if (!mode.isSimulate()) storageManager.get(slot).update(what, amount);
                 return amount;
             }
         }
