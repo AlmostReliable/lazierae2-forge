@@ -1,6 +1,7 @@
 package com.almostreliable.lazierae2.compat.kubejs;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
+import com.almostreliable.lazierae2.recipe.IngredientWithCount;
 import com.almostreliable.lazierae2.recipe.builder.FinishedProcessorRecipe;
 import com.almostreliable.lazierae2.recipe.builder.ProcessorRecipeBuilder;
 import com.google.gson.JsonObject;
@@ -51,7 +52,11 @@ public class ProcessorRecipeJS extends RecipeJS {
             var builder = getBuilder(outputItems.get(0).getItemStack());
             builder.processingTime(GsonHelper.getAsInt(json, PROCESS_TIME, processorType.getBaseProcessTime()));
             builder.energyCost(GsonHelper.getAsInt(json, ENERGY_COST, processorType.getBaseEnergyCost()));
-            inputItems.stream().map(IngredientJS::createVanillaIngredient).forEach(builder::input);
+            inputItems.stream().map(ingredientJS -> {
+                var ingredient = ingredientJS.createVanillaIngredient();
+                var count = ingredientJS.getCount();
+                return new IngredientWithCount(ingredient, count);
+            }).forEach(builder::input);
             var recipe = builder.build(getOrCreateId());
             var finishedRecipe = new FinishedProcessorRecipe(recipe);
             var newRecipe = new JsonObject();
