@@ -56,6 +56,12 @@ jobs:
           set_var PRE_RELEASE "$([[ -z $RELEASE_TYPE ]] && echo false || echo true)"
           set_var RELEASE_TYPE "$([[ -z $RELEASE_TYPE ]] && echo release || echo $RELEASE_TYPE)"
 
+      - name: Install changelog parser
+        uses: taiki-e/install-action@parse-changelog
+
+      - name: Parse changelog
+        run: parse-changelog CHANGELOG.md ${{ env.MOD_VERSION }} > changes.md
+
       - name: Upload to CurseForge
         uses: Kir-Antipov/mc-publish@v2.1
         with:
@@ -66,7 +72,7 @@ jobs:
           name: ${{ env.MOD_NAME }}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
           version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
           version-type: ${{ env.RELEASE_TYPE }}
-          changelog-file: CHANGELOG.md
+          changelog-file: changes.md
 
           loaders: forge
           game-versions: ${{ env.MINECRAFT_VERSION }}
@@ -90,7 +96,7 @@ jobs:
           name: ${{ env.MOD_NAME }}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
           version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
           version-type: ${{ env.RELEASE_TYPE }}
-          changelog-file: CHANGELOG.md
+          changelog-file: changes.md
 
           loaders: forge
           game-versions: ${{ env.MINECRAFT_VERSION }}
@@ -113,5 +119,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          body_path: changes.md
           files: ${{ env.JAR_FILE }}
           prerelease: ${{ env.PRE_RELEASE }}
