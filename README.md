@@ -26,6 +26,11 @@ It adds some useful machines that will make your late-game [Applied Energistics 
 4. Make sure you also have [Applied Energistics 2][ae2] installed
 
 
+## **📖 Wiki**
+If you want to know more about the machine interfaces, their functionality and how to alter
+recipes, you can read more on the [wiki].
+
+
 ## **💚 Credits**
 Credits for the original mod go to [phantamanta44][author].<br>
 Although this is a complete rewrite, credits for the idea should be given!
@@ -57,5 +62,7 @@ This project is licensed under the [MIT license][license].
 [forge]: http://files.minecraftforge.net/
 [lazyae2]: https://www.curseforge.com/minecraft/mc-mods/lazy-ae2
 [releases]: https://github.com/AlmostReliable/lazierae2-forge/releases
+[wiki]: https://github.com/AlmostReliable/lazierae2-forge/wiki
+[author]: https://github.com/phantamanta44
 [changelog]: CHANGELOG.md
 [license]: LICENSE
