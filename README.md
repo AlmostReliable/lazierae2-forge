@@ -4,11 +4,12 @@
 A [Minecraft] mod to make your life with [Applied Energistics 2][ae2] a little easier.
 
 [![Version][version_badge]][version_link]
-[![Total Downloads][total_downloads_badge]][curseforge]
+[![Total Downloads CF][total_downloads_cf_badge]][curseforge]
+[![Total Downloads MR][total_downloads_mr_badge]][modrinth]
 [![Workflow Status][workflow_status_badge]][workflow_status_link]
 [![License][license_badge]][license]
 
-[Discord] | [CurseForge]
+[Discord] | [CurseForge] | [Modrinth]
 
 </div>
 
@@ -20,7 +21,7 @@ It adds some useful machines that will make your late-game [Applied Energistics 
 
 
 ## **🔧 Installation**
-1. Download the latest **mod jar** from the [releases] or from [CurseForge].
+1. Download the latest **mod jar** from the [releases], from [CurseForge] or from [Modrinth].
 2. Install Minecraft [Forge].
 3. Drop the **jar file** into your mods folder.
 4. Make sure you also have [Applied Energistics 2][ae2] installed
@@ -49,7 +50,8 @@ This project is licensed under the [MIT license][license].
 <!-- Badges -->
 [version_badge]: https://img.shields.io/github/v/release/AlmostReliable/lazierae2-forge?include_prereleases&style=flat-square
 [version_link]: https://github.com/AlmostReliable/lazierae2-forge/releases/latest
-[total_downloads_badge]: http://cf.way2muchnoise.eu/full_489843.svg?badge_style=flat
+[total_downloads_cf_badge]: http://cf.way2muchnoise.eu/full_489843.svg?badge_style=flat
+[total_downloads_mr_badge]: https://img.shields.io/badge/dynamic/json?style=flat-square&color=5da545&label=modrinth&query=downloads&url=https://api.modrinth.com/api/v1/mod/7mmL0PW9
 [workflow_status_badge]: https://img.shields.io/github/workflow/status/AlmostReliable/lazierae2-forge/CI?style=flat-square
 [workflow_status_link]: https://github.com/AlmostReliable/lazierae2-forge/actions
 [license_badge]: https://img.shields.io/github/license/AlmostReliable/lazierae2-forge?style=flat-square
@@ -59,6 +61,7 @@ This project is licensed under the [MIT license][license].
 [ae2]: https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2
 [discord]: https://discord.com/invite/ThFnwZCyYY
 [curseforge]: https://www.curseforge.com/minecraft/mc-mods/lazierae2
+[modrinth]: https://modrinth.com/mod/lazierae2
 [forge]: http://files.minecraftforge.net/
 [lazyae2]: https://www.curseforge.com/minecraft/mc-mods/lazy-ae2
 [releases]: https://github.com/AlmostReliable/lazierae2-forge/releases
