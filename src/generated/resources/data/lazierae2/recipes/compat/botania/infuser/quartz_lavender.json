@@ -1,0 +1,24 @@
+{
+  "type": "lazierae2:infuser",
+  "conditions": [
+    {
+      "modid": "botania",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "output": {
+    "item": "botania:quartz_lavender",
+    "count": 8
+  },
+  "input": [
+    {
+      "item": "minecraft:pink_tulip"
+    },
+    {
+      "tag": "forge:gems/quartz",
+      "count": 8
+    }
+  ],
+  "process_time": 10,
+  "energy_cost": 100
+}

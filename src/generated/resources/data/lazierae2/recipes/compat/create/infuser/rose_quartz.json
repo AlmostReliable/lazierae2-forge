@@ -1,0 +1,23 @@
+{
+  "type": "lazierae2:infuser",
+  "conditions": [
+    {
+      "modid": "create",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "output": {
+    "item": "create:rose_quartz"
+  },
+  "input": [
+    {
+      "tag": "forge:dusts/redstone",
+      "count": 8
+    },
+    {
+      "tag": "forge:gems/quartz"
+    }
+  ],
+  "process_time": 30,
+  "energy_cost": 260
+}

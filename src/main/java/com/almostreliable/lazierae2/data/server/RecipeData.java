@@ -375,25 +375,18 @@ public class RecipeData extends RecipeProvider {
     }
 
     private void compatRecipes(Consumer<? super FinishedRecipe> c) {
-        mekanismRecipes(c);
+        compatGrinderRecipes(c);
+        compatInfuserRecipes(c);
     }
 
-    private void mekanismRecipes(Consumer<? super FinishedRecipe> c) {
-        mekanismGrinderRecipes(c);
-        mekanismInfuserRecipes(c);
-    }
-
-    private void mekanismGrinderRecipes(Consumer<? super FinishedRecipe> c) {
+    private void compatGrinderRecipes(Consumer<? super FinishedRecipe> c) {
+        /*
+            MEKANISM
+         */
         ProcessorRecipeBuilder
             .grinder("mekanism:sawdust")
             .input(ItemTags.LOGS)
             .processingTime(20)
-            .energyCost(300)
-            .build(c);
-        ProcessorRecipeBuilder
-            .grinder("mekanism:fluorite_gem", 6)
-            .input(Setup.Tags.Items.ORES_FLUORITE)
-            .processingTime(40)
             .energyCost(300)
             .build(c);
         ProcessorRecipeBuilder
@@ -403,10 +396,16 @@ public class RecipeData extends RecipeProvider {
             .energyCost(500)
             .build(c);
         ProcessorRecipeBuilder
-            .grinder("mekanism:dust_netherite", 1)
+            .grinder("mekanism:dust_netherite")
             .input(Tags.Items.INGOTS_NETHERITE)
             .processingTime(40)
             .energyCost(500)
+            .build(c);
+        ProcessorRecipeBuilder
+            .grinder("mekanism:dust_obsidian", 4)
+            .input(Tags.Items.OBSIDIAN)
+            .processingTime(40)
+            .energyCost(400)
             .build(c);
         mekanismGrinderBiofuel(c, 8, Items.CAKE, Items.PUMPKIN_PIE);
         mekanismGrinderBiofuel(
@@ -516,7 +515,67 @@ public class RecipeData extends RecipeProvider {
         );
     }
 
-    private void mekanismInfuserRecipes(Consumer<? super FinishedRecipe> c) {
+    private void compatInfuserRecipes(Consumer<? super FinishedRecipe> c) {
+        /*
+            BOTANIA
+         */
+        ProcessorRecipeBuilder
+            .infuser("botania:quartz_dark", 8)
+            .input(Items.COAL)
+            .input(Tags.Items.GEMS_QUARTZ, 8)
+            .processingTime(10)
+            .energyCost(100)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser("botania:quartz_blaze", 8)
+            .input(Items.BLAZE_POWDER)
+            .input(Tags.Items.GEMS_QUARTZ, 8)
+            .processingTime(10)
+            .energyCost(100)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser("botania:quartz_lavender", 8)
+            .input(Items.PINK_TULIP)
+            .input(Tags.Items.GEMS_QUARTZ, 8)
+            .processingTime(10)
+            .energyCost(100)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser("botania:quartz_red", 8)
+            .input(Tags.Items.DUSTS_REDSTONE)
+            .input(Tags.Items.GEMS_QUARTZ, 8)
+            .processingTime(10)
+            .energyCost(100)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser("botania:quartz_sunny", 8)
+            .input(Items.SUNFLOWER)
+            .input(Tags.Items.GEMS_QUARTZ, 8)
+            .processingTime(10)
+            .energyCost(100)
+            .build(c);
+
+        /*
+            CREATE
+         */
+        ProcessorRecipeBuilder
+            .infuser("create:andesite_alloy")
+            .input(Items.ANDESITE)
+            .input(Tags.Items.NUGGETS_IRON)
+            .processingTime(30)
+            .energyCost(180)
+            .build(c);
+        ProcessorRecipeBuilder
+            .infuser("create:rose_quartz")
+            .input(Tags.Items.DUSTS_REDSTONE, 8)
+            .input(Tags.Items.GEMS_QUARTZ)
+            .processingTime(30)
+            .energyCost(260)
+            .build(c);
+
+        /*
+            MEKANISM
+         */
         ProcessorRecipeBuilder
             .infuser("mekanism:dye_base", 2)
             .input(Items.PAPER)
@@ -525,10 +584,32 @@ public class RecipeData extends RecipeProvider {
             .energyCost(50)
             .build(c);
         ProcessorRecipeBuilder
-            .infuser("mekanism:structural_glass", 1)
+            .infuser("mekanism:structural_glass")
             .input(Setup.Tags.Items.INGOTS_STEEL)
             .input(Tags.Items.SAND)
             .processingTime(15)
+            .energyCost(250)
+            .build(c);
+
+        /*
+            REFINED STORAGE
+         */
+        ProcessorRecipeBuilder
+            .infuser("refinedstorage:quartz_enriched_iron")
+            .input(Tags.Items.INGOTS_IRON, 3)
+            .input(Tags.Items.GEMS_QUARTZ)
+            .processingTime(20)
+            .energyCost(250)
+            .build(c);
+
+        /*
+            WAYSTONES
+         */
+        ProcessorRecipeBuilder
+            .infuser("waystones:warp_dust")
+            .input(Tags.Items.ENDER_PEARLS)
+            .input(Tags.Items.DYES_PURPLE)
+            .processingTime(20)
             .energyCost(250)
             .build(c);
     }

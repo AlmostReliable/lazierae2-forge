@@ -1,0 +1,22 @@
+{
+  "type": "lazierae2:infuser",
+  "conditions": [
+    {
+      "modid": "create",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "output": {
+    "item": "create:andesite_alloy"
+  },
+  "input": [
+    {
+      "item": "minecraft:andesite"
+    },
+    {
+      "tag": "forge:nuggets/iron"
+    }
+  ],
+  "process_time": 30,
+  "energy_cost": 180
+}

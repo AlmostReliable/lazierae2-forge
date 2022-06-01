@@ -1,0 +1,22 @@
+{
+  "type": "lazierae2:infuser",
+  "conditions": [
+    {
+      "modid": "waystones",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "output": {
+    "item": "waystones:warp_dust"
+  },
+  "input": [
+    {
+      "tag": "forge:ender_pearls"
+    },
+    {
+      "tag": "forge:dyes/purple"
+    }
+  ],
+  "process_time": 20,
+  "energy_cost": 250
+}
