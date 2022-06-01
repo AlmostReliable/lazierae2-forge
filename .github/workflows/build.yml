@@ -42,7 +42,7 @@ jobs:
         uses: gradle/wrapper-validation-action@v1
 
       - name: Build
-        run: ./gradlew build --stacktrace --no-daemon
+        run: ./gradlew build --stacktrace
 
       - name: Check existing DataGen
         run: |
@@ -50,12 +50,12 @@ jobs:
           echo "cache_exists=$?" >> $GITHUB_ENV
 
       - name: Save old DataGen state
-        if: ${{ env.cache_exists == 1 }}
-        run: mv ./src/generated/resources/.cache/cache ./src/generated/resources/.cache/cache.old
+        if: ${{ env.cache_exists }}
+        run: mv ./src/generated/resources/.cache ./src/generated/cache_old
 
       - name: Generate assets
-        run: ./gradlew runData
+        run: ./gradlew runData --stacktrace
 
       - name: Validate assets
-        if: ${{ env.cache_exists == 1 }}
-        run: diff -q ./src/generated/resources/.cache/cache.old ./src/generated/resources/.cache/cache
+        if: ${{ env.cache_exists }}
+        run: diff -q ./src/generated/cache_old/cache ./src/generated/resources/.cache/cache
