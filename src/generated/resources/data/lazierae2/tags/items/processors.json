@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "lazierae2:parallel_processor",
+    "lazierae2:speculative_processor",
     "ae2:calculation_processor",
     "ae2:engineering_processor",
     "ae2:logic_processor"

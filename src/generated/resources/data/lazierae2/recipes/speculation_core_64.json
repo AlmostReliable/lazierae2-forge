@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "lazierae2:parallel_processor"
+    },
+    {
+      "item": "lazierae2:speculation_core_32"
+    },
+    {
+      "item": "lazierae2:speculation_core_32"
+    }
+  ],
+  "result": {
+    "item": "lazierae2:speculation_core_64"
+  }
+}

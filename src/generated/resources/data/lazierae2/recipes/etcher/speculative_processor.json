@@ -1,0 +1,19 @@
+{
+  "type": "lazierae2:etcher",
+  "output": {
+    "item": "lazierae2:speculative_processor"
+  },
+  "input": [
+    {
+      "item": "lazierae2:speculation_core_64"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "tag": "forge:silicon"
+    }
+  ],
+  "process_time": 150,
+  "energy_cost": 1500
+}

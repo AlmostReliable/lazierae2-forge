@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=down,is_multiblock=false": {
+      "model": "lazierae2:block/controller",
+      "x": 90
+    },
+    "facing=up,is_multiblock=false": {
+      "model": "lazierae2:block/controller",
+      "x": -90
+    },
+    "facing=north,is_multiblock=false": {
+      "model": "lazierae2:block/controller"
+    },
+    "facing=south,is_multiblock=false": {
+      "model": "lazierae2:block/controller",
+      "y": 180
+    },
+    "facing=west,is_multiblock=false": {
+      "model": "lazierae2:block/controller",
+      "y": 270
+    },
+    "facing=east,is_multiblock=false": {
+      "model": "lazierae2:block/controller",
+      "y": 90
+    },
+    "facing=down,is_multiblock=true": {
+      "model": "lazierae2:block/controller_active",
+      "x": 90
+    },
+    "facing=up,is_multiblock=true": {
+      "model": "lazierae2:block/controller_active",
+      "x": -90
+    },
+    "facing=north,is_multiblock=true": {
+      "model": "lazierae2:block/controller_active"
+    },
+    "facing=south,is_multiblock=true": {
+      "model": "lazierae2:block/controller_active",
+      "y": 180
+    },
+    "facing=west,is_multiblock=true": {
+      "model": "lazierae2:block/controller_active",
+      "y": 270
+    },
+    "facing=east,is_multiblock=true": {
+      "model": "lazierae2:block/controller_active",
+      "y": 90
+    }
+  }
+}

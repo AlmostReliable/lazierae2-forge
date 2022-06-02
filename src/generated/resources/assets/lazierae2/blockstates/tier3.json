@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "is_multiblock=false": {
+      "model": "lazierae2:block/tier3"
+    },
+    "is_multiblock=true": {
+      "model": "lazierae2:block/tier3_active"
+    }
+  }
+}

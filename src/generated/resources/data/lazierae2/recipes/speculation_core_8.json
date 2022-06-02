@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "ae2:logic_processor"
+    },
+    {
+      "item": "lazierae2:speculation_core_4"
+    },
+    {
+      "item": "lazierae2:speculation_core_4"
+    }
+  ],
+  "result": {
+    "item": "lazierae2:speculation_core_8"
+  }
+}

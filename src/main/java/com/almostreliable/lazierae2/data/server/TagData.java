@@ -41,8 +41,10 @@ public final class TagData {
             tag(Tags.Items.INGOTS).add(Items.FLUIX_STEEL.get());
 
             tag(Setup.Tags.Items.PROCESSOR_PARALLEL).add(Items.PARALLEL_PROCESSOR.get());
+            tag(Setup.Tags.Items.PROCESSOR_SPEC).add(Items.SPEC_PROCESSOR.get());
             tag(Setup.Tags.Items.PROCESSORS).add(
                 Items.PARALLEL_PROCESSOR.get(),
+                Items.SPEC_PROCESSOR.get(),
                 AEItems.CALCULATION_PROCESSOR.asItem(),
                 AEItems.ENGINEERING_PROCESSOR.asItem(),
                 AEItems.LOGIC_PROCESSOR.asItem()

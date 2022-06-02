@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.content.processor;
 
-import com.almostreliable.lazierae2.content.GenericBlock;
+import com.almostreliable.lazierae2.content.MachineBlock;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.ChatFormatting;
@@ -22,7 +22,7 @@ import java.util.List;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
-public class ProcessorBlock extends GenericBlock {
+public class ProcessorBlock extends MachineBlock {
 
     private final ProcessorType processorType;
 
