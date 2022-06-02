@@ -1,9 +1,9 @@
 {
   "variants": {
-    "is_multiblock=false": {
+    "active=false": {
       "model": "lazierae2:block/frame"
     },
-    "is_multiblock=true": {
+    "active=true": {
       "model": "lazierae2:block/frame_active"
     }
   }

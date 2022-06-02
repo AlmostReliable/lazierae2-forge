@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.content.assembler;
 
+import com.almostreliable.lazierae2.content.GenericBlock;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;
@@ -24,7 +25,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-public class HullBlock extends AssemblerBlock {
+public class HullBlock extends GenericBlock {
 
     public static final OptionalDirectionProperty HORIZONTAL = OptionalDirectionProperty.HORIZONTAL_PROP;
     public static final OptionalDirectionProperty VERTICAL = OptionalDirectionProperty.VERTICAL_PROP;
@@ -118,11 +119,11 @@ public class HullBlock extends AssemblerBlock {
         return defaultBlockState()
             .setValue(HORIZONTAL, horizontalOffset)
             .setValue(VERTICAL, verticalOffset)
-            .setValue(IS_MULTIBLOCK, true);
+            .setValue(GenericBlock.ACTIVE, true);
     }
 
     public boolean isUsableForMultiBlock(BlockState state) {
-        return state.getBlock() instanceof HullBlock && !state.getValue(IS_MULTIBLOCK);
+        return state.getBlock() instanceof HullBlock && !state.getValue(GenericBlock.ACTIVE);
     }
 
     protected OptionalDirection getVerticalOffset(BlockPos blockPos, BlockPos lookPos) {

@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.content.assembler;
 
+import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.Data;
 import com.almostreliable.lazierae2.core.Setup.Entities.Assembler;
@@ -48,7 +49,7 @@ public class ControllerEntity extends GenericEntity {
     }
 
     public boolean isMultiBlockMaster() {
-        return getBlockState().getValue(AssemblerBlock.IS_MULTIBLOCK);
+        return getBlockState().getValue(GenericBlock.ACTIVE);
     }
 
     @Nullable

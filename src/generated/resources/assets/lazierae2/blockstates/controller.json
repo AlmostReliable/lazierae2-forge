@@ -1,48 +1,48 @@
 {
   "variants": {
-    "facing=down,is_multiblock=false": {
+    "active=false,facing=down": {
       "model": "lazierae2:block/controller",
       "x": 90
     },
-    "facing=up,is_multiblock=false": {
+    "active=true,facing=down": {
+      "model": "lazierae2:block/controller_active",
+      "x": 90
+    },
+    "active=false,facing=up": {
       "model": "lazierae2:block/controller",
       "x": -90
     },
-    "facing=north,is_multiblock=false": {
+    "active=true,facing=up": {
+      "model": "lazierae2:block/controller_active",
+      "x": -90
+    },
+    "active=false,facing=north": {
       "model": "lazierae2:block/controller"
     },
-    "facing=south,is_multiblock=false": {
+    "active=true,facing=north": {
+      "model": "lazierae2:block/controller_active"
+    },
+    "active=false,facing=south": {
       "model": "lazierae2:block/controller",
       "y": 180
     },
-    "facing=west,is_multiblock=false": {
+    "active=true,facing=south": {
+      "model": "lazierae2:block/controller_active",
+      "y": 180
+    },
+    "active=false,facing=west": {
       "model": "lazierae2:block/controller",
       "y": 270
     },
-    "facing=east,is_multiblock=false": {
+    "active=true,facing=west": {
+      "model": "lazierae2:block/controller_active",
+      "y": 270
+    },
+    "active=false,facing=east": {
       "model": "lazierae2:block/controller",
       "y": 90
     },
-    "facing=down,is_multiblock=true": {
-      "model": "lazierae2:block/controller_active",
-      "x": 90
-    },
-    "facing=up,is_multiblock=true": {
-      "model": "lazierae2:block/controller_active",
-      "x": -90
-    },
-    "facing=north,is_multiblock=true": {
-      "model": "lazierae2:block/controller_active"
-    },
-    "facing=south,is_multiblock=true": {
-      "model": "lazierae2:block/controller_active",
-      "y": 180
-    },
-    "facing=west,is_multiblock=true": {
-      "model": "lazierae2:block/controller_active",
-      "y": 270
-    },
-    "facing=east,is_multiblock=true": {
+    "active=true,facing=east": {
       "model": "lazierae2:block/controller_active",
       "y": 90
     }

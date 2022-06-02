@@ -2,7 +2,6 @@ package com.almostreliable.lazierae2.data.client;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.MachineBlock;
-import com.almostreliable.lazierae2.content.assembler.AssemblerBlock;
 import com.almostreliable.lazierae2.content.assembler.ControllerBlock;
 import com.almostreliable.lazierae2.content.assembler.HullBlock;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
@@ -24,7 +23,6 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.function.Function;
 
-import static com.almostreliable.lazierae2.core.Constants.Blocks.WALL_ID;
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
@@ -60,19 +58,14 @@ public class BlockStateData extends BlockStateProvider {
         var active = TextUtil.getRL(f("block/machine/{}", formActiveId(id)));
         var modelInactive = models().orientableWithBottom(id, wall, inactive, top, top);
         var modelActive = models().orientableWithBottom(formActiveId(id), wall, active, top, top);
-        orientedBlock(
-            block,
-            MachineBlock.FACING,
-            state -> state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive
-        );
+        orientedBlock(block, MachineBlock.FACING, state -> getBlockModelBuilder(modelInactive, modelActive, state));
     }
 
     private void registerMachineNoModel(MachineBlock block) {
         var id = GameUtil.getIdFromBlock(block);
         var modelInactive = TextUtil.getRL(f("block/{}", id));
         var modelActive = TextUtil.getRL(f("block/{}", formActiveId(id)));
-        orientedBlock(
-            block,
+        orientedBlock(block,
             MachineBlock.FACING,
             state -> new UncheckedModelFile(
                 state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive)
@@ -86,25 +79,27 @@ public class BlockStateData extends BlockStateProvider {
         BlockModelBuilder modelInactive;
         BlockModelBuilder modelActive;
         if (block instanceof ControllerBlock) {
-            var wall = TextUtil.getRL(f("block/assembler/{}", WALL_ID));
+            var wall = TextUtil.getRL("block/assembler/wall");
             modelInactive = models().orientable(id, wall, inactive, wall);
             modelActive = models().orientable(formActiveId(id), wall, active, wall);
-            orientedBlock(
-                block,
+            orientedBlock(block,
                 ControllerBlock.FACING,
-                state -> state.getValue(AssemblerBlock.IS_MULTIBLOCK).equals(Boolean.TRUE) ? modelActive :
-                    modelInactive,
-                GenericBlock.ACTIVE
+                state -> getBlockModelBuilder(modelInactive, modelActive, state)
             );
         } else {
             modelInactive = models().cubeAll(id, inactive);
             modelActive = models().cubeAll(formActiveId(id), active);
             getVariantBuilder(block).forAllStatesExcept(state -> ConfiguredModel
                 .builder()
-                .modelFile(
-                    state.getValue(AssemblerBlock.IS_MULTIBLOCK).equals(Boolean.TRUE) ? modelActive : modelInactive)
-                .build(), GenericBlock.ACTIVE, HullBlock.HORIZONTAL, HullBlock.VERTICAL);
+                .modelFile(getBlockModelBuilder(modelInactive, modelActive, state))
+                .build(), HullBlock.HORIZONTAL, HullBlock.VERTICAL);
         }
+    }
+
+    private BlockModelBuilder getBlockModelBuilder(
+        BlockModelBuilder modelInactive, BlockModelBuilder modelActive, BlockState state
+    ) {
+        return state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive;
     }
 
     private void orientedBlock(
