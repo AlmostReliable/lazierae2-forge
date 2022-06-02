@@ -76,16 +76,23 @@ public final class Setup {
 
         private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
-        public static final RegistryObject<ProcessorBlock> AGGREGATOR = register(ProcessorBlock::new,
-            ProcessorType.AGGREGATOR
+        public static final RegistryObject<ProcessorBlock> AGGREGATOR = register(AGGREGATOR_ID,
+            ProcessorType.AGGREGATOR,
+            ProcessorBlock::new
         );
-        public static final RegistryObject<ProcessorBlock> ETCHER = register(ProcessorBlock::new, ProcessorType.ETCHER);
-        public static final RegistryObject<ProcessorBlock> GRINDER = register(ProcessorBlock::new,
-            ProcessorType.GRINDER
+        public static final RegistryObject<ProcessorBlock> ETCHER = register(ETCHER_ID,
+            ProcessorType.ETCHER,
+            ProcessorBlock::new
         );
-        public static final RegistryObject<ProcessorBlock> INFUSER = register(ProcessorBlock::new,
-            ProcessorType.INFUSER
+        public static final RegistryObject<ProcessorBlock> GRINDER = register(GRINDER_ID,
+            ProcessorType.GRINDER,
+            ProcessorBlock::new
         );
+        public static final RegistryObject<ProcessorBlock> INFUSER = register(INFUSER_ID,
+            ProcessorType.INFUSER,
+            ProcessorBlock::new
+        );
+
         public static final RegistryObject<RequesterBlock> REQUESTER = register(REQUESTER_ID, RequesterBlock::new);
 
         static {
@@ -103,11 +110,11 @@ public final class Setup {
             return block;
         }
 
-        private static <B extends GenericBlock> RegistryObject<B> register(
-            Function<? super ProcessorType, ? extends B> constructor, ProcessorType processorType
+        private static <E extends Enum<?>, B extends GenericBlock> RegistryObject<B> register(
+            String id, E type, Function<? super E, ? extends B> constructor
         ) {
-            RegistryObject<B> block = REGISTRY.register(processorType.getId(), () -> constructor.apply(processorType));
-            registerBlockItem(processorType.getId(), block);
+            RegistryObject<B> block = REGISTRY.register(id, () -> constructor.apply(type));
+            registerBlockItem(id, block);
             return block;
         }
 
@@ -117,7 +124,7 @@ public final class Setup {
 
         public static final class Assembler {
 
-            public static final RegistryObject<ControllerBlock> CONTROLLER = Blocks.register(CONTROLLER_ID,
+            public static final RegistryObject<ControllerBlock> CONTROLLER = register(CONTROLLER_ID,
                 ControllerBlock::new
             );
 
@@ -142,14 +149,6 @@ public final class Setup {
             public static final RegistryObject<HullBlock> FRAME = register(FRAME_ID, HULL_TYPE.FRAME, HullBlock::new);
 
             private Assembler() {}
-
-            private static <E extends Enum<?>, B extends GenericBlock> RegistryObject<B> register(
-                String id, E type, Function<? super E, ? extends B> constructor
-            ) {
-                RegistryObject<B> block = REGISTRY.register(id, () -> constructor.apply(type));
-                registerBlockItem(id, block);
-                return block;
-            }
 
             private static void init() {
                 // fake init
