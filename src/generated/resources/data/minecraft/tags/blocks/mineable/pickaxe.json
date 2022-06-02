@@ -1,6 +1,13 @@
 {
   "replace": false,
   "values": [
-    "#lazierae2:machines"
+    "#lazierae2:machines",
+    "lazierae2:controller",
+    "lazierae2:accelerator",
+    "lazierae2:tier1",
+    "lazierae2:tier2",
+    "lazierae2:tier3",
+    "lazierae2:wall",
+    "lazierae2:frame"
   ]
 }

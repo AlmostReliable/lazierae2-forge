@@ -3,6 +3,7 @@ package com.almostreliable.lazierae2.data.server;
 import appeng.core.definitions.AEItems;
 import com.almostreliable.lazierae2.core.Setup;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
+import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.almostreliable.lazierae2.core.Setup.Items;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -69,7 +70,15 @@ public final class TagData {
                 Blocks.INFUSER.get(),
                 Blocks.REQUESTER.get()
             );
-            tag(MINEABLE_WITH_PICKAXE).addTag(Setup.Tags.Blocks.MACHINES);
+            tag(MINEABLE_WITH_PICKAXE).addTag(Setup.Tags.Blocks.MACHINES).add(
+                Assembler.CONTROLLER.get(),
+                Assembler.ACCELERATOR.get(),
+                Assembler.TIER_1.get(),
+                Assembler.TIER_2.get(),
+                Assembler.TIER_3.get(),
+                Assembler.WALL.get(),
+                Assembler.FRAME.get()
+            );
         }
     }
 }
