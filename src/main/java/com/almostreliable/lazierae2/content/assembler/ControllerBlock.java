@@ -168,7 +168,7 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
                         return true;
                     }
                     break;
-                case CENTER:
+                case INNER:
                     return currentBlockState.getBlock().equals(Blocks.AIR);
             }
             return false;

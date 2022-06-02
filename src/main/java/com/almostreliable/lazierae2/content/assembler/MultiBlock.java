@@ -32,11 +32,11 @@ final class MultiBlock {
     }
 
     public enum Type {
-        WALL, CORNER, EDGE, CENTER;
+        WALL, CORNER, EDGE, INNER;
 
         static Type of(int i, int j, int k, int size) {
-            if (isCenter(i, j, k, size)) {
-                return CENTER;
+            if (isInner(i, j, k, size)) {
+                return INNER;
             }
             if (isCorner(i, j, k, size)) {
                 return CORNER;
@@ -47,7 +47,7 @@ final class MultiBlock {
             return WALL;
         }
 
-        private static boolean isCenter(int i, int j, int k, int size) {
+        private static boolean isInner(int i, int j, int k, int size) {
             return i > 0 && i < size - 1 && j > 0 && j < size - 1 && k > 0 && k < size - 1;
         }
 
