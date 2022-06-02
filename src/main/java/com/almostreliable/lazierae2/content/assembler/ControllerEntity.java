@@ -2,7 +2,7 @@ package com.almostreliable.lazierae2.content.assembler;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
-import com.almostreliable.lazierae2.content.assembler.MultiBlock.Data;
+import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
 import com.almostreliable.lazierae2.core.Setup.Entities.Assembler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 
 public class ControllerEntity extends GenericEntity {
 
-    private Data data;
+    private MultiBlockData multiBlockData;
 
     public ControllerEntity(BlockPos pos, BlockState state) {
         super(Assembler.ASSEMBLER_CONTROLLER.get(), pos, state);
@@ -24,8 +24,8 @@ public class ControllerEntity extends GenericEntity {
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        if (data != null) {
-            tag.put("data", Data.save(data));
+        if (multiBlockData != null) {
+            tag.put("data", MultiBlockData.save(multiBlockData));
         }
     }
 
@@ -33,7 +33,7 @@ public class ControllerEntity extends GenericEntity {
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         if (tag.contains("data")) {
-            data = Data.load(tag.getCompound("data"));
+            multiBlockData = MultiBlockData.load(tag.getCompound("data"));
         }
     }
 
@@ -48,16 +48,16 @@ public class ControllerEntity extends GenericEntity {
         // TODO: implement
     }
 
-    public boolean isMultiBlockMaster() {
+    boolean isMultiBlockMaster() {
         return getBlockState().getValue(GenericBlock.ACTIVE);
     }
 
     @Nullable
-    public Data getMultiBlockData() {
-        return data;
+    MultiBlockData getMultiBlockData() {
+        return multiBlockData;
     }
 
-    public void setMultiBlockData(@Nullable Data data) {
-        this.data = data;
+    void setMultiBlockData(@Nullable MultiBlockData data) {
+        this.multiBlockData = data;
     }
 }

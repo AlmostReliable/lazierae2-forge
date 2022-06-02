@@ -122,10 +122,6 @@ public class HullBlock extends GenericBlock {
             .setValue(GenericBlock.ACTIVE, true);
     }
 
-    public boolean isUsableForMultiBlock(BlockState state) {
-        return state.getBlock() instanceof HullBlock && !state.getValue(GenericBlock.ACTIVE);
-    }
-
     protected OptionalDirection getVerticalOffset(BlockPos blockPos, BlockPos lookPos) {
         if (lookPos.getY() == blockPos.getY()) {
             return OptionalDirection.NONE;

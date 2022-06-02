@@ -15,7 +15,7 @@ final class MultiBlock {
     private MultiBlock() {}
 
     static boolean iterateMultiBlock(
-        Data data, IterateCallback callback
+        MultiBlockData data, IterateCallback callback
     ) {
         for (var i = 0; i < data.size(); i++) {
             for (var j = 0; j < data.size(); j++) {
@@ -106,10 +106,10 @@ final class MultiBlock {
         }
     }
 
-    public record Data(int size, BlockPos startPosition, IterateDirections itDirs) {
+    public record MultiBlockData(int size, BlockPos startPosition, IterateDirections itDirs) {
 
         @Nullable
-        public static Data of(
+        public static MultiBlockData of(
             BlockPos originPos, IterateDirections itDirs, int minSize, int maxSize,
             Predicate<? super BlockPos> edgeCheck
         ) {
@@ -134,19 +134,19 @@ final class MultiBlock {
                 negativeColumnResult.blockPos()
             );
 
-            return new Data(size, startPosition, itDirs);
+            return new MultiBlockData(size, startPosition, itDirs);
         }
 
-        static Data load(CompoundTag tag) {
+        static MultiBlockData load(CompoundTag tag) {
             var size = tag.getInt("size");
             var startPosition = NbtUtils.readBlockPos(tag);
             var mDir = Direction.valueOf(tag.getString("depthDirection"));
             var rDir = Direction.valueOf(tag.getString("rowDirection"));
             var cDir = Direction.valueOf(tag.getString("columnDirection"));
-            return new Data(size, startPosition, new IterateDirections(mDir, rDir, cDir));
+            return new MultiBlockData(size, startPosition, new IterateDirections(mDir, rDir, cDir));
         }
 
-        static CompoundTag save(Data data) {
+        static CompoundTag save(MultiBlockData data) {
             var tag = new CompoundTag();
             tag.putInt("size", data.size);
             NbtUtils.writeBlockPos(data.startPosition);

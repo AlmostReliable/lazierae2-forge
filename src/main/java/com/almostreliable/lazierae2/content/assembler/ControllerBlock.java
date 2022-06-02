@@ -2,8 +2,8 @@ package com.almostreliable.lazierae2.content.assembler;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.assembler.HullBlock.HULL_TYPE;
-import com.almostreliable.lazierae2.content.assembler.MultiBlock.Data;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirections;
+import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
 import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
@@ -85,14 +85,9 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         return tryCreateMultiBlock(state, level, pos, blockEntity);
     }
 
-    public boolean isUsableForWall(BlockState state) {
-        return state.getBlock() instanceof HullBlock hull && hull.isUsableForMultiBlock(state) &&
-            hull.type == HULL_TYPE.WALL;
-    }
-
-    public boolean isUsableForFrame(BlockState state) {
-        return state.getBlock() instanceof HullBlock hull && hull.isUsableForMultiBlock(state) &&
-            hull.type == HULL_TYPE.FRAME;
+    public boolean isUsableFor(HULL_TYPE type, BlockState state) {
+        return state.getBlock() instanceof HullBlock hull &&
+            state.getValue(GenericBlock.ACTIVE).equals(Boolean.FALSE) && hull.type == type;
     }
 
     @Nullable
@@ -126,6 +121,9 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
                         level.setBlock(pos, Assembler.FRAME.get().defaultBlockState(), 2 | 16);
                     }
                 }
+                case INNER -> {
+                    // TODO: if not air, invalidate pattern holders
+                }
             }
             return true;
         });
@@ -137,11 +135,12 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         BlockState state, Level level, BlockPos pos, ControllerEntity entity
     ) {
         var itDirs = IterateDirections.ofFacing(state.getValue(FACING));
-        var multiBlockData = Data.of(pos,
+        var multiBlockData = MultiBlockData.of(
+            pos,
             itDirs,
             MIN_SIZE,
             MAX_SIZE,
-            potentialFrame -> isUsableForFrame(level.getBlockState(potentialFrame))
+            potentialFrame -> isUsableFor(HULL_TYPE.FRAME, level.getBlockState(potentialFrame))
         );
 
         if (multiBlockData == null) {
@@ -157,13 +156,13 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
             var currentBlockState = level.getBlockState(currentPos);
             switch (type) {
                 case WALL:
-                    if (isUsableForWall(currentBlockState)) {
+                    if (isUsableFor(HULL_TYPE.WALL, currentBlockState)) {
                         walls.add(currentPos);
                         return true;
                     }
                     break;
                 case CORNER, EDGE:
-                    if (isUsableForFrame(currentBlockState)) {
+                    if (isUsableFor(HULL_TYPE.FRAME, currentBlockState)) {
                         edges.add(currentPos);
                         return true;
                     }
