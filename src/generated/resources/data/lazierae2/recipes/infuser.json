@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "faf",
-    "opo",
-    "ece"
+    "oro",
+    "pcp"
   ],
   "key": {
     "f": {
@@ -15,10 +15,10 @@
     "o": {
       "item": "minecraft:observer"
     },
-    "p": {
-      "tag": "lazierae2:processors/parallel"
+    "r": {
+      "tag": "forge:gems/resonating"
     },
-    "e": {
+    "p": {
       "item": "ae2:engineering_processor"
     },
     "c": {

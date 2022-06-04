@@ -84,13 +84,13 @@ public class RecipeData extends RecipeProvider {
         ShapedRecipeBuilder
             .shaped(Blocks.INFUSER.get())
             .pattern("faf")
-            .pattern("opo")
-            .pattern("ece")
+            .pattern("oro")
+            .pattern("pcp")
             .define('f', AEItems.FLUIX_PEARL)
             .define('a', AEBlocks.MOLECULAR_ASSEMBLER)
             .define('o', Items.OBSERVER)
-            .define('p', Setup.Tags.Items.PROCESSOR_PARALLEL)
-            .define('e', AEItems.ENGINEERING_PROCESSOR)
+            .define('r', Setup.Tags.Items.GEMS_RESONATING)
+            .define('p', AEItems.ENGINEERING_PROCESSOR)
             .define('c', AEBlocks.CONDENSER)
             .unlockedBy(HAS_CONDITION, RecipeProvider.has(Setup.Tags.Items.PROCESSOR_PARALLEL))
             .save(c);
