@@ -1,6 +1,5 @@
 package com.almostreliable.lazierae2.content.assembler;
 
-import com.almostreliable.lazierae2.content.GenericBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -13,7 +12,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 
-public class PatternHolderBlock extends GenericBlock implements EntityBlock {
+public class PatternHolderBlock extends AssemblerBlock implements EntityBlock {
 
     private final HOLDER_TIER tier;
 

@@ -4,6 +4,7 @@ import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.assembler.HullBlock.HULL_TYPE;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirections;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
+import com.almostreliable.lazierae2.content.assembler.MultiBlock.Type;
 import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
@@ -14,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -95,11 +95,17 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             var state = level.getBlockState(pos);
             if (state.isAir()) return true;
 
-            switch (type) {
-                case WALL -> level.setBlock(pos, Assembler.WALL.get().defaultBlockState(), 2 | 16);
-                case CORNER, EDGE -> level.setBlock(pos, Assembler.FRAME.get().defaultBlockState(), 2 | 16);
-                case INNER -> {
-                    // TODO: invalidate pattern holders
+            if (type == Type.INNER) {
+                if (level.getBlockState(pos).getBlock() instanceof PatternHolderBlock block) {
+                    level.setBlock(pos, block.defaultBlockState(), 2 | 16);
+                } else {
+                    throw new IllegalStateException("Block at " + pos + " is not a PatternHolderBlock");
+                }
+            } else {
+                if (level.getBlockState(pos).getBlock() instanceof HullBlock block) {
+                    level.setBlock(pos, block.defaultBlockState(), 2 | 16);
+                } else {
+                    throw new IllegalStateException("Block at " + pos + " is not a HullBlock");
                 }
             }
             return true;
@@ -129,8 +135,9 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         Set<BlockPos> edges = new HashSet<>();
         var result = MultiBlock.iterateMultiBlock(multiBlockData, (type, currentPos) -> {
             if (currentPos.equals(pos)) return true;
-
             var currentBlockState = level.getBlockState(currentPos);
+            if (!(currentBlockState.getBlock() instanceof AssemblerBlock)) return false;
+
             switch (type) {
                 case WALL:
                     if (HULL_TYPE.WALL.validForMultiBlock(currentBlockState)) {
@@ -145,7 +152,9 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
                     }
                     break;
                 case INNER:
-                    return currentBlockState.getBlock().equals(Blocks.AIR);
+                    return currentBlockState.isAir() ||
+                        (currentBlockState.getBlock() instanceof PatternHolderBlock holder &&
+                            !holder.isMultiBlock(currentBlockState));
             }
             return false;
         });
