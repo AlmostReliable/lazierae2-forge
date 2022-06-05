@@ -130,10 +130,6 @@ public class HullBlock extends AssemblerBlock {
             horizontal.relative(mutablePos);
             vertical.relative(mutablePos);
             var relativeState = level.getBlockState(mutablePos);
-
-            if (relativeState.equals(state)) {
-                throw new IllegalStateException("Found self");
-            }
             if (relativeState.getBlock() instanceof ControllerBlock) {
                 return mutablePos;
             }

@@ -12,7 +12,6 @@ final class MultiBlock {
 
     static final int MAX_SIZE = 13;
     private static final int MIN_SIZE = 5;
-    private static final int INCLUDED_CONTROLLER_POS = 1;
 
     private MultiBlock() {}
 
@@ -116,15 +115,14 @@ final class MultiBlock {
             var positiveRowResult = findEdge(originPos, itDirs.rowDirection(), edgeCheck);
             var negativeColumnResult = findEdge(originPos, itDirs.columnDirection().getOpposite(), edgeCheck);
             var positiveColumnResult = findEdge(originPos, itDirs.columnDirection(), edgeCheck);
-
             if (negativeRowResult == null || positiveRowResult == null || negativeColumnResult == null ||
                 positiveColumnResult == null) {
                 return null;
             }
 
-            var size = negativeRowResult.offset() + INCLUDED_CONTROLLER_POS + positiveRowResult.offset();
-            if (size != negativeColumnResult.offset() + INCLUDED_CONTROLLER_POS + positiveColumnResult.offset() ||
-                size < MIN_SIZE) {
+            var sizeRow = negativeRowResult.controllerOffset() + positiveRowResult.controllerOffset() + 1;
+            var sizeColumn = negativeColumnResult.controllerOffset() + positiveColumnResult.controllerOffset() + 1;
+            if (sizeRow != sizeColumn || sizeRow < MIN_SIZE) {
                 return null;
             }
 
@@ -132,8 +130,7 @@ final class MultiBlock {
                 negativeRowResult.blockPos(),
                 negativeColumnResult.blockPos()
             );
-
-            return new MultiBlockData(size, startPosition, itDirs);
+            return new MultiBlockData(sizeRow, startPosition, itDirs);
         }
 
         static MultiBlockData load(CompoundTag tag) {
@@ -159,10 +156,10 @@ final class MultiBlock {
         private static SizeCheckResult findEdge(
             BlockPos fromPos, Direction direction, Predicate<? super BlockPos> edgeCheck
         ) {
-            for (var i = 1; i < MAX_SIZE; i++) {
-                var curPos = fromPos.relative(direction, i);
+            for (var controllerOffset = 1; controllerOffset < MAX_SIZE; controllerOffset++) {
+                var curPos = fromPos.relative(direction, controllerOffset);
                 if (edgeCheck.test(curPos)) {
-                    return new SizeCheckResult(curPos, i);
+                    return new SizeCheckResult(curPos, controllerOffset);
                 }
             }
             return null;
@@ -174,6 +171,6 @@ final class MultiBlock {
             return blockPos.offset(hPos.offset(vPos));
         }
 
-        private record SizeCheckResult(BlockPos blockPos, int offset) {}
+        private record SizeCheckResult(BlockPos blockPos, int controllerOffset) {}
     }
 }

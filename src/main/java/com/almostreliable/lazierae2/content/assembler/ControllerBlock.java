@@ -106,6 +106,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         });
 
         entity.setMultiBlockData(null);
+        if (entity.getBlockPos().equals(origin)) return;
         level.setBlock(entity.getBlockPos(), entity.getBlockState().setValue(GenericBlock.ACTIVE, false), 3);
     }
 
