@@ -1,13 +1,13 @@
 package com.almostreliable.lazierae2.content.assembler;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
+import com.almostreliable.lazierae2.content.assembler.ControllerBlock.ControllerState;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -56,13 +56,13 @@ public class HullBlock extends GenericBlock {
     @Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.isAir()) {
-            var controllerTuple = findControllerBlockState(level,
+            var controllerState = findControllerState(level,
                 pos,
                 oldState.getValue(HORIZONTAL),
                 oldState.getValue(VERTICAL)
             );
-            if (controllerTuple != null && controllerTuple.getA().getBlock() instanceof ControllerBlock cb) {
-                cb.invalidate(level, controllerTuple.getA(), controllerTuple.getB());
+            if (controllerState != null && controllerState.state().getBlock() instanceof ControllerBlock cb) {
+                cb.invalidate(level, controllerState.state(), controllerState.pos());
             }
         }
     }
@@ -79,14 +79,14 @@ public class HullBlock extends GenericBlock {
         var horizontalDirection = state.getValue(HORIZONTAL);
         var verticalDirection = state.getValue(VERTICAL);
 
-        var found = findControllerBlockState(level, pos, horizontalDirection, verticalDirection);
+        var controllerState = findControllerState(level, pos, horizontalDirection, verticalDirection);
         // TODO open gui
 
         return InteractionResult.CONSUME;
     }
 
     @Nullable
-    public Tuple<BlockState, BlockPos> findControllerBlockState(
+    public ControllerState findControllerState(
         Level level, BlockPos pos, OptionalDirection horizontalDirection, OptionalDirection verticalDirection
     ) {
         if (horizontalDirection == OptionalDirection.NONE && verticalDirection == OptionalDirection.NONE) {
@@ -100,13 +100,13 @@ public class HullBlock extends GenericBlock {
 
             var relativeBlockState = level.getBlockState(mutable);
             if (relativeBlockState.getBlock() instanceof ControllerBlock) {
-                return new Tuple<>(relativeBlockState, mutable.immutable());
+                return new ControllerState(relativeBlockState, mutable.immutable());
             }
 
             if (relativeBlockState.getBlock() instanceof HullBlock) {
                 var horizontal = relativeBlockState.getValue(HORIZONTAL);
                 var vertical = relativeBlockState.getValue(VERTICAL);
-                return findControllerBlockState(level, mutable, horizontal, vertical);
+                return findControllerState(level, mutable, horizontal, vertical);
             }
         }
         return null;

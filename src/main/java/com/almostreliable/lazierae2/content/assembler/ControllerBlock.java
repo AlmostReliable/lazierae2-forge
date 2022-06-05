@@ -190,4 +190,6 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         entity.setMultiBlockData(multiBlockData);
         return InteractionResult.SUCCESS;
     }
+
+    record ControllerState(BlockState state, BlockPos pos) {}
 }
