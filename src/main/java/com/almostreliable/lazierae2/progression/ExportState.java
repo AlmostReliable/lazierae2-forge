@@ -12,7 +12,7 @@ public class ExportState implements IProgressionState {
 
     @Override
     public IProgressionState handle(RequesterEntity owner, int slot) {
-        var storage = owner.getStorageManager().get(0);
+        var storage = owner.getStorageManager().get(slot);
         if (storage.getItemType() == null) {
             return IProgressionState.IDLE;
         }
