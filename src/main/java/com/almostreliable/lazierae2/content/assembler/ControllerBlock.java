@@ -114,7 +114,8 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         BlockState state, Level level, BlockPos pos, ControllerEntity entity
     ) {
         var itDirs = IterateDirections.of(state.getValue(FACING));
-        var multiBlockData = MultiBlockData.of(pos,
+        var multiBlockData = MultiBlockData.of(
+            pos,
             itDirs,
             potentialFrame -> HULL_TYPE.FRAME.validForMultiBlock(level.getBlockState(potentialFrame))
         );

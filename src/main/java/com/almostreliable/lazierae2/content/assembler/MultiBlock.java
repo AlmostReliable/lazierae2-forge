@@ -82,17 +82,20 @@ final class MultiBlock {
         }
 
         private BlockPos relative(BlockPos blockPos, int x, int y, int z) {
-            var relativeX = calculatePosition(blockPos.getX(),
+            var relativeX = calculatePosition(
+                blockPos.getX(),
                 depthDirection.getStepX() * x,
                 rowDirection.getStepX() * y,
                 columnDirection.getStepX() * z
             );
-            var relativeY = calculatePosition(blockPos.getY(),
+            var relativeY = calculatePosition(
+                blockPos.getY(),
                 depthDirection.getStepY() * x,
                 rowDirection.getStepY() * y,
                 columnDirection.getStepY() * z
             );
-            var relativeZ = calculatePosition(blockPos.getZ(),
+            var relativeZ = calculatePosition(
+                blockPos.getZ(),
                 depthDirection.getStepZ() * x,
                 rowDirection.getStepZ() * y,
                 columnDirection.getStepZ() * z
@@ -126,7 +129,8 @@ final class MultiBlock {
                 return null;
             }
 
-            var startPosition = getStartPosition(originPos,
+            var startPosition = getStartPosition(
+                originPos,
                 negativeRowResult.blockPos(),
                 negativeColumnResult.blockPos()
             );

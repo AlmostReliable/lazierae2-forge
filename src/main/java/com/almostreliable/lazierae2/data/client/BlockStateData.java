@@ -65,7 +65,8 @@ public class BlockStateData extends BlockStateProvider {
         var id = GameUtil.getIdFromBlock(block);
         var modelInactive = TextUtil.getRL(f("block/{}", id));
         var modelActive = TextUtil.getRL(f("block/{}", formActiveId(id)));
-        orientedBlock(block,
+        orientedBlock(
+            block,
             MachineBlock.FACING,
             state -> new UncheckedModelFile(
                 state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive)
@@ -82,7 +83,8 @@ public class BlockStateData extends BlockStateProvider {
             var wall = TextUtil.getRL("block/assembler/wall");
             modelInactive = models().orientable(id, wall, inactive, wall);
             modelActive = models().orientable(formActiveId(id), wall, active, wall);
-            orientedBlock(block,
+            orientedBlock(
+                block,
                 ControllerBlock.FACING,
                 state -> getBlockModelBuilder(modelInactive, modelActive, state)
             );

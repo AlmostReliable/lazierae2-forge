@@ -76,19 +76,23 @@ public final class Setup {
 
         private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
-        public static final RegistryObject<ProcessorBlock> AGGREGATOR = register(AGGREGATOR_ID,
+        public static final RegistryObject<ProcessorBlock> AGGREGATOR = register(
+            AGGREGATOR_ID,
             ProcessorType.AGGREGATOR,
             ProcessorBlock::new
         );
-        public static final RegistryObject<ProcessorBlock> ETCHER = register(ETCHER_ID,
+        public static final RegistryObject<ProcessorBlock> ETCHER = register(
+            ETCHER_ID,
             ProcessorType.ETCHER,
             ProcessorBlock::new
         );
-        public static final RegistryObject<ProcessorBlock> GRINDER = register(GRINDER_ID,
+        public static final RegistryObject<ProcessorBlock> GRINDER = register(
+            GRINDER_ID,
             ProcessorType.GRINDER,
             ProcessorBlock::new
         );
-        public static final RegistryObject<ProcessorBlock> INFUSER = register(INFUSER_ID,
+        public static final RegistryObject<ProcessorBlock> INFUSER = register(
+            INFUSER_ID,
             ProcessorType.INFUSER,
             ProcessorBlock::new
         );
@@ -124,23 +128,28 @@ public final class Setup {
 
         public static final class Assembler {
 
-            public static final RegistryObject<ControllerBlock> CONTROLLER = register(CONTROLLER_ID,
+            public static final RegistryObject<ControllerBlock> CONTROLLER = register(
+                CONTROLLER_ID,
                 ControllerBlock::new
             );
 
-            public static final RegistryObject<PatternHolderBlock> TIER_1 = register(TIER_1_ID,
+            public static final RegistryObject<PatternHolderBlock> TIER_1 = register(
+                TIER_1_ID,
                 HOLDER_TIER.TIER_1,
                 PatternHolderBlock::new
             );
-            public static final RegistryObject<PatternHolderBlock> TIER_2 = register(TIER_2_ID,
+            public static final RegistryObject<PatternHolderBlock> TIER_2 = register(
+                TIER_2_ID,
                 HOLDER_TIER.TIER_2,
                 PatternHolderBlock::new
             );
-            public static final RegistryObject<PatternHolderBlock> TIER_3 = register(TIER_3_ID,
+            public static final RegistryObject<PatternHolderBlock> TIER_3 = register(
+                TIER_3_ID,
                 HOLDER_TIER.TIER_3,
                 PatternHolderBlock::new
             );
-            public static final RegistryObject<PatternHolderBlock> ACCELERATOR = register(ACCELERATOR_ID,
+            public static final RegistryObject<PatternHolderBlock> ACCELERATOR = register(
+                ACCELERATOR_ID,
                 HOLDER_TIER.ACCELERATOR,
                 PatternHolderBlock::new
             );
@@ -215,7 +224,8 @@ public final class Setup {
             String id, BlockEntitySupplier<E> entity, RegistryObject<B>... blocks
         ) {
             // noinspection ConstantConditions
-            return REGISTRY.register(id,
+            return REGISTRY.register(
+                id,
                 () -> Builder
                     .of(entity, Arrays.stream(blocks).map(RegistryObject::get).toArray(GenericBlock[]::new))
                     .build(null)
@@ -230,7 +240,8 @@ public final class Setup {
                 // fake init
             }
 
-            public static final RegistryObject<BlockEntityType<ControllerEntity>> ASSEMBLER_CONTROLLER = register(CONTROLLER_ID,
+            public static final RegistryObject<BlockEntityType<ControllerEntity>> ASSEMBLER_CONTROLLER = register(
+                CONTROLLER_ID,
                 ControllerEntity::new,
                 Blocks.Assembler.CONTROLLER
             );
@@ -245,7 +256,8 @@ public final class Setup {
             );
         }
 
-        public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(PROCESSOR_ID,
+        public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(
+            PROCESSOR_ID,
             ProcessorEntity::new,
             Blocks.AGGREGATOR,
             Blocks.GRINDER,
@@ -253,7 +265,8 @@ public final class Setup {
             Blocks.ETCHER
         );
 
-        public static final RegistryObject<BlockEntityType<RequesterEntity>> REQUESTER = register(REQUESTER_ID,
+        public static final RegistryObject<BlockEntityType<RequesterEntity>> REQUESTER = register(
+            REQUESTER_ID,
             RequesterEntity::new,
             Blocks.REQUESTER
         );
@@ -264,7 +277,8 @@ public final class Setup {
         private static final DeferredRegister<MenuType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
 
-        public static final RegistryObject<MenuType<ProcessorMenu>> PROCESSOR = register(PROCESSOR_ID,
+        public static final RegistryObject<MenuType<ProcessorMenu>> PROCESSOR = register(
+            PROCESSOR_ID,
             (windowId, inventory, data) -> {
                 var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
                 if (!(entity instanceof ProcessorEntity processor)) {
@@ -274,7 +288,8 @@ public final class Setup {
             }
         );
 
-        public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register(REQUESTER_ID,
+        public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register(
+            REQUESTER_ID,
             (windowId, inventory, data) -> {
                 var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
                 if (!(entity instanceof RequesterEntity requester)) {

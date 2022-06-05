@@ -192,7 +192,8 @@ public class HullBlock extends AssemblerBlock {
 
     private static final class OptionalDirectionProperty extends EnumProperty<OptionalDirection> {
 
-        private static final OptionalDirectionProperty HORIZONTAL_PROP = create("horizontal",
+        private static final OptionalDirectionProperty HORIZONTAL_PROP = create(
+            "horizontal",
             Direction.NORTH,
             Direction.EAST,
             Direction.SOUTH,
