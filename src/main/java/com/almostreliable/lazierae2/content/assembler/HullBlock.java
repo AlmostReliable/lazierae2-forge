@@ -1,7 +1,6 @@
 package com.almostreliable.lazierae2.content.assembler;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
-import com.almostreliable.lazierae2.content.assembler.ControllerBlock.ControllerState;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;
@@ -25,7 +24,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-public class HullBlock extends GenericBlock {
+public class HullBlock extends AssemblerBlock {
 
     public static final OptionalDirectionProperty HORIZONTAL = OptionalDirectionProperty.HORIZONTAL_PROP;
     public static final OptionalDirectionProperty VERTICAL = OptionalDirectionProperty.VERTICAL_PROP;
@@ -55,12 +54,14 @@ public class HullBlock extends GenericBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.isAir()) {
-            var controllerState = findControllerState(level, pos, oldState);
-            if (controllerState != null && controllerState.state().getBlock() instanceof ControllerBlock cb) {
-                cb.invalidate(level, controllerState.state(), controllerState.pos());
+        if (isMultiBlock(oldState) && newState.isAir()) {
+            var controllerPos = findControllerPos(level, pos, oldState);
+            if (controllerPos != null && level.getBlockEntity(controllerPos) instanceof ControllerEntity entity &&
+                entity.getBlockState().getBlock() instanceof ControllerBlock controller) {
+                controller.destroyMultiBlock(level, entity, pos);
             }
         }
+        super.onRemove(oldState, level, pos, newState, isMoving);
     }
 
     @SuppressWarnings("deprecation")
@@ -72,7 +73,7 @@ public class HullBlock extends GenericBlock {
             return super.use(state, level, pos, player, hand, hit);
         }
 
-        var controllerState = findControllerState(level, pos, state);
+        var controllerState = findControllerPos(level, pos, state);
         // TODO open gui
 
         return InteractionResult.CONSUME;
@@ -113,7 +114,7 @@ public class HullBlock extends GenericBlock {
 
     @SuppressWarnings("ChainOfInstanceofChecks")
     @Nullable
-    private ControllerState findControllerState(
+    private BlockPos findControllerPos(
         Level level, BlockPos pos, BlockState state
     ) {
         var horizontal = state.getValue(HORIZONTAL);
@@ -132,17 +133,22 @@ public class HullBlock extends GenericBlock {
                 throw new IllegalStateException("Found self");
             }
             if (relativeState.getBlock() instanceof ControllerBlock) {
-                return new ControllerState(relativeState, mutablePos);
+                return mutablePos;
             }
             if (relativeState.getBlock() instanceof HullBlock) {
-                return findControllerState(level, mutablePos, relativeState);
+                return findControllerPos(level, mutablePos, relativeState);
             }
         }
         return null;
     }
 
     public enum HULL_TYPE {
-        WALL, FRAME
+        WALL, FRAME;
+
+        public boolean isValid(BlockState state) {
+            return state.getBlock() instanceof HullBlock hull &&
+                state.getValue(GenericBlock.ACTIVE).equals(Boolean.FALSE) && hull.type == this;
+        }
     }
 
     private enum OptionalDirection implements StringRepresentable {

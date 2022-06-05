@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ControllerBlock extends GenericBlock implements EntityBlock {
+public class ControllerBlock extends AssemblerBlock implements EntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     static final int MAX_SIZE = 13;
@@ -56,12 +56,10 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if ((newState.isAir() ||
-            (newState.getBlock() instanceof ControllerBlock && !newState.getValue(GenericBlock.ACTIVE))) &&
-            level.getBlockEntity(pos) instanceof ControllerEntity blockEntity) {
-            destroyMultiBlock(level, blockEntity);
+        if (isMultiBlock(oldState) && newState.isAir() &&
+            level.getBlockEntity(pos) instanceof ControllerEntity entity) {
+            destroyMultiBlock(level, entity, pos);
         }
-
         super.onRemove(oldState, level, pos, newState, isMoving);
     }
 
@@ -73,21 +71,15 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         if (level.isClientSide() || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
             return super.use(state, level, pos, player, hand, hit);
         }
-
-        if (!(level.getBlockEntity(pos) instanceof ControllerEntity blockEntity)) {
+        if (!(level.getBlockEntity(pos) instanceof ControllerEntity entity)) {
             return InteractionResult.FAIL;
         }
 
-        if (blockEntity.isMultiBlockMaster()) {
+        // TODO: check if the multiblock is already formed and open the gui, otherwise create mb
+        if (entity.isMultiBlockMaster()) {
             return InteractionResult.PASS;
         }
-
-        return tryCreateMultiBlock(state, level, pos, blockEntity);
-    }
-
-    public boolean isUsableFor(HULL_TYPE type, BlockState state) {
-        return state.getBlock() instanceof HullBlock hull &&
-            state.getValue(GenericBlock.ACTIVE).equals(Boolean.FALSE) && hull.type == type;
+        return formMultiBlock(state, level, pos, entity);
     }
 
     @Nullable
@@ -96,51 +88,39 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         return new ControllerEntity(pos, state);
     }
 
-    public void invalidate(Level level, BlockState state, BlockPos pos) {
-        if (state.getBlock() instanceof ControllerBlock && state.getValue(GenericBlock.ACTIVE).equals(true)) {
-            level.setBlock(pos, state.setValue(GenericBlock.ACTIVE, false), 3);
-        }
-
-        throw new IllegalStateException("Controller is not valid");
-    }
-
-    private void destroyMultiBlock(Level level, ControllerEntity entity) {
+    void destroyMultiBlock(Level level, ControllerEntity entity, BlockPos origin) {
         var data = entity.getMultiBlockData();
         if (data == null) return;
+
         MultiBlock.iterateMultiBlock(data, (type, pos) -> {
+            if (pos.equals(origin)) return true;
+            var state = level.getBlockState(pos);
+            if (state.isAir()) return true;
+
             switch (type) {
-                case WALL -> {
-                    var blockState = level.getBlockState(pos);
-                    if (!blockState.isAir()) {
-                        level.setBlock(pos, Assembler.WALL.get().defaultBlockState(), 2 | 16);
-                    }
-                }
-                case CORNER, EDGE -> {
-                    var blockState = level.getBlockState(pos);
-                    if (!blockState.isAir()) {
-                        level.setBlock(pos, Assembler.FRAME.get().defaultBlockState(), 2 | 16);
-                    }
-                }
+                case WALL -> level.setBlock(pos, Assembler.WALL.get().defaultBlockState(), 2 | 16);
+                case CORNER, EDGE -> level.setBlock(pos, Assembler.FRAME.get().defaultBlockState(), 2 | 16);
                 case INNER -> {
-                    // TODO: if not air, invalidate pattern holders
+                    // TODO: invalidate pattern holders
                 }
             }
             return true;
         });
+
         entity.setMultiBlockData(null);
         level.setBlock(entity.getBlockPos(), entity.getBlockState().setValue(GenericBlock.ACTIVE, false), 3);
     }
 
-    private InteractionResult tryCreateMultiBlock(
+    private InteractionResult formMultiBlock(
         BlockState state, Level level, BlockPos pos, ControllerEntity entity
     ) {
-        var itDirs = IterateDirections.ofFacing(state.getValue(FACING));
+        var itDirs = IterateDirections.of(state.getValue(FACING));
         var multiBlockData = MultiBlockData.of(
             pos,
             itDirs,
             MIN_SIZE,
             MAX_SIZE,
-            potentialFrame -> isUsableFor(HULL_TYPE.FRAME, level.getBlockState(potentialFrame))
+            potentialFrame -> HULL_TYPE.FRAME.isValid(level.getBlockState(potentialFrame))
         );
 
         if (multiBlockData == null) {
@@ -156,13 +136,13 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
             var currentBlockState = level.getBlockState(currentPos);
             switch (type) {
                 case WALL:
-                    if (isUsableFor(HULL_TYPE.WALL, currentBlockState)) {
+                    if (HULL_TYPE.WALL.isValid(currentBlockState)) {
                         walls.add(currentPos);
                         return true;
                     }
                     break;
                 case CORNER, EDGE:
-                    if (isUsableFor(HULL_TYPE.FRAME, currentBlockState)) {
+                    if (HULL_TYPE.FRAME.isValid(currentBlockState)) {
                         edges.add(currentPos);
                         return true;
                     }
@@ -190,6 +170,4 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         entity.setMultiBlockData(multiBlockData);
         return InteractionResult.SUCCESS;
     }
-
-    record ControllerState(BlockState state, BlockPos pos) {}
 }
