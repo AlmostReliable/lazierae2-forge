@@ -147,9 +147,8 @@ public class HullBlock extends AssemblerBlock {
     public enum HULL_TYPE {
         WALL, FRAME;
 
-        public boolean isValid(BlockState state) {
-            return state.getBlock() instanceof HullBlock hull &&
-                state.getValue(GenericBlock.ACTIVE).equals(Boolean.FALSE) && hull.type == this;
+        public boolean validForMultiBlock(BlockState state) {
+            return state.getBlock() instanceof HullBlock hull && !hull.isMultiBlock(state) && hull.type == this;
         }
     }
 

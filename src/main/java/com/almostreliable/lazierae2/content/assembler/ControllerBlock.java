@@ -115,7 +115,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         var itDirs = IterateDirections.of(state.getValue(FACING));
         var multiBlockData = MultiBlockData.of(pos,
             itDirs,
-            potentialFrame -> HULL_TYPE.FRAME.isValid(level.getBlockState(potentialFrame))
+            potentialFrame -> HULL_TYPE.FRAME.validForMultiBlock(level.getBlockState(potentialFrame))
         );
 
         if (multiBlockData == null) {
@@ -131,13 +131,13 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             var currentBlockState = level.getBlockState(currentPos);
             switch (type) {
                 case WALL:
-                    if (HULL_TYPE.WALL.isValid(currentBlockState)) {
+                    if (HULL_TYPE.WALL.validForMultiBlock(currentBlockState)) {
                         walls.add(currentPos);
                         return true;
                     }
                     break;
                 case CORNER, EDGE:
-                    if (HULL_TYPE.FRAME.isValid(currentBlockState)) {
+                    if (HULL_TYPE.FRAME.validForMultiBlock(currentBlockState)) {
                         edges.add(currentPos);
                         return true;
                     }
