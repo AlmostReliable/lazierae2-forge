@@ -56,11 +56,7 @@ public class HullBlock extends GenericBlock {
     @Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (newState.isAir()) {
-            var controllerState = findControllerState(level,
-                pos,
-                oldState.getValue(HORIZONTAL),
-                oldState.getValue(VERTICAL)
-            );
+            var controllerState = findControllerState(level, pos, oldState);
             if (controllerState != null && controllerState.state().getBlock() instanceof ControllerBlock cb) {
                 cb.invalidate(level, controllerState.state(), controllerState.pos());
             }
@@ -76,40 +72,10 @@ public class HullBlock extends GenericBlock {
             return super.use(state, level, pos, player, hand, hit);
         }
 
-        var horizontalDirection = state.getValue(HORIZONTAL);
-        var verticalDirection = state.getValue(VERTICAL);
-
-        var controllerState = findControllerState(level, pos, horizontalDirection, verticalDirection);
+        var controllerState = findControllerState(level, pos, state);
         // TODO open gui
 
         return InteractionResult.CONSUME;
-    }
-
-    @Nullable
-    public ControllerState findControllerState(
-        Level level, BlockPos pos, OptionalDirection horizontalDirection, OptionalDirection verticalDirection
-    ) {
-        if (horizontalDirection == OptionalDirection.NONE && verticalDirection == OptionalDirection.NONE) {
-            return null;
-        }
-
-        var mutable = pos.mutable();
-        for (var i = 0; i < ControllerBlock.MAX_SIZE; i++) {
-            horizontalDirection.relative(mutable);
-            verticalDirection.relative(mutable);
-
-            var relativeBlockState = level.getBlockState(mutable);
-            if (relativeBlockState.getBlock() instanceof ControllerBlock) {
-                return new ControllerState(relativeBlockState, mutable.immutable());
-            }
-
-            if (relativeBlockState.getBlock() instanceof HullBlock) {
-                var horizontal = relativeBlockState.getValue(HORIZONTAL);
-                var vertical = relativeBlockState.getValue(VERTICAL);
-                return findControllerState(level, mutable, horizontal, vertical);
-            }
-        }
-        return null;
     }
 
     public BlockState createDefaultMultiBlockState(BlockPos blockPos, BlockPos lookPos) {
@@ -148,6 +114,36 @@ public class HullBlock extends GenericBlock {
         }
 
         return OptionalDirection.WEST;
+    }
+
+    @SuppressWarnings("ChainOfInstanceofChecks")
+    @Nullable
+    private ControllerState findControllerState(
+        Level level, BlockPos pos, BlockState state
+    ) {
+        var horizontal = state.getValue(HORIZONTAL);
+        var vertical = state.getValue(VERTICAL);
+        if (horizontal == OptionalDirection.NONE && vertical == OptionalDirection.NONE) {
+            return null;
+        }
+
+        var mutablePos = pos.mutable();
+        for (var i = 0; i < ControllerBlock.MAX_SIZE; i++) {
+            horizontal.relative(mutablePos);
+            vertical.relative(mutablePos);
+            var relativeState = level.getBlockState(mutablePos);
+
+            if (relativeState.equals(state)) {
+                throw new IllegalStateException("Found self");
+            }
+            if (relativeState.getBlock() instanceof ControllerBlock) {
+                return new ControllerState(relativeState, mutablePos);
+            }
+            if (relativeState.getBlock() instanceof HullBlock) {
+                return findControllerState(level, mutablePos, relativeState);
+            }
+        }
+        return null;
     }
 
     public enum HULL_TYPE {
