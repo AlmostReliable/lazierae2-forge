@@ -17,11 +17,11 @@ final class MultiBlock {
     static boolean iterateMultiBlock(
         MultiBlockData data, IterateCallback callback
     ) {
-        for (var i = 0; i < data.size(); i++) {
-            for (var j = 0; j < data.size(); j++) {
-                for (var k = 0; k < data.size(); k++) {
-                    var position = data.itDirs().relative(data.startPosition(), i, j, k);
-                    var type = Type.of(i, j, k, data.size());
+        for (var x = 0; x < data.size(); x++) {
+            for (var y = 0; y < data.size(); y++) {
+                for (var z = 0; z < data.size(); z++) {
+                    var position = data.itDirs().relative(data.startPosition(), x, y, z);
+                    var type = Type.of(x, y, z, data.size());
                     if (!callback.apply(type, position)) {
                         return false;
                     }
@@ -34,31 +34,31 @@ final class MultiBlock {
     public enum Type {
         WALL, CORNER, EDGE, INNER;
 
-        static Type of(int i, int j, int k, int size) {
-            if (isInner(i, j, k, size)) {
+        static Type of(int x, int y, int z, int size) {
+            if (isInner(x, y, z, size)) {
                 return INNER;
             }
-            if (isCorner(i, j, k, size)) {
+            if (isCorner(x, y, z, size)) {
                 return CORNER;
             }
-            if (isEdge(i, j, k, size)) {
+            if (isEdge(x, y, z, size)) {
                 return EDGE;
             }
             return WALL;
         }
 
-        private static boolean isInner(int i, int j, int k, int size) {
-            return i > 0 && i < size - 1 && j > 0 && j < size - 1 && k > 0 && k < size - 1;
+        private static boolean isInner(int x, int y, int z, int size) {
+            return x > 0 && x < size - 1 && y > 0 && y < size - 1 && z > 0 && z < size - 1;
         }
 
-        private static boolean isCorner(int i, int j, int k, int size) {
-            return (i == 0 || i == size - 1) && (j == 0 || j == size - 1) && (k == 0 || k == size - 1);
+        private static boolean isCorner(int x, int y, int z, int size) {
+            return (x == 0 || x == size - 1) && (y == 0 || y == size - 1) && (z == 0 || z == size - 1);
         }
 
-        private static boolean isEdge(int i, int j, int k, int size) {
-            var iTest = i == 0 || i == size - 1;
-            var jTest = j == 0 || j == size - 1;
-            var kTest = k == 0 || k == size - 1;
+        private static boolean isEdge(int x, int y, int z, int size) {
+            var iTest = x == 0 || x == size - 1;
+            var jTest = y == 0 || y == size - 1;
+            var kTest = z == 0 || z == size - 1;
             return iTest && jTest || iTest && kTest || jTest && kTest;
         }
     }
@@ -82,23 +82,23 @@ final class MultiBlock {
             return new IterateDirections(facing.getOpposite(), facing.getOpposite().getClockWise(), Direction.UP);
         }
 
-        private BlockPos relative(BlockPos blockPos, int i, int j, int k) {
-            var x = calculatePosition(blockPos.getX(),
-                depthDirection.getStepX() * i,
-                rowDirection.getStepX() * j,
-                columnDirection.getStepX() * k
+        private BlockPos relative(BlockPos blockPos, int x, int y, int z) {
+            var relativeX = calculatePosition(blockPos.getX(),
+                depthDirection.getStepX() * x,
+                rowDirection.getStepX() * y,
+                columnDirection.getStepX() * z
             );
-            var y = calculatePosition(blockPos.getY(),
-                depthDirection.getStepY() * i,
-                rowDirection.getStepY() * j,
-                columnDirection.getStepY() * k
+            var relativeY = calculatePosition(blockPos.getY(),
+                depthDirection.getStepY() * x,
+                rowDirection.getStepY() * y,
+                columnDirection.getStepY() * z
             );
-            var z = calculatePosition(blockPos.getZ(),
-                depthDirection.getStepZ() * i,
-                rowDirection.getStepZ() * j,
-                columnDirection.getStepZ() * k
+            var relativeZ = calculatePosition(blockPos.getZ(),
+                depthDirection.getStepZ() * x,
+                rowDirection.getStepZ() * y,
+                columnDirection.getStepZ() * z
             );
-            return new BlockPos(x, y, z);
+            return new BlockPos(relativeX, relativeY, relativeZ);
         }
 
         private int calculatePosition(int initial, int depth, int row, int column) {
