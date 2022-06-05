@@ -52,33 +52,38 @@ public final class Constants {
 
     public enum Nbt {
         ;
-        public static final String INVENTORY_ID = "inventory";
-        public static final String SIDE_CONFIG_ID = "side_config";
-        public static final String CAPACITY_ID = "capacity";
-        public static final String ENERGY_ID = "energy";
-        public static final String MAX_RECEIVE = "max_receive";
-        public static final String MAX_EXTRACT = "max_extract";
         public static final String AUTO_EXTRACT_ID = "auto_extract";
-        public static final String PROGRESS_ID = "progress";
-        public static final String PROCESS_TIME_ID = "process_time";
-        public static final String RECIPE_TIME_ID = "recipe_time";
-        public static final String ENERGY_COST_ID = "energy_cost";
-        public static final String RECIPE_ENERGY_ID = "recipe_energy";
-        public static final String UPGRADES_ID = "upgrades";
-        public static final String PROGRESSION_STATES_ID = "progression_states";
-        public static final String CRAFT_REQUESTS_ID = "craft_requests";
-        public static final String STORAGE_MANAGER_ID = "storage_manager";
-        public static final String ITEM_TYPE_ID = "item_type";
-        public static final String BUFFER_AMOUNT_ID = "buffer_amount";
-        public static final String PENDING_AMOUNT_ID = "pending_amount";
-        public static final String KNOWN_AMOUNT_ID = "known_amount";
-        public static final String SLOT_ID = "slot";
-        public static final String SIZE_ID = "size";
-        public static final String ITEMS_ID = "items";
-        public static final String STATE_ID = "state";
-        public static final String STACK_ID = "stack";
-        public static final String COUNT_ID = "count";
         public static final String BATCH_ID = "batch";
+        public static final String BUFFER_AMOUNT_ID = "buffer_amount";
+        public static final String CAPACITY_ID = "capacity";
+        public static final String COL_DIR_ID = "col_dir";
+        public static final String COUNT_ID = "count";
+        public static final String CRAFT_REQUESTS_ID = "craft_requests";
+        public static final String DATA_ID = "data";
+        public static final String DEPTH_DIR_ID = "depth_dir";
+        public static final String ENERGY_COST_ID = "energy_cost";
+        public static final String ENERGY_ID = "energy";
+        public static final String INVENTORY_ID = "inventory";
+        public static final String ITEMS_ID = "items";
+        public static final String ITEM_TYPE_ID = "item_type";
+        public static final String KNOWN_AMOUNT_ID = "known_amount";
+        public static final String MAX_EXTRACT = "max_extract";
+        public static final String MAX_RECEIVE = "max_receive";
+        public static final String PENDING_AMOUNT_ID = "pending_amount";
+        public static final String PROCESS_TIME_ID = "process_time";
+        public static final String PROGRESSION_STATES_ID = "progression_states";
+        public static final String PROGRESS_ID = "progress";
+        public static final String RECIPE_ENERGY_ID = "recipe_energy";
+        public static final String RECIPE_TIME_ID = "recipe_time";
+        public static final String ROW_DIR_ID = "row_dir";
+        public static final String SIDE_CONFIG_ID = "side_config";
+        public static final String SIZE_ID = "size";
+        public static final String SLOT_ID = "slot";
+        public static final String STACK_ID = "stack";
+        public static final String START_POS_ID = "start_pos";
+        public static final String STATE_ID = "state";
+        public static final String STORAGE_MANAGER_ID = "storage_manager";
+        public static final String UPGRADES_ID = "upgrades";
     }
 
     public enum Recipe {

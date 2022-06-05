@@ -8,6 +8,8 @@ import net.minecraft.nbt.NbtUtils;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
+import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
+
 final class MultiBlock {
 
     static final int MAX_SIZE = 13;
@@ -138,21 +140,21 @@ final class MultiBlock {
         }
 
         static MultiBlockData load(CompoundTag tag) {
-            var size = tag.getInt("size");
-            var startPosition = NbtUtils.readBlockPos(tag);
-            var mDir = Direction.valueOf(tag.getString("depthDirection"));
-            var rDir = Direction.valueOf(tag.getString("rowDirection"));
-            var cDir = Direction.valueOf(tag.getString("columnDirection"));
+            var size = tag.getInt(SIZE_ID);
+            var startPosition = NbtUtils.readBlockPos(tag.getCompound(START_POS_ID));
+            var mDir = Direction.valueOf(tag.getString(DEPTH_DIR_ID));
+            var rDir = Direction.valueOf(tag.getString(ROW_DIR_ID));
+            var cDir = Direction.valueOf(tag.getString(COL_DIR_ID));
             return new MultiBlockData(size, startPosition, new IterateDirections(mDir, rDir, cDir));
         }
 
         static CompoundTag save(MultiBlockData data) {
             var tag = new CompoundTag();
-            tag.putInt("size", data.size);
-            NbtUtils.writeBlockPos(data.startPosition);
-            tag.putString("depthDirection", data.itDirs.depthDirection().toString());
-            tag.putString("rowDirection", data.itDirs.rowDirection().toString());
-            tag.putString("columnDirection", data.itDirs.columnDirection().toString());
+            tag.putInt(SIZE_ID, data.size);
+            tag.put(START_POS_ID, NbtUtils.writeBlockPos(data.startPosition));
+            tag.putString(DEPTH_DIR_ID, data.itDirs.depthDirection().toString());
+            tag.putString(ROW_DIR_ID, data.itDirs.rowDirection().toString());
+            tag.putString(COL_DIR_ID, data.itDirs.columnDirection().toString());
             return tag;
         }
 

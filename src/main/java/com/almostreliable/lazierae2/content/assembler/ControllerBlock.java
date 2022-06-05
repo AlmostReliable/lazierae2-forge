@@ -87,7 +87,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     }
 
     void destroyMultiBlock(Level level, ControllerEntity entity, BlockPos origin) {
-        var data = entity.getMultiBlockData();
+        var data = entity.getData();
         if (data == null) return;
 
         MultiBlock.iterateMultiBlock(data, (type, pos) -> {
@@ -105,7 +105,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             return true;
         });
 
-        entity.setMultiBlockData(null);
+        entity.setData(null);
         if (entity.getBlockPos().equals(origin)) return;
         level.setBlock(entity.getBlockPos(), entity.getBlockState().setValue(GenericBlock.ACTIVE, false), 3);
     }
@@ -164,7 +164,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         }
 
         level.setBlock(pos, state.setValue(GenericBlock.ACTIVE, true), 3);
-        entity.setMultiBlockData(multiBlockData);
+        entity.setData(multiBlockData);
         return InteractionResult.SUCCESS;
     }
 }

@@ -12,10 +12,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
+import static com.almostreliable.lazierae2.core.Constants.Nbt.DATA_ID;
+
 public class ControllerEntity extends GenericEntity {
 
     @Nullable
-    private MultiBlockData multiBlockData;
+    private MultiBlockData data;
 
     public ControllerEntity(BlockPos pos, BlockState state) {
         super(Assembler.ASSEMBLER_CONTROLLER.get(), pos, state);
@@ -24,16 +26,16 @@ public class ControllerEntity extends GenericEntity {
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        if (multiBlockData != null) {
-            tag.put("data", MultiBlockData.save(multiBlockData));
+        if (tag.contains(DATA_ID)) {
+            data = MultiBlockData.load(tag.getCompound(DATA_ID));
         }
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        if (tag.contains("data")) {
-            multiBlockData = MultiBlockData.load(tag.getCompound("data"));
+        if (data != null) {
+            tag.put(DATA_ID, MultiBlockData.save(data));
         }
     }
 
@@ -49,11 +51,11 @@ public class ControllerEntity extends GenericEntity {
     }
 
     @Nullable
-    MultiBlockData getMultiBlockData() {
-        return multiBlockData;
+    MultiBlockData getData() {
+        return data;
     }
 
-    void setMultiBlockData(@Nullable MultiBlockData data) {
-        multiBlockData = data;
+    void setData(@Nullable MultiBlockData data) {
+        this.data = data;
     }
 }
