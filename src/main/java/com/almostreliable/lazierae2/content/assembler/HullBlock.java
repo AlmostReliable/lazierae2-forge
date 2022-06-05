@@ -150,15 +150,19 @@ public class HullBlock extends GenericBlock {
         return OptionalDirection.WEST;
     }
 
+    public enum HULL_TYPE {
+        WALL, FRAME
+    }
+
     private enum OptionalDirection implements StringRepresentable {
 
-        NONE("none", null),
-        UP("up", Direction.UP),
-        DOWN("down", Direction.DOWN),
-        NORTH("north", Direction.NORTH),
-        EAST("east", Direction.EAST),
-        SOUTH("south", Direction.SOUTH),
-        WEST("west", Direction.WEST);
+        NONE(null),
+        UP(Direction.UP),
+        DOWN(Direction.DOWN),
+        NORTH(Direction.NORTH),
+        EAST(Direction.EAST),
+        SOUTH(Direction.SOUTH),
+        WEST(Direction.WEST);
 
         private static final BiMap<OptionalDirection, Direction> OPT_TO_DIR = HashBiMap.create();
         @Nullable
@@ -171,9 +175,9 @@ public class HullBlock extends GenericBlock {
             }
         }
 
-        OptionalDirection(String name, @Nullable Direction direction) {
-            this.name = name;
+        OptionalDirection(@Nullable Direction direction) {
             this.direction = direction;
+            name = direction == null ? "none" : direction.toString().toLowerCase();
         }
 
         @Nullable
@@ -182,22 +186,18 @@ public class HullBlock extends GenericBlock {
         }
 
         @Nullable
-        public static Direction fromOptionalDirection(@Nullable OptionalDirection direction) {
+        public static Direction fromOptDirection(@Nullable OptionalDirection direction) {
             return OPT_TO_DIR.get(direction);
         }
 
         public BlockPos relative(BlockPos pos) {
-            if (direction == null) {
-                return pos;
-            }
-
+            if (direction == null) return pos;
             return pos.relative(direction);
         }
 
         public void relative(MutableBlockPos pos) {
-            if (direction != null) {
-                pos.move(direction.getNormal());
-            }
+            if (direction == null) return;
+            pos.move(direction.getNormal());
         }
 
         @Nullable
@@ -209,10 +209,6 @@ public class HullBlock extends GenericBlock {
         public String getSerializedName() {
             return name;
         }
-    }
-
-    public enum HULL_TYPE {
-        WALL, FRAME
     }
 
     private static final class OptionalDirectionProperty extends EnumProperty<OptionalDirection> {
