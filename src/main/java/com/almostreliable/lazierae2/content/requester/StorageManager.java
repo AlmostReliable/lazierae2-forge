@@ -18,8 +18,7 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
 
     private final Storage[] storages;
     private final RequesterEntity owner;
-    @Nullable
-    private IStackWatcher stackWatcher;
+    @Nullable private IStackWatcher stackWatcher;
 
     StorageManager(RequesterEntity owner, int slots) {
         this.owner = owner;
@@ -129,8 +128,7 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
         if (genericStack == null) {
             return;
         }
-        get(slot).knownAmount = owner
-            .getMainNodeGrid()
+        get(slot).knownAmount = owner.getMainNodeGrid()
             .getStorageService()
             .getInventory()
             .getAvailableStacks()
@@ -139,8 +137,7 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
 
     public static class Storage implements INBTSerializable<CompoundTag> {
 
-        @Nullable
-        private AEKey itemType;
+        @Nullable private AEKey itemType;
         private long bufferAmount;
         private long pendingAmount;
         private long knownAmount = -1;

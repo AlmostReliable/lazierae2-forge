@@ -29,8 +29,7 @@ public class AggregatorManager implements ProcessorRecipeManager {
     public ProcessorRecipe createRecipe(
         ResourceLocation id, ItemStack output, int amount, IngredientWithCount[] inputs, int processTime, int energyCost
     ) {
-        return ProcessorRecipeBuilder
-            .aggregator(output.getItem(), amount)
+        return ProcessorRecipeBuilder.aggregator(output.getItem(), amount)
             .input(inputs)
             .processingTime(processTime)
             .energyCost(energyCost)

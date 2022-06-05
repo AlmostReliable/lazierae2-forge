@@ -22,8 +22,9 @@ public class SingleInputRecipe extends ProcessorRecipe {
 
     @Override
     public boolean matches(Container inv, Level level) {
-        return getInputs().size() == 1 &&
-            getInputs().get(0).ingredient().test(inv.getItem(inv.getContainerSize() - 1)) &&
-            inv.getItem(inv.getContainerSize() - 1).getCount() >= getInputs().get(0).count();
+        return getInputs().size() == 1 && getInputs().get(0)
+            .ingredient()
+            .test(inv.getItem(inv.getContainerSize() - 1)) && inv.getItem(inv.getContainerSize() - 1)
+            .getCount() >= getInputs().get(0).count();
     }
 }

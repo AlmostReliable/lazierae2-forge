@@ -44,16 +44,19 @@ public class LazierAE2 {
     private static void onCommonSetup(FMLCommonSetupEvent event) {
         PacketHandler.init();
         // add compatibility to acceleration card for own blocks
-        Upgrades.add(AEItems.SPEED_CARD.asItem(),
+        Upgrades.add(
+            AEItems.SPEED_CARD.asItem(),
             Blocks.AGGREGATOR.get().asItem(),
             ProcessorType.AGGREGATOR.getUpgradeSlots()
         );
         Upgrades.add(AEItems.SPEED_CARD.asItem(), Blocks.ETCHER.get().asItem(), ProcessorType.ETCHER.getUpgradeSlots());
-        Upgrades.add(AEItems.SPEED_CARD.asItem(),
+        Upgrades.add(
+            AEItems.SPEED_CARD.asItem(),
             Blocks.GRINDER.get().asItem(),
             ProcessorType.GRINDER.getUpgradeSlots()
         );
-        Upgrades.add(AEItems.SPEED_CARD.asItem(),
+        Upgrades.add(
+            AEItems.SPEED_CARD.asItem(),
             Blocks.INFUSER.get().asItem(),
             ProcessorType.INFUSER.getUpgradeSlots()
         );
@@ -63,7 +66,8 @@ public class LazierAE2 {
         event.enqueueWork(() -> {
             MenuScreens.register(Menus.PROCESSOR.get(), ProcessorScreen::new);
             MenuScreens.register(Menus.REQUESTER.get(), RequesterScreen::new);
-            ItemProperties.register(Items.RESONATING_SEED.get(),
+            ItemProperties.register(
+                Items.RESONATING_SEED.get(),
                 GROWTH_PREDICATE_ID,
                 (is, level, p, s) -> CrystalSeedItem.getGrowthTicks(is) / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED
             );

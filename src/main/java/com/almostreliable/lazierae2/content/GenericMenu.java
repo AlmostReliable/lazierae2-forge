@@ -37,7 +37,8 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
     public void sendAllDataToRemote() {
         super.sendAllDataToRemote();
         if (sync.hasDataHandlers()) {
-            PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) playerInventory.player),
+            PacketHandler.CHANNEL.send(
+                PacketDistributor.PLAYER.with(() -> (ServerPlayer) playerInventory.player),
                 new MenuSyncPacket(containerId, sync::encodeAll)
             );
         }
@@ -46,7 +47,8 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
     @Override
     public void broadcastChanges() {
         if (!playerInventory.player.level.isClientSide && sync.hasChanged()) {
-            PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) playerInventory.player),
+            PacketHandler.CHANNEL.send(
+                PacketDistributor.PLAYER.with(() -> (ServerPlayer) playerInventory.player),
                 new MenuSyncPacket(containerId, sync::encode)
             );
         }
@@ -55,11 +57,10 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
 
     @Override
     public boolean stillValid(Player player) {
-        return entity.getLevel() != null &&
-            AbstractContainerMenu.stillValid(ContainerLevelAccess.create(entity.getLevel(), entity.getBlockPos()),
-                player,
-                entity.getBlockState().getBlock()
-            );
+        return entity.getLevel() != null && AbstractContainerMenu.stillValid(ContainerLevelAccess.create(
+            entity.getLevel(),
+            entity.getBlockPos()
+        ), player, entity.getBlockState().getBlock());
     }
 
     public void receiveServerData(FriendlyByteBuf data) {
@@ -70,7 +71,8 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
         // main inventory
         for (var i = 0; i < 3; i++) {
             for (var j = 0; j < 9; j++) {
-                addSlot(new SlotItemHandler(menuInventory,
+                addSlot(new SlotItemHandler(
+                    menuInventory,
                     j + i * 9 + 9,
                     8 + j * SLOT_SIZE,
                     getSlotY() + i * SLOT_SIZE

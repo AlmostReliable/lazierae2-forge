@@ -24,8 +24,7 @@ public class EnergyDumpButton extends GenericButton {
     }
 
     private static Tooltip setupTooltip() {
-        return Tooltip
-            .builder()
+        return Tooltip.builder()
             .title("dump.title")
             .blank()
             .line(() -> !Screen.hasShiftDown(), "dump.description")

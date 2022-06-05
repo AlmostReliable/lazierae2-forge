@@ -142,20 +142,16 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
     }
 
     private Tooltip setupProgressTooltip() {
-        return Tooltip
-            .builder()
+        return Tooltip.builder()
             .title("progress.title")
             .blank()
-            .conditional(progress -> progress
-                .condition(() -> (menu.entity.getProgress() > 0 && menu.entity.getProcessTime() > 0) ||
-                    menu.entity.getBlockState().getValue(GenericBlock.ACTIVE).equals(true))
-                .then(Tooltip
-                    .builder()
+            .conditional(progress -> progress.condition(() -> (menu.entity.getProgress() > 0 && menu.entity.getProcessTime() > 0) || menu.entity.getBlockState()
+                    .getValue(GenericBlock.ACTIVE)
+                    .equals(true))
+                .then(Tooltip.builder()
                     .keyValue("progress.progress", menu.entity::getProgress, menu.entity::getProcessTime)
-                    .conditional(extendedInfo -> extendedInfo
-                        .condition(Screen::hasShiftDown)
-                        .then(Tooltip
-                            .builder()
+                    .conditional(extendedInfo -> extendedInfo.condition(Screen::hasShiftDown)
+                        .then(Tooltip.builder()
                             .keyValue(menu::hasUpgrades, "progress.recipe_time", menu.entity::getRecipeTime)
                             .keyValue(menu::hasUpgrades, "progress.time_multiplier", this::getProcessTimeMultiplier)
                             .blank(menu::hasUpgrades)
@@ -169,19 +165,18 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
                                 () -> TextUtil.formatEnergy(menu.entity.getRecipeEnergy(), 1, 2, false, true)
                             )
                             .keyValue(menu::hasUpgrades, "progress.energy_multiplier", this::getEnergyCostMultiplier))
-                        .otherwise(Tooltip
-                            .builder()
+                        .otherwise(Tooltip.builder()
                             .blank()
                             .hotkeyHoldAction("key.keyboard.left.shift", "extended_info"))))
                 .otherwise(Tooltip.builder().line("progress.none")));
     }
 
     private Tooltip setupEnergyTooltip() {
-        return Tooltip
-            .builder()
+        return Tooltip.builder()
             .title("energy.title")
             .blank()
-            .keyValue("energy.current",
+            .keyValue(
+                "energy.current",
                 () -> TextUtil.formatEnergy(menu.getEnergyStored(), 1, 3, Screen.hasShiftDown(), true)
             )
             .keyValue(
@@ -193,21 +188,18 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
     }
 
     private Tooltip setupUpgradeTooltip() {
-        return Tooltip
-            .builder()
+        return Tooltip.builder()
             .title("upgrade.title")
             .blank()
-            .conditional(tooltip -> tooltip
-                .condition(menu::hasUpgrades)
-                .then(Tooltip
-                    .builder()
-                    .keyValue("upgrade.current",
+            .conditional(tooltip -> tooltip.condition(menu::hasUpgrades)
+                .then(Tooltip.builder()
+                    .keyValue(
+                        "upgrade.current",
                         menu::getUpgradeCount,
                         () -> menu.entity.getProcessorType().getUpgradeSlots()
                     )
                     .keyValue("upgrade.additional", this::getAdditionalUpgradeEnergy))
-                .otherwise(Tooltip
-                    .builder()
+                .otherwise(Tooltip.builder()
                     .line("upgrade.none", ChatFormatting.YELLOW)
                     .blank()
                     .line("upgrade.description")));

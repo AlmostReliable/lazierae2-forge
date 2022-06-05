@@ -20,10 +20,10 @@ public class RequestState implements IProgressionState {
         }
 
         var stack = craftRequests.get(slot).toGenericStack(toCraft);
-        var future = owner
-            .getMainNodeGrid()
+        var future = owner.getMainNodeGrid()
             .getCraftingService()
-            .beginCraftingCalculation(owner.getLevel(),
+            .beginCraftingCalculation(
+                owner.getLevel(),
                 owner::getActionSource,
                 stack.what(),
                 stack.amount(),

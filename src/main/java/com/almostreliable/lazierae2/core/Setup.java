@@ -164,7 +164,8 @@ public final class Setup {
         public static final RegistryObject<Item> CARB_FLUIX_DUST = register(CARB_FLUIX_DUST_ID);
         public static final RegistryObject<Item> FLUIX_STEEL = register(FLUIX_STEEL_ID);
         public static final RegistryObject<Item> RESONATING_CRYSTAL = register(RESONATING_CRYSTAL_ID);
-        public static final RegistryObject<Item> RESONATING_SEED = register(RESONATING_SEED_ID,
+        public static final RegistryObject<Item> RESONATING_SEED = register(
+            RESONATING_SEED_ID,
             () -> new CrystalSeedItem(getProperties(), RESONATING_CRYSTAL.get())
         );
         public static final RegistryObject<Item> RESONATING_DUST = register(RESONATING_DUST_ID);
@@ -339,11 +340,12 @@ public final class Setup {
 
     public static final class Serializers {
 
-        private static final DeferredRegister<RecipeSerializer<?>> REGISTRY
-            = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MOD_ID);
+        private static final DeferredRegister<RecipeSerializer<?>> REGISTRY = DeferredRegister.create(
+            ForgeRegistries.RECIPE_SERIALIZERS,
+            MOD_ID
+        );
 
-        public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> AGGREGATOR
-            = register(ProcessorType.AGGREGATOR);
+        public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> AGGREGATOR = register(ProcessorType.AGGREGATOR);
         public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> ETCHER = register(ProcessorType.ETCHER);
         public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> GRINDER = register(ProcessorType.GRINDER);
         public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> INFUSER = register(ProcessorType.INFUSER);

@@ -30,8 +30,7 @@ public class InfuserManager implements ProcessorRecipeManager {
         ResourceLocation id, ItemStack output, int amount, IngredientWithCount[] ingredients, int processTime,
         int energyCost
     ) {
-        return ProcessorRecipeBuilder
-            .infuser(output.getItem(), amount)
+        return ProcessorRecipeBuilder.infuser(output.getItem(), amount)
             .input(ingredients)
             .processingTime(processTime)
             .energyCost(energyCost)

@@ -60,8 +60,7 @@ public class ProcessorBlock extends MachineBlock {
             var finalUpgrades = upgrades;
             var finalEnergy = energy;
             var finalSideConfig = sideConfig;
-            tooltip.addAll(Tooltip
-                .builder()
+            tooltip.addAll(Tooltip.builder()
                 .keyValue("item.upgrades", () -> finalUpgrades, processorType::getUpgradeSlots)
                 .keyValue("item.energy", () -> TextUtil.formatEnergy(finalEnergy, 1, 3, Screen.hasShiftDown(), true))
                 .line(() -> finalSideConfig, "item.side_config", ChatFormatting.YELLOW)

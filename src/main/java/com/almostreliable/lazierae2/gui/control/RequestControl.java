@@ -65,10 +65,8 @@ public final class RequestControl {
 
         private static final int BUTTON_SIZE = 13;
         private final int slot;
-        @Nullable
-        private CountBox countBox;
-        @Nullable
-        private BatchBox batchBox;
+        @Nullable private CountBox countBox;
+        @Nullable private BatchBox batchBox;
 
         private Control(int slot) {
             this.slot = slot;
@@ -131,12 +129,10 @@ public final class RequestControl {
             }
 
             private Tooltip setupTooltip() {
-                return Tooltip
-                    .builder()
+                return Tooltip.builder()
                     .title("status.title")
                     .blank()
-                    .conditional(current -> current
-                        .condition(() -> getProgressionColor() != ChatFormatting.DARK_GRAY)
+                    .conditional(current -> current.condition(() -> getProgressionColor() != ChatFormatting.DARK_GRAY)
                         .then(Tooltip.builder().keyEnum(
                             "status.current",
                             TRANSLATE_TYPE.REQUEST_STATUS,
@@ -144,15 +140,17 @@ public final class RequestControl {
                         ))
                         .otherwise(Tooltip.builder().line("status.none", ChatFormatting.WHITE)))
                     .blank()
-                    .conditional(advanced -> advanced
-                        .condition(Screen::hasShiftDown)
-                        .then(Tooltip.builder().lineEnum(TRANSLATE_TYPE.REQUEST_STATUS,
+                    .conditional(advanced -> advanced.condition(Screen::hasShiftDown)
+                        .then(Tooltip.builder().lineEnum(
+                            TRANSLATE_TYPE.REQUEST_STATUS,
                             getProgressionColor(PROGRESSION_TYPE.IDLE),
                             PROGRESSION_TYPE.IDLE
-                        ).line("status.idle").blank().lineEnum(TRANSLATE_TYPE.REQUEST_STATUS,
+                        ).line("status.idle").blank().lineEnum(
+                            TRANSLATE_TYPE.REQUEST_STATUS,
                             getProgressionColor(PROGRESSION_TYPE.LINK),
                             PROGRESSION_TYPE.LINK
-                        ).line("status.link").blank().lineEnum(TRANSLATE_TYPE.REQUEST_STATUS,
+                        ).line("status.link").blank().lineEnum(
+                            TRANSLATE_TYPE.REQUEST_STATUS,
                             getProgressionColor(PROGRESSION_TYPE.EXPORT),
                             PROGRESSION_TYPE.EXPORT
                         ).line("status.export"))
@@ -222,12 +220,9 @@ public final class RequestControl {
             }
 
             protected void setupTooltip() {
-                tooltip
-                    .blank()
-                    .conditional(focused -> focused
-                        .condition(this::isFocused)
-                        .then(Tooltip
-                            .builder()
+                tooltip.blank()
+                    .conditional(focused -> focused.condition(this::isFocused)
+                        .then(Tooltip.builder()
                             .hotkeyAction("key.keyboard.tab", "focus.switch.action")
                             .hotkeyAction("key.keyboard.enter", "submit.action"))
                         .otherwise(Tooltip.builder().clickAction("focus.action")));

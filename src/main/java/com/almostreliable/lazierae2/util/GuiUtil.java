@@ -160,7 +160,8 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip title(BooleanSupplier condition, String key, Supplier<?>... replacements) {
-            components.add(new IfComponent(condition,
+            components.add(new IfComponent(
+                condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GOLD),
                 replacements
             ));
@@ -201,7 +202,8 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip line(BooleanSupplier condition, String key, Supplier<?>... replacements) {
-            components.add(new IfComponent(condition,
+            components.add(new IfComponent(
+                condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.WHITE),
                 replacements
             ));
@@ -220,7 +222,8 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip line(BooleanSupplier condition, String key, ChatFormatting color, Supplier<?>... replacements) {
-            components.add(new IfComponent(condition,
+            components.add(new IfComponent(
+                condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, color),
                 replacements
             ));
@@ -247,8 +250,11 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip keyValue(String key, Supplier<?>... replacements) {
-            components.add(new FormatComponent(TextUtil
-                .translate(TRANSLATE_TYPE.TOOLTIP, f("{}.key", key), ChatFormatting.GREEN)
+            components.add(new FormatComponent(TextUtil.translate(
+                    TRANSLATE_TYPE.TOOLTIP,
+                    f("{}.key", key),
+                    ChatFormatting.GREEN
+                )
                 .append(TextUtil.colorize(": ", ChatFormatting.GREEN))
                 .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key))), replacements));
             return this;
@@ -270,9 +276,9 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip keyValue(BooleanSupplier condition, String key, Supplier<?>... replacements) {
-            components.add(new IfComponent(condition,
-                new FormatComponent(TextUtil
-                    .translate(TRANSLATE_TYPE.TOOLTIP, f("{}.key", key), ChatFormatting.GREEN)
+            components.add(new IfComponent(
+                condition,
+                new FormatComponent(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.key", key), ChatFormatting.GREEN)
                     .append(TextUtil.colorize(": ", ChatFormatting.GREEN))
                     .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key))), replacements)
             ));
@@ -292,8 +298,7 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip keyEnum(String key, TRANSLATE_TYPE type, Supplier<Enum<?>> e) {
-            components.add(new EnumComponent(TextUtil
-                .translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GREEN)
+            components.add(new EnumComponent(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GREEN)
                 .append(TextUtil.colorize(": ", ChatFormatting.GREEN))
                 .append(TextComponent.EMPTY), type, e));
             return this;
@@ -307,8 +312,7 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip clickAction(String key, Supplier<?>... replacements) {
-            return component(TextUtil
-                .colorize("> ", ChatFormatting.GRAY)
+            return component(TextUtil.colorize("> ", ChatFormatting.GRAY)
                 .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, "action_click", ChatFormatting.AQUA))
                 .append(" ")
                 .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GRAY)), replacements);
@@ -322,9 +326,9 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip shiftClickAction(String key, Supplier<?>... replacements) {
-            return component(TextUtil
-                .colorize("> ", ChatFormatting.GRAY)
-                .append(TextUtil.colorize(String.format("%s + %s",
+            return component(TextUtil.colorize("> ", ChatFormatting.GRAY)
+                .append(TextUtil.colorize(String.format(
+                    "%s + %s",
                     InputConstants.getKey("key.keyboard.left.shift").getDisplayName().getString(),
                     TextUtil.translateAsString(TRANSLATE_TYPE.TOOLTIP, "action_click")
                 ), ChatFormatting.AQUA))
@@ -341,9 +345,9 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip hotkeyAction(String hotkey, String key, Supplier<?>... replacements) {
-            return component(TextUtil
-                .colorize("> ", ChatFormatting.GRAY)
-                .append(TextUtil.colorize(InputConstants.getKey(hotkey).getDisplayName().getString(),
+            return component(TextUtil.colorize("> ", ChatFormatting.GRAY)
+                .append(TextUtil.colorize(
+                    InputConstants.getKey(hotkey).getDisplayName().getString(),
                     ChatFormatting.AQUA
                 ))
                 .append(" ")
@@ -359,11 +363,11 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip hotkeyHoldAction(String hotkey, String key, Supplier<?>... replacements) {
-            return component(TextUtil
-                .colorize("> ", ChatFormatting.GRAY)
+            return component(TextUtil.colorize("> ", ChatFormatting.GRAY)
                 .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, "action_hold", ChatFormatting.GRAY))
                 .append(" ")
-                .append(TextUtil.colorize(InputConstants.getKey(hotkey).getDisplayName().getString(),
+                .append(TextUtil.colorize(
+                    InputConstants.getKey(hotkey).getDisplayName().getString(),
                     ChatFormatting.AQUA
                 ))
                 .append(" ")
@@ -383,12 +387,13 @@ public final class GuiUtil {
         public Tooltip hotkeyHoldAction(
             BooleanSupplier condition, String hotkey, String key, Supplier<?>... replacements
         ) {
-            components.add(new IfComponent(condition,
-                TextUtil
-                    .colorize("> ", ChatFormatting.GRAY)
+            components.add(new IfComponent(
+                condition,
+                TextUtil.colorize("> ", ChatFormatting.GRAY)
                     .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, "action_hold", ChatFormatting.GRAY))
                     .append(" ")
-                    .append(TextUtil.colorize(InputConstants.getKey(hotkey).getDisplayName().getString(),
+                    .append(TextUtil.colorize(
+                        InputConstants.getKey(hotkey).getDisplayName().getString(),
                         ChatFormatting.AQUA
                     ))
                     .append(" ")
@@ -431,8 +436,7 @@ public final class GuiUtil {
 
         public static class TooltipComponent extends TextComponent {
 
-            @Nullable
-            final Component component;
+            @Nullable final Component component;
             final Supplier<?>[] replacements;
 
             TooltipComponent(@Nullable Component component, Supplier<?>... replacements) {
@@ -451,7 +455,8 @@ public final class GuiUtil {
             }
 
             TranslatableComponent handleReplacements(TranslatableComponent textComponent) {
-                return new TranslatableComponent(textComponent.getKey(),
+                return new TranslatableComponent(
+                    textComponent.getKey(),
                     Arrays.stream(replacements).map(Supplier::get).toArray()
                 );
             }
@@ -487,9 +492,9 @@ public final class GuiUtil {
             @Override
             public void resolve(List<? super Component> tooltip) {
                 assert component != null;
-                component
-                    .getSiblings()
-                    .set(1,
+                component.getSiblings()
+                    .set(
+                        1,
                         TextUtil.translate(type, replacements[0].get().toString().toLowerCase(), ChatFormatting.WHITE)
                     );
                 tooltip.add(component);
@@ -498,8 +503,7 @@ public final class GuiUtil {
 
         private static final class IfComponent extends TooltipComponent {
 
-            @Nullable
-            private final TooltipComponent tooltipComponent;
+            @Nullable private final TooltipComponent tooltipComponent;
             private final BooleanSupplier condition;
 
             private IfComponent(BooleanSupplier condition, TooltipComponent component) {

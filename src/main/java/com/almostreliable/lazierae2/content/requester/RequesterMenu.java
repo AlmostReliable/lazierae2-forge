@@ -29,8 +29,7 @@ public class RequesterMenu extends GenericMenu<RequesterEntity> {
     @Override
     public ItemStack quickMoveStack(Player player, int slot) {
         // transfer stack to first empty request slot
-        if (slot < requesterInventory.getSlots() ||
-            slot > requesterInventory.getSlots() + GenericMenu.PLAYER_INV_SIZE) {
+        if (slot < requesterInventory.getSlots() || slot > requesterInventory.getSlots() + GenericMenu.PLAYER_INV_SIZE) {
             return ItemStack.EMPTY;
         }
         var stack = getSlot(slot).getItem();

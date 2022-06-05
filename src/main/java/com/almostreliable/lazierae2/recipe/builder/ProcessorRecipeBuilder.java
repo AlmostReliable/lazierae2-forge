@@ -187,8 +187,7 @@ public final class ProcessorRecipeBuilder {
     }
 
     public ProcessorRecipe build(ResourceLocation recipeId) {
-        return recipeType
-            .getRecipeFactory()
+        return recipeType.getRecipeFactory()
             .create(recipeId, recipeType, conditions, output, inputs, processTime, energyCost);
     }
 
