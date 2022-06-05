@@ -8,12 +8,16 @@ and this project adheres to [Semantic Versioning].
 ## [Unreleased]
 - /
 
+## [3.0.2] - 2022-06-05
+
+### Fixed
+- ME Requester not exporting crafting results from all slots properly
+
 ## [3.0.1] - 2022-06-04
 
 ### Fixed
 - mod entry point recipe for the Infuser
   - now uses a Resonating Crystal instead of a processor
-
 
 ## [3.0.0] - 2022-06-01
 
@@ -66,6 +70,7 @@ The following changes are notable changes from the 1.16 version.
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.0.1-beta...HEAD
+[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.0.2-beta...HEAD
+[3.0.2]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.1-beta..v1.18-3.0.2-beta
 [3.0.1]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.0-beta..v1.18-3.0.1-beta
 [3.0.0]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.0-beta
