@@ -78,42 +78,37 @@ public class HullBlock extends GenericBlock {
         return InteractionResult.CONSUME;
     }
 
-    public BlockState createDefaultMultiBlockState(BlockPos blockPos, BlockPos lookPos) {
-        var horizontalOffset = getHorizontalOffset(blockPos, lookPos);
-        var verticalOffset = getVerticalOffset(blockPos, lookPos);
-
+    BlockState createMultiBlockState(BlockPos hullPos, BlockPos controllerPos) {
         return defaultBlockState()
-            .setValue(HORIZONTAL, horizontalOffset)
-            .setValue(VERTICAL, verticalOffset)
+            .setValue(HORIZONTAL, getHorizontalOffset(hullPos, controllerPos))
+            .setValue(VERTICAL, getVerticalOffset(hullPos, controllerPos))
             .setValue(GenericBlock.ACTIVE, true);
     }
 
-    protected OptionalDirection getVerticalOffset(BlockPos blockPos, BlockPos lookPos) {
-        if (lookPos.getY() == blockPos.getY()) {
+    private OptionalDirection getHorizontalOffset(BlockPos hullPos, BlockPos controllerPos) {
+        if (controllerPos.getX() == hullPos.getX() && controllerPos.getZ() == hullPos.getZ()) {
             return OptionalDirection.NONE;
         }
-
-        return lookPos.getY() < blockPos.getY() ? OptionalDirection.DOWN : OptionalDirection.UP;
-    }
-
-    protected OptionalDirection getHorizontalOffset(BlockPos blockPos, BlockPos lookPos) {
-        if (lookPos.getX() == blockPos.getX() && lookPos.getZ() == blockPos.getZ()) {
-            return OptionalDirection.NONE;
-        }
-
-        if (lookPos.getZ() > blockPos.getZ()) {
-            return OptionalDirection.SOUTH;
-        }
-
-        if (lookPos.getZ() < blockPos.getZ()) {
+        if (controllerPos.getZ() < hullPos.getZ()) {
             return OptionalDirection.NORTH;
         }
-
-        if (lookPos.getX() > blockPos.getX()) {
+        if (controllerPos.getZ() > hullPos.getZ()) {
+            return OptionalDirection.SOUTH;
+        }
+        if (controllerPos.getX() < hullPos.getX()) {
+            return OptionalDirection.WEST;
+        }
+        if (controllerPos.getX() > hullPos.getX()) {
             return OptionalDirection.EAST;
         }
+        return OptionalDirection.NONE;
+    }
 
-        return OptionalDirection.WEST;
+    private OptionalDirection getVerticalOffset(BlockPos hullPos, BlockPos controllerPos) {
+        if (controllerPos.getY() == hullPos.getY()) {
+            return OptionalDirection.NONE;
+        }
+        return controllerPos.getY() < hullPos.getY() ? OptionalDirection.DOWN : OptionalDirection.UP;
     }
 
     @SuppressWarnings("ChainOfInstanceofChecks")
@@ -181,24 +176,9 @@ public class HullBlock extends GenericBlock {
             return OPT_TO_DIR.inverse().get(direction);
         }
 
-        @Nullable
-        public static Direction fromOptDirection(@Nullable OptionalDirection direction) {
-            return OPT_TO_DIR.get(direction);
-        }
-
-        public BlockPos relative(BlockPos pos) {
-            if (direction == null) return pos;
-            return pos.relative(direction);
-        }
-
         public void relative(MutableBlockPos pos) {
             if (direction == null) return;
             pos.move(direction.getNormal());
-        }
-
-        @Nullable
-        public Direction getDirection() {
-            return direction;
         }
 
         @Override

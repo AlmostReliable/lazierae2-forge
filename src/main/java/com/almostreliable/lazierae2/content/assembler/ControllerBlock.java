@@ -179,11 +179,11 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         }
 
         for (var wallPos : walls) {
-            level.setBlock(wallPos, Assembler.WALL.get().createDefaultMultiBlockState(wallPos, pos), 2 | 16);
+            level.setBlock(wallPos, Assembler.WALL.get().createMultiBlockState(wallPos, pos), 2 | 16);
         }
 
         for (var edgePos : edges) {
-            level.setBlock(edgePos, Assembler.FRAME.get().createDefaultMultiBlockState(edgePos, pos), 2 | 16);
+            level.setBlock(edgePos, Assembler.FRAME.get().createMultiBlockState(edgePos, pos), 2 | 16);
         }
 
         level.setBlock(pos, state.setValue(GenericBlock.ACTIVE, true), 3);
