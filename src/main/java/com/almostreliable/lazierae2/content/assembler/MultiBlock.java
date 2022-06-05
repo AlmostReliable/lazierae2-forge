@@ -10,6 +10,8 @@ import java.util.function.Predicate;
 
 final class MultiBlock {
 
+    static final int MAX_SIZE = 13;
+    private static final int MIN_SIZE = 5;
     private static final int INCLUDED_CONTROLLER_POS = 1;
 
     private MultiBlock() {}
@@ -68,11 +70,9 @@ final class MultiBlock {
         boolean apply(Type type, BlockPos currentPos);
     }
 
-    private record SizeCheckResult(BlockPos blockPos, int size) {}
-
     record IterateDirections(Direction depthDirection, Direction rowDirection, Direction columnDirection) {
 
-        static IterateDirections ofFacing(Direction facing) {
+        static IterateDirections of(Direction facing) {
             if (facing == Direction.UP) {
                 return new IterateDirections(Direction.DOWN, Direction.EAST, Direction.SOUTH);
             }
@@ -110,22 +110,21 @@ final class MultiBlock {
 
         @Nullable
         public static MultiBlockData of(
-            BlockPos originPos, IterateDirections itDirs, int minSize, int maxSize,
-            Predicate<? super BlockPos> edgeCheck
+            BlockPos originPos, IterateDirections itDirs, Predicate<? super BlockPos> edgeCheck
         ) {
-            var negativeRowResult = findEdge(originPos, itDirs.rowDirection().getOpposite(), maxSize, edgeCheck);
-            var positiveRowResult = findEdge(originPos, itDirs.rowDirection(), maxSize, edgeCheck);
-            var negativeColumnResult = findEdge(originPos, itDirs.columnDirection().getOpposite(), maxSize, edgeCheck);
-            var positiveColumnResult = findEdge(originPos, itDirs.columnDirection(), maxSize, edgeCheck);
+            var negativeRowResult = findEdge(originPos, itDirs.rowDirection().getOpposite(), edgeCheck);
+            var positiveRowResult = findEdge(originPos, itDirs.rowDirection(), edgeCheck);
+            var negativeColumnResult = findEdge(originPos, itDirs.columnDirection().getOpposite(), edgeCheck);
+            var positiveColumnResult = findEdge(originPos, itDirs.columnDirection(), edgeCheck);
 
             if (negativeRowResult == null || positiveRowResult == null || negativeColumnResult == null ||
                 positiveColumnResult == null) {
                 return null;
             }
 
-            var size = negativeRowResult.size() + INCLUDED_CONTROLLER_POS + positiveRowResult.size();
-            if (size != negativeColumnResult.size() + INCLUDED_CONTROLLER_POS + positiveColumnResult.size() ||
-                size < minSize) {
+            var size = negativeRowResult.offset() + INCLUDED_CONTROLLER_POS + positiveRowResult.offset();
+            if (size != negativeColumnResult.offset() + INCLUDED_CONTROLLER_POS + positiveColumnResult.offset() ||
+                size < MIN_SIZE) {
                 return null;
             }
 
@@ -158,9 +157,9 @@ final class MultiBlock {
 
         @Nullable
         private static SizeCheckResult findEdge(
-            BlockPos fromPos, Direction direction, int maxTries, Predicate<? super BlockPos> edgeCheck
+            BlockPos fromPos, Direction direction, Predicate<? super BlockPos> edgeCheck
         ) {
-            for (var i = 1; i < maxTries; i++) {
+            for (var i = 1; i < MAX_SIZE; i++) {
                 var curPos = fromPos.relative(direction, i);
                 if (edgeCheck.test(curPos)) {
                     return new SizeCheckResult(curPos, i);
@@ -174,5 +173,7 @@ final class MultiBlock {
             var vPos = positiveRowPos.subtract(blockPos);
             return blockPos.offset(hPos.offset(vPos));
         }
+
+        private record SizeCheckResult(BlockPos blockPos, int offset) {}
     }
 }

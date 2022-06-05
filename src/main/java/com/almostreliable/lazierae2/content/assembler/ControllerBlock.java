@@ -31,8 +31,6 @@ import java.util.Set;
 public class ControllerBlock extends AssemblerBlock implements EntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    static final int MAX_SIZE = 13;
-    private static final int MIN_SIZE = 5;
     private static final Logger LOG = LogUtils.getLogger();
 
     public ControllerBlock() {
@@ -76,7 +74,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         }
 
         // TODO: check if the multiblock is already formed and open the gui, otherwise create mb
-        if (entity.isMultiBlockMaster()) {
+        if (isMultiBlock(state)) {
             return InteractionResult.PASS;
         }
         return formMultiBlock(state, level, pos, entity);
@@ -115,11 +113,8 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         BlockState state, Level level, BlockPos pos, ControllerEntity entity
     ) {
         var itDirs = IterateDirections.of(state.getValue(FACING));
-        var multiBlockData = MultiBlockData.of(
-            pos,
+        var multiBlockData = MultiBlockData.of(pos,
             itDirs,
-            MIN_SIZE,
-            MAX_SIZE,
             potentialFrame -> HULL_TYPE.FRAME.isValid(level.getBlockState(potentialFrame))
         );
 

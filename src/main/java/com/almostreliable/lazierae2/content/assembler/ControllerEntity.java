@@ -1,6 +1,5 @@
 package com.almostreliable.lazierae2.content.assembler;
 
-import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
 import com.almostreliable.lazierae2.core.Setup.Entities.Assembler;
@@ -15,6 +14,7 @@ import javax.annotation.Nullable;
 
 public class ControllerEntity extends GenericEntity {
 
+    @Nullable
     private MultiBlockData multiBlockData;
 
     public ControllerEntity(BlockPos pos, BlockState state) {
@@ -39,7 +39,7 @@ public class ControllerEntity extends GenericEntity {
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
+    public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
         return null;
     }
 
@@ -48,16 +48,12 @@ public class ControllerEntity extends GenericEntity {
         // TODO: implement
     }
 
-    boolean isMultiBlockMaster() {
-        return getBlockState().getValue(GenericBlock.ACTIVE);
-    }
-
     @Nullable
     MultiBlockData getMultiBlockData() {
         return multiBlockData;
     }
 
     void setMultiBlockData(@Nullable MultiBlockData data) {
-        this.multiBlockData = data;
+        multiBlockData = data;
     }
 }

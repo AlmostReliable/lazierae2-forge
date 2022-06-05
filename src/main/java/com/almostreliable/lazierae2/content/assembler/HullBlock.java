@@ -24,6 +24,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.almostreliable.lazierae2.content.assembler.MultiBlock.MAX_SIZE;
+
 public class HullBlock extends AssemblerBlock {
 
     public static final OptionalDirectionProperty HORIZONTAL = OptionalDirectionProperty.HORIZONTAL_PROP;
@@ -124,7 +126,7 @@ public class HullBlock extends AssemblerBlock {
         }
 
         var mutablePos = pos.mutable();
-        for (var i = 0; i < ControllerBlock.MAX_SIZE; i++) {
+        for (var i = 0; i < MAX_SIZE; i++) {
             horizontal.relative(mutablePos);
             vertical.relative(mutablePos);
             var relativeState = level.getBlockState(mutablePos);
