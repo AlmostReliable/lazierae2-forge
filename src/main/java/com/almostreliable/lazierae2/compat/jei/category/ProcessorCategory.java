@@ -28,8 +28,13 @@ public abstract class ProcessorCategory<R extends ProcessorRecipe> implements IR
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(iconProvider));
 
         var progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", id));
-        progressEmpty = guiHelper
-            .drawableBuilder(progressTexture, 0, 0, ProcessorScreen.PROGRESS_WIDTH / 2, ProcessorScreen.PROGRESS_HEIGHT)
+        progressEmpty = guiHelper.drawableBuilder(
+                progressTexture,
+                0,
+                0,
+                ProcessorScreen.PROGRESS_WIDTH / 2,
+                ProcessorScreen.PROGRESS_HEIGHT
+            )
             .setTextureSize(ProcessorScreen.PROGRESS_WIDTH, ProcessorScreen.PROGRESS_HEIGHT)
             .build();
         var progressDrawable = guiHelper.drawableBuilder(

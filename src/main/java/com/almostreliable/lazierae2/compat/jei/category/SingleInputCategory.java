@@ -26,8 +26,7 @@ public abstract class SingleInputCategory extends ProcessorCategory<SingleInputR
     SingleInputCategory(IGuiHelper guiHelper, String id, ItemLike iconProvider) {
         super(guiHelper, id, iconProvider);
         var backgroundTexture = ProcessorScreen.TEXTURE;
-        background = guiHelper
-            .drawableBuilder(backgroundTexture, 42, 22, 92, 34)
+        background = guiHelper.drawableBuilder(backgroundTexture, 42, 22, 92, 34)
             .setTextureSize(ProcessorScreen.TEXTURE_WIDTH, ProcessorScreen.TEXTURE_HEIGHT)
             .build();
     }

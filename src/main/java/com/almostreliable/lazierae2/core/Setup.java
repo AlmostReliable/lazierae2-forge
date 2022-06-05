@@ -60,8 +60,10 @@ public final class Setup {
 
     public static final class Entities {
 
-        private static final DeferredRegister<BlockEntityType<?>> REGISTRY
-            = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MOD_ID);
+        private static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(
+            ForgeRegistries.BLOCK_ENTITIES,
+            MOD_ID
+        );
 
         private Entities() {}
 
@@ -70,14 +72,15 @@ public final class Setup {
             String id, BlockEntitySupplier<E> entity, RegistryObject<B>... blocks
         ) {
             // noinspection ConstantConditions
-            return REGISTRY.register(id,
-                () -> Builder
-                    .of(entity, Arrays.stream(blocks).map(RegistryObject::get).toArray(GenericBlock[]::new))
+            return REGISTRY.register(
+                id,
+                () -> Builder.of(entity, Arrays.stream(blocks).map(RegistryObject::get).toArray(GenericBlock[]::new))
                     .build(null)
             );
         }
 
-        public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(PROCESSOR_ID,
+        public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(
+            PROCESSOR_ID,
             ProcessorEntity::new,
             Blocks.AGGREGATOR,
             Blocks.GRINDER,
@@ -85,7 +88,8 @@ public final class Setup {
             Blocks.ETCHER
         );
 
-        public static final RegistryObject<BlockEntityType<RequesterEntity>> REQUESTER = register(REQUESTER_ID,
+        public static final RegistryObject<BlockEntityType<RequesterEntity>> REQUESTER = register(
+            REQUESTER_ID,
             RequesterEntity::new,
             Blocks.REQUESTER
         );
@@ -93,10 +97,13 @@ public final class Setup {
 
     public static final class Menus {
 
-        private static final DeferredRegister<MenuType<?>> REGISTRY
-            = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
+        private static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(
+            ForgeRegistries.CONTAINERS,
+            MOD_ID
+        );
 
-        public static final RegistryObject<MenuType<ProcessorMenu>> PROCESSOR = register(PROCESSOR_ID,
+        public static final RegistryObject<MenuType<ProcessorMenu>> PROCESSOR = register(
+            PROCESSOR_ID,
             (windowId, inventory, data) -> {
                 var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
                 if (!(entity instanceof ProcessorEntity processor)) {
@@ -106,7 +113,8 @@ public final class Setup {
             }
         );
 
-        public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register(REQUESTER_ID,
+        public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register(
+            REQUESTER_ID,
             (windowId, inventory, data) -> {
                 var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
                 if (!(entity instanceof RequesterEntity requester)) {
@@ -141,14 +149,17 @@ public final class Setup {
 
         private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID);
 
-        public static final RegistryObject<ProcessorBlock> AGGREGATOR = register(ProcessorBlock::new,
+        public static final RegistryObject<ProcessorBlock> AGGREGATOR = register(
+            ProcessorBlock::new,
             ProcessorType.AGGREGATOR
         );
         public static final RegistryObject<ProcessorBlock> ETCHER = register(ProcessorBlock::new, ProcessorType.ETCHER);
-        public static final RegistryObject<ProcessorBlock> GRINDER = register(ProcessorBlock::new,
+        public static final RegistryObject<ProcessorBlock> GRINDER = register(
+            ProcessorBlock::new,
             ProcessorType.GRINDER
         );
-        public static final RegistryObject<ProcessorBlock> INFUSER = register(ProcessorBlock::new,
+        public static final RegistryObject<ProcessorBlock> INFUSER = register(
+            ProcessorBlock::new,
             ProcessorType.INFUSER
         );
 
@@ -186,7 +197,8 @@ public final class Setup {
         public static final RegistryObject<Item> CARB_FLUIX_DUST = register(CARB_FLUIX_DUST_ID);
         public static final RegistryObject<Item> FLUIX_STEEL = register(FLUIX_STEEL_ID);
         public static final RegistryObject<Item> RESONATING_CRYSTAL = register(RESONATING_CRYSTAL_ID);
-        public static final RegistryObject<Item> RESONATING_SEED = register(RESONATING_SEED_ID,
+        public static final RegistryObject<Item> RESONATING_SEED = register(
+            RESONATING_SEED_ID,
             () -> new CrystalSeedItem(getProperties(), RESONATING_CRYSTAL.get())
         );
         public static final RegistryObject<Item> RESONATING_DUST = register(RESONATING_DUST_ID);
@@ -257,11 +269,12 @@ public final class Setup {
 
     public static final class Serializers {
 
-        private static final DeferredRegister<RecipeSerializer<?>> REGISTRY
-            = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MOD_ID);
+        private static final DeferredRegister<RecipeSerializer<?>> REGISTRY = DeferredRegister.create(
+            ForgeRegistries.RECIPE_SERIALIZERS,
+            MOD_ID
+        );
 
-        public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> AGGREGATOR
-            = register(ProcessorType.AGGREGATOR);
+        public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> AGGREGATOR = register(ProcessorType.AGGREGATOR);
         public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> ETCHER = register(ProcessorType.ETCHER);
         public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> GRINDER = register(ProcessorType.GRINDER);
         public static final RegistryObject<RecipeSerializer<ProcessorRecipe>> INFUSER = register(ProcessorType.INFUSER);

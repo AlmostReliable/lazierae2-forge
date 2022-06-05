@@ -27,7 +27,8 @@ public interface ProcessorRecipeManager extends IRecipeManager<ProcessorRecipe> 
         var id = new ResourceLocation("crafttweaker", fixRecipeName(name));
         var ingredients = new IngredientWithCount[inputs.length];
         for (var i = 0; i < inputs.length; i++) {
-            ingredients[i] = new IngredientWithCount(inputs[i].getIngredient().asVanillaIngredient(),
+            ingredients[i] = new IngredientWithCount(
+                inputs[i].getIngredient().asVanillaIngredient(),
                 inputs[i].getAmount()
             );
         }

@@ -183,8 +183,7 @@ public final class RequesterInventory implements IItemHandlerModifiable, INBTSer
 
         @Override
         public String toString() {
-            return "Request[" + "state=" + state + ", " + "stack=" + stack + ", " + "count=" + count + ", " + "batch=" +
-                batch + ']';
+            return "Request[" + "state=" + state + ", " + "stack=" + stack + ", " + "count=" + count + ", " + "batch=" + batch + ']';
         }
 
         @Override

@@ -96,8 +96,8 @@ public final class TextUtil {
         // extended format
         if (extended) return formatNumber(energy, minPlaces, maxPlaces) + (suffix ? " FE" : "");
         // compact format
-        var numberOfDigits = energy.intValue() == 0 ? 0 :
-            (int) (1 + Math.floor(Math.log10(Math.abs(energy.doubleValue()))));
+        var numberOfDigits =
+            energy.intValue() == 0 ? 0 : (int) (1 + Math.floor(Math.log10(Math.abs(energy.doubleValue()))));
         var base10Exponent = numberOfDigits < 4 ? 0 : 3 * ((numberOfDigits - 1) / 3);
         var normalized = energy.doubleValue() / Math.pow(10, base10Exponent);
         return formatNumber(normalized, minPlaces, maxPlaces) + (suffix ? f(" {}FE", UNITS[base10Exponent / 3]) : "");

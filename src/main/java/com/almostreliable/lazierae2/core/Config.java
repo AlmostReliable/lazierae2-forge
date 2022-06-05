@@ -46,15 +46,13 @@ public final class Config {
                 f(" The number of upgrades the {} can hold.", id),
                 " By default, upgrades will speed up the processor and increase the energy buffer at the cost of a higher energy consumption."
             ).translation(processorTranslation(UPGRADE_SLOTS)).defineInRange(UPGRADE_SLOTS, 8, 0, 64);
-            baseEnergyBuffer = builder
-                .comment(
+            baseEnergyBuffer = builder.comment(
                     f(" The amount of energy the {} can hold.", id),
                     " The energy buffer is used to store energy before it is used."
                 )
                 .translation(processorTranslation(ENERGY_BUFFER))
                 .defineInRange(ENERGY_BUFFER, 100_000, 0, Integer.MAX_VALUE);
-            energyBufferAdd = builder
-                .comment(
+            energyBufferAdd = builder.comment(
                     f(" The additional amount of energy the {} can hold per upgrade.", id),
                     " Each upgrade increases the energy buffer by this amount.",
                     " Setting this to 0 will disable the energy buffer upgrade.",
@@ -68,8 +66,7 @@ public final class Config {
                 " All recipes from the mod itself have an own energy usage value and this setting won't have any effect on them.",
                 " This is only useful for custom recipes e.g. for modpack makers."
             ).translation(processorTranslation(ENERGY_USAGE)).defineInRange(ENERGY_USAGE, 300, 0, Integer.MAX_VALUE);
-            energyUsageMulti = builder
-                .comment(
+            energyUsageMulti = builder.comment(
                     f(" The energy multiplier the {} uses per tick when upgraded.", id),
                     " Each upgrade multiplies the energy usage by this value.",
                     " Setting this to 1 will disable the energy usage multiplier.",
@@ -84,8 +81,7 @@ public final class Config {
                 " All recipes from the mod itself have an own processing time value and this setting won't have any effect on them.",
                 " This is only useful for custom recipes e.g. for modpack makers."
             ).translation(processorTranslation(PROCESS_TIME)).defineInRange(PROCESS_TIME, 200, 0, Integer.MAX_VALUE);
-            processTimeMulti = builder
-                .comment(
+            processTimeMulti = builder.comment(
                     f(" The processing time multiplier the {} uses when upgraded.", id),
                     " Each upgrade multiplies the processing time for a recipe by this value.",
                     " Setting this to 1 will disable the processing time multiplier.",
@@ -126,15 +122,16 @@ public final class Config {
             builder.pop();
 
             builder.push(REQUESTER_ID);
-            requesterIdleEnergy = builder
-                .comment(f(" The energy the {} drains from the ME network when idle.", REQUESTER_ID))
+            requesterIdleEnergy = builder.comment(f(
+                    " The energy the {} drains from the ME network when idle.",
+                    REQUESTER_ID
+                ))
                 .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", REQUESTER_ID, IDLE_ENERGY)))
                 .defineInRange("idleEnergy", 5.0, 0.0, Double.MAX_VALUE);
             builder.pop();
 
             builder.push("misc");
-            inWorldResonating = builder
-                .comment(" Whether the Resonating Dust should be craft-able in the world.")
+            inWorldResonating = builder.comment(" Whether the Resonating Dust should be craft-able in the world.")
                 .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, "misc.inWorldResonating"))
                 .define("inWorldResonating", true);
             builder.pop();

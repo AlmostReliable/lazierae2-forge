@@ -141,7 +141,8 @@ public class ProcessorEntity extends GenericEntity {
         if (autoExtract) tag.putBoolean(AUTO_EXTRACT_ID, true);
         var stack = new ItemStack(getProcessorType().getItemProvider());
         if (!tag.isEmpty()) stack.setTag(tag);
-        level.addFreshEntity(new ItemEntity(level,
+        level.addFreshEntity(new ItemEntity(
+            level,
             worldPosition.getX() + 0.5,
             worldPosition.getY() + 0.5,
             worldPosition.getZ() + 0.5,
@@ -197,8 +198,8 @@ public class ProcessorEntity extends GenericEntity {
 
         if (processTime < AUTO_EXTRACT_RATE) {
             var produced = recipe.getResultItem().getCount() * recipeMultiplier;
-            if (produced + inventory.getStackInOutput().getCount() >
-                inventory.getStackLimit(ProcessorInventory.OUTPUT_SLOT, recipe.getResultItem())) {
+            if (produced + inventory.getStackInOutput()
+                .getCount() > inventory.getStackLimit(ProcessorInventory.OUTPUT_SLOT, recipe.getResultItem())) {
                 autoExtract();
             }
         }
@@ -206,8 +207,7 @@ public class ProcessorEntity extends GenericEntity {
 
     private void doWork(double energyCostExact) {
         changeActivityState(true);
-        energy.setEnergy((int) (energy.getEnergyStored() -
-            Math.round(energyCostExact * recipeMultiplier / processTime)));
+        energy.setEnergy((int) (energy.getEnergyStored() - Math.round(energyCostExact * recipeMultiplier / processTime)));
         progress++;
         setChanged();
     }
@@ -328,8 +328,7 @@ public class ProcessorEntity extends GenericEntity {
     @Nullable
     private ProcessorRecipe detectRecipeFromInventory() {
         assert level != null && !level.isClientSide;
-        return GameUtil
-            .getRecipeManager(level)
+        return GameUtil.getRecipeManager(level)
             .getRecipeFor(getProcessorType(), inventory.toVanilla(), level)
             .orElse(null);
     }

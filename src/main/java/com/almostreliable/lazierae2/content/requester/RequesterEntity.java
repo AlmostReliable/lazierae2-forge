@@ -145,7 +145,8 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
         storageManager.dropContents();
         if (creative) return;
         var stack = new ItemStack(Blocks.REQUESTER.get());
-        level.addFreshEntity(new ItemEntity(level,
+        level.addFreshEntity(new ItemEntity(
+            level,
             worldPosition.getX() + 0.5,
             worldPosition.getY() + 0.5,
             worldPosition.getZ() + 0.5,
@@ -219,8 +220,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
     }
 
     private IManagedGridNode createMainNode() {
-        return GridHelper
-            .createManagedNode(this, BlockEntityNodeListener.INSTANCE)
+        return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
             .addService(IStorageWatcherNode.class, storageManager)
             .addService(ICraftingRequester.class, this)
             .addService(IGridTickable.class, this)
@@ -262,8 +262,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
 
     @Override
     public ImmutableSet<ICraftingLink> getRequestedJobs() {
-        return Arrays
-            .stream(progressions)
+        return Arrays.stream(progressions)
             .filter(CraftingLinkState.class::isInstance)
             .map(state -> ((CraftingLinkState) state).link())
             .collect(ImmutableSet.toImmutableSet());

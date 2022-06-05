@@ -45,7 +45,8 @@ public class BlockStateData extends BlockStateProvider {
         var active = TextUtil.getRL(f("block/machine/{}", formActiveId(id)));
         var modelInactive = models().orientableWithBottom(id, wall, inactive, top, top);
         var modelActive = models().orientableWithBottom(formActiveId(id), wall, active, top, top);
-        orientedBlock(block,
+        orientedBlock(
+            block,
             state -> state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive
         );
     }
@@ -54,7 +55,8 @@ public class BlockStateData extends BlockStateProvider {
         var id = GameUtil.getIdFromBlock(block);
         var modelInactive = TextUtil.getRL(f("block/{}", id));
         var modelActive = TextUtil.getRL(f("block/{}", formActiveId(id)));
-        orientedBlock(block,
+        orientedBlock(
+            block,
             state -> new UncheckedModelFile(
                 state.getValue(GenericBlock.ACTIVE).equals(Boolean.TRUE) ? modelActive : modelInactive)
         );
@@ -66,8 +68,7 @@ public class BlockStateData extends BlockStateProvider {
         getVariantBuilder(block).forAllStates(state -> {
             var facing = state.getValue(GenericBlock.FACING);
 
-            return ConfiguredModel
-                .builder()
+            return ConfiguredModel.builder()
                 .modelFile(modelFunction.apply(state))
                 .rotationX(facing.getAxis() == Axis.Y ? facing.getAxisDirection().getStep() * -90 : 0)
                 .rotationY(facing.getAxis() == Axis.Y ? 0 : ((facing.get2DDataValue() + 2) % 4) * 90)

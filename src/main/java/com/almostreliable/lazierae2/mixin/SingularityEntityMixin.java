@@ -24,10 +24,8 @@ import static net.minecraft.world.item.Items.DIAMOND;
 @SuppressWarnings("java:S2160")
 public class SingularityEntityMixin extends AEBaseItemEntity {
 
-    @Unique
-    private int delay;
-    @Unique
-    private int transformTime;
+    @Unique private int delay;
+    @Unique private int transformTime;
 
     protected SingularityEntityMixin(
         EntityType<? extends AEBaseItemEntity> entityType, Level level

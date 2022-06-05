@@ -30,12 +30,16 @@ public abstract class TripleInputCategory extends ProcessorCategory<TripleInputR
     TripleInputCategory(IGuiHelper guiHelper, String id, ItemLike iconProvider) {
         super(guiHelper, id, iconProvider);
         var backgroundTexture = ProcessorScreen.TEXTURE;
-        background = guiHelper
-            .drawableBuilder(backgroundTexture, 42, 6, 92, 62)
+        background = guiHelper.drawableBuilder(backgroundTexture, 42, 6, 92, 62)
             .setTextureSize(ProcessorScreen.TEXTURE_WIDTH, ProcessorScreen.TEXTURE_HEIGHT)
             .build();
-        slot = guiHelper
-            .drawableBuilder(backgroundTexture, 43, 28, ProcessorScreen.SLOT_SIZE, ProcessorScreen.SLOT_SIZE)
+        slot = guiHelper.drawableBuilder(
+                backgroundTexture,
+                43,
+                28,
+                ProcessorScreen.SLOT_SIZE,
+                ProcessorScreen.SLOT_SIZE
+            )
             .setTextureSize(ProcessorScreen.TEXTURE_WIDTH, ProcessorScreen.TEXTURE_HEIGHT)
             .build();
     }
@@ -60,11 +64,9 @@ public abstract class TripleInputCategory extends ProcessorCategory<TripleInputR
         }
 
         builder.addSlot(RecipeIngredientRole.INPUT, 2, 2).addIngredients(VanillaTypes.ITEM_STACK, inputMap.get(0));
-        builder
-            .addSlot(RecipeIngredientRole.INPUT, 2, 23)
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 23)
             .addIngredients(VanillaTypes.ITEM_STACK, inputMap.size() >= 2 ? inputMap.get(1) : List.of(ItemStack.EMPTY));
-        builder
-            .addSlot(RecipeIngredientRole.INPUT, 2, 44)
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 44)
             .addIngredients(VanillaTypes.ITEM_STACK, inputMap.size() >= 3 ? inputMap.get(2) : List.of(ItemStack.EMPTY));
         builder.setShapeless();
         super.setRecipe(builder, recipe, focuses);

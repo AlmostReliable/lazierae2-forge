@@ -12,8 +12,7 @@ public final class PacketHandler {
 
     private static final ResourceLocation ID = TextUtil.getRL(NETWORK_ID);
     private static final String PROTOCOL = "1";
-    public static final SimpleChannel CHANNEL = ChannelBuilder
-        .named(ID)
+    public static final SimpleChannel CHANNEL = ChannelBuilder.named(ID)
         .networkProtocolVersion(() -> PROTOCOL)
         .clientAcceptedVersions(PROTOCOL::equals)
         .serverAcceptedVersions(PROTOCOL::equals)

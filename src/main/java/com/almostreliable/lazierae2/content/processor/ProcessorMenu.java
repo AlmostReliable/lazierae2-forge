@@ -42,7 +42,8 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
 
         if (index < processorInventory.getSlots()) {
             // from machine to inventory
-            if (!moveItemStackTo(slotStack,
+            if (!moveItemStackTo(
+                slotStack,
                 processorInventory.getSlots(),
                 processorInventory.getSlots() + PLAYER_INV_SIZE,
                 false
@@ -51,7 +52,8 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
             }
         } else if (GameUtil.isValidUpgrade(slotStack)) {
             // from inventory to upgrade slot
-            if (!moveItemStackTo(slotStack,
+            if (!moveItemStackTo(
+                slotStack,
                 ProcessorInventory.UPGRADE_SLOT,
                 ProcessorInventory.UPGRADE_SLOT + 1,
                 false

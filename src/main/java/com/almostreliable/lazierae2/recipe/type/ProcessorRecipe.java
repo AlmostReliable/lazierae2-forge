@@ -77,13 +77,15 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
 
     private void validateInputs() {
         if (inputs.isEmpty()) {
-            throw new IllegalArgumentException(f("No inputs for recipe type '{}' with output '{}'!",
+            throw new IllegalArgumentException(f(
+                "No inputs for recipe type '{}' with output '{}'!",
                 processorType.getId(),
                 output.toString()
             ));
         }
         if (inputs.size() > processorType.getInputSlots()) {
-            throw new IllegalArgumentException(f("Too many inputs for recipe type '{}' with output '{}'!",
+            throw new IllegalArgumentException(f(
+                "Too many inputs for recipe type '{}' with output '{}'!",
                 processorType.getId(),
                 output.toString()
             ));

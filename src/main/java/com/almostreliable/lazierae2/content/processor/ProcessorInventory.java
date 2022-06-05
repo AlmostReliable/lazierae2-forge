@@ -33,8 +33,7 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
     private LazyOptional<IItemHandler> outputInventoryCap;
     private LazyOptional<IItemHandler> ioInventoryCap;
     private NonNullList<ItemStack> stacks;
-    @Nullable
-    private Container vanillaInventory;
+    @Nullable private Container vanillaInventory;
     private boolean vanillaNeedsUpdate;
 
     ProcessorInventory(ProcessorEntity entity) {
@@ -96,8 +95,7 @@ public class ProcessorInventory implements IItemHandlerModifiable, INBTSerializa
         for (var slot = creative ? 0 : OUTPUT_SLOT; slot < getSlots(); slot++) {
             var stack = getStackInSlot(slot);
             if (stack.isEmpty()) continue;
-            entity
-                .getLevel()
+            entity.getLevel()
                 .addFreshEntity(new ItemEntity(entity.getLevel(), pos.getX(), pos.getY(), pos.getZ(), stack));
         }
     }

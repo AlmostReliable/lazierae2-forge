@@ -35,8 +35,8 @@ public class TripleInputRecipe extends ProcessorRecipe {
             var stack = inv.getItem(slot);
             if (!stack.isEmpty() && matchedContainerItems[slot - ProcessorInventory.NON_INPUT_SLOTS] == null) {
                 for (var input : getInputs()) {
-                    if (!matchedIngredients.contains(input.ingredient()) && input.ingredient().test(stack) &&
-                        stack.getCount() >= input.count()) {
+                    if (!matchedIngredients.contains(input.ingredient()) && input.ingredient()
+                        .test(stack) && stack.getCount() >= input.count()) {
                         matchedContainerItems[slot - ProcessorInventory.NON_INPUT_SLOTS] = input.ingredient();
                         matchedIngredients.add(input.ingredient());
                     }

@@ -51,8 +51,7 @@ public final class IOControl {
             super(screen, pX, pY, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID);
             this.side = side;
             entity = screen.getMenu().entity;
-            tooltip = Tooltip
-                .builder()
+            tooltip = Tooltip.builder()
                 .title("io.title")
                 .blank()
                 .keyEnum("io.side", TRANSLATE_TYPE.BLOCK_SIDE, () -> side)
@@ -60,8 +59,7 @@ public final class IOControl {
                 .blank()
                 .line("io.description")
                 .blank()
-                .conditional(extendedInfo -> extendedInfo
-                    .condition(() -> side == BLOCK_SIDE.FRONT)
+                .conditional(extendedInfo -> extendedInfo.condition(() -> side == BLOCK_SIDE.FRONT)
                     .then(Tooltip.builder().shiftClickAction("io.reset_all"))
                     .otherwise(Tooltip.builder().clickAction("io.action").shiftClickAction("io.reset")));
         }

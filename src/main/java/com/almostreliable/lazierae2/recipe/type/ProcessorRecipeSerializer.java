@@ -32,14 +32,12 @@ public class ProcessorRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
         if (processorType.getInputSlots() == 1) {
             inputs.add(IngredientWithCount.fromJson(GsonHelper.getAsJsonObject(json, INPUT)));
         } else {
-            GsonHelper
-                .getAsJsonArray(json, INPUT)
+            GsonHelper.getAsJsonArray(json, INPUT)
                 .forEach(jsonInput -> inputs.add(IngredientWithCount.fromJson(jsonInput.getAsJsonObject())));
         }
         var processTime = GsonHelper.getAsInt(json, PROCESS_TIME, processorType.getBaseProcessTime());
         var energyCost = GsonHelper.getAsInt(json, ENERGY_COST, processorType.getBaseEnergyCost());
-        return processorType
-            .getRecipeFactory()
+        return processorType.getRecipeFactory()
             .create(recipeId, processorType, List.of(), output, inputs, processTime, energyCost);
     }
 
@@ -54,8 +52,7 @@ public class ProcessorRecipeSerializer extends ForgeRegistryEntry<RecipeSerializ
         }
         var processTime = buffer.readInt();
         var energyCost = buffer.readInt();
-        return processorType
-            .getRecipeFactory()
+        return processorType.getRecipeFactory()
             .create(recipeId, processorType, List.of(), output, inputs, processTime, energyCost);
     }
 

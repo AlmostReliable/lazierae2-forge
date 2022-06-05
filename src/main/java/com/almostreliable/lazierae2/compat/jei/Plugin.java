@@ -56,28 +56,34 @@ public class Plugin implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration r) {
         var rm = GameUtil.getRecipeManager(null);
-        r.addRecipes(AggregatorCategory.TYPE,
+        r.addRecipes(
+            AggregatorCategory.TYPE,
             validateRecipes(rm.getAllRecipesFor(ProcessorType.AGGREGATOR), TripleInputRecipe.class)
         );
-        r.addRecipes(EtcherCategory.TYPE,
+        r.addRecipes(
+            EtcherCategory.TYPE,
             validateRecipes(rm.getAllRecipesFor(ProcessorType.ETCHER), TripleInputRecipe.class)
         );
-        r.addRecipes(GrinderCategory.TYPE,
+        r.addRecipes(
+            GrinderCategory.TYPE,
             validateRecipes(rm.getAllRecipesFor(ProcessorType.GRINDER), SingleInputRecipe.class)
         );
-        r.addRecipes(InfuserCategory.TYPE,
+        r.addRecipes(
+            InfuserCategory.TYPE,
             validateRecipes(rm.getAllRecipesFor(ProcessorType.INFUSER), TripleInputRecipe.class)
         );
 
         var inWaterRecipes = new ArrayList<>();
         if (AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
-            inWaterRecipes.add(new ThrowingInWaterDisplay(List.of(Ingredient.of(Items.RESONATING_SEED.get())),
+            inWaterRecipes.add(new ThrowingInWaterDisplay(
+                List.of(Ingredient.of(Items.RESONATING_SEED.get())),
                 new ItemStack(Items.RESONATING_CRYSTAL.get()),
                 true
             ));
         }
         if (Config.COMMON.inWorldResonating.get().equals(true)) {
-            inWaterRecipes.add(new ThrowingInWaterDisplay(List.of(Ingredient.of(AEItems.SKY_DUST),
+            inWaterRecipes.add(new ThrowingInWaterDisplay(List.of(
+                Ingredient.of(AEItems.SKY_DUST),
                 Ingredient.of(Tags.Items.GEMS_DIAMOND),
                 Ingredient.of(AEItems.ENDER_DUST)
             ), new ItemStack(Items.RESONATING_DUST.get(), 2), false));
@@ -103,7 +109,8 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration r) {
-        var handler = new ProcessorGuiHandler(156,
+        r.addGuiContainerHandler(ProcessorScreen.class, new ProcessorGuiHandler(
+            156,
             7,
             7,
             8,
@@ -111,8 +118,7 @@ public class Plugin implements IModPlugin {
             EtcherCategory.TYPE,
             GrinderCategory.TYPE,
             InfuserCategory.TYPE
-        );
-        r.addGuiContainerHandler(ProcessorScreen.class, handler);
+        ));
         r.addGhostIngredientHandler(RequesterScreen.class, new RequesterGhostHandler());
     }
 }

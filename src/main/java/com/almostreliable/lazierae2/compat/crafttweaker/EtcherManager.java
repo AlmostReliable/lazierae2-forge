@@ -30,8 +30,7 @@ public class EtcherManager implements ProcessorRecipeManager {
         ResourceLocation id, ItemStack output, int amount, IngredientWithCount[] ingredients, int processTime,
         int energyCost
     ) {
-        return ProcessorRecipeBuilder
-            .etcher(output.getItem(), amount)
+        return ProcessorRecipeBuilder.etcher(output.getItem(), amount)
             .input(ingredients)
             .processingTime(processTime)
             .energyCost(energyCost)
