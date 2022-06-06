@@ -23,9 +23,9 @@ final class MultiBlock {
         for (var x = 0; x < data.size(); x++) {
             for (var y = 0; y < data.size(); y++) {
                 for (var z = 0; z < data.size(); z++) {
-                    var position = data.itDirs().relative(data.startPosition(), x, y, z);
-                    var type = Type.of(x, y, z, data.size());
-                    if (!callback.apply(type, position)) {
+                    var pos = data.itDirs().relative(data.startPosition(), x, y, z);
+                    var posType = PositionType.of(x, y, z, data.size());
+                    if (!callback.apply(posType, pos)) {
                         return false;
                     }
                 }
@@ -34,10 +34,10 @@ final class MultiBlock {
         return true;
     }
 
-    public enum Type {
+    public enum PositionType {
         WALL, CORNER, EDGE, INNER;
 
-        static Type of(int x, int y, int z, int size) {
+        static PositionType of(int x, int y, int z, int size) {
             if (isInner(x, y, z, size)) {
                 return INNER;
             }
@@ -68,7 +68,7 @@ final class MultiBlock {
 
     @FunctionalInterface
     public interface IterateCallback {
-        boolean apply(Type type, BlockPos currentPos);
+        boolean apply(PositionType posType, BlockPos pos);
     }
 
     record IterateDirections(Direction depthDirection, Direction rowDirection, Direction columnDirection) {

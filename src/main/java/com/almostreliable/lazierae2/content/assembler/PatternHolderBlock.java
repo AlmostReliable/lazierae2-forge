@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.content.assembler;
 
+import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,6 +34,11 @@ public class PatternHolderBlock extends AssemblerBlock implements EntityBlock {
         BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
     ) {
         return openScreen(level, pos, player);
+    }
+
+    @Override
+    protected boolean isValidMultiBlockPos(PositionType posType) {
+        return posType == PositionType.INNER;
     }
 
     HOLDER_TIER getTier() {

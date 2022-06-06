@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.content.assembler;
 
-import com.almostreliable.lazierae2.content.GenericBlock;
+import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;
@@ -75,17 +75,23 @@ public class HullBlock extends AssemblerBlock {
             return super.use(state, level, pos, player, hand, hit);
         }
 
+        // TODO: check if valid multiblock and open the gui through the controller
         var controllerState = findControllerPos(level, pos, state);
-        // TODO open gui
 
         return InteractionResult.CONSUME;
     }
 
-    BlockState createMultiBlockState(BlockPos hullPos, BlockPos controllerPos) {
-        return defaultBlockState()
+    @Override
+    protected boolean isValidMultiBlockPos(PositionType posType) {
+        return (posType == PositionType.WALL && type == HULL_TYPE.WALL) ||
+            ((posType == PositionType.CORNER || posType == PositionType.EDGE) && type == HULL_TYPE.FRAME);
+    }
+
+    @Override
+    BlockState setupMultiBlockState(BlockState state, BlockPos hullPos, BlockPos controllerPos) {
+        return super.setupMultiBlockState(state, hullPos, controllerPos)
             .setValue(HORIZONTAL, getHorizontalOffset(hullPos, controllerPos))
-            .setValue(VERTICAL, getVerticalOffset(hullPos, controllerPos))
-            .setValue(GenericBlock.ACTIVE, true);
+            .setValue(VERTICAL, getVerticalOffset(hullPos, controllerPos));
     }
 
     private OptionalDirection getHorizontalOffset(BlockPos hullPos, BlockPos controllerPos) {

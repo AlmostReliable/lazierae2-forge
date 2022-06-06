@@ -4,8 +4,7 @@ import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.assembler.HullBlock.HULL_TYPE;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirections;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
-import com.almostreliable.lazierae2.content.assembler.MultiBlock.Type;
-import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
+import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,8 +24,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ControllerBlock extends AssemblerBlock implements EntityBlock {
 
@@ -69,15 +68,12 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         if (level.isClientSide() || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
             return super.use(state, level, pos, player, hand, hit);
         }
-        if (!(level.getBlockEntity(pos) instanceof ControllerEntity entity)) {
-            return InteractionResult.FAIL;
+        if ((level.getBlockEntity(pos) instanceof ControllerEntity entity) &&
+            (isMultiBlock(state) || formMultiBlock(state.getValue(FACING), level, pos, entity))) {
+            // TODO: open GUI
+            return InteractionResult.SUCCESS;
         }
-
-        // TODO: check if the multiblock is already formed and open the gui, otherwise create mb
-        if (isMultiBlock(state)) {
-            return InteractionResult.PASS;
-        }
-        return formMultiBlock(state, level, pos, entity);
+        return InteractionResult.FAIL;
     }
 
     @Nullable
@@ -86,94 +82,84 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         return new ControllerEntity(pos, state);
     }
 
-    void destroyMultiBlock(Level level, ControllerEntity entity, BlockPos origin) {
-        var data = entity.getData();
-        if (data == null) return;
+    @Override
+    protected boolean isValidMultiBlockPos(PositionType posType) {
+        return posType == PositionType.WALL;
+    }
 
-        MultiBlock.iterateMultiBlock(data, (type, pos) -> {
-            if (pos.equals(origin)) return true;
+    @Override
+    BlockState setupMultiBlockState(BlockState state, BlockPos hullPos, BlockPos controllerPos) {
+        return super.setupMultiBlockState(state, hullPos, controllerPos).setValue(FACING, state.getValue(FACING));
+    }
+
+    void destroyMultiBlock(Level level, ControllerEntity controller, BlockPos origin) {
+        var multiBlockData = controller.getData();
+        if (multiBlockData == null) return;
+
+        Map<BlockPos, AssemblerBlock> destroyData = new HashMap<>();
+        MultiBlock.iterateMultiBlock(multiBlockData, (posType, pos) -> {
             var state = level.getBlockState(pos);
-            if (state.isAir()) return true;
-
-            if (type == Type.INNER) {
-                if (level.getBlockState(pos).getBlock() instanceof PatternHolderBlock block) {
-                    level.setBlock(pos, block.defaultBlockState(), 2 | 16);
-                } else {
-                    throw new IllegalStateException("Block at " + pos + " is not a PatternHolderBlock");
-                }
+            if (pos.equals(origin) || pos.equals(controller.getBlockPos()) || state.isAir()) return true;
+            if (state.getBlock() instanceof AssemblerBlock block) {
+                destroyData.put(pos, block);
             } else {
-                if (level.getBlockState(pos).getBlock() instanceof HullBlock block) {
-                    level.setBlock(pos, block.defaultBlockState(), 2 | 16);
-                } else {
-                    throw new IllegalStateException("Block at " + pos + " is not a HullBlock");
-                }
+                LOG.warn("Block at {} is not an AssemblerBlock", pos);
             }
             return true;
         });
 
-        entity.setData(null);
-        if (entity.getBlockPos().equals(origin)) return;
-        level.setBlock(entity.getBlockPos(), entity.getBlockState().setValue(GenericBlock.ACTIVE, false), 3);
+        for (var data : destroyData.entrySet()) {
+            var updateFlags = (data.getValue() instanceof EntityBlock ? 1 : 16) | 2;
+            level.setBlock(
+                data.getKey(),
+                data.getValue().defaultBlockState().setValue(GenericBlock.ACTIVE, false),
+                updateFlags
+            );
+        }
+        controller.setData(null);
+        if (controller.getBlockPos().equals(origin)) return;
+        level.setBlock(controller.getBlockPos(), controller.getBlockState().setValue(GenericBlock.ACTIVE, false), 3);
     }
 
-    private InteractionResult formMultiBlock(
-        BlockState state, Level level, BlockPos pos, ControllerEntity entity
-    ) {
-        var itDirs = IterateDirections.of(state.getValue(FACING));
+    private boolean formMultiBlock(Direction facing, Level level, BlockPos pos, ControllerEntity controller) {
         var multiBlockData = MultiBlockData.of(
             pos,
-            itDirs,
+            IterateDirections.of(facing),
             potentialFrame -> HULL_TYPE.FRAME.validForMultiBlock(level.getBlockState(potentialFrame))
         );
-
         if (multiBlockData == null) {
             LOG.debug("Could not determine multi block edges or size is incorrect");
-            return InteractionResult.FAIL;
+            return false;
         }
 
-        Set<BlockPos> walls = new HashSet<>();
-        Set<BlockPos> edges = new HashSet<>();
-        var result = MultiBlock.iterateMultiBlock(multiBlockData, (type, currentPos) -> {
-            if (currentPos.equals(pos)) return true;
-            var currentBlockState = level.getBlockState(currentPos);
-            if (!(currentBlockState.getBlock() instanceof AssemblerBlock)) return false;
-
-            switch (type) {
-                case WALL:
-                    if (HULL_TYPE.WALL.validForMultiBlock(currentBlockState)) {
-                        walls.add(currentPos);
-                        return true;
-                    }
-                    break;
-                case CORNER, EDGE:
-                    if (HULL_TYPE.FRAME.validForMultiBlock(currentBlockState)) {
-                        edges.add(currentPos);
-                        return true;
-                    }
-                    break;
-                case INNER:
-                    return currentBlockState.isAir() ||
-                        (currentBlockState.getBlock() instanceof PatternHolderBlock holder &&
-                            !holder.isMultiBlock(currentBlockState));
+        Map<BlockPos, AssemblerBlock> formData = new HashMap<>();
+        var result = MultiBlock.iterateMultiBlock(multiBlockData, (posType, currentPos) -> {
+            var currentState = level.getBlockState(currentPos);
+            if (currentState.isAir()) {
+                return posType == PositionType.INNER;
+            }
+            if (currentState.getBlock() instanceof AssemblerBlock block &&
+                !block.isMultiBlock(currentState) && block.isValidMultiBlockPos(posType)) {
+                formData.put(currentPos, block);
+                return true;
             }
             return false;
         });
-
         if (!result) {
             LOG.debug("Invalid multi block");
-            return InteractionResult.FAIL;
+            return false;
         }
 
-        for (var wallPos : walls) {
-            level.setBlock(wallPos, Assembler.WALL.get().createMultiBlockState(wallPos, pos), 2 | 16);
+        for (var data : formData.entrySet()) {
+            var updateFlags = (data.getValue() instanceof EntityBlock ? 1 : 16) | 2;
+            var currentState = level.getBlockState(data.getKey());
+            level.setBlock(
+                data.getKey(),
+                data.getValue().setupMultiBlockState(currentState, data.getKey(), pos),
+                updateFlags
+            );
         }
-
-        for (var edgePos : edges) {
-            level.setBlock(edgePos, Assembler.FRAME.get().createMultiBlockState(edgePos, pos), 2 | 16);
-        }
-
-        level.setBlock(pos, state.setValue(GenericBlock.ACTIVE, true), 3);
-        entity.setData(multiBlockData);
-        return InteractionResult.SUCCESS;
+        controller.setData(multiBlockData);
+        return true;
     }
 }
