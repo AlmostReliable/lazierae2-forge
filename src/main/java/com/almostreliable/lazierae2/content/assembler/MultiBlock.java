@@ -142,9 +142,9 @@ final class MultiBlock {
         static MultiBlockData load(CompoundTag tag) {
             var size = tag.getInt(SIZE_ID);
             var startPosition = NbtUtils.readBlockPos(tag.getCompound(START_POS_ID));
-            var mDir = Direction.valueOf(tag.getString(DEPTH_DIR_ID));
-            var rDir = Direction.valueOf(tag.getString(ROW_DIR_ID));
-            var cDir = Direction.valueOf(tag.getString(COL_DIR_ID));
+            var mDir = Direction.values()[tag.getInt(DEPTH_DIR_ID)];
+            var rDir = Direction.values()[tag.getInt(ROW_DIR_ID)];
+            var cDir = Direction.values()[tag.getInt(COL_DIR_ID)];
             return new MultiBlockData(size, startPosition, new IterateDirections(mDir, rDir, cDir));
         }
 
@@ -152,9 +152,9 @@ final class MultiBlock {
             var tag = new CompoundTag();
             tag.putInt(SIZE_ID, data.size);
             tag.put(START_POS_ID, NbtUtils.writeBlockPos(data.startPosition));
-            tag.putString(DEPTH_DIR_ID, data.itDirs.depthDirection().toString());
-            tag.putString(ROW_DIR_ID, data.itDirs.rowDirection().toString());
-            tag.putString(COL_DIR_ID, data.itDirs.columnDirection().toString());
+            tag.putInt(DEPTH_DIR_ID, data.itDirs.depthDirection().ordinal());
+            tag.putInt(ROW_DIR_ID, data.itDirs.rowDirection().ordinal());
+            tag.putInt(COL_DIR_ID, data.itDirs.columnDirection().ordinal());
             return tag;
         }
 
