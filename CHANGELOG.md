@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
-- /
+- added model for the Matter Infuser
+- changed texture of the Matter Infuser
 
 ## [3.0.2] - 2022-06-05
 
