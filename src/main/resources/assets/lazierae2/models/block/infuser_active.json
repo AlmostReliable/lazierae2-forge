@@ -1,0 +1,6 @@
+{
+  "parent": "lazierae2:block/infuser",
+  "textures": {
+    "face": "lazierae2:block/machine/infuser_active"
+  }
+}
