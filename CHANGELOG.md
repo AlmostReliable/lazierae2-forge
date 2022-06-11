@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning].
 - changed texture of the Matter Infuser
 - changed texture of the Universal Press
 - Requester now requires a channel
+- Requester no longer exposes front side
 
 ## [3.0.2] - 2022-06-05
 

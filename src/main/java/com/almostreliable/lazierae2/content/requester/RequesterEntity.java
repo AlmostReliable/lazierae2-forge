@@ -15,6 +15,7 @@ import appeng.api.util.AECableType;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.helpers.MachineSource;
+import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
@@ -220,6 +221,8 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
     }
 
     private IManagedGridNode createMainNode() {
+        var exposedSides = EnumSet.allOf(Direction.class);
+        exposedSides.remove(getBlockState().getValue(GenericBlock.FACING));
         return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
             .setFlags(GridFlags.REQUIRE_CHANNEL)
             .addService(IStorageWatcherNode.class, storageManager)
@@ -229,7 +232,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
             .setInWorldNode(true)
             .setTagName("proxy")
             .setIdlePowerUsage(Config.COMMON.requesterIdleEnergy.get())
-            .setExposedOnSides(EnumSet.allOf(Direction.class));
+            .setExposedOnSides(exposedSides);
     }
 
     public IActionSource getActionSource() {
