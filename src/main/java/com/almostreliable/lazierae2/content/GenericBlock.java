@@ -47,6 +47,15 @@ public abstract class GenericBlock extends Block {
     }
 
     @Override
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        var be = level.getBlockEntity(pos);
+        if (!level.isClientSide && be instanceof GenericEntity entity) {
+            entity.playerDestroy(player.isCreative());
+        }
+        super.playerWillDestroy(level, pos, state, player);
+    }
+
+    @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(ACTIVE);
@@ -69,7 +78,7 @@ public abstract class GenericBlock extends Block {
     protected InteractionResult openScreen(
         Level level, BlockPos pos, Player player
     ) {
-        if (level.isClientSide() || player.isShiftKeyDown()) return InteractionResult.SUCCESS;
+        if (level.isClientSide() || player.isShiftKeyDown()) return InteractionResult.PASS;
         var entity = level.getBlockEntity(pos);
         if (entity instanceof MenuProvider menuProvider && player instanceof ServerPlayer invoker) {
             NetworkHooks.openGui(invoker, menuProvider, pos);

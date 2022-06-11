@@ -6,6 +6,8 @@
   "mixins": [
     "SingularityEntityMixin"
   ],
-  "client": [],
+  "client": [
+    "AbstractContainerScreenMixin"
+  ],
   "minVersion": "0.8.4"
 }

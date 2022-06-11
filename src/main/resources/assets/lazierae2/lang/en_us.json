@@ -28,6 +28,10 @@
   "block.lazierae2.infuser": "Matter Infuser",
   "block.lazierae2.requester": "ME Requester",
   "block.lazierae2.controller": "Assembler Controller",
+  "block.lazierae2.tier1": "Assembler Pattern Holder T1",
+  "block.lazierae2.tier2": "Assembler Pattern Holder T2",
+  "block.lazierae2.tier3": "Assembler Pattern Holder T3",
+  "block.lazierae2.accelerator": "Assembler Accelerator",
   "block.lazierae2.wall": "Assembler Wall",
   "block.lazierae2.frame": "Assembler Frame",
 

@@ -299,12 +299,36 @@ public final class Setup {
             }
         );
 
+        static {
+            Assembler.init();
+        }
+
         private Menus() {}
 
         private static <M extends GenericMenu<?>> RegistryObject<MenuType<M>> register(
             String id, IContainerFactory<M> factory
         ) {
             return REGISTRY.register(id, () -> IForgeMenuType.create(factory));
+        }
+
+        public static final class Assembler {
+
+            public static final RegistryObject<MenuType<PatternHolderMenu>> PATTERN_HOLDER = register(
+                PATTERN_HOLDER_ID,
+                (windowId, inventory, data) -> {
+                    var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
+                    if (!(entity instanceof PatternHolderEntity patternHolder)) {
+                        throw new IllegalStateException("Entity is not a LazierAE2 pattern holder!");
+                    }
+                    return new PatternHolderMenu(windowId, patternHolder, inventory);
+                }
+            );
+
+            private Assembler() {}
+
+            private static void init() {
+                // fake init
+            }
         }
     }
 
