@@ -221,6 +221,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
 
     private IManagedGridNode createMainNode() {
         return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
+            .setFlags(GridFlags.REQUIRE_CHANNEL)
             .addService(IStorageWatcherNode.class, storageManager)
             .addService(ICraftingRequester.class, this)
             .addService(IGridTickable.class, this)
