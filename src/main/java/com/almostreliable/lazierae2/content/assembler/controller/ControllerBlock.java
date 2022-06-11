@@ -1,7 +1,9 @@
-package com.almostreliable.lazierae2.content.assembler;
+package com.almostreliable.lazierae2.content.assembler.controller;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
+import com.almostreliable.lazierae2.content.assembler.AssemblerBlock;
 import com.almostreliable.lazierae2.content.assembler.HullBlock.HULL_TYPE;
+import com.almostreliable.lazierae2.content.assembler.MultiBlock;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirections;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
@@ -83,16 +85,16 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     }
 
     @Override
-    protected boolean isValidMultiBlockPos(PositionType posType) {
+    public boolean isValidMultiBlockPos(PositionType posType) {
         return posType == PositionType.WALL;
     }
 
     @Override
-    BlockState setupMultiBlockState(BlockState state, BlockPos hullPos, BlockPos controllerPos) {
+    public BlockState setupMultiBlockState(BlockState state, BlockPos hullPos, BlockPos controllerPos) {
         return super.setupMultiBlockState(state, hullPos, controllerPos).setValue(FACING, state.getValue(FACING));
     }
 
-    void destroyMultiBlock(Level level, ControllerEntity controller, BlockPos origin) {
+    public void destroyMultiBlock(Level level, ControllerEntity controller, BlockPos origin) {
         var multiBlockData = controller.getData();
         if (multiBlockData == null) return;
 

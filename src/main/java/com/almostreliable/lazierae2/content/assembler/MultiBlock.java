@@ -10,14 +10,14 @@ import java.util.function.Predicate;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
-final class MultiBlock {
+public final class MultiBlock {
 
     static final int MAX_SIZE = 13;
     private static final int MIN_SIZE = 5;
 
     private MultiBlock() {}
 
-    static boolean iterateMultiBlock(
+    public static boolean iterateMultiBlock(
         MultiBlockData data, IterateCallback callback
     ) {
         for (var x = 0; x < data.size(); x++) {
@@ -71,9 +71,9 @@ final class MultiBlock {
         boolean apply(PositionType posType, BlockPos pos);
     }
 
-    record IterateDirections(Direction depthDirection, Direction rowDirection, Direction columnDirection) {
+    public record IterateDirections(Direction depthDirection, Direction rowDirection, Direction columnDirection) {
 
-        static IterateDirections of(Direction facing) {
+        public static IterateDirections of(Direction facing) {
             if (facing == Direction.UP) {
                 return new IterateDirections(Direction.DOWN, Direction.EAST, Direction.SOUTH);
             }
@@ -139,7 +139,7 @@ final class MultiBlock {
             return new MultiBlockData(sizeRow, startPosition, itDirs);
         }
 
-        static MultiBlockData load(CompoundTag tag) {
+        public static MultiBlockData load(CompoundTag tag) {
             var size = tag.getInt(SIZE_ID);
             var startPosition = NbtUtils.readBlockPos(tag.getCompound(START_POS_ID));
             var mDir = Direction.values()[tag.getInt(DEPTH_DIR_ID)];
@@ -148,7 +148,7 @@ final class MultiBlock {
             return new MultiBlockData(size, startPosition, new IterateDirections(mDir, rDir, cDir));
         }
 
-        static CompoundTag save(MultiBlockData data) {
+        public static CompoundTag save(MultiBlockData data) {
             var tag = new CompoundTag();
             tag.putInt(SIZE_ID, data.size);
             tag.put(START_POS_ID, NbtUtils.writeBlockPos(data.startPosition));

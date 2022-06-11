@@ -1,6 +1,6 @@
 package com.almostreliable.lazierae2.gui;
 
-import com.almostreliable.lazierae2.content.assembler.PatternHolderMenu;
+import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderMenu;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -105,6 +105,7 @@ public final class Config {
         public final ProcessorConfig grinder;
         public final ProcessorConfig infuser;
         public final DoubleValue requesterIdleEnergy;
+        public final DoubleValue assemblerIdleEnergy;
         public final BooleanValue inWorldResonating;
 
         private CommonConfig(Builder builder) {
@@ -127,6 +128,15 @@ public final class Config {
                     REQUESTER_ID
                 ))
                 .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", REQUESTER_ID, IDLE_ENERGY)))
+                .defineInRange("idleEnergy", 5.0, 0.0, Double.MAX_VALUE);
+            builder.pop();
+
+            builder.push(ASSEMBLER_ID);
+            assemblerIdleEnergy = builder.comment(f(
+                    " The energy the {} drains from the ME network when idle.",
+                    ASSEMBLER_ID
+                ))
+                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", ASSEMBLER_ID, IDLE_ENERGY)))
                 .defineInRange("idleEnergy", 5.0, 0.0, Double.MAX_VALUE);
             builder.pop();
 

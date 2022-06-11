@@ -1,6 +1,8 @@
 package com.almostreliable.lazierae2.content.assembler;
 
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
+import com.almostreliable.lazierae2.content.assembler.controller.ControllerBlock;
+import com.almostreliable.lazierae2.content.assembler.controller.ControllerEntity;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.core.BlockPos;
@@ -82,13 +84,13 @@ public class HullBlock extends AssemblerBlock {
     }
 
     @Override
-    protected boolean isValidMultiBlockPos(PositionType posType) {
+    public boolean isValidMultiBlockPos(PositionType posType) {
         return (posType == PositionType.WALL && type == HULL_TYPE.WALL) ||
             ((posType == PositionType.CORNER || posType == PositionType.EDGE) && type == HULL_TYPE.FRAME);
     }
 
     @Override
-    BlockState setupMultiBlockState(BlockState state, BlockPos hullPos, BlockPos controllerPos) {
+    public BlockState setupMultiBlockState(BlockState state, BlockPos hullPos, BlockPos controllerPos) {
         return super.setupMultiBlockState(state, hullPos, controllerPos)
             .setValue(HORIZONTAL, getHorizontalOffset(hullPos, controllerPos))
             .setValue(VERTICAL, getVerticalOffset(hullPos, controllerPos));

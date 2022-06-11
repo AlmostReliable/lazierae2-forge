@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.content.assembler;
+package com.almostreliable.lazierae2.content.assembler.holder;
 
 import appeng.core.definitions.AEItems;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -38,7 +38,8 @@ public class PatternInventory extends ItemStackHandler {
     protected void onContentsChanged(int slot) {
         super.onContentsChanged(slot);
         entity.setChanged();
-        entity.updatePatterns();
+        // entity.updatePatterns();
+        // TODO: notify controller to update patterns
     }
 
     void dropContents() {

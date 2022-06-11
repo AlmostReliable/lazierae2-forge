@@ -2,8 +2,8 @@ package com.almostreliable.lazierae2.data.client;
 
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.MachineBlock;
-import com.almostreliable.lazierae2.content.assembler.ControllerBlock;
 import com.almostreliable.lazierae2.content.assembler.HullBlock;
+import com.almostreliable.lazierae2.content.assembler.controller.ControllerBlock;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Blocks.Assembler;
 import com.almostreliable.lazierae2.util.GameUtil;

@@ -2,7 +2,7 @@ package com.almostreliable.lazierae2.inventory;
 
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedPatternItem;
-import com.almostreliable.lazierae2.content.assembler.PatternHolderMenu;
+import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;

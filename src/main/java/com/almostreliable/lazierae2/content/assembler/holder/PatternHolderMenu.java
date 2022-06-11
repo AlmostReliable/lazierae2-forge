@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.content.assembler;
+package com.almostreliable.lazierae2.content.assembler.holder;
 
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.core.Setup.Menus.Assembler;

@@ -1,5 +1,6 @@
-package com.almostreliable.lazierae2.content.assembler;
+package com.almostreliable.lazierae2.content.assembler.holder;
 
+import com.almostreliable.lazierae2.content.assembler.AssemblerBlock;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -37,7 +38,7 @@ public class PatternHolderBlock extends AssemblerBlock implements EntityBlock {
     }
 
     @Override
-    protected boolean isValidMultiBlockPos(PositionType posType) {
+    public boolean isValidMultiBlockPos(PositionType posType) {
         return posType == PositionType.INNER;
     }
 
