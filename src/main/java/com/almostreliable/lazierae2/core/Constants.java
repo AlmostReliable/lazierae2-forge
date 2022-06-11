@@ -52,6 +52,7 @@ public final class Constants {
 
     public enum Nbt {
         ;
+        public static final String ACCELERATORS_ID = "accelerators";
         public static final String AUTO_EXTRACT_ID = "auto_extract";
         public static final String BATCH_ID = "batch";
         public static final String BUFFER_AMOUNT_ID = "buffer_amount";
@@ -59,7 +60,8 @@ public final class Constants {
         public static final String COL_DIR_ID = "col_dir";
         public static final String COUNT_ID = "count";
         public static final String CRAFT_REQUESTS_ID = "craft_requests";
-        public static final String DATA_ID = "data";
+        public static final String MULTIBLOCK_DATA_ID = "multiblock_data";
+        public static final String CONTROLLER_DATA_ID = "controller_data";
         public static final String DEPTH_DIR_ID = "depth_dir";
         public static final String ENERGY_COST_ID = "energy_cost";
         public static final String ENERGY_ID = "energy";

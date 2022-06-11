@@ -83,7 +83,7 @@ public class PatternHolderMenu extends GenericMenu<PatternHolderEntity> {
     }
 
     @Override
-    protected int getSlotY() {
+    protected int getPlayerInventoryHeight() {
         return 76;
     }
 }

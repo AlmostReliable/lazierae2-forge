@@ -8,6 +8,7 @@ import com.almostreliable.lazierae2.content.assembler.HullBlock;
 import com.almostreliable.lazierae2.content.assembler.HullBlock.HULL_TYPE;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerBlock;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerEntity;
+import com.almostreliable.lazierae2.content.assembler.controller.ControllerMenu;
 import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderBlock;
 import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderBlock.HOLDER_TIER;
 import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderEntity;
@@ -21,10 +22,12 @@ import com.almostreliable.lazierae2.content.requester.RequesterEntity;
 import com.almostreliable.lazierae2.content.requester.RequesterMenu;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipeSerializer;
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -38,7 +41,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplie
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -50,6 +52,7 @@ import java.util.function.Supplier;
 import static com.almostreliable.lazierae2.core.Constants.Blocks.*;
 import static com.almostreliable.lazierae2.core.Constants.Items.*;
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public final class Setup {
 
@@ -282,59 +285,58 @@ public final class Setup {
         private static final DeferredRegister<MenuType<?>> REGISTRY
             = DeferredRegister.create(ForgeRegistries.CONTAINERS, MOD_ID);
 
-        public static final RegistryObject<MenuType<ProcessorMenu>> PROCESSOR = register(
-            PROCESSOR_ID,
-            (windowId, inventory, data) -> {
-                var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
-                if (!(entity instanceof ProcessorEntity processor)) {
-                    throw new IllegalStateException("Entity is not a LazierAE2 processor!");
-                }
-                return new ProcessorMenu(windowId, processor, inventory);
-            }
-        );
-
-        public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register(
-            REQUESTER_ID,
-            (windowId, inventory, data) -> {
-                var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
-                if (!(entity instanceof RequesterEntity requester)) {
-                    throw new IllegalStateException("Entity is not a LazierAE2 requester!");
-                }
-                return new RequesterMenu(windowId, requester, inventory);
-            }
-        );
-
         static {
             Assembler.init();
         }
 
         private Menus() {}
 
-        private static <M extends GenericMenu<?>> RegistryObject<MenuType<M>> register(
-            String id, IContainerFactory<M> factory
+        private static <E extends GenericEntity, M extends GenericMenu<E>> RegistryObject<MenuType<M>> register(
+            String id, Class<E> entityClass,
+            Function3<? super Integer, ? super E, ? super Inventory, ? extends M> menuFactory
         ) {
-            return REGISTRY.register(id, () -> IForgeMenuType.create(factory));
+            return REGISTRY.register(id, () -> IForgeMenuType.create((windowId, inv, data) -> {
+                var entity = inv.player.level.getBlockEntity(data.readBlockPos());
+                if (!entityClass.isInstance(entity)) {
+                    throw new IllegalStateException(f("Entity is not a Lazier AE2 {}", entityClass.getSimpleName()));
+                }
+                // noinspection unchecked
+                return menuFactory.apply(windowId, (E) entity, inv);
+            }));
         }
 
         public static final class Assembler {
-
-            public static final RegistryObject<MenuType<PatternHolderMenu>> PATTERN_HOLDER = register(
-                PATTERN_HOLDER_ID,
-                (windowId, inventory, data) -> {
-                    var entity = inventory.player.level.getBlockEntity(data.readBlockPos());
-                    if (!(entity instanceof PatternHolderEntity patternHolder)) {
-                        throw new IllegalStateException("Entity is not a LazierAE2 pattern holder!");
-                    }
-                    return new PatternHolderMenu(windowId, patternHolder, inventory);
-                }
-            );
 
             private Assembler() {}
 
             private static void init() {
                 // fake init
             }
+
+            public static final RegistryObject<MenuType<ControllerMenu>> CONTROLLER = register(
+                CONTROLLER_ID,
+                ControllerEntity.class,
+                ControllerMenu::new
+            );
+
+            public static final RegistryObject<MenuType<PatternHolderMenu>> PATTERN_HOLDER = register(
+                PATTERN_HOLDER_ID,
+                PatternHolderEntity.class,
+                PatternHolderMenu::new
+            );
         }
+
+        public static final RegistryObject<MenuType<ProcessorMenu>> PROCESSOR = register(
+            PROCESSOR_ID,
+            ProcessorEntity.class,
+            ProcessorMenu::new
+        );
+
+        public static final RegistryObject<MenuType<RequesterMenu>> REQUESTER = register(
+            REQUESTER_ID,
+            RequesterEntity.class,
+            RequesterMenu::new
+        );
     }
 
     public static final class Tags {

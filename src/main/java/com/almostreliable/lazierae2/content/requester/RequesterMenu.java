@@ -82,7 +82,7 @@ public class RequesterMenu extends GenericMenu<RequesterEntity> {
     }
 
     @Override
-    protected int getSlotY() {
+    protected int getPlayerInventoryHeight() {
         return 129;
     }
 

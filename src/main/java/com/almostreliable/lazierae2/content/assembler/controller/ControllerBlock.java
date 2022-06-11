@@ -7,6 +7,7 @@ import com.almostreliable.lazierae2.content.assembler.MultiBlock;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirections;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
+import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderBlock;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -95,7 +96,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     }
 
     public void destroyMultiBlock(Level level, ControllerEntity controller, BlockPos origin) {
-        var multiBlockData = controller.getData();
+        var multiBlockData = controller.getMultiBlockData();
         if (multiBlockData == null) return;
 
         Map<BlockPos, AssemblerBlock> destroyData = new HashMap<>();
@@ -118,7 +119,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
                 updateFlags
             );
         }
-        controller.setData(null);
+        controller.setMultiBlockData(null);
         if (controller.getBlockPos().equals(origin)) return;
         level.setBlock(controller.getBlockPos(), controller.getBlockState().setValue(GenericBlock.ACTIVE, false), 3);
     }
@@ -143,6 +144,9 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             if (currentState.getBlock() instanceof AssemblerBlock block &&
                 !block.isMultiBlock(currentState) && block.isValidMultiBlockPos(posType)) {
                 formData.put(currentPos, block);
+                if (block instanceof PatternHolderBlock) {
+                    controller.controllerData.addHolder(currentPos);
+                }
                 return true;
             }
             return false;
@@ -161,7 +165,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
                 updateFlags
             );
         }
-        controller.setData(multiBlockData);
+        controller.setMultiBlockData(multiBlockData);
         return true;
     }
 }

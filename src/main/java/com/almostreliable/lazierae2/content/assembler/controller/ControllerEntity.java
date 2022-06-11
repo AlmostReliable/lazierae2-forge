@@ -15,50 +15,52 @@ import com.almostreliable.lazierae2.core.Setup.Entities.Assembler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import static com.almostreliable.lazierae2.core.Constants.Nbt.DATA_ID;
+import static com.almostreliable.lazierae2.core.Constants.Nbt.CONTROLLER_DATA_ID;
+import static com.almostreliable.lazierae2.core.Constants.Nbt.MULTIBLOCK_DATA_ID;
 
 public class ControllerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, ICraftingProvider {
 
+    final ControllerData controllerData;
     private final IManagedGridNode mainNode;
-    private final List<IPatternDetails> patterns = new ArrayList<>();
-    @Nullable private MultiBlockData data;
+    @Nullable private MultiBlockData multiBlockData;
 
     public ControllerEntity(BlockPos pos, BlockState state) {
         super(Assembler.ASSEMBLER_CONTROLLER.get(), pos, state);
         mainNode = createMainNode();
+        controllerData = new ControllerData(this);
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
         mainNode.create(level, worldPosition);
-        updatePatterns();
+        controllerData.onLoad();
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        if (tag.contains(DATA_ID)) {
-            data = MultiBlockData.load(tag.getCompound(DATA_ID));
+        if (tag.contains(CONTROLLER_DATA_ID)) {
+            controllerData.deserializeNBT(tag.getList(CONTROLLER_DATA_ID, Tag.TAG_COMPOUND));
         }
+        if (tag.contains(MULTIBLOCK_DATA_ID)) multiBlockData = MultiBlockData.load(tag.getCompound(MULTIBLOCK_DATA_ID));
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        if (data != null) {
-            tag.put(DATA_ID, MultiBlockData.save(data));
-        }
+        tag.put(CONTROLLER_DATA_ID, controllerData.serializeNBT());
+        if (multiBlockData != null) tag.put(MULTIBLOCK_DATA_ID, MultiBlockData.save(multiBlockData));
     }
 
     @Nullable
@@ -83,11 +85,6 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
         // TODO: implement
     }
 
-    void updatePatterns() {
-        patterns.clear();
-        // TODO: iterate through pattern holders and upadate patterns
-    }
-
     private IManagedGridNode createMainNode() {
         var exposedSides = EnumSet.allOf(Direction.class);
         exposedSides.remove(getBlockState().getValue(ControllerBlock.FACING));
@@ -102,17 +99,17 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     @Nullable
-    MultiBlockData getData() {
-        return data;
+    MultiBlockData getMultiBlockData() {
+        return multiBlockData;
     }
 
-    void setData(@Nullable MultiBlockData data) {
-        this.data = data;
+    void setMultiBlockData(@Nullable MultiBlockData multiBlockData) {
+        this.multiBlockData = multiBlockData;
     }
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
-        return patterns;
+        return controllerData.getPatterns();
     }
 
     @Override

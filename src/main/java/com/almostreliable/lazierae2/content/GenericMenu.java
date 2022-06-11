@@ -75,17 +75,17 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
                     menuInventory,
                     j + i * 9 + 9,
                     8 + j * SLOT_SIZE,
-                    getSlotY() + i * SLOT_SIZE
+                    getPlayerInventoryHeight() + i * SLOT_SIZE
                 ));
             }
         }
         // hot bar
         for (var i = 0; i < 9; i++) {
-            addSlot(new SlotItemHandler(menuInventory, i, 8 + i * SLOT_SIZE, getSlotY() + 58));
+            addSlot(new SlotItemHandler(menuInventory, i, 8 + i * SLOT_SIZE, getPlayerInventoryHeight() + 58));
         }
     }
 
     protected abstract void setupContainerInventory();
 
-    protected abstract int getSlotY();
+    protected abstract int getPlayerInventoryHeight();
 }

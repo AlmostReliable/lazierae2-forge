@@ -100,7 +100,7 @@ public class ProcessorMenu extends GenericMenu<ProcessorEntity> {
     }
 
     @Override
-    protected int getSlotY() {
+    protected int getPlayerInventoryHeight() {
         return 72;
     }
 
