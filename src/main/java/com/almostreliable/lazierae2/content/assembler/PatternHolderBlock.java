@@ -46,6 +46,6 @@ public class PatternHolderBlock extends AssemblerBlock implements EntityBlock {
     }
 
     public enum HOLDER_TIER {
-        TIER_1, TIER_2, TIER_3, ACCELERATOR
+        ACCELERATOR, TIER_1, TIER_2, TIER_3
     }
 }

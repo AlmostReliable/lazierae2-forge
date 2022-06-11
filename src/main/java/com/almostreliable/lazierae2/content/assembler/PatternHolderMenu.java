@@ -69,7 +69,7 @@ public class PatternHolderMenu extends GenericMenu<PatternHolderEntity> {
 
     @Override
     protected void setupContainerInventory() {
-        for (var row = 0; row < entity.getTier().ordinal() + 1; row++) {
+        for (var row = 0; row < entity.getTier().ordinal(); row++) {
             for (var slot = 0; slot < 9; slot++) {
                 addSlot(new PatternSlot(
                     this,

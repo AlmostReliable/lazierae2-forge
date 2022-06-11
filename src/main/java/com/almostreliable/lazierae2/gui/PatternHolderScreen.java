@@ -36,7 +36,7 @@ public class PatternHolderScreen extends GenericScreen<PatternHolderMenu> {
         blit(stack, leftPos, topPos, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
         // pattern slots
-        renderPatternRows(stack, getMenu().entity.getTier().ordinal() + 1);
+        renderPatternRows(stack, getMenu().entity.getTier().ordinal());
     }
 
     private void renderPatternRows(PoseStack stack, int rows) {
