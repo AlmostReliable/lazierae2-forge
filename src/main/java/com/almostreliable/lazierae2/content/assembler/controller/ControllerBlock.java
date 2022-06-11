@@ -68,12 +68,13 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     public InteractionResult use(
         BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
     ) {
+        // TODO: find another way to get the multiblock stuff on client
         if (level.isClientSide() || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
             return super.use(state, level, pos, player, hand, hit);
         }
         if ((level.getBlockEntity(pos) instanceof ControllerEntity entity) &&
             (isMultiBlock(state) || formMultiBlock(state.getValue(FACING), level, pos, entity))) {
-            // TODO: open GUI
+            openScreen(level, pos, player);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.FAIL;
@@ -145,7 +146,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
                 !block.isMultiBlock(currentState) && block.isValidMultiBlockPos(posType)) {
                 formData.put(currentPos, block);
                 if (block instanceof PatternHolderBlock) {
-                    controller.controllerData.addHolder(currentPos);
+                    controller.controllerData.addHolderPos(currentPos);
                 }
                 return true;
             }

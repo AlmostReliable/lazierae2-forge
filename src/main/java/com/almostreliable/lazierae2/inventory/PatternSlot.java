@@ -2,7 +2,7 @@ package com.almostreliable.lazierae2.inventory;
 
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedPatternItem;
-import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderMenu;
+import com.almostreliable.lazierae2.content.GenericMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class PatternSlot extends SlotItemHandler {
 
-    private final PatternHolderMenu owner;
+    private final GenericMenu<?> owner;
 
-    public PatternSlot(PatternHolderMenu owner, IItemHandler itemHandler, int index, int pX, int pY) {
+    public PatternSlot(GenericMenu<?> owner, IItemHandler itemHandler, int index, int pX, int pY) {
         super(itemHandler, index, pX, pY);
         this.owner = owner;
     }

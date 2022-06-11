@@ -248,7 +248,7 @@ public final class Setup {
                 // fake init
             }
 
-            public static final RegistryObject<BlockEntityType<ControllerEntity>> ASSEMBLER_CONTROLLER = register(
+            public static final RegistryObject<BlockEntityType<ControllerEntity>> CONTROLLER = register(
                 CONTROLLER_ID,
                 ControllerEntity::new,
                 Blocks.Assembler.CONTROLLER

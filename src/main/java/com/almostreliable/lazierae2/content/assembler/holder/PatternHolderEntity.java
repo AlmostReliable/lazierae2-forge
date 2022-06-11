@@ -3,6 +3,7 @@ package com.almostreliable.lazierae2.content.assembler.holder;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import com.almostreliable.lazierae2.content.GenericEntity;
+import com.almostreliable.lazierae2.content.assembler.controller.ControllerEntity;
 import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderBlock.HOLDER_TIER;
 import com.almostreliable.lazierae2.core.Setup.Entities.Assembler;
 import net.minecraft.core.BlockPos;
@@ -13,13 +14,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Collection;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.INVENTORY_ID;
 
 public class PatternHolderEntity extends GenericEntity {
 
-    final PatternInventory patternStorage;
+    public final PatternInventory patternStorage;
+    @Nullable private ControllerEntity controller;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
     public PatternHolderEntity(
@@ -47,13 +49,7 @@ public class PatternHolderEntity extends GenericEntity {
         return new PatternHolderMenu(windowId, this, inventory);
     }
 
-    @Override
-    protected void playerDestroy(boolean creative) {
-        assert level != null;
-        patternStorage.dropContents();
-    }
-
-    void updatePatterns(List<? super IPatternDetails> patterns) {
+    public void updatePatterns(Collection<? super IPatternDetails> patterns) {
         for (var slot = 0; slot < patternStorage.getSlots(); slot++) {
             var stack = patternStorage.getStackInSlot(slot);
             var details = PatternDetailsHelper.decodePattern(stack, getLevel());
@@ -61,7 +57,17 @@ public class PatternHolderEntity extends GenericEntity {
         }
     }
 
+    @Override
+    protected void playerDestroy(boolean creative) {
+        assert level != null;
+        patternStorage.dropContents();
+    }
+
     public HOLDER_TIER getTier() {
         return ((PatternHolderBlock) getBlockState().getBlock()).getTier();
+    }
+
+    public void setController(ControllerEntity controller) {
+        this.controller = controller;
     }
 }

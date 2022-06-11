@@ -35,7 +35,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     @Nullable private MultiBlockData multiBlockData;
 
     public ControllerEntity(BlockPos pos, BlockState state) {
-        super(Assembler.ASSEMBLER_CONTROLLER.get(), pos, state);
+        super(Assembler.CONTROLLER.get(), pos, state);
         mainNode = createMainNode();
         controllerData = new ControllerData(this);
     }
@@ -43,8 +43,10 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     @Override
     public void onLoad() {
         super.onLoad();
-        mainNode.create(level, worldPosition);
-        controllerData.onLoad();
+        if (multiBlockData != null) {
+            mainNode.create(level, worldPosition);
+            controllerData.initialize();
+        }
     }
 
     @Override
@@ -77,7 +79,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
-        return null;
+        return new ControllerMenu(windowId, this, inventory);
     }
 
     @Override
@@ -98,6 +100,16 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
             .setExposedOnSides(exposedSides);
     }
 
+    private void onMultiBlockCreated() {
+        controllerData.initialize();
+        // TODO: init main node
+    }
+
+    private void onMultiBlockDestroyed() {
+        controllerData.reset();
+        // TODO: destroy main node
+    }
+
     @Nullable
     MultiBlockData getMultiBlockData() {
         return multiBlockData;
@@ -105,6 +117,11 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
 
     void setMultiBlockData(@Nullable MultiBlockData multiBlockData) {
         this.multiBlockData = multiBlockData;
+        if (multiBlockData == null) {
+            onMultiBlockDestroyed();
+        } else {
+            onMultiBlockCreated();
+        }
     }
 
     @Override

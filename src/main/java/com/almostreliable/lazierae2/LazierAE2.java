@@ -11,6 +11,7 @@ import com.almostreliable.lazierae2.core.Setup.Items;
 import com.almostreliable.lazierae2.core.Setup.Menus;
 import com.almostreliable.lazierae2.core.Setup.Menus.Assembler;
 import com.almostreliable.lazierae2.data.DataGeneration;
+import com.almostreliable.lazierae2.gui.ControllerScreen;
 import com.almostreliable.lazierae2.gui.PatternHolderScreen;
 import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.gui.RequesterScreen;
@@ -68,6 +69,7 @@ public class LazierAE2 {
         event.enqueueWork(() -> {
             MenuScreens.register(Menus.PROCESSOR.get(), ProcessorScreen::new);
             MenuScreens.register(Menus.REQUESTER.get(), RequesterScreen::new);
+            MenuScreens.register(Assembler.CONTROLLER.get(), ControllerScreen::new);
             MenuScreens.register(Assembler.PATTERN_HOLDER.get(), PatternHolderScreen::new);
             ItemProperties.register(
                 Items.RESONATING_SEED.get(),
