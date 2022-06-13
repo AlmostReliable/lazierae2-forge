@@ -6,13 +6,11 @@ import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.content.assembler.HullBlock;
 import com.almostreliable.lazierae2.content.assembler.HullBlock.HULL_TYPE;
+import com.almostreliable.lazierae2.content.assembler.PatternHolderBlock;
+import com.almostreliable.lazierae2.content.assembler.PatternHolderBlock.HOLDER_TIER;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerBlock;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerEntity;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerMenu;
-import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderBlock;
-import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderBlock.HOLDER_TIER;
-import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderEntity;
-import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderMenu;
 import com.almostreliable.lazierae2.content.processor.ProcessorBlock;
 import com.almostreliable.lazierae2.content.processor.ProcessorEntity;
 import com.almostreliable.lazierae2.content.processor.ProcessorMenu;
@@ -253,15 +251,6 @@ public final class Setup {
                 ControllerEntity::new,
                 Blocks.Assembler.CONTROLLER
             );
-
-            public static final RegistryObject<BlockEntityType<PatternHolderEntity>> PATTERN_HOLDER = register(
-                PATTERN_HOLDER_ID,
-                PatternHolderEntity::new,
-                Blocks.Assembler.TIER_1,
-                Blocks.Assembler.TIER_2,
-                Blocks.Assembler.TIER_3,
-                Blocks.Assembler.ACCELERATOR
-            );
         }
 
         public static final RegistryObject<BlockEntityType<ProcessorEntity>> PROCESSOR = register(
@@ -317,12 +306,6 @@ public final class Setup {
                 CONTROLLER_ID,
                 ControllerEntity.class,
                 ControllerMenu::new
-            );
-
-            public static final RegistryObject<MenuType<PatternHolderMenu>> PATTERN_HOLDER = register(
-                PATTERN_HOLDER_ID,
-                PatternHolderEntity.class,
-                PatternHolderMenu::new
             );
         }
 

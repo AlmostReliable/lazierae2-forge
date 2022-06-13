@@ -17,7 +17,6 @@ public final class Constants {
         public static final String INFUSER_ID = "infuser";
         public static final String REQUESTER_ID = "requester";
         public static final String CONTROLLER_ID = "controller";
-        public static final String PATTERN_HOLDER_ID = "pattern_holder";
         public static final String WALL_ID = "wall";
         public static final String FRAME_ID = "frame";
         public static final String ACCELERATOR_ID = "accelerator";
@@ -58,10 +57,10 @@ public final class Constants {
         public static final String BUFFER_AMOUNT_ID = "buffer_amount";
         public static final String CAPACITY_ID = "capacity";
         public static final String COL_DIR_ID = "col_dir";
+        public static final String CONTROLLER_DATA_ID = "controller_data";
         public static final String COUNT_ID = "count";
         public static final String CRAFT_REQUESTS_ID = "craft_requests";
         public static final String MULTIBLOCK_DATA_ID = "multiblock_data";
-        public static final String CONTROLLER_DATA_ID = "controller_data";
         public static final String DEPTH_DIR_ID = "depth_dir";
         public static final String ENERGY_COST_ID = "energy_cost";
         public static final String ENERGY_ID = "energy";

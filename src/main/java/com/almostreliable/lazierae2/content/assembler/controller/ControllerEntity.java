@@ -15,7 +15,6 @@ import com.almostreliable.lazierae2.core.Setup.Entities.Assembler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -36,39 +35,54 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
 
     public ControllerEntity(BlockPos pos, BlockState state) {
         super(Assembler.CONTROLLER.get(), pos, state);
-        mainNode = createMainNode();
         controllerData = new ControllerData(this);
+        mainNode = setupMainNode();
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
         if (multiBlockData != null) {
-            mainNode.create(level, worldPosition);
-            controllerData.initialize();
+            onMultiBlockCreated();
         }
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        if (tag.contains(CONTROLLER_DATA_ID)) {
-            controllerData.deserializeNBT(tag.getList(CONTROLLER_DATA_ID, Tag.TAG_COMPOUND));
-        }
+        mainNode.loadFromNBT(tag);
         if (tag.contains(MULTIBLOCK_DATA_ID)) multiBlockData = MultiBlockData.load(tag.getCompound(MULTIBLOCK_DATA_ID));
+        if (tag.contains(CONTROLLER_DATA_ID)) controllerData.deserializeNBT(tag.getCompound(CONTROLLER_DATA_ID));
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.put(CONTROLLER_DATA_ID, controllerData.serializeNBT());
+        mainNode.saveToNBT(tag);
         if (multiBlockData != null) tag.put(MULTIBLOCK_DATA_ID, MultiBlockData.save(multiBlockData));
+        tag.put(CONTROLLER_DATA_ID, controllerData.serializeNBT());
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        mainNode.destroy();
+    }
+
+    @Override
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
+        mainNode.destroy();
     }
 
     @Nullable
     @Override
     public IGridNode getGridNode(Direction dir) {
-        return mainNode.getNode();
+        var node = mainNode.getNode();
+        if (node != null && node.isExposedOnSide(dir)) {
+            return node;
+        }
+        return null;
     }
 
     @Override
@@ -87,27 +101,29 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
         // TODO: implement
     }
 
-    private IManagedGridNode createMainNode() {
-        var exposedSides = EnumSet.allOf(Direction.class);
-        exposedSides.remove(getBlockState().getValue(ControllerBlock.FACING));
+    private IManagedGridNode setupMainNode() {
         return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
             .setFlags(GridFlags.REQUIRE_CHANNEL)
             .addService(ICraftingProvider.class, this)
             .setVisualRepresentation(Blocks.REQUESTER.get())
             .setInWorldNode(true)
             .setTagName("proxy")
-            .setIdlePowerUsage(Config.COMMON.requesterIdleEnergy.get())
-            .setExposedOnSides(exposedSides);
+            .setIdlePowerUsage(Config.COMMON.requesterIdleEnergy.get());
     }
 
     private void onMultiBlockCreated() {
-        controllerData.initialize();
-        // TODO: init main node
+        controllerData.updatePatterns();
+        if (level != null && !level.isClientSide) {
+            if (mainNode.isReady()) {
+                mainNode.setExposedOnSides(EnumSet.of(getBlockState().getValue(ControllerBlock.FACING)));
+            } else {
+                mainNode.create(level, worldPosition);
+            }
+        }
     }
 
     private void onMultiBlockDestroyed() {
-        controllerData.reset();
-        // TODO: destroy main node
+        mainNode.setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
     @Nullable

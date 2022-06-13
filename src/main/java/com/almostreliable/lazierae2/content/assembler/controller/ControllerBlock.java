@@ -7,7 +7,7 @@ import com.almostreliable.lazierae2.content.assembler.MultiBlock;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirections;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
-import com.almostreliable.lazierae2.content.assembler.holder.PatternHolderBlock;
+import com.almostreliable.lazierae2.content.assembler.PatternHolderBlock;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,7 +27,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ControllerBlock extends AssemblerBlock implements EntityBlock {
@@ -68,8 +70,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     public InteractionResult use(
         BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
     ) {
-        // TODO: find another way to get the multiblock stuff on client
-        if (level.isClientSide() || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
+        if (hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
             return super.use(state, level, pos, player, hand, hit);
         }
         if ((level.getBlockEntity(pos) instanceof ControllerEntity entity) &&
@@ -143,11 +144,8 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
                 return posType == PositionType.INNER;
             }
             if (currentState.getBlock() instanceof AssemblerBlock block &&
-                !block.isMultiBlock(currentState) && block.isValidMultiBlockPos(posType)) {
+                !isMultiBlock(currentState) && block.isValidMultiBlockPos(posType)) {
                 formData.put(currentPos, block);
-                if (block instanceof PatternHolderBlock) {
-                    controller.controllerData.addHolderPos(currentPos);
-                }
                 return true;
             }
             return false;
@@ -157,7 +155,12 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             return false;
         }
 
+        List<PatternHolderBlock> patternHolders = new ArrayList<>();
         for (var data : formData.entrySet()) {
+            if (data.getValue() instanceof PatternHolderBlock patternBlock) {
+                patternHolders.add(patternBlock);
+            }
+            if (level.isClientSide) continue;
             var updateFlags = (data.getValue() instanceof EntityBlock ? 1 : 16) | 2;
             var currentState = level.getBlockState(data.getKey());
             level.setBlock(
@@ -166,6 +169,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
                 updateFlags
             );
         }
+        controller.controllerData.setHolders(patternHolders);
         controller.setMultiBlockData(multiBlockData);
         return true;
     }

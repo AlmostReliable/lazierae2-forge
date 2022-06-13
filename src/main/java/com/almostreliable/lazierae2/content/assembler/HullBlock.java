@@ -152,7 +152,7 @@ public class HullBlock extends AssemblerBlock {
         WALL, FRAME;
 
         public boolean validForMultiBlock(BlockState state) {
-            return state.getBlock() instanceof HullBlock hull && !hull.isMultiBlock(state) && hull.type == this;
+            return state.getBlock() instanceof HullBlock hull && !isMultiBlock(state) && hull.type == this;
         }
     }
 
