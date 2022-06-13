@@ -62,18 +62,21 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
         storageManager = new StorageManager(this, SLOTS);
         progressions = new IProgressionState[SLOTS];
         Arrays.fill(progressions, IProgressionState.IDLE);
-        mainNode = createMainNode();
+        mainNode = setupMainNode();
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        mainNode.create(level, worldPosition);
+        if (level != null && !level.isClientSide) {
+            mainNode.create(level, worldPosition);
+        }
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
+        mainNode.loadFromNBT(tag);
         if (tag.contains(CRAFT_REQUESTS_ID)) craftRequests.deserializeNBT(tag.getCompound(CRAFT_REQUESTS_ID));
         if (tag.contains(STORAGE_MANAGER_ID)) storageManager.deserializeNBT(tag.getCompound(STORAGE_MANAGER_ID));
         if (tag.contains(PROGRESSION_STATES_ID)) loadStates(tag.getCompound(PROGRESSION_STATES_ID));
@@ -82,6 +85,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
+        mainNode.saveToNBT(tag);
         tag.put(CRAFT_REQUESTS_ID, craftRequests.serializeNBT());
         tag.put(STORAGE_MANAGER_ID, storageManager.serializeNBT());
         tag.put(PROGRESSION_STATES_ID, saveStates());
@@ -108,7 +112,11 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
     @Nullable
     @Override
     public IGridNode getGridNode(Direction dir) {
-        return mainNode.getNode();
+        var node = mainNode.getNode();
+        if (node != null && node.isExposedOnSide(dir)) {
+            return node;
+        }
+        return null;
     }
 
     @Override
@@ -220,7 +228,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
         changeActivityState(false);
     }
 
-    private IManagedGridNode createMainNode() {
+    private IManagedGridNode setupMainNode() {
         var exposedSides = EnumSet.allOf(Direction.class);
         exposedSides.remove(getBlockState().getValue(GenericBlock.FACING));
         return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
