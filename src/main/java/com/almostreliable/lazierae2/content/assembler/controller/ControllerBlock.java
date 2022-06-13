@@ -70,13 +70,14 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     public InteractionResult use(
         BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
     ) {
-        if (hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
+        if (level.isClientSide || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
             return super.use(state, level, pos, player, hand, hit);
         }
-        if ((level.getBlockEntity(pos) instanceof ControllerEntity entity) &&
-            (isMultiBlock(state) || formMultiBlock(state.getValue(FACING), level, pos, entity))) {
-            openScreen(level, pos, player);
-            return InteractionResult.SUCCESS;
+        if (level.getBlockEntity(pos) instanceof ControllerEntity entity) {
+            if (isMultiBlock(state)) {
+                return openScreen(level, pos, player);
+            }
+            return formMultiBlock(state.getValue(FACING), level, pos, entity);
         }
         return InteractionResult.FAIL;
     }
@@ -126,7 +127,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         level.setBlock(controller.getBlockPos(), controller.getBlockState().setValue(GenericBlock.ACTIVE, false), 3);
     }
 
-    private boolean formMultiBlock(Direction facing, Level level, BlockPos pos, ControllerEntity controller) {
+    private InteractionResult formMultiBlock(Direction facing, Level level, BlockPos pos, ControllerEntity controller) {
         var multiBlockData = MultiBlockData.of(
             pos,
             IterateDirections.of(facing),
@@ -134,7 +135,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         );
         if (multiBlockData == null) {
             LOG.debug("Could not determine multi block edges or size is incorrect");
-            return false;
+            return InteractionResult.FAIL;
         }
 
         Map<BlockPos, AssemblerBlock> formData = new HashMap<>();
@@ -152,7 +153,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         });
         if (!result) {
             LOG.debug("Invalid multi block");
-            return false;
+            return InteractionResult.FAIL;
         }
 
         List<PatternHolderBlock> patternHolders = new ArrayList<>();
@@ -160,7 +161,6 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             if (data.getValue() instanceof PatternHolderBlock patternBlock) {
                 patternHolders.add(patternBlock);
             }
-            if (level.isClientSide) continue;
             var updateFlags = (data.getValue() instanceof EntityBlock ? 1 : 16) | 2;
             var currentState = level.getBlockState(data.getKey());
             level.setBlock(
@@ -171,6 +171,6 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         }
         controller.controllerData.setHolders(patternHolders);
         controller.setMultiBlockData(multiBlockData);
-        return true;
+        return InteractionResult.CONSUME;
     }
 }

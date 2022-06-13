@@ -42,7 +42,9 @@ public class ControllerData extends GenericInventory<ControllerEntity> {
 
     @Override
     protected void onContentsChanged() {
-        updatePatterns();
+        if (owner.getLevel() != null && !owner.getLevel().isClientSide) {
+            updatePatterns();
+        }
         super.onContentsChanged();
     }
 

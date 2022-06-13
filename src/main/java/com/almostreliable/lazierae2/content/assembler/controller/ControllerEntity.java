@@ -15,6 +15,9 @@ import com.almostreliable.lazierae2.core.Setup.Entities.Assembler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -61,6 +64,15 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
         mainNode.saveToNBT(tag);
         if (multiBlockData != null) tag.put(MULTIBLOCK_DATA_ID, MultiBlockData.save(multiBlockData));
         tag.put(CONTROLLER_DATA_ID, controllerData.serializeNBT());
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        // used to sync the inventory to clients after
+        // the multiblock is formed
+        if (multiBlockData == null) return null;
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -114,6 +126,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     private void onMultiBlockCreated() {
         controllerData.updatePatterns();
         if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
             if (mainNode.isReady()) {
                 mainNode.setExposedOnSides(EnumSet.of(getBlockState().getValue(ControllerBlock.FACING)));
             } else {
