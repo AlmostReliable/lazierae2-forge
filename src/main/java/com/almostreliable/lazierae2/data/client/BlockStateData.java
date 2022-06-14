@@ -81,8 +81,9 @@ public class BlockStateData extends BlockStateProvider {
         BlockModelBuilder modelActive;
         if (block instanceof ControllerBlock) {
             var wall = TextUtil.getRL("block/assembler/wall");
+            var wallActive = TextUtil.getRL("block/assembler/wall_active");
             modelInactive = models().orientable(id, wall, inactive, wall);
-            modelActive = models().orientable(formActiveId(id), wall, active, wall);
+            modelActive = models().orientable(formActiveId(id), wallActive, active, wallActive);
             orientedBlock(
                 block,
                 ControllerBlock.FACING,
@@ -114,7 +115,7 @@ public class BlockStateData extends BlockStateProvider {
                 .builder()
                 .modelFile(modelFunction.apply(state))
                 .rotationX(facing.getAxis() == Axis.Y ? facing.getAxisDirection().getStep() * -90 : 0)
-                .rotationY(facing.getAxis() == Axis.Y ? 0 : ((facing.get2DDataValue() + 2) % 4) * 90)
+                .rotationY(facing.getAxis() == Axis.Y ? 180 : ((facing.get2DDataValue() + 2) % 4) * 90)
                 .build();
         }, ignored);
     }

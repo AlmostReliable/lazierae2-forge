@@ -2,19 +2,23 @@
   "variants": {
     "active=false,facing=down": {
       "model": "lazierae2:block/controller",
-      "x": 90
+      "x": 90,
+      "y": 180
     },
     "active=true,facing=down": {
       "model": "lazierae2:block/controller_active",
-      "x": 90
+      "x": 90,
+      "y": 180
     },
     "active=false,facing=up": {
       "model": "lazierae2:block/controller",
-      "x": -90
+      "x": -90,
+      "y": 180
     },
     "active=true,facing=up": {
       "model": "lazierae2:block/controller_active",
-      "x": -90
+      "x": -90,
+      "y": 180
     },
     "active=false,facing=north": {
       "model": "lazierae2:block/controller"
