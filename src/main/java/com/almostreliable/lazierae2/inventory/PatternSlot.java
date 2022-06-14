@@ -1,25 +1,21 @@
 package com.almostreliable.lazierae2.inventory;
 
 import appeng.core.definitions.AEItems;
-import appeng.crafting.pattern.EncodedPatternItem;
-import com.almostreliable.lazierae2.content.GenericMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.SlotItemHandler;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 public class PatternSlot extends SlotItemHandler {
 
-    private final GenericMenu<?> owner;
-
-    public PatternSlot(GenericMenu<?> owner, IItemHandler itemHandler, int index, int pX, int pY) {
-        super(itemHandler, index, pX, pY);
-        this.owner = owner;
+    public PatternSlot(IItemHandlerModifiable itemHandler, int index, int x, int y) {
+        super(itemHandler, index, x, y);
     }
 
     @Override
-    public boolean mayPlace(ItemStack stack) {
-        return AEItems.CRAFTING_PATTERN.isSameAs(stack);
+    public boolean mayPlace(@Nonnull ItemStack stack) {
+        return !stack.isEmpty() && AEItems.CRAFTING_PATTERN.isSameAs(stack);
     }
 
     @Override
@@ -28,17 +24,12 @@ public class PatternSlot extends SlotItemHandler {
     }
 
     @Override
-    public int getMaxStackSize(@NotNull ItemStack stack) {
+    public int getMaxStackSize(@Nonnull ItemStack stack) {
         return 1;
     }
 
-    public ItemStack getDisplayStack() {
-        var stack = getItem();
-        if (owner.entity.getLevel() != null && owner.entity.getLevel().isClientSide &&
-            !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem pattern) {
-            var patternOutput = pattern.getOutput(stack);
-            if (!patternOutput.isEmpty()) return patternOutput;
-        }
-        return stack;
+    @Override
+    public boolean isActive() {
+        return false;
     }
 }

@@ -35,7 +35,7 @@ public class EnergyDumpButton extends GenericButton {
 
     @Override
     public void renderToolTip(PoseStack stack, int mX, int mY) {
-        if (screen.isHovered(mX, mY, POS_X, POS_Y, BUTTON_WIDTH, BUTTON_HEIGHT)) {
+        if (screen.isHovering(POS_X, POS_Y, BUTTON_WIDTH, BUTTON_HEIGHT, mX, mY)) {
             screen.renderComponentTooltip(stack, tooltip.build(), mX, mY);
         }
     }

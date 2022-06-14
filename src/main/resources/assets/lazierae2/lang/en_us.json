@@ -35,6 +35,8 @@
   "block.lazierae2.wall": "Assembler Wall",
   "block.lazierae2.frame": "Assembler Frame",
 
+  "gui.lazierae2.controller": "ME Multi-Assembler",
+
   "tooltip.lazierae2.aggregator.description": "Facilitates in-world crafting by combining Crystal Growth Accelerators. Grants access to Crystal Crafts by using raw materials and has charging capabilities.",
   "tooltip.lazierae2.etcher.description": "Essentially an Advanced Inscriber but upgradable and faster by making use of raw materials.",
   "tooltip.lazierae2.grinder.description": "Grinds resources into their component parts for further use.",

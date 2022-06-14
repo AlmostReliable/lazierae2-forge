@@ -31,6 +31,7 @@ public final class PacketHandler {
         register(++packetId, RequestStatePacket.class, new RequestStatePacket());
         register(++packetId, SideConfigPacket.class, new SideConfigPacket());
         register(++packetId, RequestStackPacket.class, new RequestStackPacket());
+        register(++packetId, ScrollPacket.class, new ScrollPacket());
         // server to client
         register(++packetId, MenuSyncPacket.class, new MenuSyncPacket());
     }

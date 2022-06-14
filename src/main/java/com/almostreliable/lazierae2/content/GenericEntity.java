@@ -18,11 +18,6 @@ public abstract class GenericEntity extends BlockEntity implements MenuProvider 
         super(type, pos, state);
     }
 
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        load(tag);
-    }
-
     protected void changeActivityState(boolean state) {
         if (level == null || level.isClientSide) return;
         var oldState = level.getBlockState(worldPosition);

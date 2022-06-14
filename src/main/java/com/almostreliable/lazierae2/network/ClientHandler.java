@@ -4,7 +4,7 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.gui.RequesterScreen;
 import com.almostreliable.lazierae2.network.packets.MenuSyncPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.player.LocalPlayer;
 
 public final class ClientHandler {
 
@@ -22,7 +22,7 @@ public final class ClientHandler {
         if (packet instanceof MenuSyncPacket menuPacket) handleMenuSyncPacket(menuPacket, player);
     }
 
-    private static void handleMenuSyncPacket(MenuSyncPacket packet, Player player) {
+    private static void handleMenuSyncPacket(MenuSyncPacket packet, LocalPlayer player) {
         if (player.containerMenu instanceof GenericMenu menu && packet.getMenuId() == menu.containerId) {
             menu.receiveServerData(packet.getData());
         }

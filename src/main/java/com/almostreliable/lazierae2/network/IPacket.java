@@ -6,7 +6,7 @@ import net.minecraftforge.network.NetworkEvent.Context;
 import java.util.function.Supplier;
 
 public interface IPacket<T> {
-    void encode(T message, FriendlyByteBuf buffer);
+    void encode(T packet, FriendlyByteBuf buffer);
 
     T decode(FriendlyByteBuf buffer);
 
