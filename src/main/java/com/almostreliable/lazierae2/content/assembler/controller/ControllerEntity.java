@@ -7,6 +7,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.util.AECableType;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
+import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
 import com.almostreliable.lazierae2.core.Config;
@@ -126,7 +127,11 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     private void onMultiBlockCreated() {
         controllerData.updatePatterns();
         if (level != null && !level.isClientSide) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+            level.setBlock(
+                getBlockPos(),
+                getBlockState().setValue(GenericBlock.ACTIVE, true),
+                1 | 2
+            );
             if (mainNode.isReady()) {
                 mainNode.setExposedOnSides(EnumSet.of(getBlockState().getValue(ControllerBlock.FACING)));
             } else {

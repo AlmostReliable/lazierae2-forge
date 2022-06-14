@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ControllerBlock extends AssemblerBlock implements EntityBlock {
+public class ControllerBlock extends GenericBlock implements EntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     private static final Logger LOG = LogUtils.getLogger();
@@ -58,7 +58,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (isMultiBlock(oldState) && newState.isAir() &&
+        if (AssemblerBlock.isMultiBlock(oldState) && newState.isAir() &&
             level.getBlockEntity(pos) instanceof ControllerEntity entity) {
             destroyMultiBlock(level, entity, pos);
         }
@@ -74,7 +74,7 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             return super.use(state, level, pos, player, hand, hit);
         }
         if (level.getBlockEntity(pos) instanceof ControllerEntity entity) {
-            if (isMultiBlock(state)) {
+            if (AssemblerBlock.isMultiBlock(state)) {
                 return openScreen(level, pos, player);
             }
             return formMultiBlock(state.getValue(FACING), level, pos, entity);
@@ -86,16 +86,6 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ControllerEntity(pos, state);
-    }
-
-    @Override
-    public boolean isValidMultiBlockPos(PositionType posType) {
-        return posType == PositionType.WALL;
-    }
-
-    @Override
-    public BlockState setupMultiBlockState(BlockState state, BlockPos hullPos, BlockPos controllerPos) {
-        return super.setupMultiBlockState(state, hullPos, controllerPos).setValue(FACING, state.getValue(FACING));
     }
 
     public void destroyMultiBlock(Level level, ControllerEntity controller, BlockPos origin) {
@@ -115,16 +105,19 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
         });
 
         for (var data : destroyData.entrySet()) {
-            var updateFlags = (data.getValue() instanceof EntityBlock ? 1 : 16) | 2;
             level.setBlock(
                 data.getKey(),
                 data.getValue().defaultBlockState().setValue(GenericBlock.ACTIVE, false),
-                updateFlags
+                2 | 16
             );
         }
-        controller.setMultiBlockData(null);
         if (controller.getBlockPos().equals(origin)) return;
-        level.setBlock(controller.getBlockPos(), controller.getBlockState().setValue(GenericBlock.ACTIVE, false), 3);
+        controller.setMultiBlockData(null);
+        level.setBlock(
+            controller.getBlockPos(),
+            controller.getBlockState().setValue(GenericBlock.ACTIVE, false),
+            1 | 2
+        );
     }
 
     private InteractionResult formMultiBlock(Direction facing, Level level, BlockPos pos, ControllerEntity controller) {
@@ -140,12 +133,13 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
 
         Map<BlockPos, AssemblerBlock> formData = new HashMap<>();
         var result = MultiBlock.iterateMultiBlock(multiBlockData, (posType, currentPos) -> {
+            if (currentPos.equals(pos)) return true;
             var currentState = level.getBlockState(currentPos);
             if (currentState.isAir()) {
                 return posType == PositionType.INNER;
             }
             if (currentState.getBlock() instanceof AssemblerBlock block &&
-                !isMultiBlock(currentState) && block.isValidMultiBlockPos(posType)) {
+                !AssemblerBlock.isMultiBlock(currentState) && block.isValidMultiBlockPos(posType)) {
                 formData.put(currentPos, block);
                 return true;
             }
@@ -161,12 +155,11 @@ public class ControllerBlock extends AssemblerBlock implements EntityBlock {
             if (data.getValue() instanceof PatternHolderBlock patternBlock) {
                 patternHolders.add(patternBlock);
             }
-            var updateFlags = (data.getValue() instanceof EntityBlock ? 1 : 16) | 2;
             var currentState = level.getBlockState(data.getKey());
             level.setBlock(
                 data.getKey(),
                 data.getValue().setupMultiBlockState(currentState, data.getKey(), pos),
-                updateFlags
+                2 | 16
             );
         }
         controller.controllerData.setHolders(patternHolders);
