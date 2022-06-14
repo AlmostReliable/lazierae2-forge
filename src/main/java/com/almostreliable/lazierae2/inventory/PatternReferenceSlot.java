@@ -3,7 +3,6 @@ package com.almostreliable.lazierae2.inventory;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedPatternItem;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerMenu;
-import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -89,6 +88,5 @@ public class PatternReferenceSlot extends Slot {
 
     public void setRow(int row) {
         reference = getSlotIndex() + row * ControllerMenu.COLUMNS;
-        reference = Mth.clamp(reference, 0, itemHandler.getSlots() - 1);
     }
 }

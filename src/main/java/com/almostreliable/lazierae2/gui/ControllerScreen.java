@@ -27,7 +27,7 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     private static final int SCROLLBAR_X = 175;
     private static final int SCROLLBAR_Y = 8;
     private static final int SCROLLBAR_HEIGHT = 85;
-    private float scrollOffset;
+    private int scrollOffset;
     private boolean scrolling;
     // private static final int SLOT_SIZE = 18;
 
@@ -44,12 +44,14 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     public boolean mouseScrolled(double mX, double mY, double delta) {
         if (canScroll()) {
             var rows = menu.controllerData.getSlots() / ControllerMenu.COLUMNS;
-            var offset = (float) (delta / rows);
-            scrollOffset = Mth.clamp(scrollOffset - offset, 0f, 1f);
-            performScroll();
+            var offset = Mth.clamp(scrollOffset - (int) Math.signum(delta), 0, rows - ControllerMenu.ROWS);
+            if (offset != scrollOffset) {
+                scrollOffset = offset;
+                performScroll();
+            }
             return true;
         }
-        return false;
+        return super.mouseScrolled(mX, mY, delta);
     }
 
     @Override
@@ -87,10 +89,11 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
         // scrollbar
         var x = leftPos + SCROLLBAR_X;
         var y = topPos + SCROLLBAR_Y;
+        var offset = scrollOffset * (SCROLLBAR_HEIGHT - SLIDER_HEIGHT) / (menu.controllerData.getSlots() / ControllerMenu.COLUMNS - ControllerMenu.ROWS);
         blit(
             stack,
             x,
-            y + (int) ((SCROLLBAR_HEIGHT - SLIDER_HEIGHT) * scrollOffset),
+            y + offset,
             195f + (canScroll() ? 0 : SLIDER_WIDTH),
             2f,
             SLIDER_WIDTH,
@@ -113,10 +116,13 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     public boolean mouseDragged(double mX, double mY, int button, double dragX, double dragY) {
         if (scrolling) {
             var upperBound = topPos + SCROLLBAR_Y;
-            var lowerBound = upperBound + SCROLLBAR_HEIGHT;
-            scrollOffset = ((float) mY - upperBound - SLIDER_HEIGHT / 2f) / ((float) (lowerBound - upperBound) - SLIDER_HEIGHT);
-            scrollOffset = Mth.clamp(scrollOffset, 0f, 1f);
-            performScroll();
+            var percentage = ((float) mY - upperBound - SLIDER_HEIGHT / 2f) / (SCROLLBAR_HEIGHT - SLIDER_HEIGHT);
+            percentage = Mth.clamp(percentage, 0f, 1f);
+            var newOffset = (int) (percentage * ((float) menu.controllerData.getSlots() / ControllerMenu.COLUMNS - ControllerMenu.ROWS));
+            if (scrollOffset != newOffset) {
+                scrollOffset = newOffset;
+                performScroll();
+            }
             return true;
         }
         return super.mouseDragged(mX, mY, button, dragX, dragY);
@@ -130,7 +136,6 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
 
     @Override
     protected void slotClicked(Slot slot, int slotId, int button, ClickType type) {
-        if (!slot.isActive()) return;
         if (slot instanceof PatternReferenceSlot) slot.index = slot.getContainerSlot();
         super.slotClicked(slot, slotId, button, type);
     }
@@ -140,12 +145,11 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     }
 
     private void performScroll() {
-        var relative = (menu.controllerData.getSlots() + ControllerMenu.COLUMNS - 1) / ControllerMenu.COLUMNS - 4;
-        var rowShift = (int) (scrollOffset * relative + 0.5);
-        if (rowShift < 0) rowShift = 0;
-        for (var slot : menu.slots) {
-            if (slot instanceof PatternReferenceSlot reference) {
-                reference.setRow(rowShift);
+        var start = menu.controllerData.getSlots() - 1;
+        var end = menu.slots.size();
+        for (var slot = start; slot < end; slot++) {
+            if (menu.slots.get(slot) instanceof PatternReferenceSlot reference) {
+                reference.setRow(scrollOffset);
             }
         }
     }
