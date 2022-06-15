@@ -39,7 +39,7 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
                 addSlot(new PatternSlot(
                     controllerData,
                     row * COLUMNS + slot,
-                    61,
+                    36,
                     83
                 ));
             }
@@ -48,7 +48,7 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
 
     @Override
     protected int getPlayerInventoryHeight() {
-        return 118;
+        return 113;
     }
 
     @Override

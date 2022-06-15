@@ -19,25 +19,26 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 public class ControllerScreen extends GenericScreen<ControllerMenu> {
 
     private static final ResourceLocation TEXTURE = TextUtil.getRL(f("textures/gui/{}.png", CONTROLLER_ID));
-    private static final int TEXTURE_WIDTH = 219;
-    private static final int TEXTURE_HEIGHT = 200;
-    private static final int OVERLAYS_WIDTH = 24;
+    private static final int TEXTURE_WIDTH = 194;
+    private static final int TEXTURE_HEIGHT = 231;
+    private static final int OVERLAYS_HEIGHT = 36;
+    private static final int SLOT_SIZE = 18;
     private static final int SLIDER_WIDTH = 12;
     private static final int SLIDER_HEIGHT = 15;
-    private static final int SCROLLBAR_X = 175;
+    private static final int SCROLLBAR_X = 174;
     private static final int SCROLLBAR_Y = 8;
     private static final int SCROLLBAR_HEIGHT = 85;
+
     private int scrollOffset;
     private boolean scrolling;
-    // private static final int SLOT_SIZE = 18;
 
     @SuppressWarnings("AssignmentToSuperclassField")
     public ControllerScreen(
         ControllerMenu menu, Inventory inventory, Component ignoredTitle
     ) {
         super(menu, inventory);
-        imageWidth = TEXTURE_WIDTH - OVERLAYS_WIDTH;
-        imageHeight = TEXTURE_HEIGHT;
+        imageWidth = TEXTURE_WIDTH;
+        imageHeight = TEXTURE_HEIGHT - OVERLAYS_HEIGHT;
     }
 
     @Override
@@ -60,12 +61,10 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
             stack,
             font,
             TextUtil.translateAsString(TRANSLATE_TYPE.GUI, CONTROLLER_ID),
-            (TEXTURE_WIDTH - OVERLAYS_WIDTH) / 2,
+            TEXTURE_WIDTH / 2,
             -12,
             0xFFFF_FFFF
         );
-
-        drawString(stack, font, "scrollOffset: " + scrollOffset, 79, 96, 0xFFFF_FFFF);
     }
 
     @Override
@@ -78,13 +77,38 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
             topPos,
             0,
             0,
-            TEXTURE_WIDTH - OVERLAYS_WIDTH,
-            TEXTURE_HEIGHT,
+            TEXTURE_WIDTH,
+            TEXTURE_HEIGHT - OVERLAYS_HEIGHT,
             TEXTURE_WIDTH,
             TEXTURE_HEIGHT
         );
 
-        // TODO: render slots
+        // slots
+        var rowsToDraw = Mth.clamp(menu.controllerData.getSlots() / ControllerMenu.COLUMNS, 0, ControllerMenu.ROWS);
+        for (var row = 0; row < rowsToDraw; row++) {
+            blit(
+                stack,
+                leftPos + 7,
+                topPos + 7 + row * SLOT_SIZE,
+                0,
+                195,
+                SLOT_SIZE * ControllerMenu.COLUMNS,
+                SLOT_SIZE,
+                TEXTURE_WIDTH,
+                TEXTURE_HEIGHT
+            );
+        }
+        if (rowsToDraw == 0) {
+            var text = TextUtil.translateAsString(TRANSLATE_TYPE.GUI, "controller.empty");
+            var textWidth = font.width(text);
+            font.draw(
+                stack,
+                text,
+                leftPos + (TEXTURE_WIDTH - SLOT_SIZE) / 2f - textWidth / 2f,
+                topPos + 35f,
+                0xFF55_5555
+            );
+        }
 
         // scrollbar
         var x = leftPos + SCROLLBAR_X;
@@ -94,8 +118,8 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
             stack,
             x,
             y + offset,
-            195f + (canScroll() ? 0 : SLIDER_WIDTH),
-            2f,
+            162f + (canScroll() ? 0 : SLIDER_WIDTH),
+            195,
             SLIDER_WIDTH,
             SLIDER_HEIGHT,
             TEXTURE_WIDTH,
@@ -144,10 +168,9 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
         return menu.controllerData.getSlots() > ControllerMenu.ROWS * ControllerMenu.COLUMNS;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void performScroll() {
-        var start = menu.controllerData.getSlots() - 1;
-        var end = menu.slots.size();
-        for (var slot = start; slot < end; slot++) {
+        for (var slot = menu.controllerData.getSlots() - 1; slot < menu.slots.size(); slot++) {
             if (menu.slots.get(slot) instanceof PatternReferenceSlot reference) {
                 reference.setRow(scrollOffset);
             }

@@ -36,6 +36,7 @@
   "block.lazierae2.frame": "Assembler Frame",
 
   "gui.lazierae2.controller": "ME Multi-Assembler",
+  "gui.lazierae2.controller.empty": "No Pattern Holders installed!",
 
   "tooltip.lazierae2.aggregator.description": "Facilitates in-world crafting by combining Crystal Growth Accelerators. Grants access to Crystal Crafts by using raw materials and has charging capabilities.",
   "tooltip.lazierae2.etcher.description": "Essentially an Advanced Inscriber but upgradable and faster by making use of raw materials.",
