@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.content.assembler;
 
+import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerBlock;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerEntity;
@@ -73,14 +74,20 @@ public class HullBlock extends AssemblerBlock {
     public InteractionResult use(
         BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
     ) {
-        if (level.isClientSide() || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
+        if (level.isClientSide() || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem()
+            .isEmpty() || !AssemblerBlock.isMultiBlock(state)) {
             return super.use(state, level, pos, player, hand, hit);
         }
 
-        // TODO: check if valid multiblock and open the gui through the controller
-        var controllerState = findControllerPos(level, pos, state);
-
-        return InteractionResult.CONSUME;
+        var controllerPos = findControllerPos(level, pos, state);
+        if (controllerPos == null) {
+            return InteractionResult.FAIL;
+        }
+        var controllerBlock = level.getBlockState(controllerPos).getBlock();
+        if (!(controllerBlock instanceof ControllerBlock)) {
+            return InteractionResult.FAIL;
+        }
+        return GenericBlock.openScreen(level, controllerPos, player);
     }
 
     @Override

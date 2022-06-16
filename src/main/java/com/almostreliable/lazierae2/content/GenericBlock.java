@@ -38,6 +38,17 @@ public abstract class GenericBlock extends Block {
         registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
     }
 
+    public static InteractionResult openScreen(
+        Level level, BlockPos pos, Player player
+    ) {
+        if (level.isClientSide() || player.isShiftKeyDown()) return InteractionResult.PASS;
+        var entity = level.getBlockEntity(pos);
+        if (entity instanceof MenuProvider menuProvider && player instanceof ServerPlayer invoker) {
+            NetworkHooks.openGui(invoker, menuProvider, pos);
+        }
+        return InteractionResult.CONSUME;
+    }
+
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -73,17 +84,6 @@ public abstract class GenericBlock extends Block {
                 .build());
         }
         super.appendHoverText(stack, level, tooltip, flag);
-    }
-
-    protected InteractionResult openScreen(
-        Level level, BlockPos pos, Player player
-    ) {
-        if (level.isClientSide() || player.isShiftKeyDown()) return InteractionResult.PASS;
-        var entity = level.getBlockEntity(pos);
-        if (entity instanceof MenuProvider menuProvider && player instanceof ServerPlayer invoker) {
-            NetworkHooks.openGui(invoker, menuProvider, pos);
-        }
-        return InteractionResult.CONSUME;
     }
 
     public String getId() {

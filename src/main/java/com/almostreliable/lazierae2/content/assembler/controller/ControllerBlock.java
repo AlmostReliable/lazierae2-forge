@@ -75,7 +75,7 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         }
         if (level.getBlockEntity(pos) instanceof ControllerEntity entity) {
             if (AssemblerBlock.isMultiBlock(state)) {
-                return openScreen(level, pos, player);
+                return GenericBlock.openScreen(level, pos, player);
             }
             return formMultiBlock(state.getValue(FACING), level, pos, entity);
         }

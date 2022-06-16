@@ -44,6 +44,6 @@ public abstract class MachineBlock extends GenericBlock implements EntityBlock {
     public InteractionResult use(
         BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit
     ) {
-        return openScreen(level, pos, player);
+        return GenericBlock.openScreen(level, pos, player);
     }
 }
