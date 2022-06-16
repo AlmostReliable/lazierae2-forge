@@ -103,6 +103,32 @@ public class HullBlock extends AssemblerBlock {
             .setValue(VERTICAL, getVerticalOffset(hullPos, controllerPos));
     }
 
+    @SuppressWarnings("ChainOfInstanceofChecks")
+    @Nullable
+    BlockPos findControllerPos(
+        Level level, BlockPos pos, BlockState state
+    ) {
+        var horizontal = state.getValue(HORIZONTAL);
+        var vertical = state.getValue(VERTICAL);
+        if (horizontal == OptionalDirection.NONE && vertical == OptionalDirection.NONE) {
+            return null;
+        }
+
+        var mutablePos = pos.mutable();
+        for (var i = 0; i < MAX_SIZE; i++) {
+            horizontal.relative(mutablePos);
+            vertical.relative(mutablePos);
+            var relativeState = level.getBlockState(mutablePos);
+            if (relativeState.getBlock() instanceof ControllerBlock) {
+                return mutablePos;
+            }
+            if (relativeState.getBlock() instanceof HullBlock) {
+                return findControllerPos(level, mutablePos, relativeState);
+            }
+        }
+        return null;
+    }
+
     private OptionalDirection getHorizontalOffset(BlockPos hullPos, BlockPos controllerPos) {
         if (controllerPos.getX() == hullPos.getX() && controllerPos.getZ() == hullPos.getZ()) {
             return OptionalDirection.NONE;
@@ -127,32 +153,6 @@ public class HullBlock extends AssemblerBlock {
             return OptionalDirection.NONE;
         }
         return controllerPos.getY() < hullPos.getY() ? OptionalDirection.DOWN : OptionalDirection.UP;
-    }
-
-    @SuppressWarnings("ChainOfInstanceofChecks")
-    @Nullable
-    private BlockPos findControllerPos(
-        Level level, BlockPos pos, BlockState state
-    ) {
-        var horizontal = state.getValue(HORIZONTAL);
-        var vertical = state.getValue(VERTICAL);
-        if (horizontal == OptionalDirection.NONE && vertical == OptionalDirection.NONE) {
-            return null;
-        }
-
-        var mutablePos = pos.mutable();
-        for (var i = 0; i < MAX_SIZE; i++) {
-            horizontal.relative(mutablePos);
-            vertical.relative(mutablePos);
-            var relativeState = level.getBlockState(mutablePos);
-            if (relativeState.getBlock() instanceof ControllerBlock) {
-                return mutablePos;
-            }
-            if (relativeState.getBlock() instanceof HullBlock) {
-                return findControllerPos(level, mutablePos, relativeState);
-            }
-        }
-        return null;
     }
 
     public enum HULL_TYPE {
