@@ -114,7 +114,7 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
         var x = leftPos + SCROLLBAR_X;
         var y = topPos + SCROLLBAR_Y;
         var offscreenRows = menu.controllerData.getSlots() / ControllerMenu.COLUMNS - ControllerMenu.ROWS;
-        var offset = offscreenRows == 0 ? 0 : scrollOffset * (SCROLLBAR_HEIGHT - SLIDER_HEIGHT) / offscreenRows;
+        var offset = offscreenRows <= 0 ? 0 : scrollOffset * (SCROLLBAR_HEIGHT - SLIDER_HEIGHT) / offscreenRows;
         blit(
             stack,
             x,
