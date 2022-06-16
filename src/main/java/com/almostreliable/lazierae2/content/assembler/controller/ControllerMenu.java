@@ -53,7 +53,48 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
 
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
-        return ItemStack.EMPTY;
+        var stack = ItemStack.EMPTY;
+        var slot = slots.get(index);
+
+        // check if the slot has an item inside
+        if (!slot.hasItem()) return stack;
+
+        var slotStack = slot.getItem();
+        stack = slotStack.copy();
+
+        if (index < controllerData.getSlots()) {
+            // from controller to inventory
+            if (!moveItemStackTo(
+                slotStack,
+                controllerData.getSlots(),
+                controllerData.getSlots() + PLAYER_INV_SIZE,
+                false
+            )) {
+                return ItemStack.EMPTY;
+            }
+        } else {
+            // from inventory to controller
+            if (!moveItemStackTo(
+                slotStack,
+                0,
+                controllerData.getSlots(),
+                false
+            )) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        // check if something changed
+        if (slotStack.isEmpty()) {
+            slot.set(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
+        }
+
+        if (slotStack.getCount() == stack.getCount()) return ItemStack.EMPTY;
+        slot.onTake(player, slotStack);
+
+        return stack;
     }
 
     private void setupClientSlots() {
