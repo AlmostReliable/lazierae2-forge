@@ -125,8 +125,8 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     private void onMultiBlockCreated() {
-        controllerData.updatePatterns();
         if (level != null && !level.isClientSide) {
+            controllerData.updatePatterns();
             level.setBlock(
                 getBlockPos(),
                 getBlockState().setValue(GenericBlock.ACTIVE, true),
