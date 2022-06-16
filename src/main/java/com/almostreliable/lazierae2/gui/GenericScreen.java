@@ -19,10 +19,6 @@ public abstract class GenericScreen<M extends GenericMenu<?>> extends AbstractCo
         super(menu, inventory, menu.entity.getDisplayName());
     }
 
-    public boolean isHovered(int mX, int mY, int x, int y, int width, int height) {
-        return mX >= x + leftPos && mX < x + width + leftPos && mY >= y + topPos && mY < y + height + topPos;
-    }
-
     @Override
     public void render(PoseStack matrix, int mX, int mY, float partial) {
         renderBackground(matrix);
@@ -40,6 +36,12 @@ public abstract class GenericScreen<M extends GenericMenu<?>> extends AbstractCo
                 widget.renderToolTip(stack, mX, mY);
             }
         }
+    }
+
+    @Override
+    public boolean isHovering(int pX, int pY, int pWidth, int pHeight, double pMouseX, double pMouseY) {
+        // make this public for usage in widgets
+        return super.isHovering(pX, pY, pWidth, pHeight, pMouseX, pMouseY);
     }
 
     void addRenderable(AbstractWidget widget) {

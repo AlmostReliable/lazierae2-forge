@@ -123,12 +123,12 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
     @Override
     protected void renderTooltip(PoseStack stack, int mX, int mY) {
         // progress bar
-        if (isHovered(mX, mY, 78, 23, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT)) {
+        if (isHovering(78, 23, PROGRESS_WIDTH / 2, PROGRESS_HEIGHT, mX, mY)) {
             renderComponentTooltip(stack, progressTooltip.build(), mX, mY);
             return;
         }
         // energy bar
-        if (isHovered(mX, mY, 165, 7, ENERGY_WIDTH + 2, ENERGY_HEIGHT + 2)) {
+        if (isHovering(165, 7, ENERGY_WIDTH + 2, ENERGY_HEIGHT + 2, mX, mY)) {
             renderComponentTooltip(stack, energyTooltip.build(), mX, mY);
             return;
         }
