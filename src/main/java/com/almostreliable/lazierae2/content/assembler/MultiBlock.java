@@ -12,8 +12,8 @@ import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public final class MultiBlock {
 
-    static final int MAX_SIZE = 13;
-    private static final int MIN_SIZE = 5;
+    static final int MAX_SIZE = 9;
+    private static final int MIN_SIZE = 4;
 
     private MultiBlock() {}
 
