@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 public final class EnergyDumpPacket extends ClientToServerPacket<EnergyDumpPacket> {
 
     @Override
-    public void encode(EnergyDumpPacket message, FriendlyByteBuf buffer) {
+    public void encode(EnergyDumpPacket packet, FriendlyByteBuf buffer) {
         // ignored
     }
 
