@@ -32,7 +32,7 @@ public class BlockStateData extends BlockStateProvider {
     protected void registerStatesAndModels() {
         machineNoModel(Blocks.AGGREGATOR.get());
         machine(Blocks.ETCHER.get());
-        machine(Blocks.GRINDER.get());
+        machineNoModel(Blocks.GRINDER.get());
         machineNoModel(Blocks.INFUSER.get());
         machine(Blocks.REQUESTER.get());
     }

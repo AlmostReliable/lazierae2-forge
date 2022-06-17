@@ -5,8 +5,6 @@ baf837848f2f09ae1084c1aa372673f9c25c787b assets/lazierae2/blockstates/etcher.jso
 70aee4210997f44289d53c3ca2e88cbd54dffe92 assets/lazierae2/blockstates/requester.json
 90791646d55ec4a479b080d142c6af676e6f3438 assets/lazierae2/models/block/etcher.json
 71c86579fe05d50e8ef7e2d67cec78e16453638d assets/lazierae2/models/block/etcher_active.json
-92bf0eaf7f3c68a1abf56dd90d5babb590524670 assets/lazierae2/models/block/grinder.json
-53a7ae1d917c9925aba9fe449206c88499ef51b1 assets/lazierae2/models/block/grinder_active.json
 5c972dac0b8b79571c2b7124149523fe31365bb2 assets/lazierae2/models/block/requester.json
 be22ee00e720cdfdbbfab3b25e115db5a3bdf91e assets/lazierae2/models/block/requester_active.json
 ea1a14374c11f7d4d0ba8960c3f4b927056cbee0 assets/lazierae2/models/item/aggregator.json
