@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning].
 ## [Unreleased]
 - added model for the Matter Infuser
 - changed texture of the Matter Infuser
+- added model for the Pulse Grinder
+- changed texture of the Pulse Grinder
 - changed texture of the Universal Press
 - Requester now requires a channel
 - Requester no longer exposes front side

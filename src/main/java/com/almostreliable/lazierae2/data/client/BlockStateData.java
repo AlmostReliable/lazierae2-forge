@@ -38,7 +38,7 @@ public class BlockStateData extends BlockStateProvider {
     protected void registerStatesAndModels() {
         registerMachineNoModel(Blocks.AGGREGATOR.get());
         registerMachine(Blocks.ETCHER.get());
-        registerMachine(Blocks.GRINDER.get());
+        registerMachineNoModel(Blocks.GRINDER.get());
         registerMachineNoModel(Blocks.INFUSER.get());
         registerMachine(Blocks.REQUESTER.get());
         registerAssembler(Assembler.CONTROLLER.get());
