@@ -70,8 +70,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
-        // used to sync the inventory to clients after
-        // the multiblock is formed
+        // used to sync the inventory to clients after the multiblock is formed
         if (multiBlockData == null) return null;
         return ClientboundBlockEntityDataPacket.create(this);
     }
@@ -125,22 +124,22 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     }
 
     private void onMultiBlockCreated() {
-        if (level != null && !level.isClientSide) {
-            controllerData.updatePatterns();
-            level.setBlock(
-                getBlockPos(),
-                getBlockState().setValue(GenericBlock.ACTIVE, true),
-                1 | 2
-            );
-            if (mainNode.isReady()) {
-                mainNode.setExposedOnSides(EnumSet.of(getBlockState().getValue(ControllerBlock.FACING)));
-            } else {
-                mainNode.create(level, worldPosition);
-            }
+        if (level == null || level.isClientSide) return;
+        controllerData.updatePatterns();
+        level.setBlock(
+            getBlockPos(),
+            getBlockState().setValue(GenericBlock.ACTIVE, true),
+            1 | 2
+        );
+        if (mainNode.isReady()) {
+            mainNode.setExposedOnSides(EnumSet.of(getBlockState().getValue(ControllerBlock.FACING)));
+        } else {
+            mainNode.create(level, worldPosition);
         }
     }
 
     private void onMultiBlockDestroyed() {
+        if (level == null || level.isClientSide) return;
         mainNode.setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 

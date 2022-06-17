@@ -12,14 +12,16 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.ACCELERATORS_ID;
+import static com.almostreliable.lazierae2.core.Constants.Nbt.INVALID_ROWS_ID;
 
 public class ControllerData extends GenericInventory<ControllerEntity> {
 
-    // TODO: see if this needs serialization
-    private final List<Integer> invalidRowIndexes = new ArrayList<>();
+    private final Set<Integer> invalidRows = new HashSet<>();
     private final List<IPatternDetails> patterns = new ArrayList<>();
     private int accelerators;
 
@@ -30,6 +32,7 @@ public class ControllerData extends GenericInventory<ControllerEntity> {
     @Override
     public CompoundTag serializeNBT() {
         var tag = super.serializeNBT();
+        tag.putIntArray(INVALID_ROWS_ID, invalidRows.stream().mapToInt(Integer::intValue).toArray());
         tag.putInt(ACCELERATORS_ID, accelerators);
         return tag;
     }
@@ -37,6 +40,12 @@ public class ControllerData extends GenericInventory<ControllerEntity> {
     @Override
     public void deserializeNBT(CompoundTag tag) {
         super.deserializeNBT(tag);
+        if (tag.contains(INVALID_ROWS_ID)) {
+            var invalidRowsTag = tag.getIntArray(INVALID_ROWS_ID);
+            for (var invalidRow : invalidRowsTag) {
+                invalidRows.add(invalidRow);
+            }
+        }
         if (tag.contains(ACCELERATORS_ID)) accelerators = tag.getInt(ACCELERATORS_ID);
     }
 
@@ -65,38 +74,41 @@ public class ControllerData extends GenericInventory<ControllerEntity> {
         if (size % 9 != 0) {
             throw new IllegalArgumentException("Size must be a multiple of 9");
         }
+        invalidRows.clear();
         var oldSize = getSlots();
         if (size < oldSize) {
             for (var slot = size; slot < oldSize; slot++) {
                 if (getStackInSlot(slot).isEmpty()) continue;
-                for (var row = size / 9 + 1; row <= oldSize / 9; row += 9) {
-                    invalidRowIndexes.add(row);
+                for (var row = size / 9; row < oldSize / 9; row++) {
+                    invalidRows.add(row);
                 }
                 break;
             }
-            if (!invalidRowIndexes.isEmpty()) return;
+            if (!invalidRows.isEmpty()) return;
         }
-        invalidRowIndexes.clear();
         setSize(size, true);
     }
 
     void updatePatterns() {
         patterns.clear();
-        for (var slot = 0; slot < getSlots(); slot++) {
-            if (getStackInSlot(slot).isEmpty()) continue;
-            var details = PatternDetailsHelper.decodePattern(getStackInSlot(slot), owner.getLevel());
-            if (details == null) continue;
-            patterns.add(details);
+        for (var row = 0; row < getSlots() / 9; row++) {
+            if (invalidRows.contains(row)) continue;
+            for (var slot = 0; slot < 9; slot++) {
+                if (getStackInSlot(row * 9 + slot).isEmpty()) continue;
+                var details = PatternDetailsHelper.decodePattern(getStackInSlot(row * 9 + slot), owner.getLevel());
+                if (details == null) continue;
+                patterns.add(details);
+            }
         }
         ICraftingProvider.requestUpdate(owner.getMainNode());
     }
 
-    public int getAccelerators() {
+    int getAccelerators() {
         return accelerators;
     }
 
-    public List<Integer> getInvalidRowIndexes() {
-        return invalidRowIndexes;
+    public Set<Integer> getInvalidRows() {
+        return invalidRows;
     }
 
     List<IPatternDetails> getPatterns() {

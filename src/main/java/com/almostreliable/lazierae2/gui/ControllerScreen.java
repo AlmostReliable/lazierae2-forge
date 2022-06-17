@@ -83,15 +83,33 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
             TEXTURE_HEIGHT
         );
 
+        // scrollbar
+        var x = leftPos + SCROLLBAR_X;
+        var y = topPos + SCROLLBAR_Y;
+        var offscreenRows = menu.controllerData.getSlots() / ControllerMenu.COLUMNS - ControllerMenu.ROWS;
+        var offset = offscreenRows <= 0 ? 0 : scrollOffset * (SCROLLBAR_HEIGHT - SLIDER_HEIGHT) / offscreenRows;
+        blit(
+            stack,
+            x,
+            y + offset,
+            162f + (canScroll() ? 0 : SLIDER_WIDTH),
+            195,
+            SLIDER_WIDTH,
+            SLIDER_HEIGHT,
+            TEXTURE_WIDTH,
+            TEXTURE_HEIGHT
+        );
+
         // slots
         var rowsToDraw = Mth.clamp(menu.controllerData.getSlots() / ControllerMenu.COLUMNS, 0, ControllerMenu.ROWS);
         for (var row = 0; row < rowsToDraw; row++) {
+            var vOffset = 195f + (isInvalidRow(row) ? SLOT_SIZE : 0);
             blit(
                 stack,
                 leftPos + 7,
                 topPos + 7 + row * SLOT_SIZE,
                 0,
-                195,
+                vOffset,
                 SLOT_SIZE * ControllerMenu.COLUMNS,
                 SLOT_SIZE,
                 TEXTURE_WIDTH,
@@ -109,23 +127,6 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
                 0xFF55_5555
             );
         }
-
-        // scrollbar
-        var x = leftPos + SCROLLBAR_X;
-        var y = topPos + SCROLLBAR_Y;
-        var offscreenRows = menu.controllerData.getSlots() / ControllerMenu.COLUMNS - ControllerMenu.ROWS;
-        var offset = offscreenRows <= 0 ? 0 : scrollOffset * (SCROLLBAR_HEIGHT - SLIDER_HEIGHT) / offscreenRows;
-        blit(
-            stack,
-            x,
-            y + offset,
-            162f + (canScroll() ? 0 : SLIDER_WIDTH),
-            195,
-            SLIDER_WIDTH,
-            SLIDER_HEIGHT,
-            TEXTURE_WIDTH,
-            TEXTURE_HEIGHT
-        );
     }
 
     @Override
@@ -163,6 +164,11 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     protected void slotClicked(Slot slot, int slotId, int button, ClickType type) {
         if (slot instanceof PatternReferenceSlot) slot.index = slot.getContainerSlot();
         super.slotClicked(slot, slotId, button, type);
+    }
+
+    private boolean isInvalidRow(int row) {
+        return !menu.controllerData.getInvalidRows().isEmpty() &&
+            menu.controllerData.getInvalidRows().contains(row + scrollOffset);
     }
 
     private boolean canScroll() {
