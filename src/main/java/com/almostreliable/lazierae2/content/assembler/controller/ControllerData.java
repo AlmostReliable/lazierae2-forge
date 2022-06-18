@@ -89,6 +89,21 @@ public class ControllerData extends GenericInventory<ControllerEntity> {
         setSize(size, true);
     }
 
+    void validateSize() {
+        assert owner.getLevel() != null;
+        if (invalidRows.isEmpty()) return;
+        for (var row : invalidRows) {
+            for (var slot = 0; slot < 9; slot++) {
+                if (!getStackInSlot(row * 9 + slot).isEmpty()) return;
+            }
+        }
+        var rows = invalidRows.size();
+        invalidRows.clear();
+        setSize(getSlots() - rows * 9, true);
+        updatePatterns();
+        owner.getLevel().sendBlockUpdated(owner.getBlockPos(), owner.getBlockState(), owner.getBlockState(), 1 | 2);
+    }
+
     void updatePatterns() {
         patterns.clear();
         for (var row = 0; row < getSlots() / 9; row++) {

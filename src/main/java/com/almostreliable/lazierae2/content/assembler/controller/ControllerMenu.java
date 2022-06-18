@@ -98,6 +98,12 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
         return stack;
     }
 
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+        controllerData.validateSize();
+    }
+
     private void setupClientSlots() {
         if (entity.getLevel() != null && entity.getLevel().isClientSide) {
             for (var row = 0; row < ROWS; row++) {

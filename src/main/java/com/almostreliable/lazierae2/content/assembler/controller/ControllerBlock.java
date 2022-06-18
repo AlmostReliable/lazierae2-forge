@@ -73,11 +73,11 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         if (level.isClientSide || hand != InteractionHand.MAIN_HAND || !player.getMainHandItem().isEmpty()) {
             return super.use(state, level, pos, player, hand, hit);
         }
-        if (level.getBlockEntity(pos) instanceof ControllerEntity entity) {
+        if (level.getBlockEntity(pos) instanceof ControllerEntity controller) {
             if (AssemblerBlock.isMultiBlock(state)) {
                 return GenericBlock.openScreen(level, pos, player);
             }
-            return formMultiBlock(state.getValue(FACING), level, pos, entity);
+            return formMultiBlock(state.getValue(FACING), level, pos, controller);
         }
         return InteractionResult.FAIL;
     }
