@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.gui;
 
+import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerMenu;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.inventory.PatternReferenceSlot;
@@ -44,7 +45,9 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     @Override
     public boolean mouseScrolled(double mX, double mY, double delta) {
         if (canScroll()) {
+            if (delta > 0 && scrollOffset <= 0) return true;
             var rows = menu.controllerData.getSlots() / ControllerMenu.COLUMNS;
+            if (delta < 0 && rows - ControllerMenu.ROWS <= scrollOffset) return true;
             var offset = Mth.clamp(scrollOffset - (int) Math.signum(delta), 0, rows - ControllerMenu.ROWS);
             if (offset != scrollOffset) {
                 scrollOffset = offset;
@@ -167,8 +170,8 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     }
 
     private boolean isInvalidRow(int row) {
-        return !menu.controllerData.getInvalidRows().isEmpty() &&
-            menu.controllerData.getInvalidRows().contains(row + scrollOffset);
+        return !menu.controllerData.invalidRows.isEmpty() &&
+            menu.controllerData.invalidRows.contains(row + scrollOffset);
     }
 
     private boolean canScroll() {
@@ -177,7 +180,7 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
 
     @SuppressWarnings("ConstantConditions")
     private void performScroll() {
-        for (var slot = menu.controllerData.getSlots() - 1; slot < menu.slots.size(); slot++) {
+        for (var slot = menu.controllerData.getSlots() + GenericMenu.PLAYER_INV_SIZE; slot < menu.slots.size(); slot++) {
             if (menu.slots.get(slot) instanceof PatternReferenceSlot reference) {
                 reference.setRow(scrollOffset);
             }

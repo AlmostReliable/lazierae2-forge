@@ -21,8 +21,8 @@ import static com.almostreliable.lazierae2.core.Constants.Nbt.INVALID_ROWS_ID;
 
 public class ControllerData extends GenericInventory<ControllerEntity> {
 
-    private final Set<Integer> invalidRows = new HashSet<>();
-    private final List<IPatternDetails> patterns = new ArrayList<>();
+    public final Set<Integer> invalidRows = new HashSet<>();
+    final List<IPatternDetails> patterns = new ArrayList<>();
     private int accelerators;
 
     ControllerData(ControllerEntity controller) {
@@ -105,14 +105,6 @@ public class ControllerData extends GenericInventory<ControllerEntity> {
 
     int getAccelerators() {
         return accelerators;
-    }
-
-    public Set<Integer> getInvalidRows() {
-        return invalidRows;
-    }
-
-    List<IPatternDetails> getPatterns() {
-        return patterns;
     }
 
     void setHolders(List<? extends PatternHolderBlock> holders) {

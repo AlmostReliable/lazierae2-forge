@@ -33,6 +33,7 @@ public class HullBlock extends AssemblerBlock {
 
     public static final OptionalDirectionProperty HORIZONTAL = OptionalDirectionProperty.HORIZONTAL_PROP;
     public static final OptionalDirectionProperty VERTICAL = OptionalDirectionProperty.VERTICAL_PROP;
+
     public final HULL_TYPE type;
 
     public HullBlock(HULL_TYPE type) {

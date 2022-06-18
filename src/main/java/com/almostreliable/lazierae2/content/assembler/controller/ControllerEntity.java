@@ -159,7 +159,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
-        return controllerData.getPatterns();
+        return controllerData.patterns;
     }
 
     @Override

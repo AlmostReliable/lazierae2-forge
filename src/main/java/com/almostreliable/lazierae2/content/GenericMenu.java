@@ -17,8 +17,9 @@ import net.minecraftforge.network.PacketDistributor;
 
 public abstract class GenericMenu<E extends GenericEntity> extends AbstractContainerMenu {
 
+    public static final int PLAYER_INV_SIZE = 36;
     protected static final int SLOT_SIZE = 18;
-    protected static final int PLAYER_INV_SIZE = 36;
+
     public final E entity;
     protected final MenuSynchronizer sync = new MenuSynchronizer();
     private final IItemHandler menuInventory;

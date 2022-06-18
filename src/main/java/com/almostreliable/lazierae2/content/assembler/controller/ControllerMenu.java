@@ -14,6 +14,7 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
     public static final int ROWS = 4;
     public static final int COLUMNS = 9;
     private static final int SLOT_SIZE = 18;
+
     public final ControllerData controllerData;
 
     public ControllerMenu(
