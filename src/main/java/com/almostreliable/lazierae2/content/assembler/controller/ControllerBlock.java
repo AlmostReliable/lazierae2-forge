@@ -124,7 +124,8 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         var multiBlockData = MultiBlockData.of(
             pos,
             IterateDirections.of(facing),
-            potentialFrame -> HULL_TYPE.FRAME.validForMultiBlock(level.getBlockState(potentialFrame))
+            potentialFrame -> HULL_TYPE.FRAME.validForMultiBlock(level.getBlockState(potentialFrame)),
+            potentialHull -> HULL_TYPE.WALL.validForMultiBlock(level.getBlockState(potentialHull))
         );
         if (multiBlockData == null) {
             LOG.debug("Could not determine multi block edges or size is incorrect");

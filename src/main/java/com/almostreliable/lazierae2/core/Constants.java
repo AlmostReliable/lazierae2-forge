@@ -83,6 +83,7 @@ public final class Constants {
         public static final String SLOT_ID = "slot";
         public static final String STACK_ID = "stack";
         public static final String START_POS_ID = "start_pos";
+        public static final String END_POS_ID = "end_pos";
         public static final String STATE_ID = "state";
         public static final String STORAGE_MANAGER_ID = "storage_manager";
         public static final String UPGRADES_ID = "upgrades";

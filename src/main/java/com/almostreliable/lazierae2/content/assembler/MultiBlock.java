@@ -2,6 +2,7 @@ package com.almostreliable.lazierae2.content.assembler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 
@@ -12,23 +13,27 @@ import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public final class MultiBlock {
 
-    static final int MAX_SIZE = 9;
-    private static final int MIN_SIZE = 4;
+    public static final int MAX_SIZE = 32;
+    public static final int MIN_SIZE = 4;
+    public static final int MAX_MULTI_BLOCK_VOLUME = 1_000;
 
     private MultiBlock() {}
 
     public static boolean iterateMultiBlock(
         MultiBlockData data, IterateCallback callback
     ) {
-        for (var x = 0; x < data.size(); x++) {
-            for (var y = 0; y < data.size(); y++) {
-                for (var z = 0; z < data.size(); z++) {
-                    var pos = data.itDirs().relative(data.startPosition(), x, y, z);
-                    var posType = PositionType.of(x, y, z, data.size());
-                    if (!callback.apply(posType, pos)) {
-                        return false;
-                    }
-                }
+        for (BlockPos blockPos : BlockPos.betweenClosed(
+            data.startPosition.getX(),
+            data.startPosition.getY(),
+            data.startPosition.getZ(),
+            data.endPosition.getX(),
+            data.endPosition.getY(),
+            data.endPosition.getZ()
+        )) {
+            BlockPos immutablePos = blockPos.immutable();
+            PositionType posType = data.getPositionType(immutablePos);
+            if (!callback.apply(posType, immutablePos)) {
+                return false;
             }
         }
         return true;
@@ -36,34 +41,6 @@ public final class MultiBlock {
 
     public enum PositionType {
         WALL, CORNER, EDGE, INNER;
-
-        static PositionType of(int x, int y, int z, int size) {
-            if (isInner(x, y, z, size)) {
-                return INNER;
-            }
-            if (isCorner(x, y, z, size)) {
-                return CORNER;
-            }
-            if (isEdge(x, y, z, size)) {
-                return EDGE;
-            }
-            return WALL;
-        }
-
-        private static boolean isInner(int x, int y, int z, int size) {
-            return x > 0 && x < size - 1 && y > 0 && y < size - 1 && z > 0 && z < size - 1;
-        }
-
-        private static boolean isCorner(int x, int y, int z, int size) {
-            return (x == 0 || x == size - 1) && (y == 0 || y == size - 1) && (z == 0 || z == size - 1);
-        }
-
-        private static boolean isEdge(int x, int y, int z, int size) {
-            var iTest = x == 0 || x == size - 1;
-            var jTest = y == 0 || y == size - 1;
-            var kTest = z == 0 || z == size - 1;
-            return iTest && jTest || iTest && kTest || jTest && kTest;
-        }
     }
 
     @FunctionalInterface
@@ -72,7 +49,6 @@ public final class MultiBlock {
     }
 
     public record IterateDirections(Direction depthDirection, Direction rowDirection, Direction columnDirection) {
-
         public static IterateDirections of(Direction facing) {
             if (facing == Direction.UP) {
                 return new IterateDirections(Direction.DOWN, Direction.EAST, Direction.SOUTH);
@@ -82,52 +58,42 @@ public final class MultiBlock {
             }
             return new IterateDirections(facing.getOpposite(), facing.getOpposite().getClockWise(), Direction.UP);
         }
-
-        private BlockPos relative(BlockPos blockPos, int x, int y, int z) {
-            var relativeX = calculatePosition(
-                blockPos.getX(),
-                depthDirection.getStepX() * x,
-                rowDirection.getStepX() * y,
-                columnDirection.getStepX() * z
-            );
-            var relativeY = calculatePosition(
-                blockPos.getY(),
-                depthDirection.getStepY() * x,
-                rowDirection.getStepY() * y,
-                columnDirection.getStepY() * z
-            );
-            var relativeZ = calculatePosition(
-                blockPos.getZ(),
-                depthDirection.getStepZ() * x,
-                rowDirection.getStepZ() * y,
-                columnDirection.getStepZ() * z
-            );
-            return new BlockPos(relativeX, relativeY, relativeZ);
-        }
-
-        private int calculatePosition(int initial, int depth, int row, int column) {
-            return initial + depth + row + column;
-        }
     }
 
-    public record MultiBlockData(int size, BlockPos startPosition, IterateDirections itDirs) {
+    public static class MultiBlockData {
+        private final BlockPos startPosition;
+        private final BlockPos endPosition;
+        private final IterateDirections itDirs;
+
+        public MultiBlockData(BlockPos startPosition, BlockPos endPosition, IterateDirections itDirs) {
+            this.startPosition = new BlockPos(
+                Math.min(startPosition.getX(), endPosition.getX()),
+                Math.min(startPosition.getY(), endPosition.getY()),
+                Math.min(startPosition.getZ(), endPosition.getZ())
+            );
+
+            this.endPosition = new BlockPos(
+                Math.max(startPosition.getX(), endPosition.getX()),
+                Math.max(startPosition.getY(), endPosition.getY()),
+                Math.max(startPosition.getZ(), endPosition.getZ())
+            );
+
+            this.itDirs = itDirs;
+        }
 
         @Nullable
         public static MultiBlockData of(
-            BlockPos originPos, IterateDirections itDirs, Predicate<? super BlockPos> edgeCheck
+            BlockPos originPos, IterateDirections itDirs, Predicate<? super BlockPos> edgeCheck,
+            Predicate<? super BlockPos> depthCheck
         ) {
             var negativeRowResult = findEdge(originPos, itDirs.rowDirection().getOpposite(), edgeCheck);
             var positiveRowResult = findEdge(originPos, itDirs.rowDirection(), edgeCheck);
             var negativeColumnResult = findEdge(originPos, itDirs.columnDirection().getOpposite(), edgeCheck);
             var positiveColumnResult = findEdge(originPos, itDirs.columnDirection(), edgeCheck);
-            if (negativeRowResult == null || positiveRowResult == null || negativeColumnResult == null ||
-                positiveColumnResult == null) {
-                return null;
-            }
+            var depthResult = findEdge(originPos, itDirs.depthDirection(), depthCheck);
 
-            var sizeRow = negativeRowResult.controllerOffset() + positiveRowResult.controllerOffset() + 1;
-            var sizeColumn = negativeColumnResult.controllerOffset() + positiveColumnResult.controllerOffset() + 1;
-            if (sizeRow != sizeColumn || sizeRow < MIN_SIZE) {
+            if (negativeRowResult == null || positiveRowResult == null || negativeColumnResult == null ||
+                positiveColumnResult == null || depthResult == null) {
                 return null;
             }
 
@@ -136,22 +102,34 @@ public final class MultiBlock {
                 negativeRowResult.blockPos(),
                 negativeColumnResult.blockPos()
             );
-            return new MultiBlockData(sizeRow, startPosition, itDirs);
+
+            var endPosition = getStartPosition(
+                originPos,
+                positiveRowResult.blockPos(),
+                positiveColumnResult.blockPos()
+            ).offset(itDirs.depthDirection().getNormal().multiply(depthResult.controllerOffset()));
+
+            var data = new MultiBlockData(startPosition, endPosition, itDirs);
+            var size = data.getSize();
+            if (size.getX() * size.getY() * size.getZ() > MAX_MULTI_BLOCK_VOLUME) {
+                return null;
+            }
+            return data;
         }
 
         public static MultiBlockData load(CompoundTag tag) {
-            var size = tag.getInt(SIZE_ID);
             var startPosition = NbtUtils.readBlockPos(tag.getCompound(START_POS_ID));
+            var endPosition = NbtUtils.readBlockPos(tag.getCompound(END_POS_ID));
             var mDir = Direction.values()[tag.getInt(DEPTH_DIR_ID)];
             var rDir = Direction.values()[tag.getInt(ROW_DIR_ID)];
             var cDir = Direction.values()[tag.getInt(COL_DIR_ID)];
-            return new MultiBlockData(size, startPosition, new IterateDirections(mDir, rDir, cDir));
+            return new MultiBlockData(startPosition, endPosition, new IterateDirections(mDir, rDir, cDir));
         }
 
         public static CompoundTag save(MultiBlockData data) {
             var tag = new CompoundTag();
-            tag.putInt(SIZE_ID, data.size);
             tag.put(START_POS_ID, NbtUtils.writeBlockPos(data.startPosition));
+            tag.put(END_POS_ID, NbtUtils.writeBlockPos(data.endPosition));
             tag.putInt(DEPTH_DIR_ID, data.itDirs.depthDirection().ordinal());
             tag.putInt(ROW_DIR_ID, data.itDirs.rowDirection().ordinal());
             tag.putInt(COL_DIR_ID, data.itDirs.columnDirection().ordinal());
@@ -175,6 +153,61 @@ public final class MultiBlock {
             var hPos = negativeRowPos.subtract(blockPos);
             var vPos = positiveRowPos.subtract(blockPos);
             return blockPos.offset(hPos.offset(vPos));
+        }
+
+        public Vec3i getSize() {
+            var size = endPosition.subtract(startPosition);
+            return new Vec3i(Math.abs(size.getX()), Math.abs(size.getY()), Math.abs(size.getZ()));
+        }
+
+        private boolean isInner(BlockPos currentPos) {
+            return currentPos.getX() > startPosition.getX() && currentPos.getX() < endPosition.getX()
+                && currentPos.getY() > startPosition.getY() && currentPos.getY() < endPosition.getY()
+                && currentPos.getZ() > startPosition.getZ() && currentPos.getZ() < endPosition.getZ();
+        }
+
+        private boolean isCorner(BlockPos currentPos) {
+            return (currentPos.getX() == startPosition.getX() || currentPos.getX() == endPosition.getX())
+                && (currentPos.getY() == startPosition.getY() || currentPos.getY() == endPosition.getY())
+                && (currentPos.getZ() == startPosition.getZ() || currentPos.getZ() == endPosition.getZ());
+        }
+
+        private boolean isEdge(BlockPos currentPos) {
+            var iTest = currentPos.getX() == Math.min(
+                startPosition.getX(),
+                endPosition.getX()
+            ) || currentPos.getX() == Math.max(
+                startPosition.getX(),
+                endPosition.getX()
+            );
+            var jTest = currentPos.getY() == Math.min(
+                startPosition.getY(),
+                endPosition.getY()
+            ) || currentPos.getY() == Math.max(
+                startPosition.getY(),
+                endPosition.getY()
+            );
+            var kTest = currentPos.getZ() == Math.min(
+                startPosition.getZ(),
+                endPosition.getZ()
+            ) || currentPos.getZ() == Math.max(
+                startPosition.getZ(),
+                endPosition.getZ()
+            );
+            return iTest && jTest || iTest && kTest || jTest && kTest;
+        }
+
+        public PositionType getPositionType(BlockPos currentPos) {
+            if (isInner(currentPos)) {
+                return PositionType.INNER;
+            }
+            if (isCorner(currentPos)) {
+                return PositionType.CORNER;
+            }
+            if (isEdge(currentPos)) {
+                return PositionType.EDGE;
+            }
+            return PositionType.WALL;
         }
 
         private record SizeCheckResult(BlockPos blockPos, int controllerOffset) {}
