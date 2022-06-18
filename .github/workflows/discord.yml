@@ -1,0 +1,57 @@
+name: Discord
+
+on:
+  workflow_dispatch:
+
+env:
+  JAVA_DIST: "zulu"
+  JAVA_VERSION: 17
+  MOD_ID: "lazierae2"
+  MOD_NAME: "LazierAE2"
+
+jobs:
+  discord:
+    name: Assemble and Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DIST }}
+          cache: gradle
+
+      - name: Cleanup Gradle Cache
+        run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Assemble
+        run: ./gradlew jar --no-daemon
+
+      - name: Collect version information
+        run: |
+          shopt -s failglob # print a warning if a glob does not match anything
+          set_var() {
+            echo $1="$2"
+            echo $1="$2" >> $GITHUB_ENV
+            declare -g $1="$2"
+          }
+          set_var JAR_FILE $(eval echo build/libs/${{ env.MOD_ID }}-*-*.jar)
+          set_var MINECRAFT_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f2)
+          set_var MOD_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f3)
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.MOD_NAME }}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}.jar
+          path: ${{ env.JAR_FILE }}
