@@ -13,16 +13,16 @@ import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public final class MultiBlock {
 
-    public static final int MAX_SIZE = 32;
-    public static final int MIN_SIZE = 4;
-    public static final int MAX_MULTI_BLOCK_VOLUME = 1_000;
+    static final int MAX_SIZE = 32;
+    private static final int MIN_SIZE = 4;
+    private static final int MAX_VOLUME = 1_000;
 
     private MultiBlock() {}
 
     public static boolean iterateMultiBlock(
         MultiBlockData data, IterateCallback callback
     ) {
-        for (BlockPos blockPos : BlockPos.betweenClosed(
+        for (var pos : BlockPos.betweenClosed(
             data.startPosition.getX(),
             data.startPosition.getY(),
             data.startPosition.getZ(),
@@ -30,8 +30,8 @@ public final class MultiBlock {
             data.endPosition.getY(),
             data.endPosition.getZ()
         )) {
-            BlockPos immutablePos = blockPos.immutable();
-            PositionType posType = data.getPositionType(immutablePos);
+            var immutablePos = pos.immutable();
+            var posType = data.getPositionType(immutablePos);
             if (!callback.apply(posType, immutablePos)) {
                 return false;
             }
@@ -40,7 +40,7 @@ public final class MultiBlock {
     }
 
     public enum PositionType {
-        WALL, CORNER, EDGE, INNER;
+        WALL, CORNER, EDGE, INNER
     }
 
     @FunctionalInterface
@@ -60,12 +60,13 @@ public final class MultiBlock {
         }
     }
 
-    public static class MultiBlockData {
+    public static final class MultiBlockData {
+
         private final BlockPos startPosition;
         private final BlockPos endPosition;
         private final IterateDirections itDirs;
 
-        public MultiBlockData(BlockPos startPosition, BlockPos endPosition, IterateDirections itDirs) {
+        private MultiBlockData(BlockPos startPosition, BlockPos endPosition, IterateDirections itDirs) {
             this.startPosition = new BlockPos(
                 Math.min(startPosition.getX(), endPosition.getX()),
                 Math.min(startPosition.getY(), endPosition.getY()),
@@ -94,6 +95,7 @@ public final class MultiBlock {
 
             if (negativeRowResult == null || positiveRowResult == null || negativeColumnResult == null ||
                 positiveColumnResult == null || depthResult == null) {
+                // TODO: add feedback to user
                 return null;
             }
 
@@ -102,7 +104,6 @@ public final class MultiBlock {
                 negativeRowResult.blockPos(),
                 negativeColumnResult.blockPos()
             );
-
             var endPosition = getStartPosition(
                 originPos,
                 positiveRowResult.blockPos(),
@@ -111,7 +112,12 @@ public final class MultiBlock {
 
             var data = new MultiBlockData(startPosition, endPosition, itDirs);
             var size = data.getSize();
-            if (size.getX() * size.getY() * size.getZ() > MAX_MULTI_BLOCK_VOLUME) {
+            if (size.getX() < MIN_SIZE || size.getY() < MIN_SIZE || size.getZ() < MIN_SIZE) {
+                // TODO: add feedback to user
+                return null;
+            }
+            if (size.getX() * size.getY() * size.getZ() > MAX_VOLUME) {
+                // TODO: add feedback to user
                 return null;
             }
             return data;
@@ -155,11 +161,6 @@ public final class MultiBlock {
             return blockPos.offset(hPos.offset(vPos));
         }
 
-        public Vec3i getSize() {
-            var size = endPosition.subtract(startPosition);
-            return new Vec3i(Math.abs(size.getX()), Math.abs(size.getY()), Math.abs(size.getZ()));
-        }
-
         private boolean isInner(BlockPos currentPos) {
             return currentPos.getX() > startPosition.getX() && currentPos.getX() < endPosition.getX()
                 && currentPos.getY() > startPosition.getY() && currentPos.getY() < endPosition.getY()
@@ -197,7 +198,7 @@ public final class MultiBlock {
             return iTest && jTest || iTest && kTest || jTest && kTest;
         }
 
-        public PositionType getPositionType(BlockPos currentPos) {
+        private PositionType getPositionType(BlockPos currentPos) {
             if (isInner(currentPos)) {
                 return PositionType.INNER;
             }
@@ -208,6 +209,14 @@ public final class MultiBlock {
                 return PositionType.EDGE;
             }
             return PositionType.WALL;
+        }
+
+        public Vec3i getSize() {
+            return new Vec3i(
+                Math.abs(endPosition.getX() - startPosition.getX()) + 1,
+                Math.abs(endPosition.getY() - startPosition.getY()) + 1,
+                Math.abs(endPosition.getZ() - startPosition.getZ()) + 1
+            );
         }
 
         private record SizeCheckResult(BlockPos blockPos, int controllerOffset) {}
