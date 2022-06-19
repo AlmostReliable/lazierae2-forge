@@ -82,6 +82,13 @@ public final class TextUtil {
         return color.length == 0 ? output : (TranslatableComponent) output.withStyle(color[0]);
     }
 
+    public static TranslatableComponent translateWithArgs(
+        TRANSLATE_TYPE type, String key, ChatFormatting color, Object... args
+    ) {
+        var output = new TranslatableComponent(getTranslationKey(type, key), args);
+        return (TranslatableComponent) output.withStyle(color);
+    }
+
     /**
      * Formats a number into a human-readable energy string.
      *

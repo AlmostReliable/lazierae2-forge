@@ -38,6 +38,15 @@
   "gui.lazierae2.controller": "ME Multi-Assembler",
   "gui.lazierae2.controller.empty": "No Pattern Holders installed!",
 
+  "message.lazierae2.not_found": "Couldn't determine the edges of the multiblock! Make sure the controller is placed inside a wall.",
+  "message.lazierae2.too_small": "The minimum size for each side of the multiblock is %s!",
+  "message.lazierae2.too_big": "The maximum size for each side of the multiblock is %s!",
+  "message.lazierae2.too_large": "The maximum volume of the multiblock (frame included) is %s!",
+  "message.lazierae2.invalid_air": "Air block has an invalid position [%s].",
+  "message.lazierae2.invalid_pos": "%s has an invalid position [%s].",
+  "message.lazierae2.invalid_block": "Invalid block '%s' at [%s].",
+  "message.lazierae2.malformed": "Couldn't form %s!",
+
   "tooltip.lazierae2.aggregator.description": "Facilitates in-world crafting by combining Crystal Growth Accelerators. Grants access to Crystal Crafts by using raw materials and has charging capabilities.",
   "tooltip.lazierae2.etcher.description": "Essentially an Advanced Inscriber but upgradable and faster by making use of raw materials.",
   "tooltip.lazierae2.grinder.description": "Grinds resources into their component parts for further use.",

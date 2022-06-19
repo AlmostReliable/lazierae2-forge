@@ -8,7 +8,11 @@ import com.almostreliable.lazierae2.content.assembler.MultiBlock.IterateDirectio
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.PositionType;
 import com.almostreliable.lazierae2.content.assembler.PatternHolderBlock;
+import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
+import com.almostreliable.lazierae2.util.GameUtil;
+import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.logging.LogUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -77,7 +81,7 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
             if (AssemblerBlock.isMultiBlock(state)) {
                 return GenericBlock.openScreen(level, pos, player);
             }
-            return formMultiBlock(state.getValue(FACING), level, pos, controller);
+            return formMultiBlock(state.getValue(FACING), level, pos, controller, player);
         }
         return InteractionResult.FAIL;
     }
@@ -120,15 +124,16 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         );
     }
 
-    private InteractionResult formMultiBlock(Direction facing, Level level, BlockPos pos, ControllerEntity controller) {
+    private InteractionResult formMultiBlock(
+        Direction facing, Level level, BlockPos pos, ControllerEntity controller, Player player
+    ) {
         var multiBlockData = MultiBlockData.of(
             pos,
             IterateDirections.of(facing),
             potentialFrame -> HULL_TYPE.FRAME.validForMultiBlock(level.getBlockState(potentialFrame)),
-            potentialHull -> HULL_TYPE.WALL.validForMultiBlock(level.getBlockState(potentialHull))
+            potentialHull -> HULL_TYPE.WALL.validForMultiBlock(level.getBlockState(potentialHull)), player
         );
         if (multiBlockData == null) {
-            LOG.debug("Could not determine multi block edges or size is incorrect");
             return InteractionResult.FAIL;
         }
 
@@ -136,18 +141,49 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
         var result = MultiBlock.iterateMultiBlock(multiBlockData, (posType, currentPos) -> {
             if (currentPos.equals(pos)) return true;
             var currentState = level.getBlockState(currentPos);
+
             if (currentState.isAir()) {
-                return posType == PositionType.INNER;
+                var check = posType == PositionType.INNER;
+                if (check) return true;
+                GameUtil.sendPlayerMessage(player, "invalid_air", ChatFormatting.AQUA, currentPos.toShortString());
+                LOG.debug("Invalid air at {}", currentPos);
+                return false;
             }
-            if (currentState.getBlock() instanceof AssemblerBlock block &&
-                !AssemblerBlock.isMultiBlock(currentState) && block.isValidMultiBlockPos(posType)) {
-                formData.put(currentPos, block);
-                return true;
+
+            if (currentState.getBlock() instanceof AssemblerBlock block) {
+                if (!AssemblerBlock.isMultiBlock(currentState) && block.isValidMultiBlockPos(posType)) {
+                    formData.put(currentPos, block);
+                    return true;
+                }
+                GameUtil.sendPlayerMessage(
+                    player,
+                    "invalid_pos",
+                    ChatFormatting.AQUA,
+                    block.getName(),
+                    currentPos.toShortString()
+                );
+                LOG.debug("Invalid pos for assembler block at {}", currentPos);
+                return false;
             }
+
+            GameUtil.sendPlayerMessage(
+                player,
+                "invalid_block",
+                ChatFormatting.AQUA,
+                currentState.getBlock().getName(),
+                currentPos.toShortString()
+            );
+            LOG.debug("Invalid block {} at {}", currentState.getBlock().getName(), currentPos);
             return false;
         });
+
         if (!result) {
-            LOG.debug("Invalid multi block");
+            GameUtil.sendPlayerMessage(
+                player,
+                "malformed",
+                ChatFormatting.DARK_RED,
+                TextUtil.translateAsString(TRANSLATE_TYPE.GUI, "controller")
+            );
             return InteractionResult.FAIL;
         }
 

@@ -1,7 +1,11 @@
 package com.almostreliable.lazierae2.util;
 
 import appeng.core.definitions.AEItems;
+import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -35,5 +39,12 @@ public final class GameUtil {
         }
         assert Minecraft.getInstance().level != null;
         return Minecraft.getInstance().level.getRecipeManager();
+    }
+
+    public static void sendPlayerMessage(Player player, String translationKey, ChatFormatting color, Object... args) {
+        player.sendMessage(
+            TextUtil.translateWithArgs(TRANSLATE_TYPE.MESSAGE, translationKey, color, args),
+            Util.NIL_UUID
+        );
     }
 }

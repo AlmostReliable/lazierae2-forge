@@ -9,7 +9,7 @@ public final class TypeEnums {
      * identify its key inside the lang file.
      */
     public enum TRANSLATE_TYPE {
-        BLOCK, TOOLTIP, GUI, BLOCK_SIDE, IO_SETTING, EXTRACT_SETTING, REQUEST_STATUS, CONFIG
+        BLOCK, TOOLTIP, GUI, MESSAGE, BLOCK_SIDE, IO_SETTING, EXTRACT_SETTING, REQUEST_STATUS, CONFIG
     }
 
     /**

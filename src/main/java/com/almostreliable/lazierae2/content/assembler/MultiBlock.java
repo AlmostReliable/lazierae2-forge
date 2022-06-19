@@ -1,10 +1,15 @@
 package com.almostreliable.lazierae2.content.assembler;
 
+import com.almostreliable.lazierae2.util.GameUtil;
+import com.mojang.logging.LogUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.entity.player.Player;
+import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
@@ -16,6 +21,7 @@ public final class MultiBlock {
     static final int MAX_SIZE = 32;
     private static final int MIN_SIZE = 4;
     private static final int MAX_VOLUME = 1_000;
+    private static final Logger LOG = LogUtils.getLogger();
 
     private MultiBlock() {}
 
@@ -85,7 +91,7 @@ public final class MultiBlock {
         @Nullable
         public static MultiBlockData of(
             BlockPos originPos, IterateDirections itDirs, Predicate<? super BlockPos> edgeCheck,
-            Predicate<? super BlockPos> depthCheck
+            Predicate<? super BlockPos> depthCheck, Player player
         ) {
             var negativeRowResult = findEdge(originPos, itDirs.rowDirection().getOpposite(), edgeCheck);
             var positiveRowResult = findEdge(originPos, itDirs.rowDirection(), edgeCheck);
@@ -95,7 +101,8 @@ public final class MultiBlock {
 
             if (negativeRowResult == null || positiveRowResult == null || negativeColumnResult == null ||
                 positiveColumnResult == null || depthResult == null) {
-                // TODO: add feedback to user
+                GameUtil.sendPlayerMessage(player, "not_found", ChatFormatting.YELLOW);
+                LOG.debug("Couldn't determine multiblock shape");
                 return null;
             }
 
@@ -113,11 +120,18 @@ public final class MultiBlock {
             var data = new MultiBlockData(startPosition, endPosition, itDirs);
             var size = data.getSize();
             if (size.getX() < MIN_SIZE || size.getY() < MIN_SIZE || size.getZ() < MIN_SIZE) {
-                // TODO: add feedback to user
+                GameUtil.sendPlayerMessage(player, "too_small", ChatFormatting.DARK_RED, MIN_SIZE);
+                LOG.debug("MultiBlock too small");
+                return null;
+            }
+            if (size.getX() > MAX_SIZE || size.getY() > MAX_SIZE || size.getZ() > MAX_SIZE) {
+                GameUtil.sendPlayerMessage(player, "too_big", ChatFormatting.DARK_RED, MAX_SIZE);
+                LOG.debug("MultiBlock too big");
                 return null;
             }
             if (size.getX() * size.getY() * size.getZ() > MAX_VOLUME) {
-                // TODO: add feedback to user
+                GameUtil.sendPlayerMessage(player, "too_large", ChatFormatting.DARK_RED, MAX_VOLUME);
+                LOG.debug("MultiBlock too large");
                 return null;
             }
             return data;
