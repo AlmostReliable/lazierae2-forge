@@ -3,7 +3,6 @@ package com.almostreliable.lazierae2.util;
 import appeng.core.definitions.AEItems;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -15,8 +14,13 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.UUID;
+
+import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 public final class GameUtil {
+
+    private static final UUID MOD_UUID = UUID.nameUUIDFromBytes(MOD_ID.getBytes());
 
     private GameUtil() {}
 
@@ -44,7 +48,7 @@ public final class GameUtil {
     public static void sendPlayerMessage(Player player, String translationKey, ChatFormatting color, Object... args) {
         player.sendMessage(
             TextUtil.translateWithArgs(TRANSLATE_TYPE.MESSAGE, translationKey, color, args),
-            Util.NIL_UUID
+            MOD_UUID
         );
     }
 }
