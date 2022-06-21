@@ -4,15 +4,19 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerMenu;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.inventory.PatternReferenceSlot;
+import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
+
+import java.util.List;
 
 import static com.almostreliable.lazierae2.core.Constants.Blocks.CONTROLLER_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
@@ -29,6 +33,11 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     private static final int SCROLLBAR_X = 174;
     private static final int SCROLLBAR_Y = 8;
     private static final int SCROLLBAR_HEIGHT = 85;
+    private static final List<Component> EXCLAMATION_TOOLTIP = Tooltip.builder()
+        .line("invalid_patterns.header", ChatFormatting.DARK_RED)
+        .blank()
+        .line("invalid_patterns.description")
+        .build();
 
     private int scrollOffset;
     private boolean scrolling;
@@ -130,6 +139,11 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
                 0xFF55_5555
             );
         }
+
+        // exclamation mark
+        if (!menu.controllerData.invalidRows.isEmpty()) {
+            blit(stack, leftPos - 5, topPos - 5, 162, 212, 12, 12, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        }
     }
 
     @Override
@@ -167,6 +181,15 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     protected void slotClicked(Slot slot, int slotId, int button, ClickType type) {
         if (slot instanceof PatternReferenceSlot) slot.index = slot.getContainerSlot();
         super.slotClicked(slot, slotId, button, type);
+    }
+
+    @Override
+    protected void renderTooltip(PoseStack stack, int mX, int mY) {
+        super.renderTooltip(stack, mX, mY);
+
+        if (isHovering(-5, -5, 12, 12, mX, mY)) {
+            renderComponentTooltip(stack, EXCLAMATION_TOOLTIP, mX, mY);
+        }
     }
 
     private boolean isInvalidRow(int row) {

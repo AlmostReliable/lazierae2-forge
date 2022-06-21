@@ -128,6 +128,9 @@
   "tooltip.lazierae2.status.link": "The system is currently crafting the requested item.",
   "tooltip.lazierae2.status.export": "The Requester is trying to export the crafting results to the system. If the Requester has this status for a long time, there is no available space for the export.",
 
+  "tooltip.lazierae2.invalid_patterns.header": "Invalid Patterns detected!",
+  "tooltip.lazierae2.invalid_patterns.description": "There are patterns that no longer fit in the current layout of Pattern Holders. All rows marked in red are no longer valid and contained patterns won't work. Please move them to valid row.",
+
   "extract_setting.lazierae2.off": "Disabled",
   "extract_setting.lazierae2.on": "Enabled",
 
