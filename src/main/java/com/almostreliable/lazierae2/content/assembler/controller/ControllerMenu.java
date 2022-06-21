@@ -101,6 +101,7 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
     @Override
     public void removed(Player player) {
         super.removed(player);
+        if (entity.getLevel() == null || entity.getLevel().isClientSide) return;
         controllerData.validateSize();
     }
 

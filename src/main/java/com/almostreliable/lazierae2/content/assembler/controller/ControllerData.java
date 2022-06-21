@@ -90,8 +90,7 @@ public class ControllerData extends GenericInventory<ControllerEntity> {
     }
 
     void validateSize() {
-        assert owner.getLevel() != null;
-        if (invalidRows.isEmpty()) return;
+        if (owner.getLevel() == null || invalidRows.isEmpty()) return;
         for (var row : invalidRows) {
             for (var slot = 0; slot < 9; slot++) {
                 if (!getStackInSlot(row * 9 + slot).isEmpty()) return;
