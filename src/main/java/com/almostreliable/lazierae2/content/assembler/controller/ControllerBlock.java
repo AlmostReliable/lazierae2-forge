@@ -11,7 +11,6 @@ import com.almostreliable.lazierae2.content.assembler.PatternHolderBlock;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
-import com.mojang.logging.LogUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,7 +27,6 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -36,10 +34,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.almostreliable.lazierae2.LazierAE2.LOG;
+
 public class ControllerBlock extends GenericBlock implements EntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    private static final Logger LOG = LogUtils.getLogger();
 
     public ControllerBlock() {
         registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH));

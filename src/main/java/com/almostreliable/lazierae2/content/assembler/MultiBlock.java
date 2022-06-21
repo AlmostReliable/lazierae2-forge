@@ -1,7 +1,6 @@
 package com.almostreliable.lazierae2.content.assembler;
 
 import com.almostreliable.lazierae2.util.GameUtil;
-import com.mojang.logging.LogUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,11 +8,11 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.player.Player;
-import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
+import static com.almostreliable.lazierae2.LazierAE2.LOG;
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public final class MultiBlock {
@@ -21,7 +20,6 @@ public final class MultiBlock {
     static final int MAX_SIZE = 32;
     private static final int MIN_SIZE = 4;
     private static final int MAX_VOLUME = 1_000;
-    private static final Logger LOG = LogUtils.getLogger();
 
     private MultiBlock() {}
 
