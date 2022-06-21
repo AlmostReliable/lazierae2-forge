@@ -120,7 +120,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
             .setVisualRepresentation(Blocks.REQUESTER.get())
             .setInWorldNode(true)
             .setTagName("proxy")
-            .setIdlePowerUsage(Config.COMMON.requesterIdleEnergy.get());
+            .setIdlePowerUsage(Config.COMMON.assemblerIdleEnergy.get());
     }
 
     private void onMultiBlockCreated() {
