@@ -3,17 +3,14 @@ package com.almostreliable.lazierae2.content.processor;
 import com.almostreliable.lazierae2.content.GenericInventory;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 
 import static com.almostreliable.lazierae2.util.TextUtil.f;
@@ -27,8 +24,6 @@ public class ProcessorInventory extends GenericInventory<ProcessorEntity> {
     private LazyOptional<IItemHandler> inputInventoryCap;
     private LazyOptional<IItemHandler> outputInventoryCap;
     private LazyOptional<IItemHandler> ioInventoryCap;
-    @Nullable private Container vanillaInventory;
-    private boolean vanillaNeedsUpdate;
 
     ProcessorInventory(ProcessorEntity entity) {
         super(entity, entity.getProcessorType().getInputSlots() + NON_INPUT_SLOTS);
@@ -58,14 +53,6 @@ public class ProcessorInventory extends GenericInventory<ProcessorEntity> {
             }
         }
         return super.isItemValid(slot, stack);
-    }
-
-    Container toVanilla() {
-        if (vanillaInventory == null || vanillaNeedsUpdate) {
-            vanillaInventory = new RecipeWrapper(this);
-            vanillaNeedsUpdate = false;
-        }
-        return vanillaInventory;
     }
 
     void dropContents(boolean creative) {

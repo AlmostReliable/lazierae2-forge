@@ -186,7 +186,7 @@ public class ProcessorEntity extends GenericEntity {
     private void finishWork(ProcessorRecipe recipe, Map<Integer, Integer> recipeInputSlots) {
         inventory.shrinkInputSlots(recipeInputSlots, recipeMultiplier);
         if (inventory.getStackInOutput().isEmpty()) {
-            var outputStack = recipe.assemble(inventory.toVanilla());
+            var outputStack = recipe.assemble(inventory.toContainer());
             outputStack.setCount(outputStack.getCount() * recipeMultiplier);
             inventory.setStackInOutput(outputStack);
         } else {
@@ -329,14 +329,14 @@ public class ProcessorEntity extends GenericEntity {
     private ProcessorRecipe detectRecipeFromInventory() {
         assert level != null && !level.isClientSide;
         return GameUtil.getRecipeManager(level)
-            .getRecipeFor(getProcessorType(), inventory.toVanilla(), level)
+            .getRecipeFor(getProcessorType(), inventory.toContainer(), level)
             .orElse(null);
     }
 
     @Nullable
     private ProcessorRecipe getRecipe() {
         assert level != null && !level.isClientSide;
-        if (recipeCache != null && recipeCache.matches(inventory.toVanilla(), level)) {
+        if (recipeCache != null && recipeCache.matches(inventory.toContainer(), level)) {
             return recipeCache;
         }
         var recipe = detectRecipeFromInventory();

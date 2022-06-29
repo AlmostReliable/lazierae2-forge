@@ -88,6 +88,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    mavenLocal()
     maven {
         name "Modmaven" // Applied Energistics
         url "https://modmaven.dev/"

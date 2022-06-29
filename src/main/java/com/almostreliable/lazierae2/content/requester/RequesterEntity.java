@@ -131,8 +131,9 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        if (!mainNode.isActive()) return TickRateModulation.IDLE;
-        if (level == null || level.isClientSide) return TickRateModulation.IDLE;
+        if (level == null || level.isClientSide || !mainNode.isActive()) {
+            return TickRateModulation.IDLE;
+        }
         if (handleProgressions()) {
             setChanged();
         }
@@ -234,8 +235,8 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
         return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
             .setFlags(GridFlags.REQUIRE_CHANNEL)
             .addService(IStorageWatcherNode.class, storageManager)
-            .addService(ICraftingRequester.class, this)
             .addService(IGridTickable.class, this)
+            .addService(ICraftingRequester.class, this)
             .setVisualRepresentation(Blocks.REQUESTER.get())
             .setInWorldNode(true)
             .setTagName("proxy")
@@ -297,7 +298,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
         // state change is handled by state pattern
     }
 
-    public IGrid getMainNodeGrid() {
+    public IGrid getGrid() {
         var grid = mainNode.getGrid();
         Objects.requireNonNull(grid, "RequesterEntity was not fully initialized - Grid is null");
         return grid;

@@ -1,12 +1,20 @@
 package com.almostreliable.lazierae2.content.assembler.controller;
 
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.*;
 import appeng.api.networking.crafting.ICraftingProvider;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.util.AECableType;
+import appeng.crafting.pattern.AECraftingPattern;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
+import appeng.me.helpers.MachineSource;
 import com.almostreliable.lazierae2.content.GenericBlock;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.content.assembler.MultiBlock.MultiBlockData;
@@ -27,20 +35,28 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.CONTROLLER_DATA_ID;
 import static com.almostreliable.lazierae2.core.Constants.Nbt.MULTIBLOCK_DATA_ID;
 
-public class ControllerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, ICraftingProvider {
+public class ControllerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, ICraftingProvider {
 
     final ControllerData controllerData;
+    final CraftingQueue craftingQueue;
     private final IManagedGridNode mainNode;
+    private final IActionSource actionSource;
     @Nullable private MultiBlockData multiBlockData;
+
+    private boolean isSleeping;
+    private int work;
 
     public ControllerEntity(BlockPos pos, BlockState state) {
         super(Assembler.CONTROLLER.get(), pos, state);
         controllerData = new ControllerData(this);
+        craftingQueue = new CraftingQueue(this);
         mainNode = setupMainNode();
+        actionSource = new MachineSource(this);
     }
 
     @Override
@@ -70,7 +86,6 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
-        // used to sync the inventory to clients after the multiblock is formed
         if (multiBlockData == null) return null;
         return ClientboundBlockEntityDataPacket.create(this);
     }
@@ -85,6 +100,64 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         mainNode.destroy();
+    }
+
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return new TickingRequest(1, 1, isSleeping, false);
+    }
+
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        if (level == null || level.isClientSide) return TickRateModulation.SLEEP;
+        if (multiBlockData == null || !mainNode.isActive()) {
+            return isSleeping ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
+        }
+
+        if (craftingQueue.canExport()) {
+            craftingQueue.exportOutputs(getGrid().getStorageService().getInventory(), actionSource);
+        }
+
+        if (craftingQueue.isEmpty()) {
+            resetWork();
+            updateSleepState();
+            return TickRateModulation.SLEEP;
+        }
+        if (isSleeping) return TickRateModulation.SLEEP;
+
+        var currentWork = work;
+        var previousWork = currentWork;
+        var workPerJob = Config.COMMON.assemblerWorkPerJob.get();
+        var workToDo = Math.min(
+            Config.COMMON.assemblerWorkPerTickBase.get() + Config.COMMON.assemblerWorkPerTickUpgrade.get() * controllerData.getAccelerators(),
+            craftingQueue.getJobAmount() * workPerJob - currentWork
+        );
+        if (workToDo > 0) {
+            var energyCost = Config.COMMON.assemblerEnergyPerWorkBase.get() + Config.COMMON.assemblerEnergyPerWorkUpgrade.get() * controllerData.getAccelerators();
+            if (energyCost > 0) {
+                var extracted = getGrid()
+                    .getEnergyService()
+                    .extractAEPower(energyCost * workToDo, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                if (extracted > 0) {
+                    currentWork += (int) Math.ceil(extracted / energyCost);
+                }
+            } else {
+                currentWork += workToDo;
+            }
+        }
+        while (currentWork >= workPerJob) {
+            if (craftingQueue.dispatchJob()) {
+                currentWork -= workPerJob;
+            } else {
+                break;
+            }
+        }
+        if (previousWork != currentWork) {
+            work = currentWork;
+            saveChanges();
+            updateSleepState();
+        }
+        return TickRateModulation.FASTER;
     }
 
     @Nullable
@@ -113,9 +186,31 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
         // TODO: implement
     }
 
+    private void resetWork() {
+        if (work > 0) {
+            work = 0;
+            saveChanges();
+        }
+    }
+
+    private void updateSleepState() {
+        var wasSleeping = isSleeping;
+        isSleeping = craftingQueue.isEmpty() && !craftingQueue.canExport();
+        if (wasSleeping != isSleeping) {
+            mainNode.ifPresent((grid, node) -> {
+                if (isSleeping) {
+                    grid.getTickManager().sleepDevice(node);
+                } else {
+                    grid.getTickManager().wakeDevice(node);
+                }
+            });
+        }
+    }
+
     private IManagedGridNode setupMainNode() {
         return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
             .setFlags(GridFlags.REQUIRE_CHANNEL)
+            .addService(IGridTickable.class, this)
             .addService(ICraftingProvider.class, this)
             .setVisualRepresentation(Blocks.REQUESTER.get())
             .setInWorldNode(true)
@@ -143,6 +238,10 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
         mainNode.setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
+    public int getWork() {
+        return work;
+    }
+
     @Nullable
     MultiBlockData getMultiBlockData() {
         return multiBlockData;
@@ -164,14 +263,19 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
 
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
-        // TODO: implement
-        return false;
+        if (!mainNode.isActive() || !controllerData.patterns.contains(patternDetails) || craftingQueue.isFull()) {
+            return false;
+        }
+        if (!(patternDetails instanceof AECraftingPattern pattern)) return false;
+        craftingQueue.pushJob(pattern, inputHolder);
+        updateSleepState();
+        saveChanges();
+        return true;
     }
 
     @Override
     public boolean isBusy() {
-        // TODO: implement
-        return false;
+        return craftingQueue.isFull();
     }
 
     @Override
@@ -193,5 +297,11 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
         } else {
             level.blockEntityChanged(worldPosition);
         }
+    }
+
+    private IGrid getGrid() {
+        var grid = mainNode.getGrid();
+        Objects.requireNonNull(grid, "RequesterEntity was not fully initialized - Grid is null");
+        return grid;
     }
 }

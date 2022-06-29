@@ -5,9 +5,12 @@ import com.almostreliable.lazierae2.content.assembler.AssemblerBlock;
 import com.almostreliable.lazierae2.core.Setup.Menus.Assembler;
 import com.almostreliable.lazierae2.inventory.PatternReferenceSlot;
 import com.almostreliable.lazierae2.inventory.PatternSlot;
+import com.almostreliable.lazierae2.network.sync.handler.IntegerDataHandler;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ControllerMenu extends GenericMenu<ControllerEntity> {
 
@@ -16,6 +19,8 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
     private static final int SLOT_SIZE = 18;
 
     public final ControllerData controllerData;
+    private int accelerators;
+    private int work;
 
     public ControllerMenu(
         int id, ControllerEntity entity,
@@ -25,7 +30,10 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
         controllerData = entity.controllerData;
         setupContainerInventory();
         setupPlayerInventory();
-        setupClientSlots();
+        if (entity.getLevel() != null && entity.getLevel().isClientSide) {
+            setupClientSlots();
+        }
+        syncData();
     }
 
     @Override
@@ -105,21 +113,43 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
         controllerData.validateSize();
     }
 
+    private void syncData() {
+        sync.addDataHandler(new IntegerDataHandler(controllerData::getAccelerators, this::setAccelerators));
+        sync.addDataHandler(new IntegerDataHandler(entity::getWork, this::setWork));
+    }
+
+    @OnlyIn(Dist.CLIENT)
     private void setupClientSlots() {
-        if (entity.getLevel() != null && entity.getLevel().isClientSide) {
-            for (var row = 0; row < ROWS; row++) {
-                for (var slot = 0; slot < COLUMNS; slot++) {
-                    var index = row * COLUMNS + slot;
-                    if (index >= controllerData.getSlots()) return;
-                    addSlot(new PatternReferenceSlot(
-                        this,
-                        controllerData,
-                        index,
-                        8 + slot * SLOT_SIZE,
-                        8 + row * SLOT_SIZE
-                    ));
-                }
+        for (var row = 0; row < ROWS; row++) {
+            for (var slot = 0; slot < COLUMNS; slot++) {
+                var index = row * COLUMNS + slot;
+                if (index >= controllerData.getSlots()) return;
+                addSlot(new PatternReferenceSlot(
+                    this,
+                    controllerData,
+                    index,
+                    8 + slot * SLOT_SIZE,
+                    8 + row * SLOT_SIZE
+                ));
             }
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public int getAccelerators() {
+        return accelerators;
+    }
+
+    private void setAccelerators(int accelerators) {
+        this.accelerators = accelerators;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public int getWork() {
+        return work;
+    }
+
+    private void setWork(int work) {
+        this.work = work;
     }
 }

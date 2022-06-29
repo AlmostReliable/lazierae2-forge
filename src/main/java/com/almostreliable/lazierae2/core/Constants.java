@@ -110,6 +110,12 @@ public final class Constants {
         public static final String PROCESS_TIME = "process_time_base";
         public static final String PROCESS_TIME_UPGRADE = "process_time_multi";
         public static final String IDLE_ENERGY = "idle_energy";
+        public static final String QUEUE_SIZE = "queue_size";
+        public static final String WORK_PER_JOB = "work_per_job";
+        public static final String WORK_PER_TICK_BASE = "work_per_tick_base";
+        public static final String WORK_PER_TICK_UPGRADE = "work_per_tick_upgrade";
+        public static final String ENERGY_PER_WORK_BASE = "energy_per_work_base";
+        public static final String ENERGY_PER_WORK_UPGRADE = "energy_per_work_upgrade";
         public static final String ASSEMBLER_ID = "assembler";
     }
 }

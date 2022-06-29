@@ -128,7 +128,7 @@ public class StorageManager implements IStorageWatcherNode, INBTSerializable<Com
         if (genericStack == null) {
             return;
         }
-        get(slot).knownAmount = owner.getMainNodeGrid()
+        get(slot).knownAmount = owner.getGrid()
             .getStorageService()
             .getInventory()
             .getAvailableStacks()

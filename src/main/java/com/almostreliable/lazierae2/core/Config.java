@@ -106,6 +106,12 @@ public final class Config {
         public final ProcessorConfig infuser;
         public final DoubleValue requesterIdleEnergy;
         public final DoubleValue assemblerIdleEnergy;
+        public final IntValue assemblerQueueSize;
+        public final IntValue assemblerWorkPerJob;
+        public final IntValue assemblerWorkPerTickBase;
+        public final IntValue assemblerWorkPerTickUpgrade;
+        public final IntValue assemblerEnergyPerWorkBase;
+        public final IntValue assemblerEnergyPerWorkUpgrade;
         public final BooleanValue inWorldResonating;
 
         private CommonConfig(Builder builder) {
@@ -138,6 +144,54 @@ public final class Config {
                 ))
                 .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", ASSEMBLER_ID, IDLE_ENERGY)))
                 .defineInRange("idleEnergy", 5.0, 0.0, Double.MAX_VALUE);
+            assemblerQueueSize = builder.comment(f(
+                    " The maximum amount of jobs the {} can queue.",
+                    ASSEMBLER_ID
+                ))
+                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", ASSEMBLER_ID, QUEUE_SIZE)))
+                .defineInRange("queueSize", 64, 1, 1_000);
+            assemblerWorkPerJob = builder.comment(f(
+                    " The amount of work the {} has to perform per job.",
+                    ASSEMBLER_ID
+                ))
+                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", ASSEMBLER_ID, WORK_PER_JOB)))
+                .defineInRange("workPerJob", 16, 1, 1_000);
+            assemblerWorkPerTickBase = builder.comment(f(
+                    " The base amount of work the {} performs per tick.",
+                    ASSEMBLER_ID
+                ))
+                .translation(TextUtil.translateAsString(
+                    TRANSLATE_TYPE.CONFIG,
+                    f("{}.{}", ASSEMBLER_ID, WORK_PER_TICK_BASE)
+                ))
+                .defineInRange("workPerTickBase", 1, 1, 1_000);
+            assemblerWorkPerTickUpgrade = builder.comment(f(
+                    " The additional amount of work the {} performs per tick per upgrade.",
+                    ASSEMBLER_ID
+                ))
+                .translation(TextUtil.translateAsString(
+                    TRANSLATE_TYPE.CONFIG,
+                    f("{}.{}", ASSEMBLER_ID, WORK_PER_TICK_UPGRADE)
+                ))
+                .defineInRange("workPerTickUpgrade", 3, 1, 1_000);
+            assemblerEnergyPerWorkBase = builder.comment(f(
+                    " The base amount of energy the {} consumes per work.",
+                    ASSEMBLER_ID
+                ))
+                .translation(TextUtil.translateAsString(
+                    TRANSLATE_TYPE.CONFIG,
+                    f("{}.{}", ASSEMBLER_ID, ENERGY_PER_WORK_BASE)
+                ))
+                .defineInRange("energyPerWorkBase", 1, 0, 1_000);
+            assemblerEnergyPerWorkUpgrade = builder.comment(f(
+                    " The additional amount of energy the {} consumes per work per upgrade.",
+                    ASSEMBLER_ID
+                ))
+                .translation(TextUtil.translateAsString(
+                    TRANSLATE_TYPE.CONFIG,
+                    f("{}.{}", ASSEMBLER_ID, ENERGY_PER_WORK_UPGRADE)
+                ))
+                .defineInRange("energyPerWorkUpgrade", 3, 0, 1_000);
             builder.pop();
 
             builder.push("misc");

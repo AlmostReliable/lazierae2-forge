@@ -4,10 +4,12 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.wrapper.RecipeWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -18,10 +20,12 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 public abstract class GenericInventory<E extends GenericEntity> implements IItemHandlerModifiable, INBTSerializable<CompoundTag> {
 
     protected final E owner;
+    private final Container container;
     private NonNullList<ItemStack> stacks;
 
     protected GenericInventory(E owner, int size) {
         this.owner = owner;
+        container = new RecipeWrapper(this);
         stacks = NonNullList.withSize(size, ItemStack.EMPTY);
     }
 
@@ -72,6 +76,10 @@ public abstract class GenericInventory<E extends GenericEntity> implements IItem
         return Math.min(getSlotLimit(slot), stack.getMaxStackSize());
     }
 
+    public Container toContainer() {
+        return container;
+    }
+
     protected void validateSlot(int slot) {
         if (slot < 0 || slot >= getSlots()) {
             throw new IndexOutOfBoundsException(f("Slot {} is not in range [0,{})", slot, stacks.size()));
@@ -93,6 +101,13 @@ public abstract class GenericInventory<E extends GenericEntity> implements IItem
             stacks = NonNullList.withSize(size, ItemStack.EMPTY);
         }
         owner.setChanged();
+    }
+
+    public boolean isEmpty() {
+        for (var stack : stacks) {
+            if (!stack.isEmpty()) return false;
+        }
+        return true;
     }
 
     @Override

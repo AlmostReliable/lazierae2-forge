@@ -54,7 +54,7 @@ public class ControllerData extends GenericInventory<ControllerEntity> {
         if (owner.getLevel() != null && !owner.getLevel().isClientSide) {
             updatePatterns();
         }
-        super.onContentsChanged();
+        owner.saveChanges();
     }
 
     @Override

@@ -18,8 +18,8 @@ public class ExportState implements IProgressionState {
         }
 
         var inserted = StorageHelper.poweredInsert(
-            owner.getMainNodeGrid().getEnergyService(),
-            owner.getMainNodeGrid().getStorageService().getInventory(),
+            owner.getGrid().getEnergyService(),
+            owner.getGrid().getStorageService().getInventory(),
             storage.getItemType(),
             storage.getBufferAmount(),
             owner.getActionSource(),

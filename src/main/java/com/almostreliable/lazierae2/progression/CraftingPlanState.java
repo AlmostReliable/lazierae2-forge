@@ -29,7 +29,7 @@ public final class CraftingPlanState implements IProgressionState {
 
         try {
             var plan = future.get();
-            var link = owner.getMainNodeGrid()
+            var link = owner.getGrid()
                 .getCraftingService()
                 .submitJob(plan, owner, null, false, owner.getActionSource());
 

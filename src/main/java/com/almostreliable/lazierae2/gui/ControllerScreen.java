@@ -77,6 +77,10 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
             -12,
             0xFFFF_FFFF
         );
+
+        // TODO: remove these debug labels
+        drawString(stack, font, "accelerators: " + menu.getAccelerators(), 79, 94, 0xFFFF_FFFF);
+        drawString(stack, font, "work: " + menu.getWork(), 79, 102, 0xFFFF_FFFF);
     }
 
     @Override
