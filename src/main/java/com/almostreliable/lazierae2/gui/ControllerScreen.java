@@ -187,7 +187,7 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     protected void renderTooltip(PoseStack stack, int mX, int mY) {
         super.renderTooltip(stack, mX, mY);
 
-        if (isHovering(-5, -5, 12, 12, mX, mY)) {
+        if (isHovering(-5, -5, 12, 12, mX, mY) && !menu.controllerData.invalidRows.isEmpty()) {
             renderComponentTooltip(stack, EXCLAMATION_TOOLTIP, mX, mY);
         }
     }
