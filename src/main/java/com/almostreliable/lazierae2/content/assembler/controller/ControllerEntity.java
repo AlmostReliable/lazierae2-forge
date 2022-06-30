@@ -37,8 +37,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
-import static com.almostreliable.lazierae2.core.Constants.Nbt.CONTROLLER_DATA_ID;
-import static com.almostreliable.lazierae2.core.Constants.Nbt.MULTIBLOCK_DATA_ID;
+import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
 public class ControllerEntity extends GenericEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity, IGridTickable, ICraftingProvider {
 
@@ -73,6 +72,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
         mainNode.loadFromNBT(tag);
         if (tag.contains(MULTIBLOCK_DATA_ID)) multiBlockData = MultiBlockData.load(tag.getCompound(MULTIBLOCK_DATA_ID));
         if (tag.contains(CONTROLLER_DATA_ID)) controllerData.deserializeNBT(tag.getCompound(CONTROLLER_DATA_ID));
+        if (tag.contains(CRAFTING_QUEUE_ID)) craftingQueue.deserializeNBT(tag.getCompound(CRAFTING_QUEUE_ID));
     }
 
     @Override
@@ -81,6 +81,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
         mainNode.saveToNBT(tag);
         if (multiBlockData != null) tag.put(MULTIBLOCK_DATA_ID, MultiBlockData.save(multiBlockData));
         tag.put(CONTROLLER_DATA_ID, controllerData.serializeNBT());
+        tag.put(CRAFTING_QUEUE_ID, craftingQueue.serializeNBT());
     }
 
     @Nullable
@@ -114,9 +115,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
             return isSleeping ? TickRateModulation.SLEEP : TickRateModulation.IDLE;
         }
 
-        if (craftingQueue.canExport()) {
-            craftingQueue.exportOutputs(getGrid().getStorageService().getInventory(), actionSource);
-        }
+        craftingQueue.exportOutputs(getGrid().getStorageService().getInventory(), actionSource);
 
         if (craftingQueue.isEmpty()) {
             resetWork();

@@ -6,6 +6,7 @@ import com.almostreliable.lazierae2.core.Setup.Menus.Assembler;
 import com.almostreliable.lazierae2.inventory.PatternReferenceSlot;
 import com.almostreliable.lazierae2.inventory.PatternSlot;
 import com.almostreliable.lazierae2.network.sync.handler.IntegerDataHandler;
+import com.almostreliable.lazierae2.network.sync.handler.StackArrayDataHandler;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +20,7 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
     private static final int SLOT_SIZE = 18;
 
     public final ControllerData controllerData;
+    private ItemStack[] craftingMatrix;
     private int accelerators;
     private int work;
 
@@ -115,6 +117,10 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
 
     private void syncData() {
         sync.addDataHandler(new IntegerDataHandler(controllerData::getAccelerators, this::setAccelerators));
+        sync.addDataHandler(new StackArrayDataHandler(
+            entity.craftingQueue::getCraftingMatrix,
+            this::setCraftingMatrix
+        ));
         sync.addDataHandler(new IntegerDataHandler(entity::getWork, this::setWork));
     }
 
@@ -133,6 +139,15 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
                 ));
             }
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public ItemStack[] getCraftingMatrix() {
+        return craftingMatrix;
+    }
+
+    private void setCraftingMatrix(ItemStack... craftingMatrix) {
+        this.craftingMatrix = craftingMatrix;
     }
 
     @OnlyIn(Dist.CLIENT)

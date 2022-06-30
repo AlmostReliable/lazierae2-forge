@@ -69,6 +69,7 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
 
     @Override
     protected void renderLabels(PoseStack stack, int mX, int mY) {
+        // title
         drawCenteredString(
             stack,
             font,
@@ -77,6 +78,18 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
             -12,
             0xFFFF_FFFF
         );
+        // no pattern holders
+        if (calculateRowsToDraw() == 0) {
+            var text = TextUtil.translateAsString(TRANSLATE_TYPE.GUI, "controller.empty");
+            var textWidth = font.width(text);
+            font.draw(
+                stack,
+                text,
+                leftPos + (TEXTURE_WIDTH - SLOT_SIZE) / 2f - textWidth / 2f,
+                topPos + 35f,
+                0xFF55_5555
+            );
+        }
 
         // TODO: remove these debug labels
         drawString(stack, font, "accelerators: " + menu.getAccelerators(), 79, 94, 0xFFFF_FFFF);
@@ -117,8 +130,7 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
         );
 
         // slots
-        var rowsToDraw = Mth.clamp(menu.controllerData.getSlots() / ControllerMenu.COLUMNS, 0, ControllerMenu.ROWS);
-        for (var row = 0; row < rowsToDraw; row++) {
+        for (var row = 0; row < calculateRowsToDraw(); row++) {
             var vOffset = 195f + (isInvalidRow(row) ? SLOT_SIZE : 0);
             blit(
                 stack,
@@ -132,22 +144,13 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
                 TEXTURE_HEIGHT
             );
         }
-        if (rowsToDraw == 0) {
-            var text = TextUtil.translateAsString(TRANSLATE_TYPE.GUI, "controller.empty");
-            var textWidth = font.width(text);
-            font.draw(
-                stack,
-                text,
-                leftPos + (TEXTURE_WIDTH - SLOT_SIZE) / 2f - textWidth / 2f,
-                topPos + 35f,
-                0xFF55_5555
-            );
-        }
 
         // exclamation mark
         if (!menu.controllerData.invalidRows.isEmpty()) {
             blit(stack, leftPos - 5, topPos - 5, 162, 212, 12, 12, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
+
+        renderCraftingMatrix();
     }
 
     @Override
@@ -194,6 +197,30 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
         if (isHovering(-5, -5, 12, 12, mX, mY) && !menu.controllerData.invalidRows.isEmpty()) {
             renderComponentTooltip(stack, EXCLAMATION_TOOLTIP, mX, mY);
         }
+    }
+
+    private int calculateRowsToDraw() {
+        return Mth.clamp(menu.controllerData.getSlots() / ControllerMenu.COLUMNS, 0, ControllerMenu.ROWS);
+    }
+
+    // Mojang uses a different render stack for rendering items inside GUIs, I don't question it anymore
+    private void renderCraftingMatrix() {
+        var craftingMatrix = menu.getCraftingMatrix();
+        var renderStack = RenderSystem.getModelViewStack();
+
+        // input grid
+        renderStack.pushPose();
+        renderStack.translate(leftPos + 7.0, topPos + 82.0, 0);
+        renderStack.scale(0.5f, 0.5f, 0.5f);
+        for (var row = 0; row < 3; row++) {
+            for (var col = 0; col < 3; col++) {
+                itemRenderer.renderAndDecorateFakeItem(craftingMatrix[row * 3 + col], col * SLOT_SIZE, row * SLOT_SIZE);
+            }
+        }
+        renderStack.popPose();
+
+        // output slot
+        itemRenderer.renderAndDecorateFakeItem(craftingMatrix[9], leftPos + 36, topPos + 83);
     }
 
     private boolean isInvalidRow(int row) {
