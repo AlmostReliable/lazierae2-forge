@@ -6,10 +6,7 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
-- added model for the Matter Infuser
-- changed texture of the Matter Infuser
-- added model for the Pulse Grinder
-- changed texture of the Pulse Grinder
+- added new model and texture for all processing machines and the Requester
 - changed texture of the Universal Press
 - Requester now requires a channel
   - can be modified in the config

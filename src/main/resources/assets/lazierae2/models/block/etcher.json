@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench by Almost Reliable",
 	"parent": "block/block",
 	"textures": {
-		"face": "lazierae2:block/machine/grinder",
+		"face": "lazierae2:block/machine/etcher",
 		"particle": "lazierae2:block/machine/top",
 		"top": "lazierae2:block/machine/top",
 		"wall": "lazierae2:block/machine/wall"
@@ -22,50 +22,50 @@
 		},
 		{
 			"from": [0, 0, 0],
-			"to": [5, 16, 1],
+			"to": [16, 4, 1],
 			"faces": {
-				"north": {"uv": [11, 0, 16, 16], "texture": "#face"},
-				"east": {"uv": [11, 0, 12, 16], "texture": "#face"}
+				"north": {"uv": [0, 12, 16, 16], "texture": "#face"},
+				"up": {"uv": [16, 12, 0, 13], "texture": "#face"}
 			}
 		},
 		{
-			"from": [11, 0, 0],
+			"from": [0, 12, 0],
 			"to": [16, 16, 1],
 			"faces": {
-				"north": {"uv": [0, 0, 5, 16], "texture": "#face"},
-				"west": {"uv": [4, 0, 5, 16], "texture": "#face"}
+				"north": {"uv": [0, 0, 16, 4], "texture": "#face"},
+				"down": {"uv": [16, 4, 0, 3], "texture": "#face"}
 			}
 		},
 		{
-			"from": [5, 0, 0],
-			"to": [11, 3, 1],
+			"from": [3, 3, 1],
+			"to": [13, 13, 2],
 			"faces": {
-				"north": {"uv": [5, 13, 11, 16], "texture": "#face"},
-				"up": {"uv": [5, 13, 11, 14], "texture": "#face"}
+				"north": {"uv": [3, 3, 13, 13], "texture": "#face"}
 			}
 		},
 		{
-			"from": [4, 2, 1],
-			"to": [12, 15, 2],
+			"from": [0, 4, 0],
+			"to": [4, 12, 1],
 			"faces": {
-				"north": {"uv": [4, 1, 12, 14], "texture": "#face"}
+				"north": {"uv": [12, 4, 16, 12], "texture": "#face"},
+				"east": {"uv": [12, 4, 13, 12], "texture": "#face"}
 			}
 		},
 		{
-			"from": [5, 14, 0],
-			"to": [11, 16, 1],
+			"from": [5, 4, 0],
+			"to": [8, 12, 1],
 			"faces": {
-				"north": {"uv": [5, 0, 11, 2], "texture": "#face"},
-				"down": {"uv": [5, 1, 11, 2], "texture": "#face"}
+				"north": {"uv": [8, 4, 11, 12], "texture": "#face"},
+				"east": {"uv": [8, 4, 9, 12], "texture": "#face"},
+				"west": {"uv": [10, 4, 11, 12], "texture": "#face"}
 			}
 		},
 		{
-			"from": [5, 11, 0],
-			"to": [11, 13, 1],
+			"from": [12, 4, 0],
+			"to": [16, 12, 1],
 			"faces": {
-				"north": {"uv": [5, 3, 11, 5], "texture": "#face"},
-				"up": {"uv": [5, 3, 11, 4], "texture": "#face"},
-				"down": {"uv": [5, 4, 11, 5], "texture": "#face"}
+				"north": {"uv": [0, 4, 4, 12], "texture": "#face"},
+				"west": {"uv": [3, 4, 4, 12], "texture": "#face"}
 			}
 		}
 	],
