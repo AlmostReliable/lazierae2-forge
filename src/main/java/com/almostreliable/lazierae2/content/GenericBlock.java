@@ -74,7 +74,7 @@ public abstract class GenericBlock extends Block implements EntityBlock {
         ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag
     ) {
         var description = TextUtil.translateAsString(TRANSLATE_TYPE.TOOLTIP, f("{}.description", getId()));
-        if (!description.isEmpty()) {
+        if (!description.startsWith(f("{}.{}", TRANSLATE_TYPE.TOOLTIP.toString().toLowerCase(), "lazierae2"))) {
             tooltip.addAll(Tooltip.builder()
                 .line(Screen::hasShiftDown, f("{}.description", getId()), ChatFormatting.AQUA)
                 .hotkeyHoldAction(() -> !Screen.hasShiftDown(), "key.keyboard.left.shift", "extended_info")

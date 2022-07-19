@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning].
 - fixed main node creation at wrong time
   - fixes [#18]
   - an AE2 API update was required, thus raising the AE2 version to 11.1.4
+- fixed block tooltip hiding when no description is provided
 
 <!-- Links -->
 [#18]: https://github.com/AlmostReliable/lazierae2-forge/issues/18
