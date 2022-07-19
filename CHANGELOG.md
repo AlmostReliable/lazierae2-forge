@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning].
   - brief explanation how to obtain them
   - can be disabled in the config
 - added German translation
+- added ability to shift-right-click upgrades into processing machines
 - improved texture of the Universal Press
 - improved texture of the Resonating Seed
 - Requester now requires a channel

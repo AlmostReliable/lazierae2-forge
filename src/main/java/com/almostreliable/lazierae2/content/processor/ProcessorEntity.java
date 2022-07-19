@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.content.processor;
 
+import appeng.core.definitions.AEItems;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
@@ -8,6 +9,7 @@ import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -127,6 +129,25 @@ public class ProcessorEntity extends GenericEntity {
             }
         }
         return super.getCapability(cap, direction);
+    }
+
+    public void insertUpgrades(Player player, InteractionHand hand) {
+        var stack = player.getItemInHand(hand);
+        var maxUpgrades = getProcessorType().getUpgradeSlots();
+        var currentUpgrades = inventory.getUpgradeCount();
+        var inserted = Math.min(stack.getCount(), maxUpgrades - currentUpgrades);
+        if (inserted > 0) {
+            inventory.setStackInSlot(
+                ProcessorInventory.UPGRADE_SLOT,
+                AEItems.SPEED_CARD.stack(currentUpgrades + inserted)
+            );
+            stack.shrink(inserted);
+            if (stack.isEmpty()) {
+                player.setItemInHand(hand, ItemStack.EMPTY);
+            } else {
+                player.setItemInHand(hand, stack);
+            }
+        }
     }
 
     @Override
