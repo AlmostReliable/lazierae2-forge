@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 - added new model and texture for all processing machines and the Requester
+- added compat recipe for MEGACells ([#21])
 - improved texture of the Universal Press
 - improved texture of the Resonating Seed
 - Requester now requires a channel
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning].
 
 <!-- Links -->
 [#18]: https://github.com/AlmostReliable/lazierae2-forge/issues/18
+[#21]: https://github.com/AlmostReliable/lazierae2-forge/issues/21
 
 ## [3.0.2] - 2022-06-05
 
