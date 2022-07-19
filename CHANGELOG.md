@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 - added new model and texture for all processing machines and the Requester
-- changed texture of the Universal Press
+- improved texture of the Universal Press
+- improved texture of the Resonating Seed
 - Requester now requires a channel
   - can be modified in the config
   - default setting is true
