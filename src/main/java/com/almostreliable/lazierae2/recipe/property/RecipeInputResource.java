@@ -25,7 +25,7 @@ public record RecipeInputResource(ResourceLocation id, int count) implements IRe
     @SuppressWarnings("deprecation")
     @Override
     public void toNetwork(FriendlyByteBuf buffer) {
-        var item = Registry.ITEM.get(id);
+        var item = Registry.ITEM.getOptional(id).orElseThrow();
         Ingredient.of(item).toNetwork(buffer);
         buffer.writeVarInt(count);
     }
