@@ -19,6 +19,9 @@
   "block.lazierae2.infuser": "Matter Infuser",
   "block.lazierae2.requester": "ME Requester",
 
+  "info.lazierae2.universal_press": "The Universal Press is a combination of all presses and can't be found in meteorites. It needs to be crafted.",
+  "info.lazierae2.singularity": "A simple way to obtain a Singularity is to pump water into a Matter Condenser.",
+
   "tooltip.lazierae2.aggregator.description": "Facilitates in-world crafting by combining Crystal Growth Accelerators. Grants access to Crystal Crafts by using raw materials and has charging capabilities.",
   "tooltip.lazierae2.etcher.description": "Essentially an Advanced Inscriber but upgradable and faster by making use of raw materials.",
   "tooltip.lazierae2.grinder.description": "Grinds resources into their component parts for further use.",

@@ -104,9 +104,13 @@ public final class Config {
         public final ProcessorConfig etcher;
         public final ProcessorConfig grinder;
         public final ProcessorConfig infuser;
+
         public final DoubleValue requesterIdleEnergy;
         public final BooleanValue requesterRequireChannel;
+
         public final BooleanValue inWorldResonating;
+        public final BooleanValue pressDescription;
+        public final BooleanValue singularityDescription;
 
         private CommonConfig(Builder builder) {
             builder.push(PROCESSOR_ID);
@@ -127,7 +131,7 @@ public final class Config {
                     " The energy the {} drains from the ME network when idle.",
                     REQUESTER_ID
                 ))
-                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", REQUESTER_ID, IDLE_ENERGY)))
+                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", REQUESTER_ID, "idleEnergy")))
                 .defineInRange("idleEnergy", 5.0, 0.0, Double.MAX_VALUE);
             requesterRequireChannel = builder.comment(f(
                     " Whether the {} requires an ME network channel to function.",
@@ -135,7 +139,7 @@ public final class Config {
                 ))
                 .translation(TextUtil.translateAsString(
                     TRANSLATE_TYPE.CONFIG,
-                    f("{}.{}", REQUESTER_ID, REQUIRE_CHANNEL)
+                    f("{}.{}", REQUESTER_ID, "requireChannel")
                 ))
                 .define("requireChannel", true);
             builder.pop();
@@ -144,6 +148,14 @@ public final class Config {
             inWorldResonating = builder.comment(" Whether the Resonating Dust should be craft-able in the world.")
                 .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, "misc.inWorldResonating"))
                 .define("inWorldResonating", true);
+            pressDescription = builder.comment(
+                    " Whether the Universal Press should have a custom JEI info panel which explains that it's only craftable and can't be found in meteorites.")
+                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, "misc.pressDescription"))
+                .define("pressDescription", true);
+            singularityDescription = builder.comment(
+                    " Whether the Singularity should have a custom JEI info panel which explains that it's easily obtainable by pumping water into a Matter Condenser.")
+                .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, "misc.singularityDescription"))
+                .define("singularityDescription", true);
             builder.pop();
         }
     }

@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.compat.jei;
 
+import appeng.api.ids.AEItemIds;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
@@ -12,6 +13,7 @@ import com.almostreliable.lazierae2.content.processor.ProcessorType;
 import com.almostreliable.lazierae2.core.Config;
 import com.almostreliable.lazierae2.core.Setup.Blocks;
 import com.almostreliable.lazierae2.core.Setup.Items;
+import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.gui.RequesterScreen;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
@@ -21,6 +23,7 @@ import com.almostreliable.lazierae2.util.GameUtil;
 import com.almostreliable.lazierae2.util.TextUtil;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
 import net.minecraft.resources.ResourceLocation;
@@ -31,12 +34,31 @@ import net.minecraftforge.common.Tags;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.almostreliable.lazierae2.core.Constants.Items.UNIVERSAL_PRESS_ID;
+
 @SuppressWarnings("unused")
 @JeiPlugin
 public class Plugin implements IModPlugin {
 
     private static <T extends ProcessorRecipe> List<T> validateRecipes(List<ProcessorRecipe> recipes, Class<T> clazz) {
         return recipes.stream().filter(clazz::isInstance).map(clazz::cast).toList();
+    }
+
+    private void registerInfoPages(IRecipeRegistration r) {
+        if (Config.COMMON.pressDescription.get().equals(Boolean.TRUE)) {
+            r.addIngredientInfo(
+                new ItemStack(Items.UNIVERSAL_PRESS.get()),
+                VanillaTypes.ITEM_STACK,
+                TextUtil.translate(TRANSLATE_TYPE.INFO, UNIVERSAL_PRESS_ID)
+            );
+        }
+        if (Config.COMMON.singularityDescription.get().equals(Boolean.TRUE)) {
+            r.addIngredientInfo(
+                AEItems.SINGULARITY.stack(),
+                VanillaTypes.ITEM_STACK,
+                TextUtil.translate(TRANSLATE_TYPE.INFO, AEItemIds.SINGULARITY.getPath())
+            );
+        }
     }
 
     @Override
@@ -89,6 +111,8 @@ public class Plugin implements IModPlugin {
             ), new ItemStack(Items.RESONATING_DUST.get(), 2), false));
         }
         r.addRecipes(new RecipeType<>(ThrowingInWaterCategory.ID, ThrowingInWaterDisplay.class), inWaterRecipes);
+
+        registerInfoPages(r);
     }
 
     @Override
