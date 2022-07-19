@@ -81,7 +81,7 @@ public class Plugin implements IModPlugin {
                 true
             ));
         }
-        if (Config.COMMON.inWorldResonating.get().equals(true)) {
+        if (Config.COMMON.inWorldResonating.get().equals(Boolean.TRUE)) {
             inWaterRecipes.add(new ThrowingInWaterDisplay(List.of(
                 Ingredient.of(AEItems.SKY_DUST),
                 Ingredient.of(Tags.Items.GEMS_DIAMOND),

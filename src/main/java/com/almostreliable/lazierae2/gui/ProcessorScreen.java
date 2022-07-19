@@ -147,7 +147,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
             .blank()
             .conditional(progress -> progress.condition(() -> (menu.entity.getProgress() > 0 && menu.entity.getProcessTime() > 0) || menu.entity.getBlockState()
                     .getValue(GenericBlock.ACTIVE)
-                    .equals(true))
+                    .equals(Boolean.TRUE))
                 .then(Tooltip.builder()
                     .keyValue("progress.progress", menu.entity::getProgress, menu.entity::getProcessTime)
                     .conditional(extendedInfo -> extendedInfo.condition(Screen::hasShiftDown)
