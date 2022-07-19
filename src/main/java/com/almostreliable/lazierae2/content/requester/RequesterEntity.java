@@ -231,8 +231,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
     private IManagedGridNode setupMainNode() {
         var exposedSides = EnumSet.allOf(Direction.class);
         exposedSides.remove(getBlockState().getValue(GenericBlock.FACING));
-        return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
-            .setFlags(GridFlags.REQUIRE_CHANNEL)
+        var node = GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
             .addService(IStorageWatcherNode.class, storageManager)
             .addService(ICraftingRequester.class, this)
             .addService(IGridTickable.class, this)
@@ -241,6 +240,10 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
             .setTagName("proxy")
             .setIdlePowerUsage(Config.COMMON.requesterIdleEnergy.get())
             .setExposedOnSides(exposedSides);
+        if (Config.COMMON.requesterRequireChannel.get()) {
+            node.setFlags(GridFlags.REQUIRE_CHANNEL);
+        }
+        return node;
     }
 
     public IActionSource getActionSource() {

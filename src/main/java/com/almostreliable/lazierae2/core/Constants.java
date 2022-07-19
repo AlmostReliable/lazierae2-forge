@@ -85,5 +85,6 @@ public final class Constants {
         public static final String PROCESS_TIME = "process_time_base";
         public static final String PROCESS_TIME_UPGRADE = "process_time_multi";
         public static final String IDLE_ENERGY = "idle_energy";
+        public static final String REQUIRE_CHANNEL = "require_channel";
     }
 }

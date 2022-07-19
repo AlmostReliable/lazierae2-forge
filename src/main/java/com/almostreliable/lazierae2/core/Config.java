@@ -105,6 +105,7 @@ public final class Config {
         public final ProcessorConfig grinder;
         public final ProcessorConfig infuser;
         public final DoubleValue requesterIdleEnergy;
+        public final BooleanValue requesterRequireChannel;
         public final BooleanValue inWorldResonating;
 
         private CommonConfig(Builder builder) {
@@ -128,6 +129,15 @@ public final class Config {
                 ))
                 .translation(TextUtil.translateAsString(TRANSLATE_TYPE.CONFIG, f("{}.{}", REQUESTER_ID, IDLE_ENERGY)))
                 .defineInRange("idleEnergy", 5.0, 0.0, Double.MAX_VALUE);
+            requesterRequireChannel = builder.comment(f(
+                    " Whether the {} requires an ME network channel to function.",
+                    REQUESTER_ID
+                ))
+                .translation(TextUtil.translateAsString(
+                    TRANSLATE_TYPE.CONFIG,
+                    f("{}.{}", REQUESTER_ID, REQUIRE_CHANNEL)
+                ))
+                .define("requireChannel", true);
             builder.pop();
 
             builder.push("misc");
