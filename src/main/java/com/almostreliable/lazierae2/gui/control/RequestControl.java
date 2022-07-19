@@ -75,7 +75,7 @@ public final class RequestControl {
         private AbstractWidget[] init() {
             countBox = new CountBox();
             batchBox = new BatchBox();
-            var stateButton = new StateButton(screen);
+            var stateButton = new StateBox(screen);
             var progressionDisplay = new ProgressionDisplay();
             return new AbstractWidget[]{stateButton, countBox, countBox.submitButton, batchBox, batchBox.submitButton, progressionDisplay};
         }
@@ -331,21 +331,22 @@ public final class RequestControl {
             }
         }
 
-        private final class StateButton extends ToggleButton {
+        private final class StateBox extends ToggleButton {
 
             private static final String TEXTURE_ID = "state";
-            private static final int POS_X = 9;
-            private static final int POS_Y = 9;
-            private static final int GAP = 7;
+            private static final int POS_X = 7;
+            private static final int POS_Y = 8;
+            private static final int BOX_SIZE = 14;
+            private static final int GAP = 6;
             private static final List<Component> TOOLTIP = Tooltip.builder().line(TEXTURE_ID).build();
 
-            private StateButton(RequesterScreen screen) {
+            private StateBox(RequesterScreen screen) {
                 super(
                     screen,
                     POS_X,
-                    slot * (GAP + BUTTON_SIZE) + POS_Y,
-                    BUTTON_SIZE,
-                    BUTTON_SIZE,
+                    slot * (GAP + BOX_SIZE) + POS_Y,
+                    BOX_SIZE,
+                    BOX_SIZE,
                     TEXTURE_ID,
                     () -> screen.getMenu().getRequestState(slot)
                 );
