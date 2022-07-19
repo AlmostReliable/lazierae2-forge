@@ -2,10 +2,8 @@ package com.almostreliable.lazierae2.recipe.builder;
 
 import appeng.core.AppEng;
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
-import com.almostreliable.lazierae2.recipe.IRecipeItemProvider;
 import com.almostreliable.lazierae2.recipe.IngredientWithCount;
-import com.almostreliable.lazierae2.recipe.RecipeResourceProvider;
-import com.almostreliable.lazierae2.recipe.RecipeStackProvider;
+import com.almostreliable.lazierae2.recipe.property.*;
 import com.almostreliable.lazierae2.recipe.type.ProcessorRecipe;
 import com.almostreliable.lazierae2.util.TextUtil;
 import net.minecraft.core.NonNullList;
@@ -20,8 +18,9 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
@@ -31,21 +30,22 @@ public final class ProcessorRecipeBuilder {
 
     private final ProcessorType recipeType;
     private final List<ICondition> conditions = new ArrayList<>();
-    private final IRecipeItemProvider output;
-    private final NonNullList<IngredientWithCount> inputs = NonNullList.create();
+    private final Set<String> loadedModIDs = new HashSet<>();
+    private final IRecipeOutputProvider output;
+    private final NonNullList<IRecipeInputProvider> inputs = NonNullList.create();
     private int processTime;
     private int energyCost;
 
     private ProcessorRecipeBuilder(ProcessorType recipeType, ItemLike output, int outputCount) {
         this.recipeType = recipeType;
-        this.output = new RecipeStackProvider(new ItemStack(output, outputCount));
+        this.output = new RecipeOutputStack(new ItemStack(output, outputCount));
     }
 
     private ProcessorRecipeBuilder(ProcessorType recipeType, String output, int outputCount) {
         this.recipeType = recipeType;
         var outputSplit = output.split(":");
         var outputId = new ResourceLocation(outputSplit[0], outputSplit[1]);
-        this.output = new RecipeResourceProvider(outputId, outputCount);
+        this.output = new RecipeOutputResource(outputId, outputCount);
     }
 
     public static ProcessorRecipeBuilder aggregator(ItemLike output, int outputCount) {
@@ -113,18 +113,32 @@ public final class ProcessorRecipeBuilder {
     }
 
     public ProcessorRecipeBuilder input(IngredientWithCount... inputs) {
-        Collections.addAll(this.inputs, inputs);
-        return this;
-    }
-
-    public ProcessorRecipeBuilder input(Ingredient input) {
-        inputs.add(new IngredientWithCount(input, 1));
+        for (var input : inputs) {
+            this.inputs.add(new RecipeInputIngred(input));
+        }
         return this;
     }
 
     public ProcessorRecipeBuilder input(Ingredient input, int count) {
-        inputs.add(new IngredientWithCount(input, count));
+        return input(new IngredientWithCount(input, count));
+    }
+
+    public ProcessorRecipeBuilder input(String input, int count) {
+        var inputSplit = input.split(":");
+        if (!List.of("minecraft", MOD_ID, AppEng.MOD_ID).contains(inputSplit[0])) {
+            modLoaded(inputSplit[0]);
+        }
+        var inputId = new ResourceLocation(inputSplit[0], inputSplit[1]);
+        inputs.add(new RecipeInputResource(inputId, count));
         return this;
+    }
+
+    public ProcessorRecipeBuilder input(Ingredient input) {
+        return input(input, 1);
+    }
+
+    public ProcessorRecipeBuilder input(String input) {
+        return input(input, 1);
     }
 
     public ProcessorRecipeBuilder input(ItemLike input) {
@@ -193,7 +207,9 @@ public final class ProcessorRecipeBuilder {
 
     private void modLoaded(String... modIds) {
         for (var id : modIds) {
+            if (loadedModIDs.contains(id)) continue;
             conditions.add(new ModLoadedCondition(id));
+            loadedModIDs.add(id);
         }
     }
 }

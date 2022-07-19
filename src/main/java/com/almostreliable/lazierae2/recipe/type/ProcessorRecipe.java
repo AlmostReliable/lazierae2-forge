@@ -1,8 +1,8 @@
 package com.almostreliable.lazierae2.recipe.type;
 
 import com.almostreliable.lazierae2.content.processor.ProcessorType;
-import com.almostreliable.lazierae2.recipe.IRecipeItemProvider;
-import com.almostreliable.lazierae2.recipe.IngredientWithCount;
+import com.almostreliable.lazierae2.recipe.property.IRecipeInputProvider;
+import com.almostreliable.lazierae2.recipe.property.IRecipeOutputProvider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -21,14 +21,15 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
     private final ResourceLocation recipeId;
     private final ProcessorType processorType;
     private final List<ICondition> conditions;
-    private final IRecipeItemProvider output;
-    private final NonNullList<IngredientWithCount> inputs;
+    private final IRecipeOutputProvider output;
+    private final NonNullList<IRecipeInputProvider> inputs;
     private final int processTime;
     private final int energyCost;
 
     ProcessorRecipe(
-        ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions, IRecipeItemProvider output,
-        NonNullList<IngredientWithCount> inputs, int processTime, int energyCost
+        ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions,
+        IRecipeOutputProvider output,
+        NonNullList<IRecipeInputProvider> inputs, int processTime, int energyCost
     ) {
         this.recipeId = recipeId;
         this.processorType = processorType;
@@ -92,7 +93,7 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
         }
     }
 
-    public IRecipeItemProvider getOutput() {
+    public IRecipeOutputProvider getOutput() {
         return output;
     }
 
@@ -108,7 +109,7 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
         return energyCost;
     }
 
-    public NonNullList<IngredientWithCount> getInputs() {
+    public NonNullList<IRecipeInputProvider> getInputs() {
         return inputs;
     }
 }
