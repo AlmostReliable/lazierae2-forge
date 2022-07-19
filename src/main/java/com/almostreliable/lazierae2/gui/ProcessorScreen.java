@@ -198,6 +198,8 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
                         menu::getUpgradeCount,
                         () -> menu.entity.getProcessorType().getUpgradeSlots()
                     )
+                    .keyValue("upgrade.time", this::getProcessTimeMultiplier)
+                    .keyValue("upgrade.energy", this::getEnergyCostMultiplier)
                     .keyValue("upgrade.additional", this::getAdditionalUpgradeEnergy))
                 .otherwise(Tooltip.builder()
                     .line("upgrade.none", ChatFormatting.YELLOW)
@@ -205,20 +207,14 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
                     .line("upgrade.description")));
     }
 
-    private String getMultiplier(int currentVal, int recipeVal) {
-        return TextUtil.formatNumber((double) currentVal / recipeVal, 1, 3);
+    private double getProcessTimeMultiplier() {
+        return menu.entity.calculateMultiplier(upgrades -> menu.entity.getProcessorType()
+            .getProcessTimeMultiplier(upgrades));
     }
 
-    private String getProcessTimeMultiplier() {
-        var processTime = menu.entity.getProcessTime();
-        var recipeTime = menu.entity.getRecipeTime();
-        return getMultiplier(processTime, recipeTime);
-    }
-
-    private String getEnergyCostMultiplier() {
-        var energyCost = menu.entity.getEnergyCost();
-        var recipeEnergy = menu.entity.getRecipeEnergy();
-        return getMultiplier(energyCost, recipeEnergy);
+    private double getEnergyCostMultiplier() {
+        return menu.entity.calculateMultiplier(upgrades -> menu.entity.getProcessorType()
+            .getEnergyCostMultiplier(upgrades));
     }
 
     private String getAdditionalUpgradeEnergy() {

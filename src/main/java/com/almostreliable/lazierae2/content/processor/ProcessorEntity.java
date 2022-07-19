@@ -31,6 +31,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.IntToDoubleFunction;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
@@ -129,6 +130,11 @@ public class ProcessorEntity extends GenericEntity {
             }
         }
         return super.getCapability(cap, direction);
+    }
+
+    public double calculateMultiplier(IntToDoubleFunction multiplierList) {
+        var upgradeCount = inventory.getUpgradeCount();
+        return upgradeCount == 0 ? 1.0 : multiplierList.applyAsDouble(upgradeCount);
     }
 
     public void insertUpgrades(Player player, InteractionHand hand) {
@@ -295,19 +301,12 @@ public class ProcessorEntity extends GenericEntity {
 
     private double calculateEnergyCost(ProcessorRecipe recipe) {
         var baseCost = recipe.getEnergyCost();
-        var multiplier = calculateMultiplier(getProcessorType().getEnergyCostMultiplier());
-        return baseCost * multiplier;
+        return baseCost * calculateMultiplier(upgrades -> getProcessorType().getEnergyCostMultiplier(upgrades));
     }
 
     private double calculateProcessTime(ProcessorRecipe recipe) {
         var baseTime = recipe.getProcessTime();
-        var multiplier = calculateMultiplier(getProcessorType().getProcessTimeMultiplier());
-        return baseTime * multiplier;
-    }
-
-    private double calculateMultiplier(double upgradeMultiplier) {
-        var upgradeCount = inventory.getUpgradeCount();
-        return Math.pow(upgradeMultiplier, upgradeCount);
+        return baseTime * calculateMultiplier(upgrades -> getProcessorType().getProcessTimeMultiplier(upgrades));
     }
 
     private void autoExtract() {

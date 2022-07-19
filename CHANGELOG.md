@@ -9,12 +9,15 @@ and this project adheres to [Semantic Versioning].
 - added new model and texture for all processing machines and the Requester
 - added compat recipe for MEGACells ([#21])
 - added info panels for the Universal Press and the Singularity
-  - brief explanation how to obtain them
+  - brief explanation of how to obtain them
   - can be disabled in the config
 - added German translation
 - added ability to shift-right-click upgrades into processing machines
 - improved texture of the Universal Press
 - improved texture of the Resonating Seed
+- reworked processing machine upgrade system
+  - when upgraded to half the maximum upgrade count, machines will be twice as fast and consume twice as much energy
+  - each upgrade above will be exponentially faster but has worse energy efficiency
 - Requester now requires a channel
   - can be modified in the config
   - default setting is true
