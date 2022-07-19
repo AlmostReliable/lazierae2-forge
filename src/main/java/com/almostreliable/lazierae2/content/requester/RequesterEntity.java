@@ -66,14 +66,6 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        if (level != null && !level.isClientSide) {
-            mainNode.create(level, worldPosition);
-        }
-    }
-
-    @Override
     public void load(CompoundTag tag) {
         super.load(tag);
         mainNode.loadFromNBT(tag);
@@ -101,6 +93,12 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         mainNode.destroy();
+    }
+
+    @Override
+    public void clearRemoved() {
+        super.clearRemoved();
+        GridHelper.onFirstTick(this, this::onReady);
     }
 
     @Nullable
@@ -161,6 +159,10 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
             worldPosition.getZ() + 0.5,
             stack
         ));
+    }
+
+    private void onReady(RequesterEntity requester) {
+        mainNode.create(level, worldPosition);
     }
 
     private void loadStates(CompoundTag tag) {
@@ -240,7 +242,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
             .setTagName("proxy")
             .setIdlePowerUsage(Config.COMMON.requesterIdleEnergy.get())
             .setExposedOnSides(exposedSides);
-        if (Config.COMMON.requesterRequireChannel.get()) {
+        if (Config.COMMON.requesterRequireChannel.get().equals(Boolean.TRUE)) {
             node.setFlags(GridFlags.REQUIRE_CHANNEL);
         }
         return node;

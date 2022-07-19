@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning].
   - can be modified in the config
   - default setting is true
 - Requester no longer exposes front side for cable connections
+- fixed main node creation at wrong time
+  - fixes [#18]
+  - an AE2 API update was required, thus raising the AE2 version to 11.1.4
+
+<!-- Links -->
+[#18]: https://github.com/AlmostReliable/lazierae2-forge/issues/18
 
 ## [3.0.2] - 2022-06-05
 
