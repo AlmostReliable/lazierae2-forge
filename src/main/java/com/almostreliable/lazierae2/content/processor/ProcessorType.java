@@ -52,11 +52,11 @@ public enum ProcessorType implements RecipeType<ProcessorRecipe> {
     }
 
     public double getProcessTimeMultiplier(int upgrades) {
-        return config.get().processTimeMultiList.get().get(upgrades - 1);
+        return config.get().processTimeMulti.get().get(upgrades - 1);
     }
 
     public double getEnergyCostMultiplier(int upgrades) {
-        return config.get().energyUsageMultiList.get().get(upgrades - 1);
+        return config.get().energyUsageMulti.get().get(upgrades - 1);
     }
 
     public ItemLike getItemProvider() {

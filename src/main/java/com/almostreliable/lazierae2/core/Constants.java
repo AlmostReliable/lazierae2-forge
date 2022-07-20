@@ -74,17 +74,4 @@ public final class Constants {
         public static final String PROCESS_TIME = "process_time";
         public static final String ENERGY_COST = "energy_cost";
     }
-
-    public enum Config {
-        ;
-        public static final String UPGRADE_SLOTS = "upgrade_slots";
-        public static final String ENERGY_BUFFER = "energy_buffer_base";
-        public static final String ENERGY_BUFFER_UPGRADE = "energy_buffer_add";
-        public static final String ENERGY_USAGE = "energy_usage_base";
-        public static final String ENERGY_USAGE_UPGRADE = "energy_usage_multi";
-        public static final String ENERGY_USAGE_UPGRADE_LIST = "energy_usage_multi_list";
-        public static final String PROCESS_TIME = "process_time_base";
-        public static final String PROCESS_TIME_UPGRADE = "process_time_multi";
-        public static final String PROCESS_TIME_UPGRADE_LIST = "process_time_multi_list";
-    }
 }
