@@ -334,7 +334,7 @@ public final class RequestControl {
         private final class StateBox extends ToggleButton {
 
             private static final String TEXTURE_ID = "state";
-            private static final int POS_X = 7;
+            private static final int POS_X = 8;
             private static final int POS_Y = 8;
             private static final int BOX_SIZE = 14;
             private static final int GAP = 6;
