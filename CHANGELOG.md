@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning].
 - added ability to shift-right-click upgrades into processing machines
 - improved texture of the Universal Press
 - improved texture of the Resonating Seed
+- changed tooltip behavior so more extended infos are only shown while holding shift
 - reworked processing machine upgrade system
   - when upgraded to half the maximum upgrade count, machines will be twice as fast and consume twice as much energy
   - each upgrade above will be exponentially faster but has worse energy efficiency

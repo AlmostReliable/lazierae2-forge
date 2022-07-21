@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -273,7 +274,7 @@ public final class GuiUtil {
                 condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.key", key), ChatFormatting.GREEN)
                     .append(TextUtil.colorize(": ", ChatFormatting.GREEN))
-                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key))),
+                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key), ChatFormatting.WHITE)),
                 replacements
             ));
         }
@@ -391,6 +392,10 @@ public final class GuiUtil {
                     .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GRAY)),
                 replacements
             ));
+        }
+
+        public Tooltip shiftForInfo() {
+            return hotkeyHoldAction(() -> !Screen.hasShiftDown(), "key.keyboard.left.shift", "extended_info");
         }
 
         /**

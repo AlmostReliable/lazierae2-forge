@@ -167,7 +167,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
                             .keyValue(menu::hasUpgrades, "progress.energy_multiplier", this::getEnergyCostMultiplier))
                         .otherwise(Tooltip.builder()
                             .blank()
-                            .hotkeyHoldAction("key.keyboard.left.shift", "extended_info"))))
+                            .shiftForInfo())))
                 .otherwise(Tooltip.builder().line("progress.none")));
     }
 

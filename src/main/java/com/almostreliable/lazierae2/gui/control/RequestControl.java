@@ -154,7 +154,7 @@ public final class RequestControl {
                             getProgressionColor(PROGRESSION_TYPE.EXPORT),
                             PROGRESSION_TYPE.EXPORT
                         ).line("status.export"))
-                        .otherwise(Tooltip.builder().hotkeyHoldAction("key.keyboard.left.shift", "extended_info")));
+                        .otherwise(Tooltip.builder().shiftForInfo()));
             }
 
             private ChatFormatting getProgressionColor(PROGRESSION_TYPE status) {
@@ -221,6 +221,7 @@ public final class RequestControl {
 
             protected void setupTooltip() {
                 tooltip.blank()
+                    .shiftForInfo()
                     .conditional(focused -> focused.condition(this::isFocused)
                         .then(Tooltip.builder()
                             .hotkeyAction("key.keyboard.tab", "focus.switch.action")
@@ -373,7 +374,9 @@ public final class RequestControl {
 
             @Override
             protected void setupTooltip() {
-                tooltip.title("count.title").blank().line("count.description");
+                tooltip.title("count.title")
+                    .blank(Screen::hasShiftDown)
+                    .line(Screen::hasShiftDown, "count.description");
                 super.setupTooltip();
             }
 
@@ -407,7 +410,9 @@ public final class RequestControl {
 
             @Override
             protected void setupTooltip() {
-                tooltip.title("batch.title").blank().line("batch.description");
+                tooltip.title("batch.title")
+                    .blank(Screen::hasShiftDown)
+                    .line(Screen::hasShiftDown, "batch.description");
                 super.setupTooltip();
             }
 

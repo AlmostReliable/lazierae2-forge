@@ -7,6 +7,7 @@ import com.almostreliable.lazierae2.network.PacketHandler;
 import com.almostreliable.lazierae2.network.packets.AutoExtractPacket;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.Screen;
 
 import java.util.function.BooleanSupplier;
 
@@ -35,10 +36,18 @@ public class AutoExtractButton extends ToggleButton {
     }
 
     private Tooltip setupTooltip() {
-        return Tooltip.builder().title("extract.title").blank().keyEnum(
-            "extract.current",
-            TRANSLATE_TYPE.EXTRACT_SETTING,
-            () -> pressed.getAsBoolean() ? EXTRACT_SETTING.ON : EXTRACT_SETTING.OFF
-        ).blank().line("extract.description").blank().clickAction("extract.action");
+        return Tooltip.builder()
+            .title("extract.title")
+            .blank()
+            .keyEnum(
+                "extract.current",
+                TRANSLATE_TYPE.EXTRACT_SETTING,
+                () -> pressed.getAsBoolean() ? EXTRACT_SETTING.ON : EXTRACT_SETTING.OFF
+            )
+            .blank()
+            .conditional(advancedInfo -> advancedInfo.condition(Screen::hasShiftDown)
+                .then(Tooltip.builder().line("extract.description").blank())
+                .otherwise(Tooltip.builder().shiftForInfo()))
+            .clickAction("extract.action");
     }
 }
