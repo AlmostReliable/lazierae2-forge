@@ -204,7 +204,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
                 .otherwise(Tooltip.builder()
                     .line("upgrade.none", ChatFormatting.YELLOW)
                     .blank()
-                    .line("upgrade.description")));
+                    .line(Screen::hasShiftDown, "upgrade.description").shiftForInfo()));
     }
 
     private double getProcessTimeMultiplier() {

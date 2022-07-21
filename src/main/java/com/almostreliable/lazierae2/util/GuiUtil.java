@@ -503,7 +503,7 @@ public final class GuiUtil {
                         replacements[0].get().toString().toLowerCase(),
                         ChatFormatting.WHITE
                     ));
-                tooltip.add(component);
+                tooltip.add(component.copy());
             }
         }
 
