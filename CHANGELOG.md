@@ -6,8 +6,15 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
+- /
+
+## [3.1.1] - 2022-07-31
+
+### Added
 - added error messages for invalid upgrade and multiplier config entries
 - added Chinese translation ([#23])
+
+### Fixed
 - fixed grinder and infuser descriptions in German translation
 
 <!-- Links -->
@@ -38,10 +45,10 @@ and this project adheres to [Semantic Versioning].
 - Requester no longer exposes front side for cable connections
 
 ### Fixed
-- fixed main node creation at wrong time
+- main node creation at wrong time
   - fixes connections when a Security Terminal is set up in the network ([#18])
   - an AE2 API update was required, thus raising the AE2 version to 11.1.4
-- fixed block tooltip hiding when no description is provided
+- block tooltip hiding when no description is provided
 
 <!-- Links -->
 [#18]: https://github.com/AlmostReliable/lazierae2-forge/issues/18
@@ -109,7 +116,8 @@ The following changes are notable changes from the 1.16 version.
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.1.0...HEAD
+[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.1.1...HEAD
+[3.1.1]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.1.0..v1.18-3.1.1
 [3.1.0]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.2-beta..v1.18-3.1.0
 [3.0.2]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.1-beta..v1.18-3.0.2-beta
 [3.0.1]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.0-beta..v1.18-3.0.1-beta
