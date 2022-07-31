@@ -13,6 +13,7 @@ import com.almostreliable.lazierae2.data.DataGeneration;
 import com.almostreliable.lazierae2.gui.ProcessorScreen;
 import com.almostreliable.lazierae2.gui.RequesterScreen;
 import com.almostreliable.lazierae2.network.PacketHandler;
+import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -22,13 +23,17 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.slf4j.Logger;
 
 import static appeng.init.client.InitItemModelsProperties.GROWTH_PREDICATE_ID;
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
+@SuppressWarnings("UtilityClassWithPublicConstructor")
 @Mod(MOD_ID)
 @EventBusSubscriber
-public class LazierAE2 {
+public final class LazierAE2 {
+
+    public static final Logger LOG = LogUtils.getLogger();
 
     @SuppressWarnings("java:S1118")
     public LazierAE2() {
@@ -37,6 +42,7 @@ public class LazierAE2 {
         context.registerConfig(Type.COMMON, Config.COMMON_SPEC);
         modEventBus.addListener(LazierAE2::onCommonSetup);
         modEventBus.addListener(LazierAE2::onClientSetup);
+        modEventBus.addListener(Config::onConfigReloaded);
         modEventBus.addListener(DataGeneration::init);
         Setup.init(modEventBus);
     }

@@ -1,11 +1,14 @@
 package com.almostreliable.lazierae2.core;
 
+import com.almostreliable.lazierae2.LazierAE2;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.*;
+import net.minecraftforge.fml.event.config.ModConfigEvent.Reloading;
 
 import java.util.List;
 
 import static com.almostreliable.lazierae2.core.Constants.Blocks.*;
+import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public final class Config {
@@ -21,6 +24,33 @@ public final class Config {
 
     private Config() {}
 
+    public static void onConfigReloaded(Reloading event) {
+        if (event.getConfig().getModId().equals(MOD_ID)) {
+            LazierAE2.LOG.debug("config reloaded");
+            List.of(COMMON.aggregator, COMMON.etcher, COMMON.grinder, COMMON.infuser).forEach(config -> {
+                var maxUpgrades = config.upgradeSlots.get();
+                var energyMultiSize = config.energyUsageMulti.get().size();
+                var processTimeMultiSize = config.processTimeMulti.get().size();
+                if (maxUpgrades != energyMultiSize) {
+                    LazierAE2.LOG.error(f(
+                        "Config issue for {} detected! Maximum upgrades are set to {} but energy usage multiplier list has {} entries.",
+                        config.id,
+                        maxUpgrades,
+                        energyMultiSize
+                    ));
+                }
+                if (maxUpgrades != processTimeMultiSize) {
+                    LazierAE2.LOG.error(f(
+                        "Config issue for {} detected! Maximum upgrades are set to {} but process time multiplier list has {} entries.",
+                        config.id,
+                        maxUpgrades,
+                        processTimeMultiSize
+                    ));
+                }
+            });
+        }
+    }
+
     @SuppressWarnings({"TypeParameterExtendsFinalClass", "java:S4968"})
     public static final class ProcessorConfig {
 
@@ -31,8 +61,10 @@ public final class Config {
         public final ConfigValue<List<? extends Double>> energyUsageMulti;
         public final IntValue baseProcessTime;
         public final ConfigValue<List<? extends Double>> processTimeMulti;
+        private final String id;
 
         private ProcessorConfig(Builder builder, String id) {
+            this.id = id;
             builder.push(id);
             upgradeSlots = builder.comment(
                 f(" The maximum number of upgrades the {} can hold.", id),
