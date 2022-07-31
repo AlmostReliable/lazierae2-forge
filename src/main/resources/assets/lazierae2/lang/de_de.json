@@ -24,8 +24,8 @@
 
   "tooltip.lazierae2.aggregator.description": "Erleichtert das InWorld-Herstellung durch die Kombination von Kristallwachstumsbeschleunigern. Ermöglicht den Zugang zur Kristallherstellung durch Rohmaterialien und verfügt über Aufladefunktionen.",
   "tooltip.lazierae2.etcher.description": "Im Wesentlichen ein verbesserter Inscriber, der jedoch durch die Verwendung von Rohmaterialien schneller ist und zudem aufgerüstet werden kann.",
-  "tooltip.lazierae2.grinder.description": "Grinds resources into their component parts for further use.",
-  "tooltip.lazierae2.infuser.description": "Zerkleinert Ressourcen in ihre Bestandteile zur weiteren Verwendung.",
+  "tooltip.lazierae2.grinder.description": "Zerkleinert Ressourcen in ihre Bestandteile zur weiteren Verwendung.",
+  "tooltip.lazierae2.infuser.description": "Verschmilzt Materialien in neue Ressourcen.",
   "tooltip.lazierae2.requester.description": "Scannt bis zu 6 verschiedene Items und fordert bei Bedarf neue Crafts an. Muss mit einem ME-Netzwerk verbunden sein.",
 
   "tooltip.lazierae2.action_hold": "Halte",
