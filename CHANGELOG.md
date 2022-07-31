@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 - added error messages for invalid upgrade and multiplier config entries
+- added Chinese translation ([#23])
 - fixed grinder and infuser descriptions in German translation
+
+<!-- Links -->
+[#23]: https://github.com/AlmostReliable/lazierae2-forge/pull/23
 
 ## [3.1.0] - 2022-07-21
 
