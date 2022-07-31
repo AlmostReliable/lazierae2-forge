@@ -78,63 +78,34 @@ jobs:
       - name: Parse changelog
         run: parse-changelog CHANGELOG.md ${{ env.MOD_VERSION }} > changes.md
 
-      - name: Upload to CurseForge
-        uses: Kir-Antipov/mc-publish@v2.1
+      - name: Release
+        uses: Kir-Antipov/mc-publish@v3.1
         with:
           curseforge-id: 489843
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          modrinth-id: 7mmL0PW9
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
           files: ${{ env.JAR_FILE }}
           name: ${{ env.MOD_NAME }}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
-          version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
-          version-type: ${{ env.RELEASE_TYPE }}
-          changelog-file: changes.md
 
           loaders: forge
           game-versions: ${{ env.MINECRAFT_VERSION }}
+          version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
+          version-type: ${{ env.RELEASE_TYPE }}
           version-resolver: exact
-          dependencies: |
+          java: 17
+
+          changelog-file: changes.md
+          curseforge-dependencies: |
             applied-energistics-2 | depends | *
             jei | suggests | *
             crafttweaker | suggests | *
             kubejs | suggests | *
-          java: 17
-          retry-attempts: 2
-          retry-delay: 10000
-
-      - name: Upload to Modrinth
-        uses: Kir-Antipov/mc-publish@v2.1
-        with:
-          modrinth-id: 7mmL0PW9
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          files: ${{ env.JAR_FILE }}
-          name: ${{ env.MOD_NAME }}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
-          version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
-          version-type: ${{ env.RELEASE_TYPE }}
-          changelog-file: changes.md
-
-          loaders: forge
-          game-versions: ${{ env.MINECRAFT_VERSION }}
-          version-resolver: exact
-          dependencies: |
+          modrinth-dependencies: |
             ae2 | depends | *
             kubejs | suggests | *
-          java: 17
+
           retry-attempts: 2
           retry-delay: 10000
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.MOD_NAME }}-${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}.jar
-          path: ${{ env.JAR_FILE }}
-
-      - name: Upload to GitHub
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          body_path: changes.md
-          files: ${{ env.JAR_FILE }}
-          prerelease: ${{ env.PRE_RELEASE }}
