@@ -147,7 +147,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
             .blank()
             .conditional(progress -> progress.condition(() -> (menu.entity.getProgress() > 0 && menu.entity.getProcessTime() > 0) || menu.entity.getBlockState()
                     .getValue(GenericBlock.ACTIVE)
-                    .equals(true))
+                    .equals(Boolean.TRUE))
                 .then(Tooltip.builder()
                     .keyValue("progress.progress", menu.entity::getProgress, menu.entity::getProcessTime)
                     .conditional(extendedInfo -> extendedInfo.condition(Screen::hasShiftDown)
@@ -167,7 +167,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
                             .keyValue(menu::hasUpgrades, "progress.energy_multiplier", this::getEnergyCostMultiplier))
                         .otherwise(Tooltip.builder()
                             .blank()
-                            .hotkeyHoldAction("key.keyboard.left.shift", "extended_info"))))
+                            .shiftForInfo())))
                 .otherwise(Tooltip.builder().line("progress.none")));
     }
 
@@ -198,27 +198,23 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
                         menu::getUpgradeCount,
                         () -> menu.entity.getProcessorType().getUpgradeSlots()
                     )
+                    .keyValue("upgrade.time", this::getProcessTimeMultiplier)
+                    .keyValue("upgrade.energy", this::getEnergyCostMultiplier)
                     .keyValue("upgrade.additional", this::getAdditionalUpgradeEnergy))
                 .otherwise(Tooltip.builder()
                     .line("upgrade.none", ChatFormatting.YELLOW)
                     .blank()
-                    .line("upgrade.description")));
+                    .line(Screen::hasShiftDown, "upgrade.description").shiftForInfo()));
     }
 
-    private String getMultiplier(int currentVal, int recipeVal) {
-        return TextUtil.formatNumber((double) currentVal / recipeVal, 1, 3);
+    private double getProcessTimeMultiplier() {
+        return menu.entity.calculateMultiplier(upgrades -> menu.entity.getProcessorType()
+            .getProcessTimeMultiplier(upgrades));
     }
 
-    private String getProcessTimeMultiplier() {
-        var processTime = menu.entity.getProcessTime();
-        var recipeTime = menu.entity.getRecipeTime();
-        return getMultiplier(processTime, recipeTime);
-    }
-
-    private String getEnergyCostMultiplier() {
-        var energyCost = menu.entity.getEnergyCost();
-        var recipeEnergy = menu.entity.getRecipeEnergy();
-        return getMultiplier(energyCost, recipeEnergy);
+    private double getEnergyCostMultiplier() {
+        return menu.entity.calculateMultiplier(upgrades -> menu.entity.getProcessorType()
+            .getEnergyCostMultiplier(upgrades));
     }
 
     private String getAdditionalUpgradeEnergy() {

@@ -36,11 +36,11 @@ public class BlockStateData extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        registerMachineNoModel(Blocks.AGGREGATOR.get());
-        registerMachine(Blocks.ETCHER.get());
-        registerMachineNoModel(Blocks.GRINDER.get());
-        registerMachineNoModel(Blocks.INFUSER.get());
-        registerMachine(Blocks.REQUESTER.get());
+        machineCustomModel(Blocks.AGGREGATOR.get());
+        machineCustomModel(Blocks.ETCHER.get());
+        machineCustomModel(Blocks.GRINDER.get());
+        machineCustomModel(Blocks.INFUSER.get());
+        machineCustomModel(Blocks.REQUESTER.get());
         registerAssembler(Assembler.CONTROLLER.get());
         registerAssembler(Assembler.ACCELERATOR.get());
         registerAssembler(Assembler.TIER_1.get());
@@ -50,18 +50,7 @@ public class BlockStateData extends BlockStateProvider {
         registerAssembler(Assembler.FRAME.get());
     }
 
-    private void registerMachine(MachineBlock block) {
-        var id = GameUtil.getIdFromBlock(block);
-        var wall = TextUtil.getRL("block/machine/wall");
-        var top = TextUtil.getRL("block/machine/top");
-        var inactive = TextUtil.getRL(f("block/machine/{}", id));
-        var active = TextUtil.getRL(f("block/machine/{}", formActiveId(id)));
-        var modelInactive = models().orientableWithBottom(id, wall, inactive, top, top);
-        var modelActive = models().orientableWithBottom(formActiveId(id), wall, active, top, top);
-        orientedBlock(block, MachineBlock.FACING, state -> getBlockModelBuilder(modelInactive, modelActive, state));
-    }
-
-    private void registerMachineNoModel(MachineBlock block) {
+    private void machineCustomModel(GenericBlock block) {
         var id = GameUtil.getIdFromBlock(block);
         var modelInactive = TextUtil.getRL(f("block/{}", id));
         var modelActive = TextUtil.getRL(f("block/{}", formActiveId(id)));

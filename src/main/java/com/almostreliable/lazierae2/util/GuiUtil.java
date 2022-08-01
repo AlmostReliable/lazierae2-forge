@@ -5,12 +5,12 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,7 +83,7 @@ public final class GuiUtil {
     @SuppressWarnings({"java:S2160", "UnusedReturnValue", "unused"})
     public static final class Tooltip {
 
-        private final List<TooltipComponent> components;
+        private final List<GenericComponent> components;
 
         private Tooltip() {
             components = new ArrayList<>();
@@ -130,8 +130,7 @@ public final class GuiUtil {
         }
 
         public Tooltip blank(BooleanSupplier condition) {
-            components.add(new IfComponent(condition, new TextComponent(" ")));
-            return this;
+            return component(new ConditionComponent(condition, new TextComponent(" ")));
         }
 
         /**
@@ -160,12 +159,11 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip title(BooleanSupplier condition, String key, Supplier<?>... replacements) {
-            components.add(new IfComponent(
+            return component(new ConditionComponent(
                 condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GOLD),
                 replacements
             ));
-            return this;
         }
 
         /**
@@ -202,12 +200,11 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip line(BooleanSupplier condition, String key, Supplier<?>... replacements) {
-            components.add(new IfComponent(
+            return component(new ConditionComponent(
                 condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.WHITE),
                 replacements
             ));
-            return this;
         }
 
         /**
@@ -222,12 +219,11 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip line(BooleanSupplier condition, String key, ChatFormatting color, Supplier<?>... replacements) {
-            components.add(new IfComponent(
+            return component(new ConditionComponent(
                 condition,
                 TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, color),
                 replacements
             ));
-            return this;
         }
 
         public Tooltip lineEnum(
@@ -250,14 +246,12 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip keyValue(String key, Supplier<?>... replacements) {
-            components.add(new FormatComponent(TextUtil.translate(
-                    TRANSLATE_TYPE.TOOLTIP,
-                    f("{}.key", key),
-                    ChatFormatting.GREEN
-                )
-                .append(TextUtil.colorize(": ", ChatFormatting.GREEN))
-                .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key))), replacements));
-            return this;
+            return component(
+                TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.key", key), ChatFormatting.GREEN)
+                    .append(TextUtil.colorize(": ", ChatFormatting.GREEN))
+                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key), ChatFormatting.WHITE)),
+                replacements
+            );
         }
 
         /**
@@ -276,13 +270,13 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip keyValue(BooleanSupplier condition, String key, Supplier<?>... replacements) {
-            components.add(new IfComponent(
+            return component(new ConditionComponent(
                 condition,
-                new FormatComponent(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.key", key), ChatFormatting.GREEN)
+                TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.key", key), ChatFormatting.GREEN)
                     .append(TextUtil.colorize(": ", ChatFormatting.GREEN))
-                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key))), replacements)
+                    .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, f("{}.value", key), ChatFormatting.WHITE)),
+                replacements
             ));
-            return this;
         }
 
         /**
@@ -298,10 +292,8 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         public Tooltip keyEnum(String key, TRANSLATE_TYPE type, Supplier<Enum<?>> e) {
-            components.add(new EnumComponent(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GREEN)
-                .append(TextUtil.colorize(": ", ChatFormatting.GREEN))
-                .append(TextComponent.EMPTY), type, e));
-            return this;
+            return component(new EnumComponent(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GREEN)
+                .append(TextUtil.colorize(": ", ChatFormatting.GREEN)).append(TextComponent.EMPTY), type, e));
         }
 
         /**
@@ -387,7 +379,7 @@ public final class GuiUtil {
         public Tooltip hotkeyHoldAction(
             BooleanSupplier condition, String hotkey, String key, Supplier<?>... replacements
         ) {
-            components.add(new IfComponent(
+            return component(new ConditionComponent(
                 condition,
                 TextUtil.colorize("> ", ChatFormatting.GRAY)
                     .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, "action_hold", ChatFormatting.GRAY))
@@ -400,7 +392,10 @@ public final class GuiUtil {
                     .append(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GRAY)),
                 replacements
             ));
-            return this;
+        }
+
+        public Tooltip shiftForInfo() {
+            return hotkeyHoldAction(() -> !Screen.hasShiftDown(), "key.keyboard.left.shift", "extended_info");
         }
 
         /**
@@ -412,12 +407,11 @@ public final class GuiUtil {
          * @param logicBuilder the conditional logic builder
          * @return an instance of the tooltip builder
          */
-        public Tooltip conditional(Consumer<? super LogicComponent> logicBuilder) {
-            var logic = new LogicComponent();
+        public Tooltip conditional(Consumer<? super LogicComponentNew> logicBuilder) {
+            var logic = new LogicComponentNew();
             logicBuilder.accept(logic);
             logic.validate();
-            components.add(logic);
-            return this;
+            return component(logic);
         }
 
         /**
@@ -430,114 +424,116 @@ public final class GuiUtil {
          * @return the instance of the tooltip builder
          */
         private Tooltip component(Component component, Supplier<?>... replacements) {
-            components.add(new TooltipComponent(component, replacements));
+            if (component instanceof GenericComponent genericComponent) {
+                if (replacements.length > 0) {
+                    throw new IllegalArgumentException("Cannot apply replacements to a generic component");
+                }
+                components.add(genericComponent);
+            } else {
+                components.add(new TooltipComponentNew(component, replacements));
+            }
             return this;
         }
 
-        public static class TooltipComponent extends TextComponent {
+        private abstract static class GenericComponent extends BaseComponent {
+            abstract void resolve(List<? super Component> tooltip);
+        }
 
-            @Nullable final Component component;
+        private static class TooltipComponentNew extends GenericComponent {
+
+            final Component component;
             final Supplier<?>[] replacements;
 
-            TooltipComponent(@Nullable Component component, Supplier<?>... replacements) {
-                super("");
+            TooltipComponentNew(Component component, Supplier<?>... replacements) {
+                if (replacements.length > 0 && !(component instanceof TranslatableComponent)) {
+                    throw new IllegalArgumentException("Replacements can only be applied to translatable components");
+                }
                 this.component = component;
                 this.replacements = replacements;
             }
 
-            public void resolve(List<? super Component> tooltip) {
-                if (component == null) return;
-                if (replacements.length > 0 && component instanceof TranslatableComponent translation) {
-                    tooltip.add(handleReplacements(translation).copy());
+            @Override
+            public BaseComponent plainCopy() {
+                return new TextComponent(component.getString());
+            }
+
+            @Override
+            void resolve(List<? super Component> tooltip) {
+                if (replacements.length > 0) {
+                    tooltip.add(handleReplacements((TranslatableComponent) component));
                     return;
                 }
                 tooltip.add(component);
             }
 
-            TranslatableComponent handleReplacements(TranslatableComponent textComponent) {
-                return new TranslatableComponent(
-                    textComponent.getKey(),
+            private TranslatableComponent handleReplacements(TranslatableComponent translateComponent) {
+                var componentSiblings = translateComponent.getSiblings();
+                for (var i = 0; i < componentSiblings.size(); i++) {
+                    var sibling = componentSiblings.get(i);
+                    if (sibling instanceof TranslatableComponent translateSibling) {
+                        componentSiblings.set(i, handleReplacements(translateSibling));
+                    }
+                }
+                var newComponent = new TranslatableComponent(
+                    translateComponent.getKey(),
                     Arrays.stream(replacements).map(Supplier::get).toArray()
                 );
+                newComponent.getSiblings().addAll(componentSiblings);
+                newComponent.withStyle(translateComponent.getStyle());
+                return newComponent;
             }
         }
 
-        private static final class FormatComponent extends TooltipComponent {
-
-            private FormatComponent(MutableComponent textComponent, Supplier<?>... replacements) {
-                super(textComponent, replacements);
-            }
-
-            @Override
-            public void resolve(List<? super Component> tooltip) {
-                assert component != null;
-                var value = component.getSiblings().get(1);
-                value = handleReplacements((TranslatableComponent) value).withStyle(ChatFormatting.WHITE);
-                component.getSiblings().set(1, value);
-                tooltip.add(component.copy());
-            }
-        }
-
-        private static final class EnumComponent extends TooltipComponent {
+        private static final class EnumComponent extends TooltipComponentNew {
 
             private final TRANSLATE_TYPE type;
 
             private EnumComponent(
-                MutableComponent textComponent, TRANSLATE_TYPE type, Supplier<Enum<?>> e
+                Component component, TRANSLATE_TYPE type, Supplier<Enum<?>> e
             ) {
-                super(textComponent, e);
+                super(component, e);
                 this.type = type;
             }
 
             @Override
             public void resolve(List<? super Component> tooltip) {
-                assert component != null;
                 component.getSiblings()
-                    .set(
-                        1,
-                        TextUtil.translate(type, replacements[0].get().toString().toLowerCase(), ChatFormatting.WHITE)
-                    );
-                tooltip.add(component);
+                    .set(1, TextUtil.translate(
+                        type,
+                        replacements[0].get().toString().toLowerCase(),
+                        ChatFormatting.WHITE
+                    ));
+                tooltip.add(component.copy());
             }
         }
 
-        private static final class IfComponent extends TooltipComponent {
+        private static final class ConditionComponent extends TooltipComponentNew {
 
-            @Nullable private final TooltipComponent tooltipComponent;
             private final BooleanSupplier condition;
 
-            private IfComponent(BooleanSupplier condition, TooltipComponent component) {
-                super(component.component, component.replacements);
-                this.condition = condition;
-                tooltipComponent = component;
-            }
-
-            @SuppressWarnings("OverloadedVarargsMethod")
-            private IfComponent(BooleanSupplier condition, Component textComponent, Supplier<?>... replacements) {
-                super(textComponent, replacements);
-                tooltipComponent = null;
+            private ConditionComponent(BooleanSupplier condition, Component component, Supplier<?>... replacements) {
+                super(component, replacements);
                 this.condition = condition;
             }
 
             @Override
-            public void resolve(List<? super Component> tooltip) {
+            void resolve(List<? super Component> tooltip) {
                 if (!condition.getAsBoolean()) return;
-                if (tooltipComponent != null) {
-                    tooltipComponent.resolve(tooltip);
-                    return;
-                }
                 super.resolve(tooltip);
             }
         }
 
-        public static final class LogicComponent extends TooltipComponent {
+        public static final class LogicComponentNew extends GenericComponent {
 
             private BooleanSupplier condition;
             private Tooltip then;
             private Tooltip otherwise;
 
-            private LogicComponent() {
-                super(null);
+            private LogicComponentNew() {}
+
+            @Override
+            public BaseComponent plainCopy() {
+                return new TextComponent((condition.getAsBoolean() ? then : otherwise).build().toString());
             }
 
             /**
@@ -546,7 +542,7 @@ public final class GuiUtil {
              * @param condition the boolean supplier to check
              * @return the instance of the logic component builder
              */
-            public LogicComponent condition(BooleanSupplier condition) {
+            public LogicComponentNew condition(BooleanSupplier condition) {
                 assert this.condition == null : "condition already set";
                 this.condition = condition;
                 return this;
@@ -558,7 +554,7 @@ public final class GuiUtil {
              * @param then the component to add
              * @return the instance of the logic component builder
              */
-            public LogicComponent then(Tooltip then) {
+            public LogicComponentNew then(Tooltip then) {
                 assert this.then == null : "then condition already set";
                 this.then = then;
                 return this;
@@ -570,7 +566,7 @@ public final class GuiUtil {
              * @param otherwise the component to add
              * @return the instance of the logic component builder
              */
-            public LogicComponent otherwise(Tooltip otherwise) {
+            public LogicComponentNew otherwise(Tooltip otherwise) {
                 assert this.otherwise == null : "otherwise condition already set";
                 this.otherwise = otherwise;
                 return this;

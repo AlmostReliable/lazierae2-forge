@@ -1,11 +1,11 @@
 {
-	"credit": "Made with Blockbench by Neokys",
+	"credit": "Made with Blockbench by Almost Reliable",
 	"parent": "block/block",
 	"textures": {
+		"face": "lazierae2:block/machine/aggregator",
 		"particle": "lazierae2:block/machine/top",
 		"top": "lazierae2:block/machine/top",
-		"wall": "lazierae2:block/machine/wall",
-		"face": "lazierae2:block/machine/aggregator"
+		"wall": "lazierae2:block/machine/wall"
 	},
 	"elements": [
 		{
@@ -25,7 +25,7 @@
 			"to": [16, 16, 1],
 			"faces": {
 				"north": {"uv": [0, 0, 4, 16], "texture": "#face"},
-				"west": {"uv": [0, 0, 1, 16], "texture": "#face"}
+				"west": {"uv": [3, 0, 4, 16], "texture": "#face"}
 			}
 		},
 		{
@@ -98,11 +98,10 @@
 			}
 		},
 		{
-			"name": "darkness",
-			"from": [4, 4, 1],
-			"to": [12, 12, 2],
+			"from": [3, 3, 1],
+			"to": [13, 13, 2],
 			"faces": {
-				"north": {"uv": [4, 4, 12, 12], "texture": "#face"}
+				"north": {"uv": [3, 3, 13, 13], "texture": "#face"}
 			}
 		}
 	],

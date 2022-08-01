@@ -57,8 +57,9 @@ public final class IOControl {
                 .keyEnum("io.side", TRANSLATE_TYPE.BLOCK_SIDE, () -> side)
                 .keyEnum("io.current", TRANSLATE_TYPE.IO_SETTING, () -> entity.sideConfig.get(side))
                 .blank()
-                .line("io.description")
-                .blank()
+                .line(Screen::hasShiftDown, "io.description")
+                .blank(Screen::hasShiftDown)
+                .shiftForInfo()
                 .conditional(extendedInfo -> extendedInfo.condition(() -> side == BLOCK_SIDE.FRONT)
                     .then(Tooltip.builder().shiftClickAction("io.reset_all"))
                     .otherwise(Tooltip.builder().clickAction("io.action").shiftClickAction("io.reset")));

@@ -51,6 +51,14 @@ public enum ProcessorType implements RecipeType<ProcessorRecipe> {
         return id;
     }
 
+    public double getProcessTimeMultiplier(int upgrades) {
+        return config.get().processTimeMulti.get().get(upgrades - 1);
+    }
+
+    public double getEnergyCostMultiplier(int upgrades) {
+        return config.get().energyUsageMulti.get().get(upgrades - 1);
+    }
+
     public ItemLike getItemProvider() {
         return itemProvider.get().get();
     }
@@ -89,13 +97,5 @@ public enum ProcessorType implements RecipeType<ProcessorRecipe> {
 
     public int getInputSlots() {
         return inputSlots;
-    }
-
-    public double getProcessTimeMultiplier() {
-        return config.get().processTimeMulti.get();
-    }
-
-    public double getEnergyCostMultiplier() {
-        return config.get().energyUsageMulti.get();
     }
 }

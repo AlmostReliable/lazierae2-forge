@@ -47,6 +47,9 @@
   "message.lazierae2.invalid_block": "Invalid block '%s' at [%s].",
   "message.lazierae2.malformed": "Couldn't form %s!",
 
+  "info.lazierae2.universal_press": "The Universal Press is a combination of all presses and can't be found in meteorites. It needs to be crafted.",
+  "info.lazierae2.singularity": "A simple way to obtain a Singularity is to pump water into a Matter Condenser.",
+
   "tooltip.lazierae2.aggregator.description": "Facilitates in-world crafting by combining Crystal Growth Accelerators. Grants access to Crystal Crafts by using raw materials and has charging capabilities.",
   "tooltip.lazierae2.etcher.description": "Essentially an Advanced Inscriber but upgradable and faster by making use of raw materials.",
   "tooltip.lazierae2.grinder.description": "Grinds resources into their component parts for further use.",
@@ -100,10 +103,14 @@
   "tooltip.lazierae2.upgrade.title": "Processor Upgrades",
   "tooltip.lazierae2.upgrade.current.key": "Installed upgrades",
   "tooltip.lazierae2.upgrade.current.value": "%d / %d",
+  "tooltip.lazierae2.upgrade.time.key": "Time multiplier",
+  "tooltip.lazierae2.upgrade.time.value": "%dx",
+  "tooltip.lazierae2.upgrade.energy.key": "Energy multiplier",
+  "tooltip.lazierae2.upgrade.energy.value": "%dx",
   "tooltip.lazierae2.upgrade.additional.key": "Additional energy",
   "tooltip.lazierae2.upgrade.additional.value": "%s",
   "tooltip.lazierae2.upgrade.none": "There are no upgrades installed!",
-  "tooltip.lazierae2.upgrade.description": "Allows you to upgrade the processor's speed and energy storage at the cost of a higher energy consumption. To install upgrades, place Acceleration Cards in this slot.",
+  "tooltip.lazierae2.upgrade.description": "Allows you to upgrade the processor's speed and energy storage at the cost of a higher energy consumption. To install upgrades, place Acceleration Cards in this slot. If half of the maximum upgrades are installed, the processor will be twice as fast and consume twice as much energy. Each upgrade after this will be exponentially better but more inefficient.",
 
   "tooltip.lazierae2.item.upgrades.key": "Installed upgrades",
   "tooltip.lazierae2.item.upgrades.value": "%d / %d",

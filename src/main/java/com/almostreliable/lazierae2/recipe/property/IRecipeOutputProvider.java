@@ -1,4 +1,4 @@
-package com.almostreliable.lazierae2.recipe;
+package com.almostreliable.lazierae2.recipe.property;
 
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 import static com.almostreliable.lazierae2.core.Constants.Recipe.*;
 
-public interface IRecipeItemProvider {
+public interface IRecipeOutputProvider {
 
     default void toJson(JsonObject json) {
         var output = new JsonObject();

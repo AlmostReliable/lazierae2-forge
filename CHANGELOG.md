@@ -6,13 +6,53 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
-- added model for the Matter Infuser
-- changed texture of the Matter Infuser
-- added model for the Pulse Grinder
-- changed texture of the Pulse Grinder
-- changed texture of the Universal Press
+- /
+
+## [3.1.1] - 2022-07-31
+
+### Added
+- added error messages for invalid upgrade and multiplier config entries
+- added Chinese translation ([#23])
+
+### Fixed
+- fixed grinder and infuser descriptions in German translation
+
+<!-- Links -->
+[#23]: https://github.com/AlmostReliable/lazierae2-forge/pull/23
+
+## [3.1.0] - 2022-07-21
+
+### Added
+- new models and textures for all machines
+- JEI info panels for the Universal Press and the Singularity
+  - brief explanation of how to obtain them
+  - can be disabled in the config
+- compat recipe for MEGACells ([#21])
+- ability to shift-right-click upgrades into processing machines
+- German translation
+
+### Changed
+- improved texture of the Universal Press
+- improved texture of the Resonating Seed
+- improved texture of Requester checkboxes
+- more clunky descriptions in tooltips are now only visible when holding shift
+- reworked processing machine upgrade system
+  - when upgraded to half of the maximum upgrade count, machines will be twice as fast and consume twice as much energy
+  - each upgrade above will be exponentially faster but has worse energy efficiency
 - Requester now requires a channel
-- Requester no longer exposes front side
+  - can be modified in the config
+  - default setting is true
+- Requester no longer exposes front side for cable connections
+
+### Fixed
+- main node creation at wrong time
+  - fixes connections when a Security Terminal is set up in the network ([#18])
+  - an AE2 API update was required, thus raising the AE2 version to 11.1.4
+- block tooltip hiding when no description is provided
+
+<!-- Links -->
+[#18]: https://github.com/AlmostReliable/lazierae2-forge/issues/18
+[#21]: https://github.com/AlmostReliable/lazierae2-forge/issues/21
 
 ## [3.0.2] - 2022-06-05
 
@@ -76,7 +116,9 @@ The following changes are notable changes from the 1.16 version.
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.0.2-beta...HEAD
+[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.1.1...HEAD
+[3.1.1]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.1.0..v1.18-3.1.1
+[3.1.0]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.2-beta..v1.18-3.1.0
 [3.0.2]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.1-beta..v1.18-3.0.2-beta
 [3.0.1]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.0-beta..v1.18-3.0.1-beta
 [3.0.0]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.0-beta

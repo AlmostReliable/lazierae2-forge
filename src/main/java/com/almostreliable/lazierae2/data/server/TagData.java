@@ -63,14 +63,14 @@ public final class TagData {
 
         @Override
         protected void addTags() {
-            tag(Setup.Tags.Blocks.MACHINES).add(
+            tag(Blocks.MACHINES).add(
                 Blocks.AGGREGATOR.get(),
                 Blocks.ETCHER.get(),
                 Blocks.GRINDER.get(),
                 Blocks.INFUSER.get(),
                 Blocks.REQUESTER.get()
             );
-            tag(MINEABLE_WITH_PICKAXE).addTag(Setup.Tags.Blocks.MACHINES).add(
+            tag(MINEABLE_WITH_PICKAXE).addTag(Blocks.MACHINES).add(
                 Assembler.CONTROLLER.get(),
                 Assembler.ACCELERATOR.get(),
                 Assembler.TIER_1.get(),

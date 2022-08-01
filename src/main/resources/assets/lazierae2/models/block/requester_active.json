@@ -1,0 +1,6 @@
+{
+  "parent": "lazierae2:block/requester",
+  "textures": {
+    "face": "lazierae2:block/machine/requester_active"
+  }
+}

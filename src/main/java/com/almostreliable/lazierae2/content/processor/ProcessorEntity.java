@@ -1,5 +1,6 @@
 package com.almostreliable.lazierae2.content.processor;
 
+import appeng.core.definitions.AEItems;
 import com.almostreliable.lazierae2.content.GenericEntity;
 import com.almostreliable.lazierae2.core.Setup.Entities;
 import com.almostreliable.lazierae2.core.TypeEnums.IO_SETTING;
@@ -8,6 +9,7 @@ import com.almostreliable.lazierae2.util.GameUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -29,6 +31,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.IntToDoubleFunction;
 
 import static com.almostreliable.lazierae2.core.Constants.Nbt.*;
 
@@ -127,6 +130,30 @@ public class ProcessorEntity extends GenericEntity {
             }
         }
         return super.getCapability(cap, direction);
+    }
+
+    public double calculateMultiplier(IntToDoubleFunction multiplierList) {
+        var upgradeCount = inventory.getUpgradeCount();
+        return upgradeCount == 0 ? 1.0 : multiplierList.applyAsDouble(upgradeCount);
+    }
+
+    public void insertUpgrades(Player player, InteractionHand hand) {
+        var stack = player.getItemInHand(hand);
+        var maxUpgrades = getProcessorType().getUpgradeSlots();
+        var currentUpgrades = inventory.getUpgradeCount();
+        var inserted = Math.min(stack.getCount(), maxUpgrades - currentUpgrades);
+        if (inserted > 0) {
+            inventory.setStackInSlot(
+                ProcessorInventory.UPGRADE_SLOT,
+                AEItems.SPEED_CARD.stack(currentUpgrades + inserted)
+            );
+            stack.shrink(inserted);
+            if (stack.isEmpty()) {
+                player.setItemInHand(hand, ItemStack.EMPTY);
+            } else {
+                player.setItemInHand(hand, stack);
+            }
+        }
     }
 
     @Override
@@ -274,19 +301,12 @@ public class ProcessorEntity extends GenericEntity {
 
     private double calculateEnergyCost(ProcessorRecipe recipe) {
         var baseCost = recipe.getEnergyCost();
-        var multiplier = calculateMultiplier(getProcessorType().getEnergyCostMultiplier());
-        return baseCost * multiplier;
+        return baseCost * calculateMultiplier(upgrades -> getProcessorType().getEnergyCostMultiplier(upgrades));
     }
 
     private double calculateProcessTime(ProcessorRecipe recipe) {
         var baseTime = recipe.getProcessTime();
-        var multiplier = calculateMultiplier(getProcessorType().getProcessTimeMultiplier());
-        return baseTime * multiplier;
-    }
-
-    private double calculateMultiplier(double upgradeMultiplier) {
-        var upgradeCount = inventory.getUpgradeCount();
-        return Math.pow(upgradeMultiplier, upgradeCount);
+        return baseTime * calculateMultiplier(upgrades -> getProcessorType().getProcessTimeMultiplier(upgrades));
     }
 
     private void autoExtract() {

@@ -52,7 +52,7 @@ This project is licensed under the [MIT license][license].
 [version_link]: https://github.com/AlmostReliable/lazierae2-forge/releases/latest
 [total_downloads_cf_badge]: http://cf.way2muchnoise.eu/full_489843.svg?badge_style=flat
 [total_downloads_mr_badge]: https://img.shields.io/badge/dynamic/json?style=flat-square&color=5da545&label=modrinth&query=downloads&url=https://api.modrinth.com/api/v1/mod/7mmL0PW9
-[workflow_status_badge]: https://img.shields.io/github/workflow/status/AlmostReliable/lazierae2-forge/CI?style=flat-square
+[workflow_status_badge]: https://img.shields.io/github/workflow/status/AlmostReliable/lazierae2-forge/Build?style=flat-square
 [workflow_status_link]: https://github.com/AlmostReliable/lazierae2-forge/actions
 [license_badge]: https://img.shields.io/github/license/AlmostReliable/lazierae2-forge?style=flat-square
 

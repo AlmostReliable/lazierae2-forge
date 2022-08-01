@@ -1,11 +1,11 @@
-package com.almostreliable.lazierae2.recipe;
+package com.almostreliable.lazierae2.recipe.property;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
-public record RecipeStackProvider(ItemStack stack) implements IRecipeItemProvider {
+public record RecipeOutputStack(ItemStack stack) implements IRecipeOutputProvider {
 
     @Override
     public ResourceLocation id() {

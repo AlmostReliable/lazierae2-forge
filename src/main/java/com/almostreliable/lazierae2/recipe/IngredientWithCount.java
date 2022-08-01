@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.jetbrains.annotations.NotNull;
 
 import static com.almostreliable.lazierae2.core.Constants.Recipe.COUNT;
 import static com.almostreliable.lazierae2.core.Constants.Recipe.INPUT;
@@ -38,7 +37,6 @@ public record IngredientWithCount(Ingredient ingredient, int count) {
         buffer.writeVarInt(count);
     }
 
-    @NotNull
     private JsonElement toJson() {
         var input = ingredient.toJson();
         if (count > 1) input.getAsJsonObject().addProperty(COUNT, count);

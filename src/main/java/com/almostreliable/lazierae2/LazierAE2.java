@@ -30,9 +30,12 @@ import org.slf4j.Logger;
 import static appeng.init.client.InitItemModelsProperties.GROWTH_PREDICATE_ID;
 import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
+@SuppressWarnings("UtilityClassWithPublicConstructor")
 @Mod(MOD_ID)
 @EventBusSubscriber
-public class LazierAE2 {
+public final class LazierAE2 {
+
+    public static final Logger LOG = LogUtils.getLogger();
 
     public static final Logger LOG = LogUtils.getLogger();
 
@@ -43,6 +46,7 @@ public class LazierAE2 {
         context.registerConfig(Type.COMMON, Config.COMMON_SPEC);
         modEventBus.addListener(LazierAE2::onCommonSetup);
         modEventBus.addListener(LazierAE2::onClientSetup);
+        modEventBus.addListener(Config::onConfigReloaded);
         modEventBus.addListener(DataGeneration::init);
         Setup.init(modEventBus);
     }
