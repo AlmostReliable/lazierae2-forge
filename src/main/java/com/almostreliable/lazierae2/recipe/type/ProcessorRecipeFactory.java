@@ -13,7 +13,6 @@ import java.util.List;
 public interface ProcessorRecipeFactory {
     ProcessorRecipe create(
         ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions,
-        IRecipeOutputProvider output,
-        NonNullList<IRecipeInputProvider> inputs, int processTime, int energyCost
+        IRecipeOutputProvider output, NonNullList<IRecipeInputProvider> inputs, int processTime, int energyCost
     );
 }

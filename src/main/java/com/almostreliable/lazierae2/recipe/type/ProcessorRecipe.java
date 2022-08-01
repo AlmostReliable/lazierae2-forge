@@ -28,8 +28,7 @@ public abstract class ProcessorRecipe implements Recipe<Container> {
 
     ProcessorRecipe(
         ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions,
-        IRecipeOutputProvider output,
-        NonNullList<IRecipeInputProvider> inputs, int processTime, int energyCost
+        IRecipeOutputProvider output, NonNullList<IRecipeInputProvider> inputs, int processTime, int energyCost
     ) {
         this.recipeId = recipeId;
         this.processorType = processorType;

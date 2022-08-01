@@ -15,8 +15,7 @@ public class SingleInputRecipe extends ProcessorRecipe {
 
     public SingleInputRecipe(
         ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions,
-        IRecipeOutputProvider output,
-        NonNullList<IRecipeInputProvider> inputs, int processTime, int energyCost
+        IRecipeOutputProvider output, NonNullList<IRecipeInputProvider> inputs, int processTime, int energyCost
     ) {
         super(recipeId, processorType, conditions, output, inputs, processTime, energyCost);
     }

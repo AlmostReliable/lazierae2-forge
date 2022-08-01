@@ -224,8 +224,7 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
     }
 
     private boolean isInvalidRow(int row) {
-        return !menu.controllerData.invalidRows.isEmpty() &&
-            menu.controllerData.invalidRows.contains(row + scrollOffset);
+        return !menu.controllerData.invalidRows.isEmpty() && menu.controllerData.invalidRows.contains(row + scrollOffset);
     }
 
     private boolean canScroll() {

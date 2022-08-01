@@ -97,8 +97,7 @@ public final class MultiBlock {
             var positiveColumnResult = findEdge(originPos, itDirs.columnDirection(), edgeCheck);
             var depthResult = findEdge(originPos, itDirs.depthDirection(), depthCheck);
 
-            if (negativeRowResult == null || positiveRowResult == null || negativeColumnResult == null ||
-                positiveColumnResult == null || depthResult == null) {
+            if (negativeRowResult == null || positiveRowResult == null || negativeColumnResult == null || positiveColumnResult == null || depthResult == null) {
                 GameUtil.sendPlayerMessage(player, "not_found", ChatFormatting.YELLOW);
                 LOG.debug("Couldn't determine multiblock shape");
                 return null;

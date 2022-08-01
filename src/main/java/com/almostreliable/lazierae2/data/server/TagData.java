@@ -22,9 +22,7 @@ public final class TagData {
 
     public static class ItemTags extends ItemTagsProvider {
 
-        public ItemTags(
-            DataGenerator gen, BlockTagsProvider p, @Nullable ExistingFileHelper fileHelper
-        ) {
+        public ItemTags(DataGenerator gen, BlockTagsProvider p, @Nullable ExistingFileHelper fileHelper) {
             super(gen, p, MOD_ID, fileHelper);
         }
 
@@ -55,9 +53,7 @@ public final class TagData {
 
     public static class BlockTags extends BlockTagsProvider {
 
-        public BlockTags(
-            DataGenerator gen, @Nullable ExistingFileHelper fileHelper
-        ) {
+        public BlockTags(DataGenerator gen, @Nullable ExistingFileHelper fileHelper) {
             super(gen, MOD_ID, fileHelper);
         }
 

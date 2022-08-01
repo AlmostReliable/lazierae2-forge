@@ -165,9 +165,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
                                 () -> TextUtil.formatEnergy(menu.entity.getRecipeEnergy(), 1, 2, false, true)
                             )
                             .keyValue(menu::hasUpgrades, "progress.energy_multiplier", this::getEnergyCostMultiplier))
-                        .otherwise(Tooltip.builder()
-                            .blank()
-                            .shiftForInfo())))
+                        .otherwise(Tooltip.builder().blank().shiftForInfo())))
                 .otherwise(Tooltip.builder().line("progress.none")));
     }
 
@@ -204,7 +202,8 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
                 .otherwise(Tooltip.builder()
                     .line("upgrade.none", ChatFormatting.YELLOW)
                     .blank()
-                    .line(Screen::hasShiftDown, "upgrade.description").shiftForInfo()));
+                    .line(Screen::hasShiftDown, "upgrade.description")
+                    .shiftForInfo()));
     }
 
     private double getProcessTimeMultiplier() {

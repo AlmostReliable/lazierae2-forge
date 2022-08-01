@@ -19,8 +19,7 @@ public class TripleInputRecipe extends ProcessorRecipe {
 
     public TripleInputRecipe(
         ResourceLocation recipeId, ProcessorType processorType, List<ICondition> conditions,
-        IRecipeOutputProvider output,
-        NonNullList<IRecipeInputProvider> inputs, int processTime, int energyCost
+        IRecipeOutputProvider output, NonNullList<IRecipeInputProvider> inputs, int processTime, int energyCost
     ) {
         super(recipeId, processorType, conditions, output, inputs, processTime, energyCost);
     }

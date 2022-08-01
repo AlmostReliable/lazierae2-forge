@@ -14,9 +14,7 @@ public class AggregatorCategory extends TripleInputCategory {
     private static final ResourceLocation UID = TextUtil.getRL(AGGREGATOR_ID);
     public static final RecipeType<TripleInputRecipe> TYPE = new RecipeType<>(UID, TripleInputRecipe.class);
 
-    public AggregatorCategory(
-        IGuiHelper guiHelper
-    ) {
+    public AggregatorCategory(IGuiHelper guiHelper) {
         super(guiHelper, AGGREGATOR_ID, Blocks.AGGREGATOR.get());
     }
 

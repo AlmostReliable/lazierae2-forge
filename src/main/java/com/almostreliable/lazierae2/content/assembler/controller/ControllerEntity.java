@@ -220,11 +220,7 @@ public class ControllerEntity extends GenericEntity implements IInWorldGridNodeH
     private void onMultiBlockCreated() {
         if (level == null || level.isClientSide) return;
         controllerData.updatePatterns();
-        level.setBlock(
-            getBlockPos(),
-            getBlockState().setValue(GenericBlock.ACTIVE, true),
-            1 | 2
-        );
+        level.setBlock(getBlockPos(), getBlockState().setValue(GenericBlock.ACTIVE, true), 1 | 2);
         if (mainNode.isReady()) {
             mainNode.setExposedOnSides(EnumSet.of(getBlockState().getValue(ControllerBlock.FACING)));
         } else {

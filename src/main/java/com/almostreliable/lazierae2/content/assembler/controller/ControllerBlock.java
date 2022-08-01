@@ -61,8 +61,7 @@ public class ControllerBlock extends GenericBlock implements EntityBlock {
     @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (AssemblerBlock.isMultiBlock(oldState) && newState.isAir() &&
-            level.getBlockEntity(pos) instanceof ControllerEntity entity) {
+        if (AssemblerBlock.isMultiBlock(oldState) && newState.isAir() && level.getBlockEntity(pos) instanceof ControllerEntity entity) {
             destroyMultiBlock(level, entity, pos);
         }
         super.onRemove(oldState, level, pos, newState, isMoving);

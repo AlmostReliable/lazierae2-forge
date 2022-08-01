@@ -46,9 +46,6 @@ public final class GameUtil {
     }
 
     public static void sendPlayerMessage(Player player, String translationKey, ChatFormatting color, Object... args) {
-        player.sendMessage(
-            TextUtil.translateWithArgs(TRANSLATE_TYPE.MESSAGE, translationKey, color, args),
-            MOD_UUID
-        );
+        player.sendMessage(TextUtil.translateWithArgs(TRANSLATE_TYPE.MESSAGE, translationKey, color, args), MOD_UUID);
     }
 }

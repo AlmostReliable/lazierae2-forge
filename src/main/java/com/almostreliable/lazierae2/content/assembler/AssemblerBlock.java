@@ -14,7 +14,6 @@ public abstract class AssemblerBlock extends GenericBlock {
     public abstract boolean isValidMultiBlockPos(PositionType posType);
 
     public BlockState setupMultiBlockState(BlockState state, BlockPos hullPos, BlockPos controllerPos) {
-        return state
-            .setValue(GenericBlock.ACTIVE, true);
+        return state.setValue(GenericBlock.ACTIVE, true);
     }
 }

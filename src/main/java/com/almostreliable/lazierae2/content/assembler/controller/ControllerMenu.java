@@ -25,8 +25,7 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
     private int work;
 
     public ControllerMenu(
-        int id, ControllerEntity entity,
-        Inventory menuInventory
+        int id, ControllerEntity entity, Inventory menuInventory
     ) {
         super(Assembler.CONTROLLER.get(), id, entity, menuInventory);
         controllerData = entity.controllerData;
@@ -47,12 +46,7 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
     protected void setupContainerInventory() {
         for (var row = 0; row < controllerData.getSlots() / COLUMNS; row++) {
             for (var slot = 0; slot < COLUMNS; slot++) {
-                addSlot(new PatternSlot(
-                    controllerData,
-                    row * COLUMNS + slot,
-                    36,
-                    83
-                ));
+                addSlot(new PatternSlot(controllerData, row * COLUMNS + slot, 36, 83));
             }
         }
     }
@@ -85,12 +79,7 @@ public class ControllerMenu extends GenericMenu<ControllerEntity> {
             }
         } else {
             // from inventory to controller
-            if (!moveItemStackTo(
-                slotStack,
-                0,
-                controllerData.getSlots(),
-                false
-            )) {
+            if (!moveItemStackTo(slotStack, 0, controllerData.getSlots(), false)) {
                 return ItemStack.EMPTY;
             }
         }

@@ -120,10 +120,7 @@ public class CraftingQueue implements INBTSerializable<CompoundTag> {
                 var amount = list.get(validFluidKey);
                 var requiredAmount = (int) validFluid.amount();
                 if (amount >= requiredAmount) {
-                    job.inputBuffer.setStackInSlot(
-                        slot,
-                        GenericStack.wrapInItemStack(validFluidKey, requiredAmount)
-                    );
+                    job.inputBuffer.setStackInSlot(slot, GenericStack.wrapInItemStack(validFluidKey, requiredAmount));
                     list.remove(validFluidKey, requiredAmount);
                     continue;
                 }

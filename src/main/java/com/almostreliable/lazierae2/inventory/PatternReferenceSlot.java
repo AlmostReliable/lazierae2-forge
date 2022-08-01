@@ -78,8 +78,7 @@ public class PatternReferenceSlot extends Slot {
 
     public ItemStack getDisplayStack() {
         var stack = getItem();
-        if (owner.entity.getLevel() != null && owner.entity.getLevel().isClientSide &&
-            !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem pattern) {
+        if (owner.entity.getLevel() != null && owner.entity.getLevel().isClientSide && !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem pattern) {
             var patternOutput = pattern.getOutput(stack);
             if (!patternOutput.isEmpty()) return patternOutput;
         }

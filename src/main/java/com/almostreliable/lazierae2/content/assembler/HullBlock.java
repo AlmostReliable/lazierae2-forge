@@ -93,8 +93,7 @@ public class HullBlock extends AssemblerBlock {
 
     @Override
     public boolean isValidMultiBlockPos(PositionType posType) {
-        return (posType == PositionType.WALL && type == HULL_TYPE.WALL) ||
-            ((posType == PositionType.CORNER || posType == PositionType.EDGE) && type == HULL_TYPE.FRAME);
+        return (posType == PositionType.WALL && type == HULL_TYPE.WALL) || ((posType == PositionType.CORNER || posType == PositionType.EDGE) && type == HULL_TYPE.FRAME);
     }
 
     @Override
@@ -175,8 +174,7 @@ public class HullBlock extends AssemblerBlock {
         WEST(Direction.WEST);
 
         private static final BiMap<OptionalDirection, Direction> OPT_TO_DIR = HashBiMap.create();
-        @Nullable
-        private final Direction direction;
+        @Nullable private final Direction direction;
         private final String name;
 
         static {

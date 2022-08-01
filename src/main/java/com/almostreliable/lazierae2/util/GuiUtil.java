@@ -293,7 +293,8 @@ public final class GuiUtil {
          */
         public Tooltip keyEnum(String key, TRANSLATE_TYPE type, Supplier<Enum<?>> e) {
             return component(new EnumComponent(TextUtil.translate(TRANSLATE_TYPE.TOOLTIP, key, ChatFormatting.GREEN)
-                .append(TextUtil.colorize(": ", ChatFormatting.GREEN)).append(TextComponent.EMPTY), type, e));
+                .append(TextUtil.colorize(": ", ChatFormatting.GREEN))
+                .append(TextComponent.EMPTY), type, e));
         }
 
         /**

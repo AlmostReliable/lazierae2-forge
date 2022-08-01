@@ -29,14 +29,12 @@ public abstract class ProcessorCategory<R extends ProcessorRecipe> implements IR
 
         var progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", id));
         progressEmpty = guiHelper.drawableBuilder(
-                progressTexture,
-                0,
-                0,
-                ProcessorScreen.PROGRESS_WIDTH / 2,
-                ProcessorScreen.PROGRESS_HEIGHT
-            )
-            .setTextureSize(ProcessorScreen.PROGRESS_WIDTH, ProcessorScreen.PROGRESS_HEIGHT)
-            .build();
+            progressTexture,
+            0,
+            0,
+            ProcessorScreen.PROGRESS_WIDTH / 2,
+            ProcessorScreen.PROGRESS_HEIGHT
+        ).setTextureSize(ProcessorScreen.PROGRESS_WIDTH, ProcessorScreen.PROGRESS_HEIGHT).build();
         var progressDrawable = guiHelper.drawableBuilder(
             progressTexture,
             ProcessorScreen.PROGRESS_WIDTH / 2,
