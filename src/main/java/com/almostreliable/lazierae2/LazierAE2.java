@@ -37,8 +37,6 @@ public final class LazierAE2 {
 
     public static final Logger LOG = LogUtils.getLogger();
 
-    public static final Logger LOG = LogUtils.getLogger();
-
     @SuppressWarnings("java:S1118")
     public LazierAE2() {
         var context = ModLoadingContext.get();
