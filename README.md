@@ -15,7 +15,7 @@ A [Minecraft] mod to make your life with [Applied Energistics 2][ae2] a little e
 
 ## **📑 Overview**
 This is a mod for [Minecraft]-[Forge].<br>
-It's a port of the [LazyAE2] mod for modern [Minecraft] versions.
+It's a rewrite of the [LazyAE2] mod for modern [Minecraft] versions.
 
 It adds some useful machines that will make your late-game [Applied Energistics 2][ae2] experience less grindy.
 
@@ -34,9 +34,9 @@ recipes, you can read more on the [wiki].
 
 ## **💚 Credits**
 Credits for the original mod go to [phantamanta44][author].<br>
-Although this is a complete rewrite, credits for the idea should be given!
+Although this is a complete rewrite, credits for the idea is given!
 
-The mod is ported with permission.
+The mod idea was taken with permission.
 
 
 ## **⏰ Changelog**
@@ -44,7 +44,7 @@ Everything related to versions and their release notes can be found in the [chan
 
 
 ## **🎓 License**
-This project is licensed under the [MIT license][license].
+This project is licensed under the [LGPL-3.0 license][license].
 
 
 <!-- Badges -->
