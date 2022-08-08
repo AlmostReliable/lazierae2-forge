@@ -6,16 +6,24 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
-- added JEI 10 compatibility
+- /
+
+## [3.1.2] - 2022-08-09
+
+### Added
+- JEI 10 compatibility ([#17])
+
+<!-- Links -->
+[#17]: https://github.com/AlmostReliable/lazierae2-forge/issues/17
 
 ## [3.1.1] - 2022-07-31
 
 ### Added
-- added error messages for invalid upgrade and multiplier config entries
-- added Chinese translation ([#23])
+- error messages for invalid upgrade and multiplier config entries
+- Chinese translation ([#23])
 
 ### Fixed
-- fixed grinder and infuser descriptions in German translation
+- grinder and infuser descriptions in German translation
 
 <!-- Links -->
 [#23]: https://github.com/AlmostReliable/lazierae2-forge/pull/23
@@ -71,15 +79,15 @@ This initial version marks the beginning of the **1.18** port!<br>
 The following changes are notable changes from the 1.16 version.
 
 ### Added
-- added the **ME Requester**
+- the **ME Requester**
   - a new block that can be attached to any ME network
   - will automatically request new crafts if a specific item storage amount falls below a certain threshold
   - can track up to 6 different item storages
-- added the ability to have **multiple inputs per slot** for recipes
-- added **native KubeJS integration**
+- the ability to have **multiple inputs per slot** for recipes
+- **native KubeJS integration**
   - you can now easily add new recipes to all Lazier AE2 machines
   - a guide can be found on our [wiki]
-- added AE2 Inscriber recipes for the Universal Press
+- AE2 Inscriber recipes for the Universal Press
   - you can also duplicate the press now
   - the word Universal is more fitting now
 
@@ -105,10 +113,10 @@ The following changes are notable changes from the 1.16 version.
   - the Fluix Aggregator got a custom model now (more to come)
 
 ### Removed
-- removed the Crystal Energizer in favor of the new **Matter Infuser**
+- the Crystal Energizer in favor of the new **Matter Infuser**
   - the Crystal Energizer had no further use with AE2's new progression
   - the Matter Infuser is now used to craft ingredients required for the mod
-- removed some items that were no longer required for crafting
+- some items that were no longer required for crafting
 
 <!-- Links -->
 [wiki]: https://github.com/AlmostReliable/lazierae2-forge/wiki
@@ -116,7 +124,8 @@ The following changes are notable changes from the 1.16 version.
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.1.1...HEAD
+[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.1.2...HEAD
+[3.1.2]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.1.1..v1.18-3.1.2
 [3.1.1]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.1.0..v1.18-3.1.1
 [3.1.0]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.2-beta..v1.18-3.1.0
 [3.0.2]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.1-beta..v1.18-3.0.2-beta
