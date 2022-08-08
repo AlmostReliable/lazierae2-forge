@@ -16,9 +16,7 @@ public class RequesterMenu extends GenericMenu<RequesterEntity> {
     private static final int SLOT_GAP = 2;
     private final RequesterInventory requesterInventory;
 
-    public RequesterMenu(
-        int windowId, RequesterEntity entity, Inventory menuInventory
-    ) {
+    public RequesterMenu(int windowId, RequesterEntity entity, Inventory menuInventory) {
         super(Menus.REQUESTER.get(), windowId, entity, menuInventory);
         requesterInventory = entity.craftRequests;
         setupContainerInventory();

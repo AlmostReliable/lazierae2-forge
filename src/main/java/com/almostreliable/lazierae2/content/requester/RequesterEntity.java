@@ -53,9 +53,7 @@ public class RequesterEntity extends GenericEntity implements IInWorldGridNodeHo
     private TickRateModulation currentTickRateModulation = TickRateModulation.IDLE;
 
     @SuppressWarnings("ThisEscapedInObjectConstruction")
-    public RequesterEntity(
-        BlockPos pos, BlockState state
-    ) {
+    public RequesterEntity(BlockPos pos, BlockState state) {
         super(Entities.REQUESTER.get(), pos, state);
         actionSource = new MachineSource(this);
         craftRequests = new RequesterInventory(this, SLOTS);

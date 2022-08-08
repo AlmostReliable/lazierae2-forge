@@ -17,9 +17,7 @@ public class EnergyDumpButton extends GenericButton {
     private static final int BUTTON_HEIGHT = 13;
     private final Tooltip tooltip = setupTooltip();
 
-    public EnergyDumpButton(
-        ProcessorScreen screen
-    ) {
+    public EnergyDumpButton(ProcessorScreen screen) {
         super(screen, POS_X, POS_Y, BUTTON_WIDTH, BUTTON_HEIGHT, TEXTURE_ID);
     }
 

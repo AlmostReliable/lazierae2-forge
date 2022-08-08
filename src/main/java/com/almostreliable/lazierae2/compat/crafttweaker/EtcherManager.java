@@ -27,11 +27,11 @@ public class EtcherManager implements ProcessorRecipeManager {
 
     @Override
     public ProcessorRecipe createRecipe(
-        ResourceLocation id, ItemStack output, int amount, IngredientWithCount[] ingredients, int processTime,
+        ResourceLocation id, ItemStack output, int amount, IngredientWithCount[] inputs, int processTime,
         int energyCost
     ) {
         return ProcessorRecipeBuilder.etcher(output.getItem(), amount)
-            .input(ingredients)
+            .input(inputs)
             .processingTime(processTime)
             .energyCost(energyCost)
             .build(id);

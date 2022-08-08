@@ -21,9 +21,7 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class BlockStateData extends BlockStateProvider {
 
-    public BlockStateData(
-        DataGenerator gen, ExistingFileHelper fileHelper
-    ) {
+    public BlockStateData(DataGenerator gen, ExistingFileHelper fileHelper) {
         super(gen, MOD_ID, fileHelper);
     }
 
@@ -47,9 +45,7 @@ public class BlockStateData extends BlockStateProvider {
         );
     }
 
-    private void orientedBlock(
-        Block block, Function<? super BlockState, ? extends ModelFile> modelFunction
-    ) {
+    private void orientedBlock(Block block, Function<? super BlockState, ? extends ModelFile> modelFunction) {
         getVariantBuilder(block).forAllStates(state -> {
             var facing = state.getValue(GenericBlock.FACING);
 

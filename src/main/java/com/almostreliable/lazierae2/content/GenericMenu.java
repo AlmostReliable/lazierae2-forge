@@ -24,9 +24,7 @@ public abstract class GenericMenu<E extends GenericEntity> extends AbstractConta
     private final IItemHandler menuInventory;
     private final Inventory playerInventory;
 
-    protected GenericMenu(
-        MenuType<?> type, int windowId, E entity, Inventory menuInventory
-    ) {
+    protected GenericMenu(MenuType<?> type, int windowId, E entity, Inventory menuInventory) {
         super(type, windowId);
         this.entity = entity;
         this.menuInventory = new InvWrapper(menuInventory);

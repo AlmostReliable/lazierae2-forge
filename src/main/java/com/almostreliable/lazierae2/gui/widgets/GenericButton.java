@@ -15,9 +15,7 @@ public abstract class GenericButton extends Button {
     protected final ResourceLocation texture;
     protected final GenericScreen<?> screen;
 
-    protected GenericButton(
-        GenericScreen<?> screen, int pX, int pY, int width, int height, String textureID
-    ) {
+    protected GenericButton(GenericScreen<?> screen, int pX, int pY, int width, int height, String textureID) {
         super(
             screen.getGuiLeft() + pX,
             screen.getGuiTop() + pY,
@@ -31,9 +29,7 @@ public abstract class GenericButton extends Button {
     }
 
     @Override
-    public void renderButton(
-        PoseStack stack, int mX, int mY, float partial
-    ) {
+    public void renderButton(PoseStack stack, int mX, int mY, float partial) {
         RenderSystem.setShaderTexture(0, texture);
         blit(stack, x, y, 0, 0, width, height, getTextureWidth(), getTextureHeight());
     }

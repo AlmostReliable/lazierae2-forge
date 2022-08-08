@@ -32,9 +32,7 @@ public class ProcessorGuiHandler implements IGuiContainerHandler<ProcessorScreen
     }
 
     @Override
-    public Collection<IGuiClickableArea> getGuiClickableAreas(
-        ProcessorScreen screen, double mX, double mY
-    ) {
+    public Collection<IGuiClickableArea> getGuiClickableAreas(ProcessorScreen screen, double mX, double mY) {
         return Collections.singleton(createClickArea(screen, x, y, width, height, recipeTypes));
     }
 

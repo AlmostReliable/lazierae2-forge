@@ -55,7 +55,11 @@ public final class LazierAE2 {
             Blocks.AGGREGATOR.get().asItem(),
             ProcessorType.AGGREGATOR.getUpgradeSlots()
         );
-        Upgrades.add(AEItems.SPEED_CARD.asItem(), Blocks.ETCHER.get().asItem(), ProcessorType.ETCHER.getUpgradeSlots());
+        Upgrades.add(
+            AEItems.SPEED_CARD.asItem(),
+            Blocks.ETCHER.get().asItem(),
+            ProcessorType.ETCHER.getUpgradeSlots()
+        );
         Upgrades.add(
             AEItems.SPEED_CARD.asItem(),
             Blocks.GRINDER.get().asItem(),

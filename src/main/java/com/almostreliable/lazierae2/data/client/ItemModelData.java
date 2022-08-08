@@ -21,9 +21,7 @@ import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class ItemModelData extends ItemModelProvider {
 
-    public ItemModelData(
-        DataGenerator gen, ExistingFileHelper fileHelper
-    ) {
+    public ItemModelData(DataGenerator gen, ExistingFileHelper fileHelper) {
         super(gen, MOD_ID, fileHelper);
     }
 
@@ -55,9 +53,7 @@ public class ItemModelData extends ItemModelProvider {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private void crystalSeed(
-        Supplier<? extends Item> item
-    ) {
+    private void crystalSeed(Supplier<? extends Item> item) {
         var id = GameUtil.getIdFromItem(item.get());
         var stageOneModel = getModelFile(id + "_2");
         var stageTwoModel = getModelFile(id + "_3");

@@ -21,9 +21,7 @@ public final class RequesterInventory implements IItemHandlerModifiable, INBTSer
     private final RequesterEntity entity;
     private final Request[] requests;
 
-    RequesterInventory(
-        RequesterEntity entity, int slots
-    ) {
+    RequesterInventory(RequesterEntity entity, int slots) {
         this.entity = entity;
         requests = new Request[slots];
         for (var i = 0; i < slots; i++) {

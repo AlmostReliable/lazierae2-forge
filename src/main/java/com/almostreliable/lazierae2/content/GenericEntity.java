@@ -12,9 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class GenericEntity extends BlockEntity implements MenuProvider {
 
-    protected GenericEntity(
-        BlockEntityType<?> type, BlockPos pos, BlockState state
-    ) {
+    protected GenericEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 

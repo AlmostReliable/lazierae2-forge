@@ -93,9 +93,7 @@ public class ProcessorEntity extends GenericEntity {
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(
-        int menuID, Inventory inventory, Player player
-    ) {
+    public AbstractContainerMenu createMenu(int menuID, Inventory inventory, Player player) {
         return new ProcessorMenu(menuID, this, inventory);
     }
 
@@ -117,9 +115,7 @@ public class ProcessorEntity extends GenericEntity {
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(
-        @Nonnull Capability<T> cap, @Nullable Direction direction
-    ) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction direction) {
         if (!remove) {
             if (cap.equals(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)) {
                 if (direction == null) return inventoryCap.cast();

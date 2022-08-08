@@ -184,9 +184,7 @@ public final class RequestControl {
             final SubmitButton submitButton;
             final Tooltip tooltip;
 
-            private TextBox(
-                int x
-            ) {
+            private TextBox(int x) {
                 super(
                     screen.getMinecraft().font,
                     screen.getGuiLeft() + x + 2,
@@ -304,9 +302,7 @@ public final class RequestControl {
                 }
 
                 @Override
-                public void renderButton(
-                    PoseStack stack, int mX, int mY, float partial
-                ) {
+                public void renderButton(PoseStack stack, int mX, int mY, float partial) {
                     if (isHovered) {
                         RenderSystem.setShaderTexture(0, texture);
                         blit(stack, x, y, 0, BUTTON_SIZE, width, height, BUTTON_SIZE, getTextureHeight());

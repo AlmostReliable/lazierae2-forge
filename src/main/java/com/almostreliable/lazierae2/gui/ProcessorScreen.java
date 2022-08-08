@@ -37,9 +37,7 @@ public class ProcessorScreen extends GenericScreen<ProcessorMenu> {
     private final Tooltip energyTooltip;
     private final Tooltip upgradeTooltip;
 
-    public ProcessorScreen(
-        ProcessorMenu menu, Inventory inventory, Component ignoredTitle
-    ) {
+    public ProcessorScreen(ProcessorMenu menu, Inventory inventory, Component ignoredTitle) {
         super(menu, inventory);
         progressTexture = TextUtil.getRL(f("textures/gui/progress/{}.png", menu.entity.getProcessorType()));
         progressTooltip = setupProgressTooltip();
