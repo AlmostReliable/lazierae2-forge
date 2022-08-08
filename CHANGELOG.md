@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
-- /
+- added JEI 10 compatibility
 
 ## [3.1.1] - 2022-07-31
 
