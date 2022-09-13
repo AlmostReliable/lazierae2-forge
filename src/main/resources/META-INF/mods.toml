@@ -1,68 +1,54 @@
 modLoader = "javafml"
-loaderVersion = "[${forge_min_version},)"
-issueTrackerURL = "https://github.com/${github_user}/${github_repo}/issues"
+loaderVersion = "${forgeVersionRange}"
+issueTrackerURL = "https://github.com/${githubUser}/${githubRepo}/issues"
 license = "${license}"
 
 [[mods]]
-modId = "${mod_id}"
-version = "${mod_version}"
-displayName = "${mod_name}"
-credits = "${mod_credits}"
-authors = "${mod_authors}"
-description = '''${mod_description}'''
+modId = "${modId}"
+version = "${modVersion}"
+displayName = "${modName}"
+credits = "${modCredits}"
+authors = "${modAuthor}"
+description = '''${modDescription}'''
 
-[[dependencies.${mod_id}]]
+[[dependencies.${modId}]]
 modId = "forge"
 mandatory = true
-versionRange = "[${forge_min_version},)"
+versionRange = "${forgeVersionRange}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.${modId}]]
 modId = "minecraft"
 mandatory = true
-versionRange = "${mc_version_range}"
+versionRange = "${mcVersionRange}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.${modId}]]
 modId = "ae2"
 mandatory = true
-versionRange = "${ae2_version_range}"
+versionRange = "${ae2VersionRange}"
 ordering = "AFTER"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.${modId}]]
 modId = "jei"
 mandatory = false
-versionRange = "${jei_version_range}"
+versionRange = "${jeiVersionRange}"
 ordering = "AFTER"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
+[[dependencies.${modId}]]
 modId = "crafttweaker"
 mandatory = false
-versionRange = "${crt_version_range}"
+versionRange = "${crtVersionRange}"
 ordering = "AFTER"
 side = "BOTH"
 
-[[dependencies.${mod_id}]]
-modId = "architectury"
-mandatory = false
-versionRange = "${archi_version_range}"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "rhino"
-mandatory = false
-versionRange = "${rhino_version_range}"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
+[[dependencies.${modId}]]
 modId = "kubejs"
 mandatory = false
-versionRange = "${kube_version_range}"
+versionRange = "${kubeVersionRange}"
 ordering = "AFTER"
 side = "BOTH"
