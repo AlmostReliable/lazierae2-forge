@@ -4,6 +4,8 @@ import com.almostreliable.lazierae2.content.GenericMenu;
 import com.almostreliable.lazierae2.content.assembler.controller.ControllerMenu;
 import com.almostreliable.lazierae2.core.TypeEnums.TRANSLATE_TYPE;
 import com.almostreliable.lazierae2.inventory.PatternReferenceSlot;
+import com.almostreliable.lazierae2.util.GuiUtil;
+import com.almostreliable.lazierae2.util.GuiUtil.ANCHOR;
 import com.almostreliable.lazierae2.util.GuiUtil.Tooltip;
 import com.almostreliable.lazierae2.util.TextUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -81,14 +83,7 @@ public class ControllerScreen extends GenericScreen<ControllerMenu> {
         // no pattern holders
         if (calculateRowsToDraw() == 0) {
             var text = TextUtil.translateAsString(TRANSLATE_TYPE.GUI, "controller.empty");
-            var textWidth = font.width(text);
-            font.draw(
-                stack,
-                text,
-                leftPos + (TEXTURE_WIDTH - SLOT_SIZE) / 2f - textWidth / 2f,
-                topPos + 35f,
-                0xFF55_5555
-            );
+            GuiUtil.renderText(stack, text, ANCHOR.CENTER, (TEXTURE_WIDTH - 20) / 2, 45, 1.0f, 0xFF55_5555);
         }
 
         // TODO: remove these debug labels

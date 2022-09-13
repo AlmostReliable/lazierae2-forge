@@ -68,6 +68,10 @@ public final class GuiUtil {
                 xOffset -= width;
                 yOffset -= height;
                 break;
+            case CENTER:
+                xOffset -= width / 2;
+                yOffset -= height / 2;
+                break;
         }
 
         font.draw(stack, text, xOffset, yOffset, color);
@@ -75,7 +79,7 @@ public final class GuiUtil {
     }
 
     public enum ANCHOR {
-        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, CENTER
     }
 
     @SuppressWarnings({"java:S2160", "UnusedReturnValue", "unused"})
