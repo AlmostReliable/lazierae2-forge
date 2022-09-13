@@ -134,10 +134,10 @@ public class Plugin implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration r) {
         r.addGuiContainerHandler(ProcessorScreen.class, new ProcessorGuiHandler(
-            156,
-            7,
-            7,
-            8,
+            78,
+            24,
+            ProcessorScreen.PROGRESS_WIDTH / 2,
+            ProcessorScreen.PROGRESS_HEIGHT,
             AggregatorCategory.TYPE,
             EtcherCategory.TYPE,
             GrinderCategory.TYPE,

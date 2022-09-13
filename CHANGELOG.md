@@ -6,7 +6,9 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
-- /
+- JEI recipe pages are now viewable by clicking the progress arrows
+  - this bumps the minimum JEI version to 9.7.2.259
+  - when using JEI v10, the minimum version is 10.1.4.258
 
 ## [3.1.2] - 2022-08-09
 

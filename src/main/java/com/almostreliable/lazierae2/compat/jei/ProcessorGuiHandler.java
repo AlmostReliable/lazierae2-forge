@@ -50,6 +50,11 @@ public class ProcessorGuiHandler implements IGuiContainerHandler<ProcessorScreen
             }
 
             @Override
+            public boolean isTooltipEnabled() {
+                return false;
+            }
+
+            @Override
             public void onClick(IFocusFactory focusFactory, IRecipesGui recipesGui) {
                 List<RecipeType<?>> list = new ArrayList<>();
                 for (var recipeType : recipeTypes) {
