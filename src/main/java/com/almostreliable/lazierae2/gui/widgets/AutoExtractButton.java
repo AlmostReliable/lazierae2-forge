@@ -19,9 +19,7 @@ public class AutoExtractButton extends ToggleButton {
     private static final int BUTTON_SIZE = 18;
     private final Tooltip tooltip = setupTooltip();
 
-    public AutoExtractButton(
-        ProcessorScreen screen, BooleanSupplier pressed
-    ) {
+    public AutoExtractButton(ProcessorScreen screen, BooleanSupplier pressed) {
         super(screen, POS_X, POS_Y, BUTTON_SIZE, BUTTON_SIZE, TEXTURE_ID, pressed);
     }
 

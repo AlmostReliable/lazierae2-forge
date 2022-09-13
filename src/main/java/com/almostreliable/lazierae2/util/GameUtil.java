@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 
 public final class GameUtil {
 

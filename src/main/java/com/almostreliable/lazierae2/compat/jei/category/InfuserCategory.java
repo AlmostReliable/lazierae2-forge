@@ -14,9 +14,7 @@ public class InfuserCategory extends TripleInputCategory {
     private static final ResourceLocation UID = TextUtil.getRL(INFUSER_ID);
     public static final RecipeType<TripleInputRecipe> TYPE = new RecipeType<>(UID, TripleInputRecipe.class);
 
-    public InfuserCategory(
-        IGuiHelper guiHelper
-    ) {
+    public InfuserCategory(IGuiHelper guiHelper) {
         super(guiHelper, INFUSER_ID, Blocks.INFUSER.get());
     }
 

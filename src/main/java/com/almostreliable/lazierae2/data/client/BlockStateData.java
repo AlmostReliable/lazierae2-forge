@@ -23,14 +23,12 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.function.Function;
 
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public class BlockStateData extends BlockStateProvider {
 
-    public BlockStateData(
-        DataGenerator gen, ExistingFileHelper fileHelper
-    ) {
+    public BlockStateData(DataGenerator gen, ExistingFileHelper fileHelper) {
         super(gen, MOD_ID, fileHelper);
     }
 

@@ -13,9 +13,7 @@ public abstract class GenericScreen<M extends GenericMenu<?>> extends AbstractCo
 
     private final Collection<AbstractWidget> toRender = new ArrayList<>();
 
-    GenericScreen(
-        M menu, Inventory inventory
-    ) {
+    GenericScreen(M menu, Inventory inventory) {
         super(menu, inventory, menu.entity.getDisplayName());
     }
 

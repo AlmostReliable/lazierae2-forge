@@ -13,9 +13,7 @@ public class UpgradeSlot extends SlotItemHandler {
 
     private final ProcessorEntity entity;
 
-    public UpgradeSlot(
-        ProcessorMenu parent, IItemHandler itemHandler, int index, int pX, int pY
-    ) {
+    public UpgradeSlot(ProcessorMenu parent, IItemHandler itemHandler, int index, int pX, int pY) {
         super(itemHandler, index, pX, pY);
         entity = parent.entity;
     }

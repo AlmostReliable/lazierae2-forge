@@ -55,7 +55,7 @@ jobs:
         run: diff -q ./src/generated/cache_old/cache ./src/generated/resources/.cache/cache
 
       - name: Assemble the jar
-        run: ./gradlew jar --no-daemon
+        run: ./gradlew assemble
 
       - name: Collect version information
         run: |
@@ -69,7 +69,6 @@ jobs:
           set_var MINECRAFT_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f2)
           set_var MOD_VERSION $(echo ${JAR_FILE%.*} | cut -d- -f3)
           set_var RELEASE_TYPE "$(echo ${GITHUB_REF##*/} | cut -d- -f3)"
-          set_var PRE_RELEASE "$([[ -z $RELEASE_TYPE ]] && echo false || echo true)"
           set_var RELEASE_TYPE "$([[ -z $RELEASE_TYPE ]] && echo release || echo $RELEASE_TYPE)"
 
       - name: Install changelog parser
@@ -79,7 +78,7 @@ jobs:
         run: parse-changelog CHANGELOG.md ${{ env.MOD_VERSION }} > changes.md
 
       - name: Release
-        uses: Kir-Antipov/mc-publish@v3.1
+        uses: Kir-Antipov/mc-publish@v3.2
         with:
           curseforge-id: 489843
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
@@ -96,7 +95,7 @@ jobs:
           version: ${{ env.MINECRAFT_VERSION }}-${{ env.MOD_VERSION }}
           version-type: ${{ env.RELEASE_TYPE }}
           version-resolver: exact
-          java: 17
+          java: ${{ env.JAVA_VERSION }}
 
           changelog-file: changes.md
           curseforge-dependencies: |

@@ -14,9 +14,7 @@ public class GrinderCategory extends SingleInputCategory {
     private static final ResourceLocation UID = TextUtil.getRL(GRINDER_ID);
     public static final RecipeType<SingleInputRecipe> TYPE = new RecipeType<>(UID, SingleInputRecipe.class);
 
-    public GrinderCategory(
-        IGuiHelper guiHelper
-    ) {
+    public GrinderCategory(IGuiHelper guiHelper) {
         super(guiHelper, GRINDER_ID, Blocks.GRINDER.get());
     }
 

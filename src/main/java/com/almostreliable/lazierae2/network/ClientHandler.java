@@ -23,7 +23,7 @@ public final class ClientHandler {
     }
 
     private static void handleMenuSyncPacket(MenuSyncPacket packet, LocalPlayer player) {
-        if (player.containerMenu instanceof GenericMenu menu && packet.getMenuId() == menu.containerId) {
+        if (player.containerMenu instanceof GenericMenu<?> menu && packet.getMenuId() == menu.containerId) {
             menu.receiveServerData(packet.getData());
         }
     }

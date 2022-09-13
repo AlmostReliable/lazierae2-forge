@@ -7,8 +7,8 @@ import net.minecraftforge.fml.event.config.ModConfigEvent.Reloading;
 
 import java.util.List;
 
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 import static com.almostreliable.lazierae2.core.Constants.Blocks.*;
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public final class Config {

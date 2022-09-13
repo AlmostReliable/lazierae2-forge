@@ -21,9 +21,7 @@ public class RequesterScreen extends GenericScreen<RequesterMenu> {
     public final RequestControl requestControl;
 
     @SuppressWarnings({"AssignmentToSuperclassField", "ThisEscapedInObjectConstruction"})
-    public RequesterScreen(
-        RequesterMenu menu, Inventory inventory, Component ignoredTitle
-    ) {
+    public RequesterScreen(RequesterMenu menu, Inventory inventory, Component ignoredTitle) {
         super(menu, inventory);
         imageWidth = TEXTURE_WIDTH;
         imageHeight = TEXTURE_HEIGHT;

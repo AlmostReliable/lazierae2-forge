@@ -28,7 +28,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 import static appeng.init.client.InitItemModelsProperties.GROWTH_PREDICATE_ID;
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 
 @SuppressWarnings("UtilityClassWithPublicConstructor")
 @Mod(MOD_ID)
@@ -57,7 +57,11 @@ public final class LazierAE2 {
             Blocks.AGGREGATOR.get().asItem(),
             ProcessorType.AGGREGATOR.getUpgradeSlots()
         );
-        Upgrades.add(AEItems.SPEED_CARD.asItem(), Blocks.ETCHER.get().asItem(), ProcessorType.ETCHER.getUpgradeSlots());
+        Upgrades.add(
+            AEItems.SPEED_CARD.asItem(),
+            Blocks.ETCHER.get().asItem(),
+            ProcessorType.ETCHER.getUpgradeSlots()
+        );
         Upgrades.add(
             AEItems.SPEED_CARD.asItem(),
             Blocks.GRINDER.get().asItem(),

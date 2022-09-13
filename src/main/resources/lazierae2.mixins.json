@@ -2,7 +2,6 @@
   "required": true,
   "package": "com.almostreliable.lazierae2.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "lazierae2.refmap.json",
   "mixins": [
     "SingularityEntityMixin",
     "UpgradeCardItemMixin"
@@ -10,5 +9,5 @@
   "client": [
     "AbstractContainerScreenMixin"
   ],
-  "minVersion": "0.8.4"
+  "minVersion": "0.8.5"
 }

@@ -44,9 +44,7 @@ public final class GuiUtil {
      * @param scale  the scale of the text
      * @param color  the color of the text as decimal
      */
-    public static void renderText(
-        PoseStack stack, String text, ANCHOR anchor, int x, int y, float scale, int color
-    ) {
+    public static void renderText(PoseStack stack, String text, ANCHOR anchor, int x, int y, float scale, int color) {
         stack.pushPose();
         stack.translate(x, y, 0);
         stack.scale(scale, scale, 1);
@@ -226,9 +224,7 @@ public final class GuiUtil {
             ));
         }
 
-        public Tooltip lineEnum(
-            TRANSLATE_TYPE type, ChatFormatting color, Enum<?> e
-        ) {
+        public Tooltip lineEnum(TRANSLATE_TYPE type, ChatFormatting color, Enum<?> e) {
             return component(TextUtil.translate(type, e.toString().toLowerCase(), color));
         }
 

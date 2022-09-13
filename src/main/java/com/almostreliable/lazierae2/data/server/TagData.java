@@ -13,7 +13,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
 
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 import static net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE;
 
 public final class TagData {

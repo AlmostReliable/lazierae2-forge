@@ -12,7 +12,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 
 public final class TextUtil {
 
@@ -111,6 +111,17 @@ public final class TextUtil {
     }
 
     /**
+     * Colors a given String with the given color.
+     *
+     * @param input the string to color
+     * @param color an optional color
+     * @return the colorized string
+     */
+    static TextComponent colorize(String input, ChatFormatting color) {
+        return (TextComponent) new TextComponent(input).withStyle(color);
+    }
+
+    /**
      * Formats a number into a correctly rounded string with the given number of decimal places.
      * <p>
      * The method uses the locale of the current user and formats the number accordingly.
@@ -120,22 +131,11 @@ public final class TextUtil {
      * @param maxPlaces the maximum amount of decimal places
      * @return the formatted number
      */
-    public static String formatNumber(Number number, int minPlaces, int maxPlaces) {
+    private static String formatNumber(Number number, int minPlaces, int maxPlaces) {
         DF.setRoundingMode(RoundingMode.HALF_UP);
         DF.setMinimumFractionDigits(minPlaces);
         DF.setMaximumFractionDigits(maxPlaces);
         return DF.format(number);
-    }
-
-    /**
-     * Colors a given String with the given color.
-     *
-     * @param input the string to color
-     * @param color an optional color
-     * @return the colorized string
-     */
-    static TextComponent colorize(String input, ChatFormatting color) {
-        return (TextComponent) new TextComponent(input).withStyle(color);
     }
 
     /**

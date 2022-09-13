@@ -14,9 +14,7 @@ public class EtcherCategory extends TripleInputCategory {
     private static final ResourceLocation UID = TextUtil.getRL(ETCHER_ID);
     public static final RecipeType<TripleInputRecipe> TYPE = new RecipeType<>(UID, TripleInputRecipe.class);
 
-    public EtcherCategory(
-        IGuiHelper guiHelper
-    ) {
+    public EtcherCategory(IGuiHelper guiHelper) {
         super(guiHelper, ETCHER_ID, Blocks.ETCHER.get());
     }
 

@@ -83,13 +83,13 @@
   "tooltip.lazierae2.upgrade.additional.value": "%s",
   "tooltip.lazierae2.upgrade.none": "未安装任何升级！",
   "tooltip.lazierae2.upgrade.description": "允许您以更高的能耗为代价升级处理器的处理速度和能量存储。要安装升级，请将加速卡放入此插槽。",
-  
+
   "tooltip.lazierae2.item.upgrades.key": "已安装的升级",
   "tooltip.lazierae2.item.upgrades.value": "%d / %d",
   "tooltip.lazierae2.item.energy.key": "储存能量",
   "tooltip.lazierae2.item.energy.value": "%s",
   "tooltip.lazierae2.item.side_config": "> 处理器已存储侧面配置",
-  
+
   "tooltip.lazierae2.count.title": "请求数量",
   "tooltip.lazierae2.count.description": "数量定义了在请求器开始请求新合成之前应该保留多少物品。",
   "tooltip.lazierae2.batch.title": "请求次数",
@@ -125,4 +125,4 @@
   "request_status.lazierae2.idle": "空闲中",
   "request_status.lazierae2.link": "合成中",
   "request_status.lazierae2.export": "输出中"
- }
+}

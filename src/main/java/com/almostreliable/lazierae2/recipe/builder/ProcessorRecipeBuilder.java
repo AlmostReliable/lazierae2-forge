@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 import static com.almostreliable.lazierae2.util.TextUtil.f;
 
 public final class ProcessorRecipeBuilder {

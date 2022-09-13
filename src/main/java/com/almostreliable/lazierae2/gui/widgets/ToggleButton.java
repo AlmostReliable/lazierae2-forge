@@ -18,9 +18,7 @@ public abstract class ToggleButton extends GenericButton {
     }
 
     @Override
-    public void renderButton(
-        PoseStack stack, int mX, int mY, float partial
-    ) {
+    public void renderButton(PoseStack stack, int mX, int mY, float partial) {
         RenderSystem.setShaderTexture(0, texture);
         blit(stack, x, y, 0, pressed.getAsBoolean() ? height : 0, width, height, width, height * 2);
     }

@@ -32,9 +32,7 @@ public class ProcessorGuiHandler implements IGuiContainerHandler<ProcessorScreen
     }
 
     @Override
-    public Collection<IGuiClickableArea> getGuiClickableAreas(
-        ProcessorScreen screen, double mX, double mY
-    ) {
+    public Collection<IGuiClickableArea> getGuiClickableAreas(ProcessorScreen screen, double mX, double mY) {
         return Collections.singleton(createClickArea(screen, x, y, width, height, recipeTypes));
     }
 
@@ -49,6 +47,11 @@ public class ProcessorGuiHandler implements IGuiContainerHandler<ProcessorScreen
             @Override
             public Rect2i getArea() {
                 return clickableArea;
+            }
+
+            @Override
+            public boolean isTooltipEnabled() {
+                return false;
             }
 
             @Override
