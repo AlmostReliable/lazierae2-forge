@@ -39,10 +39,10 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 import static com.almostreliable.lazierae2.core.Constants.Blocks.PROCESSOR_ID;
 import static com.almostreliable.lazierae2.core.Constants.Blocks.REQUESTER_ID;
 import static com.almostreliable.lazierae2.core.Constants.Items.*;
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
 
 public final class Setup {
 

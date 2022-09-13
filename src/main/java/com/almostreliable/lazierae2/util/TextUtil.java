@@ -12,7 +12,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 
 public final class TextUtil {
 

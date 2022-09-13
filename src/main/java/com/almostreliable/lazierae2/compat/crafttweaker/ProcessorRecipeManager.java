@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType.Method;
 import org.openzen.zencode.java.ZenCodeType.Name;
 
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @ZenRegister

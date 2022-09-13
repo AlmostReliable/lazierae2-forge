@@ -3,7 +3,6 @@ package com.almostreliable.lazierae2.core;
 @SuppressWarnings({"StaticMethodOnlyUsedInOneClass", "WeakerAccess"})
 public final class Constants {
 
-    public static final String MOD_ID = "lazierae2";
     public static final String NETWORK_ID = "network";
 
     private Constants() {}

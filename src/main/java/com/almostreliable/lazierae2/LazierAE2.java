@@ -26,7 +26,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 import static appeng.init.client.InitItemModelsProperties.GROWTH_PREDICATE_ID;
-import static com.almostreliable.lazierae2.core.Constants.MOD_ID;
+import static com.almostreliable.lazierae2.BuildConfig.MOD_ID;
 
 @SuppressWarnings("UtilityClassWithPublicConstructor")
 @Mod(MOD_ID)
