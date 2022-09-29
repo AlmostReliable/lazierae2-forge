@@ -16,6 +16,7 @@ val forgeVersion: String by project
 val forgeVersionRange: String by project
 val mappingsChannel: String by project
 val mappingsVersion: String by project
+val recipeViewer: String by project
 val license: String by project
 val githubUser: String by project
 val githubRepo: String by project
@@ -80,20 +81,22 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
+    forge("net.minecraftforge:forge:$mcVersion-$forgeVersion")
     mappings(loom.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:$mappingsChannel-$mcVersion:$mappingsVersion@zip")
     })
-    forge("net.minecraftforge:forge:$mcVersion-$forgeVersion")
 
     modCompileOnly(modLocalRuntime("appeng:appliedenergistics2:$ae2Version")!!)
+    modCompileOnly(modLocalRuntime("com.blamejared.crafttweaker:CraftTweaker-forge-$mcVersion:$crtVersion")!!)
+    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubeVersion")!!)
 
     modCompileOnlyApi("mezz.jei:jei-$mcVersion:$jeiVersion:api")
-    modLocalRuntime("mezz.jei:jei-$mcVersion:$jeiVersion")
-
-    modCompileOnly(modLocalRuntime("com.blamejared.crafttweaker:CraftTweaker-forge-$mcVersion:$crtVersion")!!)
-
-    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubeVersion")!!)
+    when (recipeViewer) {
+        "jei" -> modLocalRuntime("mezz.jei:jei-$mcVersion:$jeiVersion")
+        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:8+")
+        else -> throw GradleException("Invalid recipeViewer value: $recipeViewer")
+    }
 
     fileTree("extra-mods-$mcVersion") { include("**/*.jar") }
         .forEach { f ->

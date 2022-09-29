@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
+- added Mekanism compat recipes
+  - crushing Resonating Crystal to Resonating Dust
+  - enriching Resonating Seed to Resonating Crystal
+- fixed crash when an auto extract target is removed
 - JEI recipe pages are now viewable by clicking the progress arrows
   - this bumps the minimum JEI version to 9.7.2.259
   - when using JEI v10, the minimum version is 10.1.4.258

@@ -316,6 +316,7 @@ public class ProcessorEntity extends GenericEntity {
         });
 
         for (var target : autoExtractCache.entrySet()) {
+            if (target.getValue() == null) continue;
             var outputEmpty = new AtomicBoolean(false);
             target.getValue().ifPresent(targetInv -> {
                 var stack = inventory.getStackInOutput();
