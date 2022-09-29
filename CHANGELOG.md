@@ -5,14 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
-## [Unreleased]
-- added Mekanism compat recipes
+## [3.1.3] - 2022-08-09
+
+### Added
+- Mekanism compat recipes
   - crushing Resonating Crystal to Resonating Dust
   - enriching Resonating Seed to Resonating Crystal
-- fixed crash when an auto extract target is removed
+
+### Changed
 - JEI recipe pages are now viewable by clicking the progress arrows
   - this bumps the minimum JEI version to 9.7.2.259
   - when using JEI v10, the minimum version is 10.1.4.258
+
+### Fixed
+- crash when an auto extract target is removed
 
 ## [3.1.2] - 2022-08-09
 
@@ -130,7 +136,8 @@ The following changes are notable changes from the 1.16 version.
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.1.2...HEAD
+[unreleased]: https://github.com/AlmostReliable/lazierae2-forge/compare/v1.18-3.1.3...HEAD
+[3.1.3]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.1.2..v1.18-3.1.3
 [3.1.2]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.1.1..v1.18-3.1.2
 [3.1.1]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.1.0..v1.18-3.1.1
 [3.1.0]: https://github.com/AlmostReliable/lazierae2-forge/releases/tag/v1.18-3.0.2-beta..v1.18-3.1.0
