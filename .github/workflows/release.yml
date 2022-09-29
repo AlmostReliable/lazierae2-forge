@@ -38,21 +38,21 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Check existing DataGen
-        run: |
-          test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
-          echo "cache_exists=$?" >> $GITHUB_ENV
-
-      - name: Save old DataGen state
-        if: ${{ env.cache_exists }}
-        run: mv ./src/generated/resources/.cache ./src/generated/cache_old
-
-      - name: Generate assets
-        run: ./gradlew runData --stacktrace
-
-      - name: Validate assets
-        if: ${{ env.cache_exists }}
-        run: diff -q ./src/generated/cache_old/cache ./src/generated/resources/.cache/cache
+      #      - name: Check existing DataGen
+      #        run: |
+      #          test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
+      #          echo "cache_exists=$?" >> $GITHUB_ENV
+      #
+      #      - name: Save old DataGen state
+      #        if: ${{ env.cache_exists }}
+      #        run: mv ./src/generated/resources/.cache ./src/generated/cache_old
+      #
+      #      - name: Generate assets
+      #        run: ./gradlew runData --stacktrace
+      #
+      #      - name: Validate assets
+      #        if: ${{ env.cache_exists }}
+      #        run: diff -q ./src/generated/cache_old/cache ./src/generated/resources/.cache/cache
 
       - name: Assemble the jar
         run: ./gradlew assemble
