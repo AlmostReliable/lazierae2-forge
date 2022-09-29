@@ -8,4 +8,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "LazierAE2"
+val modName: String by extra
+val mcVersion: String by extra
+rootProject.name = "$modName-$mcVersion"
