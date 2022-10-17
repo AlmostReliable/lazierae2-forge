@@ -381,22 +381,8 @@ public class RecipeData extends RecipeProvider {
     }
 
     private void compatRecipes(Consumer<? super FinishedRecipe> c) {
-        compatEtcherRecipes(c);
         compatGrinderRecipes(c);
         compatInfuserRecipes(c);
-    }
-
-    private void compatEtcherRecipes(Consumer<? super FinishedRecipe> c) {
-        /*
-            MEGACells
-         */
-        ProcessorRecipeBuilder.etcher("megacells:bulk_cell_component")
-            .input("megacells:cell_component_1m")
-            .input(AEItems.SINGULARITY)
-            .input(AEItems.SPATIAL_2_CELL_COMPONENT)
-            .processingTime(60)
-            .energyCost(1_600)
-            .build(c);
     }
 
     private void compatGrinderRecipes(Consumer<? super FinishedRecipe> c) {
