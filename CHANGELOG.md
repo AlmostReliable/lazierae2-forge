@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
+## Unreleased
+
+### Changed
+- minimum required AE2 version is now 11.6.2
+
+### Fixed
+- recipe for in-world crafting of Resonating Dust not showing ([#29], [#30])
+- all mod recipes disappearing after a reload ([#28])
+
+<!-- Links -->
+[#28]: https://github.com/AlmostReliable/lazierae2-forge/issues/28
+[#29]: https://github.com/AlmostReliable/lazierae2-forge/issues/29
+[#30]: https://github.com/AlmostReliable/lazierae2-forge/issues/30
+
 ## [3.1.4] - 2022-10-14
 
 ### Removed
