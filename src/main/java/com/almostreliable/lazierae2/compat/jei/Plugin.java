@@ -95,7 +95,7 @@ public class Plugin implements IModPlugin {
             validateRecipes(rm.getAllRecipesFor(ProcessorType.INFUSER), TripleInputRecipe.class)
         );
 
-        var inWaterRecipes = new ArrayList<>();
+        var inWaterRecipes = new ArrayList<ThrowingInWaterDisplay>();
         if (AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
             inWaterRecipes.add(new ThrowingInWaterDisplay(
                 List.of(Ingredient.of(Items.RESONATING_SEED.get())),
@@ -110,7 +110,7 @@ public class Plugin implements IModPlugin {
                 Ingredient.of(AEItems.ENDER_DUST)
             ), new ItemStack(Items.RESONATING_DUST.get(), 2), false));
         }
-        r.addRecipes(new RecipeType<>(ThrowingInWaterCategory.ID, ThrowingInWaterDisplay.class), inWaterRecipes);
+        r.addRecipes(ThrowingInWaterCategory.RECIPE_TYPE, inWaterRecipes);
 
         registerInfoPages(r);
     }
