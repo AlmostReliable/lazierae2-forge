@@ -51,8 +51,8 @@ This project is licensed under the [LGPL-3.0 license][license].
 [version_badge]: https://img.shields.io/github/v/release/AlmostReliable/lazierae2-forge?include_prereleases&style=flat-square
 [version_link]: https://github.com/AlmostReliable/lazierae2-forge/releases/latest
 [total_downloads_cf_badge]: http://cf.way2muchnoise.eu/full_489843.svg?badge_style=flat
-[total_downloads_mr_badge]: https://img.shields.io/badge/dynamic/json?style=flat-square&color=5da545&label=modrinth&query=downloads&url=https://api.modrinth.com/api/v1/mod/7mmL0PW9
-[workflow_status_badge]: https://img.shields.io/github/workflow/status/AlmostReliable/lazierae2-forge/Build?style=flat-square
+[total_downloads_mr_badge]: https://img.shields.io/modrinth/dt/7mmL0PW9?color=5da545&label=Modrinth&style=flat-square
+[workflow_status_badge]: https://img.shields.io/github/actions/workflow/status/AlmostReliable/lazierae2-forge/build.yml?branch=1.18&style=flat-square
 [workflow_status_link]: https://github.com/AlmostReliable/lazierae2-forge/actions
 [license_badge]: https://img.shields.io/github/license/AlmostReliable/lazierae2-forge?style=flat-square
 
