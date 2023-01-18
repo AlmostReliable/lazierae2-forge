@@ -87,7 +87,7 @@ dependencies {
         parchment("org.parchmentmc.data:$mappingsChannel-$mcVersion:$mappingsVersion@zip")
     })
 
-    modCompileOnly(modLocalRuntime("appeng:appliedenergistics2:$ae2Version")!!)
+    modCompileOnly(modLocalRuntime("appeng:appliedenergistics2-forge:$ae2Version")!!)
     modCompileOnly(modLocalRuntime("com.blamejared.crafttweaker:CraftTweaker-forge-$mcVersion:$crtVersion")!!)
     modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubeVersion")!!)
 
