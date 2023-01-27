@@ -184,7 +184,7 @@ public final class MultiBlock {
                 && (currentPos.getZ() == startPosition.getZ() || currentPos.getZ() == endPosition.getZ());
         }
 
-        private boolean isEdge(BlockPos currentPos) {
+        private boolean isEdge(BlockPos currentPos) { // TODO: check N/A solution
             var iTest = currentPos.getX() == Math.min(
                 startPosition.getX(),
                 endPosition.getX()
