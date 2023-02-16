@@ -14,7 +14,6 @@ buildscript {
 
 plugins {
     id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "org.sonarqube" version "3.3"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -22,21 +21,12 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-sonarqube {
-    properties {
-        property "sonar.projectKey", "AlmostReliable_lazierae2-forge"
-        property "sonar.organization", "almostreliable"
-        property "sonar.host.url", "https://sonarcloud.io"
-    }
-}
-
 version = "${minecraft_version}-${mod_version}"
 group = "${mod_base_package}.${mod_id}"
 archivesBaseName = mod_id
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
     mappings channel: mappings_channel, version: mappings_version
 
@@ -116,13 +106,6 @@ repositories {
         name 'BlameJared' // CraftTweaker
         url 'https://maven.blamejared.com'
     }
-    maven {
-        name 'CurseMaven'
-        url 'https://cursemaven.com'
-        content {
-            includeGroup 'curse.maven'
-        }
-    }
 }
 
 dependencies {
@@ -135,9 +118,6 @@ dependencies {
 
     // runtime dependencies
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}") // JEI - in sync with API version
-    runtimeOnly fg.deobf("curse.maven:top-245211:3665853") // TOP - 3.1.5
-    runtimeOnly fg.deobf("curse.maven:ding-231275:3222705") // Ding - 1.3.0
-    runtimeOnly fg.deobf("curse.maven:solar-381462:3569092") // Solar Energy - 0.4.0.3
 }
 
 // This block of code expands all the gradle properties in the specified resource targets.
@@ -152,12 +132,11 @@ def replaceProperties = [mod_id                 : mod_id,
                          mod_credits            : mod_credits,
                          minecraft_version_range: minecraft_version_range,
                          forge_version_range    : forge_version_range,
-                         loader_version_range   : loader_version_range,
+                         appeng_version         : appeng_version,
+                         jei_version            : jei_version,
+                         crt_version            : crt_version,
                          github_user            : github_user,
-                         github_repo            : github_repo,
-                         appeng_version_range   : appeng_version_range,
-                         jei_version_range      : jei_version_range,
-                         crt_version_range      : crt_version_range]
+                         github_repo            : github_repo]
 processResources {
     inputs.properties replaceProperties
     replaceProperties.put 'project', project
@@ -188,37 +167,6 @@ jar {
                     "Implementation-Version"  : mod_version,
                     "Implementation-Vendor"   : mod_authors,
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
-    }
-}
-
-curseforge {
-    if (System.getenv('CF_API_KEY') != null) {
-        // GitHub actions
-        apiKey = System.getenv('CF_API_KEY')
-    } else {
-        // error prevention
-        apiKey = "none"
-    }
-    def RELEASE_TYPE
-    if (System.getenv('RELEASE_TYPE') == null || System.getenv('RELEASE_TYPE') == '') {
-        RELEASE_TYPE = "release"
-    } else {
-        RELEASE_TYPE = System.getenv('RELEASE_TYPE')
-    }
-    project {
-        id = project_id
-        changelogType = 'markdown'
-        changelog = "The whole changelog can be found [here](https://github.com/${github_user}/${github_repo}/blob/${github_branch}/CHANGELOG.md)."
-        releaseType = RELEASE_TYPE
-        addGameVersion minecraft_version
-
-        mainArtifact(jar) {
-            if (RELEASE_TYPE == 'release') {
-                displayName = "${mod_name}-${minecraft_version}-${mod_version}"
-            } else {
-                displayName = "${mod_name}-${minecraft_version}-${mod_version}-${RELEASE_TYPE}"
-            }
-        }
     }
 }
 

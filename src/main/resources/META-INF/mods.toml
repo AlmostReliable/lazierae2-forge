@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="${loader_version_range}"
+loaderVersion="${forge_version_range}"
 issueTrackerURL="https://github.com/${github_user}/${github_repo}/issues"
 license="MIT"
 
@@ -28,20 +28,20 @@ side="BOTH"
 [[dependencies.${mod_id}]]
 modId="appliedenergistics2"
 mandatory=true
-versionRange="${appeng_version_range}"
+versionRange="[${appeng_version},)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="jei"
 mandatory=false
-versionRange="${jei_version_range}"
+versionRange="[${jei_version},)"
 ordering="AFTER"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="crafttweaker"
 mandatory=false
-versionRange="${crt_version_range}"
+versionRange="[${crt_version},)"
 ordering="AFTER"
 side="BOTH"
