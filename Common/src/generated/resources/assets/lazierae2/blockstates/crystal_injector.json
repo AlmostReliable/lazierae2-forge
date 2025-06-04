@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "lazierae2:block/crystal_injector"
+    },
+    "active=true": {
+      "model": "lazierae2:block/crystal_injector_active"
+    }
+  }
+}

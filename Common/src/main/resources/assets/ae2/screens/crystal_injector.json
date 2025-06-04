@@ -1,0 +1,19 @@
+{
+    "$schema": "schema.json",
+    "includes": ["common/common.json", "common/player_inventory.json"],
+    "background": {
+        "texture": "guis/crystal_injector.png",
+        "srcRect": [0, 0, 176, 154]
+    },
+    "text": {
+        "dialog_title": {
+            "text": {
+                "translate": "gui.lazierae2.crystal_injector"
+            },
+            "position": {
+                "left": 8,
+                "top": 6
+            }
+        }
+    }
+}

@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "lazierae2:block/large_resonating_bud",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "lazierae2:block/large_resonating_bud",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "lazierae2:block/large_resonating_bud",
+      "x": 90
+    },
+    "facing=south": {
+      "model": "lazierae2:block/large_resonating_bud",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "lazierae2:block/large_resonating_bud"
+    },
+    "facing=west": {
+      "model": "lazierae2:block/large_resonating_bud",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

@@ -1,46 +1,15 @@
 ### ForgeGradle ###
-run/
+**/run/
 
 ### Intellij ###
 .idea/
+**/out/
 *.iml
 *.ipr
 
-# CMake
-cmake-build-*/
-
-# File-based project format
-*.iws
-
-# IntelliJ
-out/
-
-# mpeltonen/sbt-idea plugin
-.idea_modules/
-
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-
 ### Java ###
-# Compiled class file
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -49,9 +18,6 @@ fabric.properties
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -59,28 +25,13 @@ hs_err_pid*
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
-
-# Local History for Visual Studio Code
 .history/
 
 ### Gradle ###
-.gradle
-build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+**/.gradle/
+**/build/
 !gradle-wrapper.jar
 
-# Cache of project
-.gradletasknamecache
-
-### Gradle Patch ###
-**/build/
-
-# Eclipse Gradle plugin generated files
-# Eclipse Core
-.project
-# JDT-specific (Eclipse Java Development Tools)
-.classpath
+### Project ###
+**/extra-mods-*/
+**/.cache/

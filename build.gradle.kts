@@ -1,176 +1,280 @@
 @file:Suppress("UnstableApiUsage")
 
-import java.text.SimpleDateFormat
-import java.util.*
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.fabricmc.loom.api.LoomGradleExtensionAPI
+import net.fabricmc.loom.task.RemapJarTask
 
+val license: String by project
+val minecraftVersion: String by project
+val modVersion: String by project
 val modId: String by project
 val modName: String by project
-val modVersion: String by project
-val modBase: String by project
 val modAuthor: String by project
 val modDescription: String by project
-val modCredits: String by project
-val mcVersion: String by project
-val mcVersionRange: String by project
-val forgeVersion: String by project
-val forgeVersionRange: String by project
-val mappingsChannel: String by project
-val mappingsVersion: String by project
-val recipeViewer: String by project
-val license: String by project
-val githubUser: String by project
-val githubRepo: String by project
-val ae2Version: String by project
-val ae2VersionRange: String by project
+val parchmentVersion: String by project
+val findBugsVersion: String by project
+val almostLibVersion: String by project
+val aeVersion: String by project
 val jeiVersion: String by project
-val jeiVersionRange: String by project
-val crtVersion: String by project
-val crtVersionRange: String by project
-val kubeVersion: String by project
-val kubeVersionRange: String by project
+val reiVersion: String by project
+val fabricApiVersion: String by project
+val forgeVersion: String by project
+val githubRepo: String by project
+val githubUser: String by project
 
 plugins {
-    id("dev.architectury.loom") version "0.12.0-SNAPSHOT"
-    id("com.github.gmazzo.buildconfig") version "3.0.3"
+    id("architectury-plugin") version "3.4.+"
+    id("dev.architectury.loom") version "1.3.+" apply false
+    id("io.github.juuxel.loom-vineflower") version "1.11.0" apply false
+    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     java
-    idea
-    eclipse
+    `maven-publish`
 }
 
-base {
-    version = "$mcVersion-$modVersion"
-    group = "$modBase.$modId"
-    archivesName.set(modId)
+architectury {
+    minecraft = minecraftVersion
 }
 
-loom {
-    silentMojangMappingsLicense()
+/**
+ * configurations for all projects including the root project
+ */
+allprojects {
+    apply(plugin = "java")
 
-    forge {
-        mixinConfig("$modId.mixins.json")
-        dataGen {
-            mod(modId)
+    tasks {
+        withType<JavaCompile> {
+            options.encoding = "UTF-8"
+            options.release.set(17)
+        }
+
+        withType<GenerateModuleMetadata> {
+            enabled = false
         }
     }
 
-    launches {
-        named("client") {
-            // property("fabric.log.level", "debug")
-            arg("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
-        }
-        named("server") {
-            // property("fabric.log.level", "debug")
-            arg("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
-        }
-        named("data") {
-            arg("--existing", file("src/main/resources").absolutePath)
-        }
+    extensions.configure<JavaPluginExtension> {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+        withSourcesJar()
     }
 }
 
-repositories {
-    maven("https://maven.parchmentmc.org/")
-    maven("https://modmaven.dev/")
-    maven("https://maven.blamejared.com/")
-    maven("https://maven.saps.dev/minecraft/")
-    flatDir {
-        name = "extra-mods"
-        dir(file("extra-mods-$mcVersion"))
-    }
-}
+/**
+ * configurations for all projects except the root project
+ */
+subprojects {
+    apply(plugin = "architectury-plugin")
+    apply(plugin = "dev.architectury.loom")
+    apply(plugin = "io.github.juuxel.loom-vineflower")
+    apply(plugin = "maven-publish")
 
-dependencies {
-    minecraft("com.mojang:minecraft:$mcVersion")
-    forge("net.minecraftforge:forge:$mcVersion-$forgeVersion")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:$mappingsChannel-$mcVersion:$mappingsVersion@zip")
-    })
-
-    modCompileOnly(modLocalRuntime("appeng:appliedenergistics2-forge:$ae2Version")!!)
-    modCompileOnly(modLocalRuntime("com.blamejared.crafttweaker:CraftTweaker-forge-$mcVersion:$crtVersion")!!)
-    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubeVersion")!!)
-
-    modCompileOnlyApi("mezz.jei:jei-$mcVersion:$jeiVersion:api")
-    when (recipeViewer) {
-        "jei" -> modLocalRuntime("mezz.jei:jei-$mcVersion:$jeiVersion")
-        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:8+")
-        else -> throw GradleException("Invalid recipeViewer value: $recipeViewer")
+    base {
+        archivesName.set("$modId-${project.name.lowercase()}")
+        version = "$minecraftVersion-$modVersion"
     }
 
-    fileTree("extra-mods-$mcVersion") { include("**/*.jar") }
-        .forEach { f ->
-            val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
-            if (sepIndex == -1) {
-                throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
-            }
-            val mod = f.nameWithoutExtension.substring(0, sepIndex)
-            val version = f.nameWithoutExtension.substring(sepIndex + 1)
-            println("Extra mod $mod with version $version detected")
-            modLocalRuntime("extra-mods:$mod:$version")
+    val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
+    loom.silentMojangMappingsLicense()
+
+    repositories {
+        maven("https://maven.parchmentmc.org") // Parchment
+        maven("https://modmaven.dev/") // AE2
+        maven("https://maven.blamejared.com/") // JEI
+        maven("https://maven.shedaniel.me/") // REI
+        mavenLocal()
+    }
+
+    dependencies {
+        /**
+         * Minecraft
+         * Kotlin accessor methods are not generated in this gradle
+         * they can be accessed through quoted names instead
+         */
+        "minecraft"("com.mojang:minecraft:$minecraftVersion")
+        "mappings"(loom.layered {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-$minecraftVersion:$parchmentVersion@zip")
+        })
+
+        /**
+         * Almost Lib dependency
+         */
+        val alVersion = if (project.findProperty("almostLibLocal") == "true") "$almostLibVersion+" else almostLibVersion
+        "modApi"("com.almostreliable.mods:almostlib-${project.name.lowercase()}:$minecraftVersion-$alVersion") {
+            isChanging = true
         }
-}
 
-tasks {
-    withType<JavaCompile> {
-        options.encoding = "UTF-8"
-        options.release.set(17)
+        /**
+         * project dependencies
+         */
+        implementation("com.google.code.findbugs:jsr305:$findBugsVersion") // javax annotations
     }
-    withType<GenerateModuleMetadata> {
-        enabled = false
-    }
-    jar {
-        manifest {
-            attributes(
-                "Specification-Title" to modName,
-                "Specification-Vendor" to modAuthor,
-                "Specification-Version" to "1",
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to modVersion,
-                "Implementation-Vendor" to modAuthor,
-                "Implementation-Timestamp" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(Date()),
-                "Timestamp" to System.currentTimeMillis(),
-                "Built-On-Java" to "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})",
-                "Build-On-Minecraft" to mcVersion
+
+    tasks {
+        /**
+         * resource processing for defined targets
+         * will replace `${key}` with the specified values from the map below
+         */
+        processResources {
+            val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")
+
+            val replaceProperties = mapOf(
+                "license" to license,
+                "minecraftVersion" to minecraftVersion,
+                "version" to project.version as String,
+                "modId" to modId,
+                "modName" to modName,
+                "modAuthor" to modAuthor,
+                "modDescription" to modDescription,
+                "aeVersion" to aeVersion,
+                "jeiVersion" to jeiVersion,
+                "reiVersion" to reiVersion,
+                "fabricApiVersion" to fabricApiVersion,
+                "forgeVersion" to forgeVersion,
+                // use major version for FML only because wrong Forge version error message
+                // is way better than FML error message
+                "forgeFMLVersion" to forgeVersion.substringBefore("."),
+                "githubUser" to githubUser,
+                "githubRepo" to githubRepo
             )
+
+            println("[Process Resources] Replacing resource properties for project '${project.name}': ")
+            replaceProperties.forEach { (key, value) -> println("\t -> $key = $value") }
+
+            inputs.properties(replaceProperties)
+            filesMatching(resourceTargets) {
+                expand(replaceProperties)
+            }
         }
     }
-    processResources {
-        val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta")
-        val replaceProperties = mapOf(
-            "modId" to modId,
-            "modName" to modName,
-            "modVersion" to modVersion,
-            "modAuthor" to modAuthor,
-            "modDescription" to modDescription,
-            "modCredits" to modCredits,
-            "mcVersionRange" to mcVersionRange,
-            "forgeVersionRange" to forgeVersionRange,
-            "license" to license,
-            "githubUser" to githubUser,
-            "githubRepo" to githubRepo,
-            "ae2VersionRange" to ae2VersionRange,
-            "jeiVersionRange" to jeiVersionRange,
-            "crtVersionRange" to crtVersionRange,
-            "kubeVersionRange" to kubeVersionRange
-        )
 
-        inputs.properties(replaceProperties)
-        filesMatching(resourceTargets) {
-            expand(replaceProperties)
+    /**
+     * Maven publishing
+     */
+    publishing {
+        publications {
+            val mpm = project.properties["maven-publish-method"] as String
+            println("[Publish Task] Publishing method for project '${project.name}': $mpm")
+            register(mpm, MavenPublication::class) {
+                artifactId = base.archivesName.get()
+                from(components["java"])
+            }
         }
+
+        /**
+         * information on how to set up publishing
+         * https://docs.gradle.org/current/userguide/publishing_maven.html
+         */
+        repositories {
+            // add repositories to publish here
+        }
+    }
+
+    /**
+     * disabling the runtime transformer from Architectury
+     * if the runtime transformer should be enabled again, remove this block and
+     * add the following to the respective subproject:
+     *
+     * configurations {
+     *     "developmentFabric" { extendsFrom(configurations["common"]) }
+     *     "developmentForge" { extendsFrom(configurations["common"]) }
+     * }
+     */
+    architectury {
+        compileOnly()
     }
 }
 
-extensions.configure<JavaPluginExtension> {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-}
+/**
+ * configurations for all subprojects except the common project
+ */
+subprojects {
+    if (project.path == ":Common") {
+        return@subprojects
+    }
 
-buildConfig {
-    buildConfigField("String", "MOD_ID", "\"$modId\"")
-    buildConfigField("String", "MOD_VERSION", "\"$modVersion\"")
-    buildConfigField("String", "MOD_NAME", "\"$modName\"")
-    buildConfigField("String", "MOD_GROUP", "\"$modBase.$modId\"")
+    apply(plugin = "com.github.johnrengelman.shadow")
 
-    packageName("$modBase.$modId")
+    /**
+     * Add the generated sources to the main source set.
+     */
+    sourceSets {
+        main {
+            resources {
+                srcDir(file("src/main/generated"))
+                exclude("**/.cache")
+            }
+        }
+    }
+
+    extensions.configure<LoomGradleExtensionAPI> {
+        runs {
+            forEach {
+                val dir = "../run/${project.name.lowercase()}_${it.environment}"
+                println("[Run Config] ${project.name} '${it.name}' directory: $dir")
+                it.runDir(dir)
+                // allows DCEVM hot-swapping when using the JBR (https://github.com/JetBrains/JetBrainsRuntime)
+                it.vmArgs("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
+            }
+        }
+
+        /**
+         * "main" matches the default mod name
+         * since `compileOnly()` is being used in Architectury, the local mods for the
+         * loaders need to be set up too
+         * otherwise, they won't recognize :Common.
+         */
+        with(mods.maybeCreate("main")) {
+            fun Project.sourceSets() = extensions.getByName<SourceSetContainer>("sourceSets")
+            sourceSet(sourceSets().getByName("main"))
+            sourceSet(project(":Common").sourceSets().getByName("main"))
+        }
+    }
+
+    val common by configurations.creating
+    val shadowCommon by configurations.creating // don't use shadow from the plugin, IDEA shouldn't index this
+    configurations {
+        "compileClasspath" { extendsFrom(common) }
+        "runtimeClasspath" { extendsFrom(common) }
+    }
+
+    with(components["java"] as AdhocComponentWithVariants) {
+        withVariantsFromConfiguration(configurations["shadowRuntimeElements"]) { skip() }
+    }
+
+    tasks {
+        named<ShadowJar>("shadowJar") {
+            exclude("architectury.common.json")
+            configurations = listOf(shadowCommon)
+            archiveClassifier.set("dev-shadow")
+        }
+
+        named<RemapJarTask>("remapJar") {
+            inputFile.set(named<ShadowJar>("shadowJar").get().archiveFile)
+            dependsOn("shadowJar")
+            archiveClassifier.set(null as String?)
+            if (project.findProperty("enableAccessWidener") == "true") {
+                injectAccessWidener.set(true)
+            }
+        }
+
+        named<Jar>("jar") {
+            archiveClassifier.set("dev")
+        }
+
+        named<Jar>("sourcesJar") {
+            val commonSources = project(":Common").tasks.named<Jar>("sourcesJar")
+            dependsOn(commonSources)
+            from(commonSources.get().archiveFile.map { zipTree(it) })
+            archiveClassifier.set("sources")
+        }
+
+        /**
+         * Copy generated resources from the common project to the subprojects.
+         */
+        processResources {
+            from(project(":Common").file("src/main/generated")) {
+                exclude("**/.cache")
+            }
+        }
+    }
 }

@@ -4,10 +4,10 @@ pluginManagement {
         maven("https://maven.fabricmc.net/")
         maven("https://maven.minecraftforge.net/")
         gradlePluginPortal()
-        mavenCentral()
     }
 }
 
 val modName = extra.get("modName").toString().replace(" ", "-")
-val mcVersion: String by extra
-rootProject.name = "$modName-$mcVersion"
+val minecraftVersion: String by extra
+rootProject.name = "$modName-$minecraftVersion"
+include("Common", "Fabric", "Forge")
