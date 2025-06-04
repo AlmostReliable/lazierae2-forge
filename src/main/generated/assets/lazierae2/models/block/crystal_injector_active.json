@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "lazierae2:block/crystal_injector/bottom_active",
+    "side": "lazierae2:block/crystal_injector/side_active",
+    "top": "lazierae2:block/crystal_injector/top_active"
+  }
+}

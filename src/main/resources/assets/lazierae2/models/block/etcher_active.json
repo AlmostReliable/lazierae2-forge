@@ -1,6 +1,0 @@
-{
-  "parent": "lazierae2:block/etcher",
-  "textures": {
-    "face": "lazierae2:block/machine/etcher_active"
-  }
-}

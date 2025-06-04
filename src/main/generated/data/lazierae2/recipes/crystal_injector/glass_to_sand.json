@@ -1,0 +1,21 @@
+{
+  "type": "lazierae2:crystal_injector",
+  "block_input": {
+    "blocks": [
+      "#forge:sand"
+    ]
+  },
+  "block_output": {
+    "blocks": [
+      "minecraft:glass"
+    ]
+  },
+  "energy": 100,
+  "input": {
+    "count": 3,
+    "ingredient": {
+      "tag": "forge:ores/coal"
+    }
+  },
+  "time": 200
+}

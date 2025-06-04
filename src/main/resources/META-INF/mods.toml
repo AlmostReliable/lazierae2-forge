@@ -1,54 +1,54 @@
 modLoader = "javafml"
-loaderVersion = "${forgeVersionRange}"
+loaderVersion = "[${forgeFMLVersion},)"
 issueTrackerURL = "https://github.com/${githubUser}/${githubRepo}/issues"
 license = "${license}"
+logoFile = "logo.png"
 
 [[mods]]
 modId = "${modId}"
-version = "${modVersion}"
+version = "${version}"
 displayName = "${modName}"
-credits = "${modCredits}"
 authors = "${modAuthor}"
 description = '''${modDescription}'''
 
 [[dependencies.${modId}]]
-modId = "forge"
+modId = "minecraft"
 mandatory = true
-versionRange = "${forgeVersionRange}"
+versionRange = "[${minecraftVersion},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${modId}]]
-modId = "minecraft"
+modId = "forge"
 mandatory = true
-versionRange = "${mcVersionRange}"
+versionRange = "[${forgeVersion},)"
 ordering = "NONE"
 side = "BOTH"
+
+#[[dependencies.${modId}]]
+#modId = "almostlib"
+#mandatory = true
+#versionRange = "[${minecraftVersion}-${almostLibVersion},)"
+#ordering = "AFTER"
+#side = "BOTH"
 
 [[dependencies.${modId}]]
 modId = "ae2"
 mandatory = true
-versionRange = "${ae2VersionRange}"
+versionRange = "[${aeVersion},)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${modId}]]
 modId = "jei"
 mandatory = false
-versionRange = "${jeiVersionRange}"
+versionRange = "[${jeiVersion},)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${modId}]]
-modId = "crafttweaker"
+modId = "roughlyenoughitems"
 mandatory = false
-versionRange = "${crtVersionRange}"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${modId}]]
-modId = "kubejs"
-mandatory = false
-versionRange = "${kubeVersionRange}"
+versionRange = "[${reiVersion},)"
 ordering = "AFTER"
 side = "BOTH"

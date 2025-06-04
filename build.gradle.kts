@@ -1,164 +1,154 @@
 @file:Suppress("UnstableApiUsage")
 
-import java.text.SimpleDateFormat
-import java.util.*
-
+val license: String by project
+val minecraftVersion: String by project
+val modVersion: String by project
+val modPackage: String by project
 val modId: String by project
 val modName: String by project
-val modVersion: String by project
-val modBase: String by project
 val modAuthor: String by project
 val modDescription: String by project
-val modCredits: String by project
-val mcVersion: String by project
-val mcVersionRange: String by project
-val forgeVersion: String by project
-val forgeVersionRange: String by project
-val mappingsChannel: String by project
-val mappingsVersion: String by project
-val recipeViewer: String by project
-val license: String by project
+val forgeRecipeViewer: String by project
 val githubUser: String by project
 val githubRepo: String by project
-val ae2Version: String by project
-val ae2VersionRange: String by project
-val jeiVersion: String by project
-val jeiVersionRange: String by project
-val crtVersion: String by project
-val crtVersionRange: String by project
-val kubeVersion: String by project
-val kubeVersionRange: String by project
 
 plugins {
-    id("dev.architectury.loom") version "0.12.0-SNAPSHOT"
-    id("com.github.gmazzo.buildconfig") version "3.0.3"
+    alias(deps.plugins.arch)
+    alias(deps.plugins.buildconfig)
     java
-    idea
-    eclipse
+    `maven-publish`
 }
 
 base {
-    version = "$mcVersion-$modVersion"
-    group = "$modBase.$modId"
-    archivesName.set(modId)
+    version = "$minecraftVersion-$modVersion"
+    archivesName.set("$modId-forge")
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir(file("src/main/generated"))
+            exclude("**/.cache")
+        }
+    }
 }
 
 loom {
     silentMojangMappingsLicense()
 
-    forge {
-        mixinConfig("$modId.mixins.json")
-        dataGen {
-            mod(modId)
+    runs {
+        create("data") {
+            data()
+            programArgs("--all", "--mod", modId)
+            programArgs("--output", file("src/main/generated").absolutePath)
+            property("almost.datagen.platform", "common,forge")
+        }
+
+        forEach {
+            val dir = "run/${it.environment}"
+            println("[Run Config] '${it.name}' directory: $dir")
+            it.runDir(dir)
+            // allows DCEVM hot-swapping when using the JBR (https://github.com/JetBrains/JetBrainsRuntime)
+            it.vmArgs("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
         }
     }
 
-    launches {
-        named("client") {
-            // property("fabric.log.level", "debug")
-            arg("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
-        }
-        named("server") {
-            // property("fabric.log.level", "debug")
-            arg("-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition")
-        }
-        named("data") {
-            arg("--existing", file("src/main/resources").absolutePath)
-        }
+    forge {
+        mixinConfig("$modId.mixins.json")
     }
 }
 
 repositories {
-    maven("https://maven.parchmentmc.org/")
-    maven("https://modmaven.dev/")
-    maven("https://maven.blamejared.com/")
-    maven("https://maven.saps.dev/minecraft/")
-    flatDir {
-        name = "extra-mods"
-        dir(file("extra-mods-$mcVersion"))
-    }
+    maven("https://oss.sonatype.org/content/repositories/snapshots") // Manifold
+    maven("https://maven.parchmentmc.org") // Parchment
+    maven("https://modmaven.dev") // AE2
+    maven("https://maven.blamejared.com") // JEI
+    maven("https://maven.shedaniel.me") // REI
+    maven("https://cursemaven.com") // Jade
+    mavenLocal()
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:$mcVersion")
-    forge("net.minecraftforge:forge:$mcVersion-$forgeVersion")
+    // Minecraft
+    minecraft(deps.minecraft)
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:$mappingsChannel-$mcVersion:$mappingsVersion@zip")
+        parchment(variantOf(deps.parchment) { artifactType("zip") })
     })
 
-    modCompileOnly(modLocalRuntime("appeng:appliedenergistics2-forge:$ae2Version")!!)
-    modCompileOnly(modLocalRuntime("com.blamejared.crafttweaker:CraftTweaker-forge-$mcVersion:$crtVersion")!!)
-    modCompileOnly(modLocalRuntime("dev.latvian.mods:kubejs-forge:$kubeVersion")!!)
+    // Forge
+    forge("net.minecraftforge:forge:$minecraftVersion-${deps.versions.forge.get()}")
 
-    modCompileOnlyApi("mezz.jei:jei-$mcVersion:$jeiVersion:api")
-    when (recipeViewer) {
-        "jei" -> modLocalRuntime("mezz.jei:jei-$mcVersion:$jeiVersion")
-        "rei" -> modLocalRuntime("me.shedaniel:RoughlyEnoughItems-forge:8+")
-        else -> throw GradleException("Invalid recipeViewer value: $recipeViewer")
+    // Manifold
+    compileOnly(deps.manifold.rt)
+    annotationProcessor(deps.manifold.ext)
+
+    // Almost Lib
+    if (project.findProperty("almostLibLocal") == "true") {
+        modApi("com.almostreliable.mods:almostlib-forge:${deps.versions.almostlib.get()}+") {
+            isChanging = true
+        }
+    } else {
+        modApi(deps.almostlib)
     }
 
-    fileTree("extra-mods-$mcVersion") { include("**/*.jar") }
-        .forEach { f ->
-            val sepIndex = f.nameWithoutExtension.lastIndexOf('-')
-            if (sepIndex == -1) {
-                throw IllegalArgumentException("Invalid mod name: ${f.nameWithoutExtension}")
-            }
-            val mod = f.nameWithoutExtension.substring(0, sepIndex)
-            val version = f.nameWithoutExtension.substring(sepIndex + 1)
-            println("Extra mod $mod with version $version detected")
-            modLocalRuntime("extra-mods:$mod:$version")
-        }
+    // Applied Energistics
+    modImplementation(deps.ae2)
+
+    // Recipe Viewers
+    modCompileOnly(deps.jei.api)
+    modCompileOnly(deps.rei.api)
+    when (forgeRecipeViewer) {
+        "jei" -> modLocalRuntime(deps.jei.mod) { isTransitive = false }
+        "rei" -> modLocalRuntime(deps.rei.mod)
+        else -> throw GradleException("Invalid recipeViewer value: $forgeRecipeViewer")
+    }
+
+    // Runtime
+    modLocalRuntime("curse.maven:jade-324717:4719987") // Jade 8.9.0
 }
 
 tasks {
-    withType<JavaCompile> {
-        options.encoding = "UTF-8"
-        options.release.set(17)
-    }
-    withType<GenerateModuleMetadata> {
-        enabled = false
-    }
-    jar {
-        manifest {
-            attributes(
-                "Specification-Title" to modName,
-                "Specification-Vendor" to modAuthor,
-                "Specification-Version" to "1",
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to modVersion,
-                "Implementation-Vendor" to modAuthor,
-                "Implementation-Timestamp" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(Date()),
-                "Timestamp" to System.currentTimeMillis(),
-                "Built-On-Java" to "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})",
-                "Build-On-Minecraft" to mcVersion
-            )
-        }
-    }
     processResources {
         val resourceTargets = listOf("META-INF/mods.toml", "pack.mcmeta")
+
         val replaceProperties = mapOf(
+            "license" to license,
+            "minecraftVersion" to minecraftVersion,
+            "version" to project.version as String,
             "modId" to modId,
             "modName" to modName,
-            "modVersion" to modVersion,
             "modAuthor" to modAuthor,
             "modDescription" to modDescription,
-            "modCredits" to modCredits,
-            "mcVersionRange" to mcVersionRange,
-            "forgeVersionRange" to forgeVersionRange,
-            "license" to license,
+            "forgeVersion" to deps.versions.forge.get(),
+            // use major version for FML only because wrong Forge version error message
+            // is way better than FML error message
+            "forgeFMLVersion" to deps.versions.forge.get().substringBefore("."),
+            "almostLibVersion" to deps.versions.almostlib.get(),
+            "aeVersion" to deps.versions.ae2.get(),
+            "jeiVersion" to deps.versions.jei.get(),
+            "reiVersion" to deps.versions.rei.get(),
             "githubUser" to githubUser,
-            "githubRepo" to githubRepo,
-            "ae2VersionRange" to ae2VersionRange,
-            "jeiVersionRange" to jeiVersionRange,
-            "crtVersionRange" to crtVersionRange,
-            "kubeVersionRange" to kubeVersionRange
+            "githubRepo" to githubRepo
         )
+
+        println("[Process Resources] Replacing resource properties: ")
+        replaceProperties.forEach { (key, value) -> println("\t -> $key = $value") }
 
         inputs.properties(replaceProperties)
         filesMatching(resourceTargets) {
             expand(replaceProperties)
         }
+    }
+
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+        options.release.set(17)
+        options.compilerArgs.add("-Xplugin:Manifold no-bootstrap")
+    }
+
+    withType<GenerateModuleMetadata> {
+        enabled = false
     }
 }
 
@@ -168,9 +158,9 @@ extensions.configure<JavaPluginExtension> {
 
 buildConfig {
     buildConfigField("String", "MOD_ID", "\"$modId\"")
-    buildConfigField("String", "MOD_VERSION", "\"$modVersion\"")
     buildConfigField("String", "MOD_NAME", "\"$modName\"")
-    buildConfigField("String", "MOD_GROUP", "\"$modBase.$modId\"")
-
-    packageName("$modBase.$modId")
+    buildConfigField("String", "MOD_VERSION", "\"$version\"")
+    packageName(modPackage)
+    className(modName.replace(" ", "") + "Constants")
+    useJavaOutput()
 }

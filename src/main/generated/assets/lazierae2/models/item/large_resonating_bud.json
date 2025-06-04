@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "lazierae2:block/large_resonating_bud"
+  }
+}

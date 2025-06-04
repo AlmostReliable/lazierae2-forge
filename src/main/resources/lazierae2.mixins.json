@@ -1,11 +1,13 @@
 {
   "required": true,
-  "package": "com.almostreliable.lazierae2.mixin",
+  "minVersion": "0.8.5",
+  "package": "com.almostreliable.lazierae.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "SingularityEntityMixin",
-    "UpgradeCardItemMixin"
+    "SlotAccessor"
   ],
   "client": [],
-  "minVersion": "0.8.5"
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
