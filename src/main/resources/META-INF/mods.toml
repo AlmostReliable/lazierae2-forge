@@ -1,54 +1,35 @@
 modLoader = "javafml"
-loaderVersion = "${forgeVersionRange}"
+loaderVersion = "[2,)"
 issueTrackerURL = "https://github.com/${githubUser}/${githubRepo}/issues"
 license = "${license}"
 
+[[mixins]]
+config = "${modId}.mixins.json"
+
 [[mods]]
 modId = "${modId}"
-version = "${modVersion}"
+version = "${version}"
 displayName = "${modName}"
-credits = "${modCredits}"
 authors = "${modAuthor}"
 description = '''${modDescription}'''
 
-[[dependencies.${modId}]]
-modId = "forge"
-mandatory = true
-versionRange = "${forgeVersionRange}"
+[[dependencies."${modId}"]]
+modId = "neoforge"
+type = "REQUIRED"
+versionRange = "[${neoVersion},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${modId}]]
+[[dependencies."${modId}"]]
 modId = "minecraft"
-mandatory = true
-versionRange = "${mcVersionRange}"
+type = "REQUIRED"
+versionRange = "[${mcVersion},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.${modId}]]
+[[dependencies."${modId}"]]
 modId = "ae2"
-mandatory = true
-versionRange = "${ae2VersionRange}"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${modId}]]
-modId = "jei"
-mandatory = false
-versionRange = "${jeiVersionRange}"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${modId}]]
-modId = "crafttweaker"
-mandatory = false
-versionRange = "${crtVersionRange}"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${modId}]]
-modId = "kubejs"
-mandatory = false
-versionRange = "${kubeVersionRange}"
+type = "REQUIRED"
+versionRange = "[${aeVersion},)"
 ordering = "AFTER"
 side = "BOTH"

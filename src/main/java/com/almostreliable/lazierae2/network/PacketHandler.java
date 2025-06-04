@@ -1,41 +1,52 @@
 package com.almostreliable.lazierae2.network;
 
-import com.almostreliable.lazierae2.network.packets.*;
-import com.almostreliable.lazierae2.util.TextUtil;
+import com.almostreliable.lazierae2.BuildConfig;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkRegistry.ChannelBuilder;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.registration.IDirectionAwarePayloadHandlerBuilder;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 
-import static com.almostreliable.lazierae2.core.Constants.NETWORK_ID;
+import java.util.function.Consumer;
 
 public final class PacketHandler {
 
-    private static final ResourceLocation ID = TextUtil.getRL(NETWORK_ID);
     private static final String PROTOCOL = "1";
-    public static final SimpleChannel CHANNEL = ChannelBuilder.named(ID)
-        .networkProtocolVersion(() -> PROTOCOL)
-        .clientAcceptedVersions(PROTOCOL::equals)
-        .serverAcceptedVersions(PROTOCOL::equals)
-        .simpleChannel();
 
     private PacketHandler() {}
 
-    @SuppressWarnings("ValueOfIncrementOrDecrementUsed")
-    public static void init() {
-        var packetId = -1;
-        // client to server
-        register(++packetId, AutoExtractPacket.class, new AutoExtractPacket());
-        register(++packetId, EnergyDumpPacket.class, new EnergyDumpPacket());
-        register(++packetId, RequestBatchPacket.class, new RequestBatchPacket());
-        register(++packetId, RequestCountPacket.class, new RequestCountPacket());
-        register(++packetId, RequestStatePacket.class, new RequestStatePacket());
-        register(++packetId, SideConfigPacket.class, new SideConfigPacket());
-        register(++packetId, RequestStackPacket.class, new RequestStackPacket());
+    public static void registerPackets(RegisterPayloadHandlerEvent event) {
+        IPayloadRegistrar registrar = event.registrar(BuildConfig.MOD_ID).versioned(PROTOCOL);
+
         // server to client
-        register(++packetId, MenuSyncPacket.class, new MenuSyncPacket());
+//        registerPacket(
+//            registrar,
+//            RequesterSyncPacket.ID,
+//            RequesterSyncPacket::decode,
+//            builder -> builder.client(PacketHandler::handlePacket)
+//        );
+
+        // client to server
+//        registerPacket(
+//            registrar,
+//            RequestUpdatePacket.ID,
+//            RequestUpdatePacket::decode,
+//            builder -> builder.server(PacketHandler::handlePacket)
+//        );
     }
 
-    private static <T> void register(int packetId, Class<T> clazz, IPacket<T> packet) {
-        CHANNEL.registerMessage(packetId, clazz, packet::encode, packet::decode, packet::handle);
+    private static <P extends Packet> void registerPacket(
+        IPayloadRegistrar registrar,
+        ResourceLocation id,
+        FriendlyByteBuf.Reader<P> decoder,
+        Consumer<IDirectionAwarePayloadHandlerBuilder<P, IPlayPayloadHandler<P>>> factory
+    ) {
+        registrar.play(id, decoder, factory);
+    }
+
+    private static <P extends Packet> void handlePacket(P packet, PlayPayloadContext context) {
+        context.player().ifPresent(player -> context.workHandler().execute(() -> packet.handle(player)));
     }
 }
